@@ -1,0 +1,2120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>main_form</class>
+ <widget class="QWidget" name="main_form">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1259</width>
+    <height>663</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="font">
+   <font>
+    <weight>50</weight>
+    <bold>false</bold>
+   </font>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::NoFocus</enum>
+  </property>
+  <property name="windowTitle">
+   <string>岛主-1.0.8</string>
+  </property>
+  <widget class="QWidget" name="verticalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>961</width>
+     <height>431</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_4">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>模拟器</string>
+       </attribute>
+       <widget class="QWidget" name="verticalLayoutWidget_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>951</width>
+          <height>401</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0">
+         <item>
+          <widget class="QTableWidget" name="windows_pid">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="contextMenuPolicy">
+            <enum>Qt::DefaultContextMenu</enum>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="midLineWidth">
+            <number>200</number>
+           </property>
+           <property name="editTriggers">
+            <set>QAbstractItemView::NoEditTriggers</set>
+           </property>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::ExtendedSelection</enum>
+           </property>
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectRows</enum>
+           </property>
+           <property name="verticalScrollMode">
+            <enum>QAbstractItemView::ScrollPerPixel</enum>
+           </property>
+           <property name="showGrid">
+            <bool>false</bool>
+           </property>
+           <property name="gridStyle">
+            <enum>Qt::NoPen</enum>
+           </property>
+           <attribute name="horizontalHeaderDefaultSectionSize">
+            <number>85</number>
+           </attribute>
+           <column>
+            <property name="text">
+             <string>序号</string>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>窗口标题</string>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>执行任务</string>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>等级</string>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>星力</string>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>战力</string>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>金币</string>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>产金量</string>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>状态</string>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>最近登录时间</string>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>闪退次数</string>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>操作</string>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
+            </property>
+           </column>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="3,1,1,1,1">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_28" stretch="1,9">
+             <item>
+              <widget class="QLabel" name="label_50">
+               <property name="text">
+                <string>模拟器序号：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="start_mnq_index_edit"/>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QPushButton" name="open_index_mnq_btn">
+             <property name="text">
+              <string>开启指定模拟器</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="start_mnq_all_btn">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>开启全部模拟器</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="quit_mnq_all_btn">
+             <property name="text">
+              <string>关闭全部模拟器</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_34" stretch="9,1,1,1,1">
+             <item>
+              <spacer name="horizontalSpacer_15">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>延迟</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="yanshi_start_edit"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_19">
+               <property name="text">
+                <string>分钟</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="yanshi_btn">
+               <property name="text">
+                <string>延时启动</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_31" stretch="3">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_11"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_4">
+       <attribute name="title">
+        <string>手机设备</string>
+       </attribute>
+       <widget class="QTableWidget" name="windows_pid_2">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>951</width>
+          <height>391</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::DefaultContextMenu</enum>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="midLineWidth">
+         <number>200</number>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::ExtendedSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="verticalScrollMode">
+         <enum>QAbstractItemView::ScrollPerPixel</enum>
+        </property>
+        <property name="showGrid">
+         <bool>false</bool>
+        </property>
+        <property name="gridStyle">
+         <enum>Qt::NoPen</enum>
+        </property>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>85</number>
+        </attribute>
+        <column>
+         <property name="text">
+          <string>序号</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="textAlignment">
+          <set>AlignCenter</set>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>窗口标题</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="textAlignment">
+          <set>AlignCenter</set>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>执行任务</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="textAlignment">
+          <set>AlignCenter</set>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>等级</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="textAlignment">
+          <set>AlignCenter</set>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>星力</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="textAlignment">
+          <set>AlignCenter</set>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>战力</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="textAlignment">
+          <set>AlignCenter</set>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>金币</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="textAlignment">
+          <set>AlignCenter</set>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>产金量</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="textAlignment">
+          <set>AlignCenter</set>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>状态</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="textAlignment">
+          <set>AlignCenter</set>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>最近登录时间</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="textAlignment">
+          <set>AlignCenter</set>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>闪退次数</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="textAlignment">
+          <set>AlignCenter</set>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>操作</string>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="textAlignment">
+          <set>AlignCenter</set>
+         </property>
+        </column>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_3">
+       <attribute name="title">
+        <string>基本设置</string>
+       </attribute>
+       <widget class="QPushButton" name="save_setting_btn">
+        <property name="geometry">
+         <rect>
+          <x>810</x>
+          <y>380</y>
+          <width>75</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>保存设置</string>
+        </property>
+       </widget>
+       <widget class="QWidget" name="horizontalLayoutWidget_4">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>30</y>
+          <width>531</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_9">
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>模拟器路径：</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="line_mnqpath">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="filechoose_btn">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>选择</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="horizontalLayoutWidget_6">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>170</y>
+          <width>531</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,1,1,1,3,5">
+         <item>
+          <widget class="QCheckBox" name="jinzita_box">
+           <property name="text">
+            <string>金字塔</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="wulin_box">
+           <property name="text">
+            <string>武陵</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="meiri_box">
+           <property name="text">
+            <string>每日地城</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="jingying_box">
+           <property name="text">
+            <string>菁英地城</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="jinghua_box">
+           <property name="text">
+            <string>进化系统（100级）</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="ciyuan_box">
+           <property name="text">
+            <string>次元入侵（130级）</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QLabel" name="label_9">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>150</y>
+          <width>101</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>每日任务设置</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_3">
+        <property name="geometry">
+         <rect>
+          <x>650</x>
+          <y>10</y>
+          <width>121</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>强化设置</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_15">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>370</y>
+          <width>241</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>例:幻影是长按技能类型,凯撒是短按</string>
+        </property>
+       </widget>
+       <widget class="Line" name="line_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>140</y>
+          <width>551</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>560</x>
+          <y>30</y>
+          <width>329</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_17" stretch="1,1,1,3,1,0">
+         <item>
+          <widget class="QLabel" name="label_30">
+           <property name="text">
+            <string>强化等级</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="qh_level_edit"/>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_10">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="qh_youhui_box">
+           <property name="text">
+            <string>使用强化优惠卷</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_9">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_31">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>560</x>
+          <y>60</y>
+          <width>329</width>
+          <height>34</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_18">
+         <item>
+          <widget class="QCheckBox" name="xinyun_box">
+           <property name="text">
+            <string>使用幸运卷轴</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="dunpai_box">
+           <property name="text">
+            <string>使用盾牌卷轴</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="baohu_box">
+           <property name="text">
+            <string>使用保护卷轴</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QLabel" name="label_36">
+        <property name="geometry">
+         <rect>
+          <x>190</x>
+          <y>10</y>
+          <width>121</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>模拟器设置</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="Line" name="line_3">
+        <property name="geometry">
+         <rect>
+          <x>540</x>
+          <y>10</y>
+          <width>20</width>
+          <height>391</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+       <widget class="Line" name="line_4">
+        <property name="geometry">
+         <rect>
+          <x>550</x>
+          <y>100</y>
+          <width>341</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_42">
+        <property name="geometry">
+         <rect>
+          <x>650</x>
+          <y>110</y>
+          <width>121</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>其他设置</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QWidget" name="verticalLayoutWidget_9">
+        <property name="geometry">
+         <rect>
+          <x>560</x>
+          <y>130</y>
+          <width>367</width>
+          <height>136</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_11">
+         <item>
+          <widget class="QCheckBox" name="is_change_role_box">
+           <property name="text">
+            <string>自动切换角色（用于自动任务、自动每日最大支持6角色）</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_59">
+           <property name="text">
+            <string>(星图需要角色同一星图）</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_22">
+           <item>
+            <widget class="QLabel" name="label_43">
+             <property name="text">
+              <string>自动任务到</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="task_level_edit"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_44">
+             <property name="text">
+              <string>级停止（为空则做到无任务为止）</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_12">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="use_stone_box">
+           <property name="text">
+            <string>做任务随机使用移动石</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="close_game_box">
+           <property name="text">
+            <string>无任务时,关闭游戏</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_30">
+           <item>
+            <widget class="QLabel" name="label_20">
+             <property name="text">
+              <string>HP等级</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="hp_box">
+             <item>
+              <property name="text">
+               <string>4阶药水</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>5阶药水</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>6阶药水</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>7阶药水</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>8阶药水</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>9阶药水</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_35">
+             <property name="text">
+              <string>MP等级</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="mp_box">
+             <item>
+              <property name="text">
+               <string>4阶药水</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>5阶药水</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>6阶药水</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>7阶药水</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>8阶药水</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>9阶药水</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_6">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QLabel" name="label_45">
+        <property name="geometry">
+         <rect>
+          <x>190</x>
+          <y>280</y>
+          <width>121</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>王图设置</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QWidget" name="horizontalLayoutWidget_9">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>310</y>
+          <width>287</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_23">
+         <item>
+          <widget class="QLabel" name="label_46">
+           <property name="text">
+            <string>低于120级不生效</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="pkj_box">
+           <property name="text">
+            <string>皮卡啾</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="nh_box">
+           <property name="text">
+            <string>女皇</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="horizontalLayoutWidget_2">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>210</y>
+          <width>537</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_24">
+         <item>
+          <widget class="QCheckBox" name="startower_box">
+           <property name="text">
+            <string>星光塔</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="guaiwu_box">
+           <property name="text">
+            <string>怪物狩猎团</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="tangbaobao_box">
+           <property name="text">
+            <string>汤宝宝</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="mini_dc_box">
+           <property name="text">
+            <string>迷你地城（默认打1关）</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="gonghui_box">
+           <property name="text">
+            <string>公会无限地城|公会荣誉战</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QCheckBox" name="hd_boss_box">
+        <property name="geometry">
+         <rect>
+          <x>130</x>
+          <y>340</y>
+          <width>231</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>混沌炎魔(在打完普通王图后开始混）</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="gw_park_box">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>250</y>
+          <width>141</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>怪物公园（140级）</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>刷图设置</string>
+       </attribute>
+       <widget class="QWidget" name="horizontalLayoutWidget_5">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>481</width>
+          <height>163</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,5,0,0,0,0">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <item>
+              <widget class="QLabel" name="label_4">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>野图设置</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="0,0,1,2">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_14">
+               <item>
+                <widget class="QLabel" name="label_26">
+                 <property name="text">
+                  <string>短按职业窗口：</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="zhiye_edit"/>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_28">
+                 <property name="text">
+                  <string>其他窗口为长按</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_8">
+               <property name="text">
+                <string>组队密码：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="team_pwd_edit">
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_13" stretch="1,0,1,0,1,0">
+             <item>
+              <widget class="QLabel" name="label_23">
+               <property name="text">
+                <string> 1队成员：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="d1_duiyuan_edit"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_24">
+               <property name="text">
+                <string> 2队成员：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="d2_duiyuan_edit"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_25">
+               <property name="text">
+                <string> 3队成员：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="d3_duiyuan_edit"/>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="1,0,1,0,1,0">
+             <item>
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string> 1队频道：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="d1_pindao_edit"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string> 2队频道：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="d2_pindao_edit"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_14">
+               <property name="text">
+                <string> 3队频道：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="d3_pindao_edit"/>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_36">
+             <item>
+              <widget class="QLabel" name="label_56">
+               <property name="text">
+                <string> 4队成员：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="d4_duiyuan_edit"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_57">
+               <property name="text">
+                <string> 5队成员：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="d5_duiyuan_edit"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_58">
+               <property name="text">
+                <string> 6队成员：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="d6_duiyuan_edit"/>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_35">
+             <item>
+              <widget class="QLabel" name="label_17">
+               <property name="text">
+                <string> 4队频道：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="d4_pindao_edit"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_54">
+               <property name="text">
+                <string> 5队频道：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="d5_pindao_edit"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_55">
+               <property name="text">
+                <string> 6队频道：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="d6_pindao_edit"/>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QLabel" name="label_16">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>200</y>
+          <width>281</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>频道范围：1-54,105-154</string>
+        </property>
+       </widget>
+       <widget class="QWidget" name="verticalLayoutWidget_6">
+        <property name="geometry">
+         <rect>
+          <x>510</x>
+          <y>10</y>
+          <width>381</width>
+          <height>161</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_8">
+         <item>
+          <widget class="QCheckBox" name="boss_check_box">
+           <property name="text">
+            <string>定时混王图（12点,8点）</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QCheckBox" name="meiti_check_box">
+             <property name="text">
+              <string>定时做每日任务</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="meiri_time_box">
+             <property name="maximum">
+              <number>24</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>点</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="fenz_box">
+             <property name="maximum">
+              <number>59</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>分</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_7">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_12" stretch="2,2,1,0,5">
+           <item>
+            <widget class="QLabel" name="label_21">
+             <property name="text">
+              <string>检查金币间隔</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="get_gold_time_edit"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_22">
+             <property name="text">
+              <string>分钟</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_41">
+             <property name="text">
+              <string>（野图和星图生效,统计金币收益）</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_16">
+           <item>
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>无蓝窗口：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="d_use_mp_edit"/>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_8">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_40">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>不消耗蓝的职业都要配置对应窗口序号！</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="horizontalLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>220</y>
+          <width>401</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_15">
+         <item>
+          <widget class="QLabel" name="label_10">
+           <property name="text">
+            <string>职业类型</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="zhiye_choose_box">
+           <item>
+            <property name="text">
+             <string>长按技能</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>短按</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_27">
+           <property name="text">
+            <string>注意！这个是全局配置,剔除配置了短按的窗口</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="verticalLayoutWidget_8">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>270</y>
+          <width>481</width>
+          <height>124</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_10">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_21" stretch="5,0,0,0">
+           <item>
+            <widget class="QCheckBox" name="open_auto_box">
+             <property name="text">
+              <string>开启混合挂机卡+脚本按键（在线挂机）</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_47">
+             <property name="text">
+              <string>挂机卡时长：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="autobat_time_edit"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_48">
+             <property name="text">
+              <string>秒(不低于20秒）</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_38">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>↑此选项不勾选,则刷图不会使用挂机卡（不想使用挂机卡则不勾选！）</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_20" stretch="2,1,1,1,6">
+           <item>
+            <widget class="QCheckBox" name="is_exitgame_box">
+             <property name="text">
+              <string>开启挂机卡后离线</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_32">
+             <property name="text">
+              <string>离线时长：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="auto_time_edit"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_33">
+             <property name="text">
+              <string>分钟</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_11">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_19">
+           <item>
+            <widget class="QCheckBox" name="is_exit_team_box">
+             <property name="text">
+              <string>队伍人数少于3人自动退组重组（仅星图生效）</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="saodi_box">
+             <property name="text">
+              <string>星图扫地模式</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_25">
+           <item>
+            <widget class="QCheckBox" name="auto_wait_box">
+             <property name="text">
+              <string>随机休息</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="radioButton2">
+             <property name="text">
+              <string>在线</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="radioButton">
+             <property name="text">
+              <string>离线</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_14">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QLabel" name="label_39">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>250</y>
+          <width>221</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>短按职业挂机技能要摆满！</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="Line" name="line">
+        <property name="geometry">
+         <rect>
+          <x>490</x>
+          <y>0</y>
+          <width>20</width>
+          <height>401</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="save_setting_btn_2">
+        <property name="geometry">
+         <rect>
+          <x>810</x>
+          <y>380</y>
+          <width>75</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>保存设置</string>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>980</x>
+     <y>10</y>
+     <width>271</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QPushButton" name="get_windows">
+      <property name="text">
+       <string>获取窗口信息</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="open_set_btn">
+      <property name="text">
+       <string>打开配置</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget_4">
+   <property name="geometry">
+    <rect>
+     <x>980</x>
+     <y>80</y>
+     <width>271</width>
+     <height>251</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_6">
+    <item>
+     <widget class="QTreeWidget" name="task_tree_widget">
+      <column>
+       <property name="text">
+        <string notr="true">1</string>
+       </property>
+      </column>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="label_18">
+        <property name="text">
+         <string>当前选中任务：</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="task_name_label">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_5"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QTabWidget" name="log_tab_wid">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>450</y>
+     <width>961</width>
+     <height>201</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>-1</number>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="console_text">
+   <property name="geometry">
+    <rect>
+     <x>980</x>
+     <y>450</y>
+     <width>271</width>
+     <height>201</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="check_ziti_btn">
+   <property name="geometry">
+    <rect>
+     <x>750</x>
+     <y>510</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>检查字体</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="open_ziti_btn">
+   <property name="geometry">
+    <rect>
+     <x>790</x>
+     <y>570</y>
+     <width>80</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>开启字体平滑</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>1120</x>
+     <y>340</y>
+     <width>131</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_7">
+    <item>
+     <widget class="QPushButton" name="set_task_btn">
+      <property name="text">
+       <string>设置任务</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="close_all_task_btn">
+      <property name="text">
+       <string>全部停止</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="win_index_btn">
+      <property name="text">
+       <string>窗口排序</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>980</x>
+     <y>340</y>
+     <width>131</width>
+     <height>112</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_12">
+    <item>
+     <widget class="QPushButton" name="choose_all_btn">
+      <property name="text">
+       <string>全选</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="choose_cannel_btn">
+      <property name="text">
+       <string>取消选中</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="choose_todo_btn">
+      <property name="text">
+       <string>执行选中</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="choose_stop_btn">
+      <property name="text">
+       <string>停止选中</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <zorder>console_text</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>open_ziti_btn</zorder>
+  <zorder>check_ziti_btn</zorder>
+  <zorder>verticalLayoutWidget</zorder>
+  <zorder>verticalLayoutWidget_4</zorder>
+  <zorder>log_tab_wid</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>layoutWidget</zorder>
+ </widget>
+ <tabstops>
+  <tabstop>console_text</tabstop>
+  <tabstop>get_windows</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

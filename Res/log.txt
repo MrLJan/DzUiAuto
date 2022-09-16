@@ -1,0 +1,16 @@
+2022-09-15 17:07:22,700 - airtest.core.android.adb - DEBUG - D:\AdbControl\venv\lib\site-packages\airtest\core\android\static\adb\windows\adb.exe -P 5037 -s emulator-5554 wait-for-device
+2022-09-15 17:09:05,704 - airtest.core.android.adb - DEBUG - D:\AdbControl\venv\lib\site-packages\airtest\core\android\static\adb\windows\adb.exe -P 5037 -s emulator-5554 wait-for-device
+2022-09-15 17:10:54,220 - airtest.core.android.adb - DEBUG - D:\AdbControl\venv\lib\site-packages\airtest\core\android\static\adb\windows\adb.exe -P 5037 -s emulator-5554 wait-for-device
+2022-09-15 17:13:20,768 - airtest.core.android.adb - DEBUG - D:\AdbControl\venv\lib\site-packages\airtest\core\android\static\adb\windows\adb.exe -P 5037 -s emulator-5554 wait-for-device
+2022-09-15 17:14:04,692 - airtest.core.android.adb - DEBUG - D:\AdbControl\venv\lib\site-packages\airtest\core\android\static\adb\windows\adb.exe -P 5037 -s emulator-5554 wait-for-device
+2022-09-15 17:15:20,858 - airtest.core.android.adb - DEBUG - D:\AdbControl\venv\lib\site-packages\airtest\core\android\static\adb\windows\adb.exe -P 5037 -s emulator-5554 wait-for-device
+2022-09-15 17:22:56,815 - airtest.core.android.adb - DEBUG - D:\AdbControl\venv\lib\site-packages\airtest\core\android\static\adb\windows\adb.exe -P 5037 -s emulator-5554 wait-for-device
+2022-09-15 17:22:56,834 - airtest.core.android.adb - DEBUG - D:\AdbControl\venv\lib\site-packages\airtest\core\android\static\adb\windows\adb.exe -P 5037 -s emulator-5554 shell getprop ro.build.version.sdk
+2022-09-15 17:22:56,901 - airtest.core.android.adb - DEBUG - D:\AdbControl\venv\lib\site-packages\airtest\core\android\static\adb\windows\adb.exe -P 5037 -s emulator-5556 wait-for-device
+2022-09-15 17:22:56,921 - airtest.core.android.adb - DEBUG - D:\AdbControl\venv\lib\site-packages\airtest\core\android\static\adb\windows\adb.exe -P 5037 -s emulator-5556 shell getprop ro.build.version.sdk
+2022-09-15 17:24:51,038 - airtest.core.android.adb - DEBUG - D:\AdbControl\venv\lib\site-packages\airtest\core\android\static\adb\windows\adb.exe -P 5037 -s emulator-5554 wait-for-device
+2022-09-15 17:24:51,059 - airtest.core.android.adb - DEBUG - D:\AdbControl\venv\lib\site-packages\airtest\core\android\static\adb\windows\adb.exe -P 5037 -s emulator-5554 shell getprop ro.build.version.sdk
+2022-09-15 17:24:51,125 - airtest.core.android.adb - DEBUG - D:\AdbControl\venv\lib\site-packages\airtest\core\android\static\adb\windows\adb.exe -P 5037 -s emulator-5556 wait-for-device
+2022-09-15 17:24:51,144 - airtest.core.android.adb - DEBUG - D:\AdbControl\venv\lib\site-packages\airtest\core\android\static\adb\windows\adb.exe -P 5037 -s emulator-5556 shell getprop ro.build.version.sdk
+2022-09-16 00:31:17,374 - airtest.core.android.cap_methods.screen_proxy - ERROR - OSError('socket connection broken')
+2022-09-16 00:31:17,374 - airtest.core.android.cap_methods.screen_proxy - ERROR - Javacap setup up failed!
