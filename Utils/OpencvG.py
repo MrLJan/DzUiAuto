@@ -4,25 +4,22 @@ import time
 import numpy as np
 from airtest.aircv import aircv
 from airtest.core.api import touch
-from airtest.core.cv import loop_find
 from airtest.core.error import TargetNotFoundError
-from airtest.core.helper import G
 from cnocr import CnOcr
 
 from Enum.ResEnum import GlobalEnumG, ImgEnumG, UiEnumG
 from Utils.Devicesconnect import DevicesConnect
 from Utils.ExceptionTools import NotFindImgErr
-from Utils.OtherTools import catch_ex
 
 
 class OpenCvTools:
-    def __init__(self):
-        self.img = G.DEVICE.snapshot()
+    def __init__(self, dev):
+        self.dev = dev
 
     def get_rgb(self, get_x, get_y):
         """获取某一像素点RBG数据"""
-        aircv.imwrite(r"D:\DzAutoUi\Res\img\5554.png", self.img, quality=10)
-        color = self.img[get_y, get_x]  # 横屏1280x720
+        img = self.dev.snapshot()
+        color = img[get_y, get_x]  # 横屏1280x720
         np.array(color)
         r = color.tolist()
         r.reverse()  # 反序
@@ -63,41 +60,57 @@ class OpenCvTools:
 
 class AirImgTools:
     def __init__(self):
-        pass
+        self.dev = None
 
-    @staticmethod
-    def crop_image_find(area, temp, timeout=1, clicked=False):
+    # @staticmethod
+    def crop_image_find(self, area_temp, clicked=True, timeout=0.1, touch_wait=0):
         """区域找图"""
         try:
-            screen = G.DEVICE.snapshot()
+            screen = self.dev.snapshot()
+            area = area_temp[0]
+            temp = area_temp[-1]
             crop_img = aircv.crop_image(screen, area)
-            start_time = time.time()
-            while time.time() - start_time < timeout:
+            s_time = time.time()
+            while time.time() - s_time < timeout:
                 res = temp.match_in(crop_img)
                 if res:
                     pos = (res[0] + area[0], res[1] + area[1])
                     if clicked:
-                        touch(pos)
+                        if touch_wait > 0:
+                            time.sleep(touch_wait)
+                        self.dev.touch(pos)
                     return True
-            # return False
-            raise NotFindImgErr(f"范围{area}中未找到{temp}_超时时长{timeout}")
-        except NotFindImgErr as e:
+            return False
+            # print(time.time()-start_time)
+            # raise NotFindImgErr(f"范围{area}中未找到{temp}_超时时长{timeout}")
+        except (NotFindImgErr, AttributeError) as e:
             print(e)
             return False
 
-    @staticmethod
-    def air_loop_find(temp, timeout=GlobalEnumG.FindImgTimeOut, clicked=False):
+    # @staticmethod
+    def air_loop_find(self, temp, clicked=True, timeout=GlobalEnumG.FindImgTimeOut):
         """
         循环查找图片并点击，超时返回
         """
         try:
-            res = loop_find(temp, timeout=timeout)
-            if clicked:
-                touch(res)
-            return True
+            img = temp[-1]
+            s_time = time.time()
+            while time.time() - s_time < timeout:  # 超时
+                screen = self.dev.snapshot()
+                if screen is None:
+                    raise TargetNotFoundError
+                else:
+                    match_pos = img.match_in(screen)
+                    if match_pos:
+                        if clicked:
+                            self.dev.touch(match_pos)
+                    return True
         except TargetNotFoundError as e:
             print(e.value)
             return False
+
+    def air_touch(self, touch_x, touch_y, duration=0):
+        return self.dev.touch((touch_x, touch_y), duration=duration)
 
 
 class ImageCreat:
@@ -110,34 +123,34 @@ class ImageCreat:
 
 
 class CnOcrTool:
-    @staticmethod
-    def ocr_find(x1, y1, x2, y2, find_text, clicked=False):
+    def __init__(self):
+        self.dev = None
+
+    def ocr_find(self, ocr_list, clicked=False):
         """
         范围查找文字，返回坐标
-        :param x1:
-        :param y1:
-        :param x2:
-        :param y2:
-        :param find_text: 查找文本
-        :return: 查找结果,坐标x，坐标y
+        :param ocr_list:查找文字范围和文字
+        :param clicked: 是否点击
+        :return: 查找结果
         """
-        screen = G.DEVICE.snapshot()
-        img_fp = aircv.crop_image(screen, (x1, y1, x2, y2))
-        ocr = CnOcr(rec_model_name='densenet_lite_136-fc', det_model_name='ch_PP-OCRv3_det')  # ch_PP-OCRv3繁体中文匹配模型
+        x1,y1,x2,y2=ocr_list[0]
+        screen = self.dev.snapshot()
+        img_fp = aircv.crop_image(screen, ocr_list[0])
+        ocr = CnOcr(rec_model_name='densenet_lite_136-fc',
+                    det_model_name='ch_PP-OCRv3_det')  # 'ch_PP-OCRv3_det')  # ch_PP-OCRv3繁体中文匹配模型
         out = ocr.ocr(img_fp)
-        print(out)
         if len(out) == 0:
             return False
         for i in range(len(out)):
             ntext = out[i]['text']
             print(ntext)
-            if find_text in ntext:
+            if ocr_list[-1] in ntext:
                 npar = out[i]['position']
                 ls = npar.tolist()
                 lx = int((ls[-2][0] + ls[0][0]) / 2)
                 ly = int((ls[-2][-1] + ls[0][-1]) / 2)
                 if clicked:
-                    touch(lx + x1, ly + y1)
+                    self.dev.touch((lx + x1, ly + y1))
                 return True
         return False
 
@@ -147,16 +160,34 @@ class CnOcrTool:
 
 
 if __name__ == '__main__':
-    img_fp = r'D:\DzAutoUi\Res\img\21.bmp'
-    DevicesConnect('emulator-5554').connect_device()
+    # img_fp = r'D:\DzAutoUi\Res\img\21.bmp'
+    # res, dev = DevicesConnect('emulator-5554').connect_device()
+    res2, dev2 = DevicesConnect('emulator-5556').connect_device()
+    # img=G.DEVICE.snapshot()
+    # aircv.imwrite(r'D:\DzAutoUi\Res\img\21.png',img)
     # loop_find(img_fp)
     try:
-        # r=touch(ResEnumG.GAME_ICON,times=1)
-        r = AirImgTools.crop_image_find((12, 17, 94, 67), ImgEnumG.GAME_ICON)
-        r1 = AirImgTools.air_loop_find(ImgEnumG.TEST, False)
-        # r = OpenCvTools().mulcolor_check(UiEnumG.BAG_UI)
-        print(r, r1)
-        # r2=OpenCvTools().
+        # start_time = time.time()
+        # print(start_time)
+        # c = CnOcrTool()
+        c=AirImgTools()
+        c.dev = dev2
+        # while True:
+        r= c.air_loop_find(ImgEnumG.UI_LB)
+        # r = c.ocr_find(40, 88, 152, 104, '佃人', True)
+        # r=OpenCvTools(dev2).get_rgb(431, 654)
+        print(r)
+        # r=touch(ImgEnumG.GAME_ICON,times=1)
+        # AirImgTools.air_loop_find(ImgEnumG.TEST, 0.1)
+        # r=CnOcrTool.ocr_find(0,0,1280,720,'rr')
+        # r = ImgEnumG.LOGIN_FLAG1[0]
+        # x = ImgEnumG.LOGIN_FLAG1[-1]
+        # print(r, x)
+        # r1 = AirImgTools.crop_image_find(dev, ImgEnumG.GAME_ICON)
+        # r = AirImgTools.crop_image_find(dev2, ImgEnumG.GAME_ICON, True)
+        # r=OpenCvTools().mulcolor_check(UiEnumG.BAG_UI)
+        # print(r, r1)
+        # print(time.time() - start_time)
     except TargetNotFoundError:
         print('err')
     # r=AirImgTools.air_loop_find(ResEnumG.GAME_ICON,1)

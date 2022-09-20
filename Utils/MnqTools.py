@@ -41,6 +41,21 @@ class MnqTools:
                 # self.lockwindow(mnq_name[0])#锁定窗口大小
         return mnq_index_list, mnq_name_list, mnq_devname_list
 
+    def use_index_find_name(self, mnq_index):
+        cmd = os.popen(self.ld_path + " list2")
+        mnq_list = cmd.read().split('\n')
+        cmd.close()
+        mnq_dic = {}
+        for _mnq in mnq_list:
+            mnq_info = _mnq.split(',')
+            if mnq_info[0] == '':
+                pass
+            else:
+                mnq_dic[mnq_info[0]] = mnq_info[1]
+        if str(mnq_index) in mnq_dic.keys():
+            return mnq_dic[mnq_index]
+        return '99999'
+
     def start_mnq_index_list(self, index_list):
         for i in index_list:
             cmd = os.popen(self.ld_path + f" launch --index {i}")

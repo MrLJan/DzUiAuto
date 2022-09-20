@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from airtest.core.api import device, connect_device
-
-from Utils.ExceptionTools import ConnectDevErr
+from airtest.core.error import DeviceConnectionError
 from Utils.ThreadTools import ThreadTools
 from Utils.OtherTools import catch_ex
 
@@ -14,15 +13,12 @@ class DevicesConnect:
 
     def connect_device(self):
         try:
-            res = connect_device(f"Android://127.0.0.1:5037/{self.devname}")#?cap_method=JAVACAP&&ori_method=ADBORI")
-            if res:
-                dev = device()
-                print(dev)
-                return dev
-            return None
-        except ConnectDevErr as e:
+            dev = connect_device(f"Android://127.0.0.1:5037/{self.devname}")#?cap_method=JAVACAP&&ori_method=ADBORI")
+            print(f"{self.devname}_连接成功")
+            return True,dev
+        except DeviceConnectionError as e:
             print(e)
-            return None
+            return False,None
 
 
 def run(devid):

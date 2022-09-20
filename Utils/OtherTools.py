@@ -46,7 +46,7 @@ class OtherTools:
         return path + addpath
 
     def imgpath(self, imgname):
-        return path + r'/res/img/' + imgname
+        return path + r'/res/img/' + imgname+'.bmp'
 
 
 OT = OtherTools()
