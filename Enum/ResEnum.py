@@ -9,8 +9,9 @@ class GlobalEnumG:
     GamePackgeName = r'com.nexon.maplem.global'
     FindImgTimeOut = 20  # 查找图片等待超时时间
     TouchDurationTime = 4  # 延时点击
-    LoginGameTimeOut = 60  # 登录超时时长
+    LoginGameTimeOut = 600  # 登录超时时长
     UiCheckTimeOut = 600  # 界面操作超时时长
+    TouchWaitTime = 2  # 点击后等待时长
 
     TasKId = {
 
@@ -22,7 +23,7 @@ class GlobalEnumG:
         'Check': "检查界面",
         'BugY': "买药",
         'FuHuo': "复活",
-        'BagSoul': "背包清理",
+        'BagSell': "背包清理",
         'CheckBatTeam': "检查队伍",
         'UpEquip': "升级装备",
         'StrongEquip': "强化装备",
@@ -36,21 +37,24 @@ class GlobalEnumG:
         'CheckState': "检查状态"
     }
     ExecuteStates = ['AutoTask', 'AutoMR', 'AutoBat', 'CheckState', 'NotInGame']
-    SelectStates = ['InGame', 'Login', 'Check', 'BugY', 'FuHuo', 'BagSoul', 'CheckBatTeam',
+    SelectStates = ['InGame', 'Login', 'Check', 'BugY', 'FuHuo', 'BagSell', 'CheckBatTeam',
                     'UpEquip', 'StrongEquip', 'LearnSkill', 'UseSkill', 'UsePet', 'GetReward']
 
 
 class ImgEnumG:
     """图片数据"""
     TEST = Template(OT.imgpath('21'))
-    UI_CLOSE = [(571, 39, 711, 76), Template(OT.imgpath('关闭界面'))]
+    # UI_CLOSE = [(571, 39, 711, 76), Template(OT.imgpath('关闭界面'))]
+    UI_CLOSE = [(1060, 24, 1149, 97), Template(OT.imgpath('弹窗'))]
     UI_QR = [(0, 0, 1280, 720), Template(OT.imgpath('确认'))]
     UI_QBLQ = [(0, 0, 1280, 720), Template(OT.imgpath('全部领取'))]
     UI_GM = [(0, 0, 1280, 720), Template(OT.imgpath('购买'))]
     UI_YES = [(277, 92, 989, 637), Template(OT.imgpath('是'))]
     UI_NO = [(277, 92, 989, 637), Template(OT.imgpath('否'))]
-    UI_LB=[(1132,58,1157,86),Template(OT.imgpath('推荐礼包'))]
-
+    UI_LB = [(1132, 58, 1157, 86), Template(OT.imgpath('推荐礼包'))]
+    UI_SET = [(1196, 626, 1278, 708), Template(OT.imgpath('设置'))]
+    # 下载更新
+    GAME_XZ = [(562, 148, 721, 202), '下']  # 下载警告
     # 活动
     QD = [(956, 631, 1249, 697), Template(OT.imgpath('活动签到'))]
     QD_1 = [(1218, 12, 1265, 55), Template(OT.imgpath('活动签到1'))]
@@ -61,22 +65,26 @@ class ImgEnumG:
     START_GAME = [(963, 481, 1278, 688), Template(OT.imgpath('游戏开始'))]  # 963,481,1278,688
     INGAME_FLAG = [(734, 9, 1253, 64), Template(OT.imgpath('验证登录标记'))]  # 734,9,1253,64
     INGAME_FLAG2 = [(904, 336, 939, 372), Template(OT.imgpath('验证登录标记2'))]
-    LOGIN_TIPS = [(15, 188, 54, 225), Template(OT.imgpath('登录弹窗'))]
+    LOGIN_TIPS = [(1240, 14, 1264, 61), Template(OT.imgpath('登录弹窗'))]
     # 任务相关
     TASK_CLOSE = [(1205, 35, 1245, 77), Template(OT.imgpath('任务界面'))]
-    TASK_TAB = [(1239, 19, 1260, 41), Template(OT.imgpath('任务页签'))]
+    TASK_TAB = [(0, 0, 1280, 720), Template(OT.imgpath('任务页签'), rgb=True)]
     TASK_POINT = [(69, 181, 119, 403), Template(OT.imgpath('任务点'))]
     TASK_START = [(341, 529, 482, 715), Template(OT.imgpath('任务可开始'))]
     TASK_ARROW = [(1189, 483, 1236, 522), Template(OT.imgpath('任务箭头'))]
     TASK_TAKE = [(1067, 403, 1150, 438), Template(OT.imgpath('任务接受'))]
     TASK_OVER = [(0, 0, 1280, 720), Template(OT.imgpath('任务完成'))]
+    TASK_MR_QR = [(0, 0, 1280, 720), Template(OT.imgpath(('每日任务确认')))]
     TASK_REWARD = [(595, 630, 685, 659), Template(OT.imgpath('任务奖励'))]
     MOVE_NOW = [(752, 191, 825, 214), Template(OT.imgpath('立刻移动'))]
     # 每日相关
     MR_MENU = [(1225, 25, 1252, 52), Template(OT.imgpath('菜单'))]
     # 活动
-    HD_QBLQ = [(698, 628, 807, 661), Template(OT.imgpath('全部领取'))]
-    HD_QBLQ2 = [(1124, 645, 1222, 684), Template(OT.imgpath('全部领取2'))]
+    HD_QBLQ = [(698, 628, 807, 661), Template(OT.imgpath('全部领取'), rgb=True)]
+    HD_QBLQ2 = [(1124, 645, 1222, 684), Template(OT.imgpath('全部领取2'), rgb=True)]
+    KT_QBLQ = [(1138, 650, 1223, 680), Template(OT.imgpath('课题全部领取'))]
+    KT_QBLQ2 = [(1133, 645, 1226, 684), Template(OT.imgpath('课题全部领取2'), rgb=True)]
+    KT_QBLQ3 = [(1132, 642, 1229, 690), Template(OT.imgpath('课题全部领取3'), rgb=True)]
     HD_XX = [(554, 603, 654, 632), Template(OT.imgpath('休息奖励领取'))]
     # 背包清理
     BAG_SELL = [(1167, 663, 1215, 687), Template(OT.imgpath('贩售'))]
@@ -84,13 +92,15 @@ class ImgEnumG:
     BAG_CS_LIST = [(644, 110, 697, 579), Template(OT.imgpath('出售1'))]
     BAG_SX = [(52, 657, 90, 691), Template(OT.imgpath('筛选'))]
     BAG_SX_TY = [(762, 622, 818, 64), Template(OT.imgpath('套用'))]
-    BAG_CS_QR = [(1145, 660, 1193, 688), Template(OT.imgpath('贩售确认'))]
+    BAG_CS_QR = [(1145, 660, 1193, 688), Template(OT.imgpath('贩售确认'), rgb=True)]
     BAG_CS_QR1 = [(758, 519, 818, 547), Template(OT.imgpath('贩售确认1'))]
     BAG_GOLD = [(917, 4, 1134, 82), Template(OT.imgpath('金币详情'))]
     # 邮件
     MAIL_RQ = [(972, 27, 1006, 49), Template(OT.imgpath('邮件'))]
     MAIL_NULL = [(583, 315, 701, 408), Template(OT.imgpath('无邮件'))]
     # 战斗相关
+    AUTO_BAT_OCR = [(395, 647, 450, 663), '自']  # 自动战斗未开启
+    S_MAP = [(1190, 70, 1272, 140), Template(OT.imgpath('小地图'))]
     PERSON_POS = [(864, 75, 1257, 193), Template(OT.imgpath('人物坐标'))]
     XT_MOVE = [(1133, 648, 1193, 677), Template(OT.imgpath('星图移动'))]
     # 组队相关
@@ -99,6 +109,16 @@ class ImgEnumG:
     TEAM_FIND = [(78, 197, 217, 381), Template(OT.imgpath('自动加入'))]
     # 装备
     EQ_JJS = [(734, 155, 1268, 645), Template(OT.imgpath('凝聚力量的结晶石'))]
+    EQ_TJP_OCR = [(802, 75, 1259, 623), '匠铺']  # 铁匠铺
+    EQ_UP_OCR = [(37, 304, 135, 363), '升']  # 升级
+    EQ_QH_OCR = [(154, 316, 248, 351), '星力']  # 星力强化
+    EQ_ZBZ_OCR = [(740, 234, 1254, 266), '装']  # 装备中
+    EQ_WZB = [(225, 97, 370, 211), Template(OT.imgpath('无装备'))]
+    EQ_ZDXZ = [(1002, 597, 1279, 717), Template(OT.imgpath('自动选择'))]
+    EQ_ZDXZ_UI_OCR = [(571, 38, 713, 81), '自']  # 自动选择
+    EQ_ZDXZ_SD_OCR = [(59, 502, 513, 524), '定']  # 存储自动选择设定
+    EQ_UP = [(559, 621, 717, 701), Template(OT.imgpath('升级'), rgb=True)]  # 升级确认按钮
+    EQ_UP_QR = [(492, 604, 789, 682), Template(OT.imgpath('升级确认'))]
     EQ_QH = [(606, 647, 664, 679), Template(OT.imgpath('强化'))]
     EQ_QH2 = [(603, 536, 678, 564), Template(OT.imgpath('强化2'))]
     # 买药
@@ -110,11 +130,17 @@ class ImgEnumG:
     TASK_OCR = [(395, 647, 450, 663), '任']  # 自动任务
     BAG_OCR = [(9, 18, 94, 61), '背包']  # 背包
     BAG_CS_OCR = [(13, 18, 92, 61), '贩售']  # 贩售
-    BAG_SX_OCR = [(571, 39, 711, 76), '版贾箭遐']  # 贩卖筛选
+    BAG_SX_OCR = [(571, 39, 711, 76), '贾']  # 贩卖筛选
     BAG_CS_QR_OCR = [(575, 154, 707, 197), '贩售道具']  # 贩售道具
     BAG_GOLD_OCR = [(574, 155, 705, 195), '持有']  # 持有枫币
     # ------
-    MR_MENU_KSNR = [(809, 73, 1250, 608), '快速内容']
+    MR_BACK = [(23, 22, 66, 61), Template(OT.imgpath('返回'))]
+    MR_BAT_EXIT = [(1219, 267, 1254, 303), Template(OT.imgpath('战斗退出'), rgb=True)]
+    MR_TIP_CLOSE = [(929, 26, 1151, 228), Template(OT.imgpath('关闭界面'))]  # 关闭菜单界面弹窗
+    MR_MENU_KSNR = [(809, 73, 1250, 608), '快速内容']  # 菜单入口
+    MR_KSZD = [(1060, 639, 1174, 685), '快速']  # 快速粗际
+    MR_AREA = (5, 151, 1271, 712)
+    HD_MENU = [(809, 73, 1250, 608), '活勤']
     MR_GWGY_OCR = [(9, 7, 314, 73), '怪物公']  # 怪物公园
     MR_XLZC_OCR = [(9, 7, 314, 73), '星力']  # 星力戟场
     MR_JZT_OCR = [(9, 7, 314, 73), '金字塔']  # 奈特的金字塔
@@ -125,21 +151,30 @@ class ImgEnumG:
     MR_MNDC_OCR = [(9, 7, 314, 73), '迷你']  # 迷你地城
     MR_GH_OCR = [(9, 7, 314, 73), '公曾']  # 公会
     MR_WLDC_OCR = [(9, 7, 314, 73), '武陵道']  # 武陵道堤
+    MR_WLDC_RC = [(1065, 637, 1177, 676), Template(OT.imgpath('入场'), threshold=0.9)]
+    MR_WLDC_JR = [(584, 43, 698, 95), '入']  # 进入界面
+    MR_JZT_JR = [(593, 153, 682, 193), '入']  # 进入界面
+    MR_YDZXD = [(311, 487, 960, 660), '移']  # 移勤至遐革
+    MR_MAX = [(984, 249, 1029, 273), Template(OT.imgpath('MAX'))]
     MR_JHXT_OCR = [(9, 7, 314, 73), '化系']  # 淮化系流
     MR_TBB_OCR = [(9, 7, 314, 73), '寳寳的']  # 温寳寳的料
     MR_XGT_OCR = [(9, 7, 314, 73), '星光M塔']  # 星光M塔
     MR_HD_OCR = [(9, 7, 314, 73), '混沌速']  # 混沌速征际
     MR_CYRQ_OCR = [(9, 7, 314, 73), '次元入侵']  # 次元入侵
     # ------
+    KT_MENU = [(809, 73, 1250, 608), '课题']
+
     HD_UI_OCR = [(5, 5, 175, 73), '活勤']  # 活勤
     KT_UI_OCR = [(5, 5, 175, 73), '课题']  # 课题 界面
     JN_UI_OCR = [(5, 5, 175, 73), '技能']  # 技能 界面
     CW_UI_OCR = [(5, 5, 175, 73), '窜物']  # 宠物 界面
     SD_UI_OCR = [(5, 5, 175, 73), '商店']  # 商店 界面
-    KT_MRRW_OCR = [(28, 94, 179, 525), '每日任移']  # 每日任务
-    KT_MZRW_OCR = [(28, 94, 179, 525), '每遇任移']  # 每周任务
-    KT_MRSL_OCR = [(28, 94, 179, 525), '每日狩弹']  # 每日狩猎
-    KT_CJ_OCR = [(28, 94, 179, 525), '成就']  # 成就
+    MR_UI_OCR = [(5, 5, 175, 73), '快速']  # 快速单元 界面
+    TJP_UI_OCR = [(5, 5, 175, 73), '匠']  # 藏匠铺 铁匠铺
+    KT_MRRW_OCR = [(42, 75, 166, 518), '每日任移']  # 每日任务
+    KT_MZRW_OCR = [(42, 75, 166, 518), '每遇任移']  # 每周任务
+    KT_MRSL_OCR = [(42, 75, 166, 518), '每日狩']  # 每日狩猎
+    KT_CJ_OCR = [(42, 75, 166, 518), '成就']  # 成就
     HD_DR_OCR = [(1, 86, 210, 716), '登入']  # 登入挺励
     HD_XX_OCR = [(1, 86, 210, 716), '休息']  # 休息挺励
     # 买药
@@ -153,3 +188,20 @@ class ImgEnumG:
 class UiEnumG:
     BAG_UI = [(59, 11, '415066'), (645, 32, '415066'), (557, 123, 'ffffff'),
               (467, 124, '2b3646'), (997, 675, '4c87b0'), (1148, 686, '4c87b0'), (59, 120, 'ee7546')]  # 背包主界面
+
+
+class BatEnumG:
+    map_data = {
+        '死亡战场': '0',
+        '爱奥斯塔入口': [[1000,1088, 148], [956,1139, 135], [1060,1162,135],[30, 70, 100],[1250,1153,966,870]],
+        '天空露台2': '2',
+        '西边森林': '3',
+        '龙蛋': '4',
+        '忘却4': '5',
+        '武器库星图': '6',
+        '偏僻泥沼': '7',
+        '机械室': '8',
+        '变形的森林': '9',
+        '灰烬之风高原':'10',
+        '时间漩涡':'11',
+    }

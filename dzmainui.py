@@ -344,7 +344,7 @@ class DzUi:
                 devname = self.dev_obj_list[mnq_name][0]
                 res, dev = DevicesConnect(devname).connect_device()
                 if not res:
-                    self.get_messagebox("错误", f"模拟器序号[{mnq_index}]连接失败")
+                    self.get_messagebox("错误", f"模拟器序号[{mnq_index}]连接失败{dev}_检查adb")
                     return False
                 devinfo=(dev,devname)
                 mnq_name = self.ui_main.windows_pid.item(row_num, 1).text()

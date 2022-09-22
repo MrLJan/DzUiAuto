@@ -17,8 +17,7 @@ class DevicesConnect:
             print(f"{self.devname}_连接成功")
             return True,dev
         except DeviceConnectionError as e:
-            print(e)
-            return False,None
+            return False,e
 
 
 def run(devid):
