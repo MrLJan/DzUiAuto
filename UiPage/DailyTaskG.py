@@ -39,7 +39,8 @@ class DailyTaskAutoG(BasePageG):
             else:
                 if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
                     self.crop_image_find(ImgEnumG.MR_MENU)
-                self.ocr_find(ImgEnumG.MR_MENU_KSNR, True)
+                if not self.ocr_find(ImgEnumG.MR_MENU_KSNR, True):
+                    self.crop_image_find(ImgEnumG.UI_CLOSE)
                 if self.ocr_find(ImgEnumG.MR_UI_OCR):  # 快速单元界面
                     self.ocr_find([ImgEnumG.MR_AREA, '武陵道'], True)
                 if self.ocr_find(ImgEnumG.MR_WLDC_OCR):  # 道场界面
@@ -63,7 +64,8 @@ class DailyTaskAutoG(BasePageG):
                     print('组队中')
                 if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
                     self.crop_image_find(ImgEnumG.MR_MENU)
-                self.ocr_find(ImgEnumG.MR_MENU_KSNR, True)
+                if not self.ocr_find(ImgEnumG.MR_MENU_KSNR, True):
+                    self.crop_image_find(ImgEnumG.UI_CLOSE)
                 if self.ocr_find(ImgEnumG.MR_UI_OCR):  # 快速单元界面
                     self.ocr_find([ImgEnumG.MR_AREA, '学塔'], True)
                 if self.ocr_find(ImgEnumG.MR_JZT_OCR):  # 金字塔界面

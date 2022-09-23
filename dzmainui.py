@@ -354,7 +354,7 @@ class DzUi:
                 LoadConfig.writeconf(mnq_name, '最近任务', task_name, ini_name=mnq_name)
                 self.sn.table_value.emit(mnq_name, 9, login_time)
                 self.sn.table_value.emit(mnq_name, 10, '0')
-                self.sn.log_tab.emit(mnq_name, '--------启动任务--------')
+                self.sn.log_tab.emit(mnq_name, '------启动任务------')
                 execute = StateExecute(devinfo,mnq_name,self.sn)
                 select = StateSelect(devinfo,mnq_name,self.sn)
                 StateMachine(execute, GlobalEnumG.ExecuteStates, execute_transition, "AutoTask")

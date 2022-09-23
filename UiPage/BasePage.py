@@ -2,9 +2,7 @@
 import time
 
 from airtest.core.android import Android
-from airtest.core.api import device
-
-from Enum.ResEnum import GlobalEnumG
+from Enum.ResEnum import GlobalEnumG, ImgEnumG
 from Utils.Devicesconnect import DevicesConnect
 from Utils.OpencvG import OpenCvTools, AirImgTools, CnOcrTool
 
@@ -40,12 +38,40 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
                 ad.stop_app(al)
 
     # @staticmethod
-    def check_mulpic(self, pic_list,clicked=True):
+    def check_mulpic(self, pic_list, clicked=True):
         """检查多个图，找到其中1个则返回True"""
         for pic in pic_list:
-            if self.crop_image_find(pic,clicked):
+            if self.crop_image_find(pic, clicked):
                 return True
         return False
+
+    def check_close(self):
+        if self.crop_image_find(ImgEnumG.GAME_ICON, False):
+            return False
+        self.crop_image_find(ImgEnumG.CZ_FUHUO)
+        self.crop_image_find(ImgEnumG.UI_LB)
+        self.crop_image_find(ImgEnumG.UI_CLOSE)
+        return True
+
+    def close_window(self):
+        for i in range(10):
+            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+                return True
+            self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
+            self.air_loop_find(ImgEnumG.UI_CLOSE)
+            self.crop_image_find(ImgEnumG.UI_LB)
+            self.air_loop_find(ImgEnumG.QD_1)
+            self.air_loop_find(ImgEnumG.LOGIN_TIPS)
+        return False
+
+    def get_num(self, area):
+        """获取范围内的int"""
+        try:
+            res = self.get_ocrres(area)
+            num = ''.join(filter(lambda x: x.isdigit(), res))
+            return int(num)
+        except ValueError:
+            return 0
 
 
 if __name__ == '__main__':

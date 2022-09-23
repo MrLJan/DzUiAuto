@@ -1,6 +1,5 @@
 # -*- encoding=utf8 -*-
 
-
 class test:
 
     def __init__(self):
@@ -22,4 +21,7 @@ class test:
 
 
 if __name__ == '__main__':
-    test().t3()
+    list=[(1,2),4]
+    list.pop(0)
+    print(list)
+

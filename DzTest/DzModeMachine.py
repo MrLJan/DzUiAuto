@@ -131,7 +131,7 @@ class switch_case:
             'UsePet': [self.select.usepet, self.select.to_InGame, self.select.to_Check],
             'UpEquip': [self.select.upequip, self.select.to_InGame, self.select.to_Check],
             'StrongEquip': [self.select.strongequip, self.select.to_InGame, self.select.to_Check],
-            'CheckBatTeam':[self.select.checkbatteam,self.select.to_InGame, self.select.to_Check,]
+            'CheckBatTeam': [self.select.checkbatteam, self.select.to_InGame, self.select.to_Check]
 
         }
 
@@ -156,14 +156,12 @@ class switch_case:
     def dictmap_do(self, state, typeid=1):
         if typeid == 1:
             af_res = self.exec_func[state][0]()
-            # print(af_res)
-            # time.sleep(3)
             # self.exec_func[state][af_res]()
         else:
             af_res = self.select_func[state][0]()
-            # print(af_res)
-            # time.sleep(3)
-            # self.select_func[state][af_res]()
+            if af_res == 1:
+                pass
+            self.select_func[state][af_res]()
 
 
 if __name__ == '__main__':

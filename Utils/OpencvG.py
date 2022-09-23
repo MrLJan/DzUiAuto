@@ -12,7 +12,9 @@ from Enum.ResEnum import GlobalEnumG, ImgEnumG, BatEnumG
 # from UiPage import DailyTaskG
 # from UiPage import UpRoleG
 # from UiPage import RewardG
-from UiPage import AutoBatG
+# from UiPage import AutoBatG
+from UiPage import TeamStateG
+
 
 from Utils.Devicesconnect import DevicesConnect
 from Utils.ExceptionTools import NotFindImgErr
@@ -83,11 +85,12 @@ class AirImgTools:
         'right': (239, 544),
         'jump': (1207, 624),
         'attack': (1074, 619),
-        'c':(948,659),
-        'v':(958,559),
-        'd':(1054,501),
-        'f':(1148,505)
+        'c': (948, 659),
+        'v': (958, 559),
+        'd': (1054, 501),
+        'f': (1148, 505)
     }
+
     # @staticmethod
     def crop_image_find(self, area_temp, clicked=True, timeout=0.1, touch_wait=GlobalEnumG.TouchWaitTime,
                         get_pos=False):
@@ -118,7 +121,27 @@ class AirImgTools:
             print(e)
             return False
 
-    # @staticmethod
+    def find_all_pos(self, temp, timeout=GlobalEnumG.FindImgTimeOut):
+        try:
+            img = temp[-1]
+            s_time = time.time()
+            pos_list = []
+            while time.time() - s_time < timeout:  # 超时
+                screen = self.dev.snapshot()
+                if screen is None:
+                    raise TargetNotFoundError
+                else:
+                    match_pos = img.match_all_in(screen)
+                    if not match_pos:
+                        return False, (0, 0)
+                    for pos in match_pos:
+                        res = pos['result']
+                        pos_list.append(res)
+                    return True, pos_list
+        except TargetNotFoundError as e:
+            print(e.value)
+            return False, (0, 0)
+
     def air_loop_find(self, temp, clicked=True, timeout=GlobalEnumG.FindImgTimeOut,
                       touch_wait=GlobalEnumG.TouchWaitTime):
         """
@@ -133,6 +156,8 @@ class AirImgTools:
                     raise TargetNotFoundError
                 else:
                     match_pos = img.match_in(screen)
+                    if not match_pos:
+                        return False
                     if match_pos:
                         if clicked:
                             self.dev.touch(match_pos)
@@ -143,18 +168,21 @@ class AirImgTools:
             print(e.value)
             return False
 
-    def air_touch(self, touch_xy, duration=0):
-        return self.dev.touch(touch_xy, duration=duration)
+    def air_touch(self, touch_xy, duration=0.2, touch_wait=0):
+        self.dev.touch(touch_xy, duration=duration)
+        if touch_wait > 0:
+            time.sleep(touch_wait)
 
-    def air_swipe(self, start_xy, end_xy):
-        self.dev.click()
-        return self.dev.swipe(start_xy, end_xy)
+    def air_swipe(self, start_xy, end_xy, swipe_wait=0):
+        self.dev.swipe(start_xy, end_xy)
+        if swipe_wait > 0:
+            time.sleep(swipe_wait)
 
     def move_turn(self, turn, k_time):
         _pos = self.turn_pos[turn]
         self.air_touch(_pos, duration=k_time)
 
-    def mul_point_touch(self, turn, action, k_time=1,long_click=False):
+    def mul_point_touch(self, turn, action, k_time=1, long_click=False):
         """多点长按，控制移动"""
 
         t_pos = self.turn_pos[turn]
@@ -266,22 +294,44 @@ class CnOcrTool:
             ntext = out[i]['text']
             return ntext
 
+    def get_all_ocr(self, area):
+        screen = self.dev.snapshot()
+        x1,y1,x2,y2=area
+        img_fp = aircv.crop_image(screen, area)
+        res_list = []
+        ocr = CnOcr(rec_model_name='densenet_lite_136-fc',
+                    det_model_name='ch_PP-OCRv3_det')  # 'ch_PP-OCRv3_det')  # ch_PP-OCRv3繁体中文匹配模型
+        out = ocr.ocr(img_fp)
+        if len(out) == 0:
+            return False
+        for i in range(len(out)):
+            ntext = out[i]['text']
+            npar = out[i]['position']
+            ls = npar.tolist()
+            lx = int((ls[-2][0] + ls[0][0]) / 2)
+            ly = int((ls[-2][-1] + ls[0][-1]) / 2)
+            if ntext!='':
+                res_list.append((ntext,(lx+x1,ly+y1)))
+        return res_list
+
 
 if __name__ == '__main__':
     # img_fp = r'D:\DzAutoUi\Res\img\21.bmp'
     # res, dev = DevicesConnect('emulator-5554').connect_device()
     res2, dev2 = DevicesConnect('emulator-5554').connect_device()
-    print(res2,dev2)
+    print(res2, dev2)
     # img=G.DEVICE.snapshot()
     # aircv.imwrite(r'D:\DzAutoUi\Res\img\21.png',img)
     # loop_find(img_fp)
     try:
         # start_time = time.time()
         # print(start_time)
-        # c = CnOcrTool()
-        c = AirImgTools()
-        # c=OpenCvTools()
+        c = CnOcrTool()
+        a = AirImgTools()
+        o = OpenCvTools()
         c.dev = dev2
+        a.dev = dev2
+        o.dev = dev2
         # while True:
         #     r=c.crop_image_find(ImgEnumG.PERSON_POS,clicked=False,get_pos=True)
         #     print(r)
@@ -291,22 +341,42 @@ if __name__ == '__main__':
         #     r=c.crop_image_find(ImgEnumG.PERSON_POS,clicked=False,get_pos=True)
         #     print(r)
         #     time.sleep(1)
-        r=c.mul_point_touch('down', 'jump',long_click=True)
+        # r=c.mul_point_touch('down', 'jump',long_click=True)
         # louti_queue = QueueManage(1)
         # turn_queue = QueueManage(1)
         # auto_wait = QueueManage(1)
-        # map_data=BatEnumG.map_data['爱奥斯塔入口']
+        # map_data=BatEnumG.MAP_DATA['爱奥斯塔入口']
         # while True:
         #     AutoBatG.AutoBatG((dev2,'emulator-5554'),1,1).keyboard_bat(map_data, 1,auto_wait,1,louti_queue,turn_queue)
 
+        r=TeamStateG.TeamStateG((dev2,'emulator-5554'),1,1).choose_pindao()
+        # r=RewardG.RewardG((dev2,'emulator-5554'),'ld1',1).b()
+        # r=UpRoleG.UpRoleG((dev2,'emulator-5554'),'ld1',1).strongequip()
+        # r=a.crop_image_find(ImgEnumG.CW_A2,False,get_pos=True)
+        # r=a.crop_image_find(ImgEnumG.UI_SET,False)
+        # r=a.find_all_pos(ImgEnumG.JN_XZ)
+        # r=c.ocr_find(ImgEnumG.CW_NULL)
 
-        # r=RewardG.RewardG((dev2,'emulator-5554'),'ld1',1).bagsell()
-        # r= c.crop_image_find(ImgEnumG.S_MAP)
+        # r=c.get_all_text([(730,166,1265,616),'装'])
+        # for i in r:
+        #     a.air_touch(i,touch_wait=1)
+        # r=o.get_rgb(605,662)
+        # r=a.air_loop_find(ImgEnumG.EQ_UP_QR)
+
+        # print(r3)
+        #     for pos in r[-1]:
+        #         a.air_touch(pos)
+        print(r)
         # r=c.air_swipe((912,507),(912,343))
         # r = c.get_all_text([(740,234,1254,266),'装'])
-        # r=c.get_rgb( 1220,110)
-        # r=c.ocr_find([(562,148,721,202),'afaf'])
-        print(r)
+        # r=c.get_rgb(1122,648)
+        # r = c.ocr_find([(577,157,704,196),'装'])
+        # r = c.get_all_text([(779,664,864,689),'装'])
+        # try:
+        #     r=c.get_ocrres((1116,368,1184,387))
+        #     print(int(r))
+        # except ValueError:
+        #     print(0)
         # r=touch(ImgEnumG.GAME_ICON,times=1)
         # AirImgTools.air_loop_find(ImgEnumG.TEST, 0.1)
         # r=CnOcrTool.ocr_find(0,0,1280,720,'rr')
