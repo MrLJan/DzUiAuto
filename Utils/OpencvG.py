@@ -346,16 +346,17 @@ if __name__ == '__main__':
         #     AutoBatG.AutoBatG((dev2,'emulator-5554'),1,1).keyboard_bat(map_data, 1,auto_wait,1,louti_queue,turn_queue)
         # r=StateCheckG.StateCheckG((dev2,'emulator-5554'),1,1).get_num((685,189,721,218))
         # r=TeamStateG.TeamStateG((dev2,'emulator-5554'),1,1).choose_pindao()
-        # r=DailyTaskG.DailyTaskAutoG((dev2,'emulator-5556'),1,1).gw_park_task()
+        # r=DailyTaskG.DailyTaskAutoG((dev2,'emulator-5556'),1,1).hdboss_task()
         # r=UpRoleG.UpRoleG((dev2,'emulator-5554'),'ld1',1).strongequip()
-        r=a.crop_image_find(ImgEnumG.YM_READY)
+        # r=a.crop_image_find(ImgEnumG.YM_READY)
         # r=a.air_loop_find(ImgEnumG.UI_QR,False)
-        # r=c.ocr_find(ImgEnumG.MNDC_FQ,True)
+        r=c.ocr_find(ImgEnumG.MNDC_JSQR,True)
         # a.air_swipe((925, 432), (400, 432))
-        # r = c.get_ocrres((390,641,458,670))#((568,313,708,346))#自勤速腺中
+        # r = c.get_ocrres((464,324,804,362))#((568,313,708,346))#自勤速腺中
         # 稻路状熊不佳，伺服器回鹰延避中 招路状熊不佳，伺服器回鹰处涯中
+        #游咸罪元结束!275秒俊自勤退出
 
-        # r=o.get_rgb(749, 633)
+        # r=o.get_rgb(1180, 653)
         print(r)
         # r = c.get_ocrres((157,516,188,543))
         # for i in r:

@@ -37,7 +37,7 @@ class DailyTaskAutoG(BasePageG):
             '7': self.tangbaobao_task,
             '8': self.minidc_task,
             '9': self.guaiwu_task,
-            '10':self.star_tower_task,
+            '10': self.star_tower_task,
             '11': self.gw_park_task
         }
         while not mrtask_queue.queue.empty():
@@ -58,7 +58,7 @@ class DailyTaskAutoG(BasePageG):
     def back_mr_main(self):
         for i in range(10):
             self.air_loop_find(ImgEnumG.MR_BACK, timeout=1, touch_wait=3)
-            self.ocr_find(ImgEnumG.MR_YDZXD,True)
+            self.ocr_find(ImgEnumG.MR_YDZXD, True)
             if self.ocr_find(ImgEnumG.MR_UI_OCR):
                 return True
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
@@ -528,8 +528,8 @@ class DailyTaskAutoG(BasePageG):
             if self.air_loop_find(ImgEnumG.GAME_ICON, False):
                 return False
             if self.crop_image_find(ImgEnumG.MR_BAT_EXIT, False):
-                self.ocr_find(ImgEnumG.AUTO_BAT_OCR,True)
-                if self.ocr_find(ImgEnumG.GWGY_FQ,True):
+                self.ocr_find(ImgEnumG.AUTO_BAT_OCR, True)
+                if self.ocr_find(ImgEnumG.GWGY_FQ, True):
                     _TIMES += 1
                 if self.ocr_find(ImgEnumG.MR_YDZXD, True):
                     if _TIMES > 2:
@@ -577,11 +577,113 @@ class DailyTaskAutoG(BasePageG):
         s_time = time.time()
         _YM = False
         _PKJ = False
-        _NH=False
-        _YM_OVER=False
+        _NH = False
+        _YM_OVER = False
         _PKJ_OVER = False
         _NH_OVER = False
         self.sn.log_tab.emit(self.mnq_name, r"boss远征")
         self.sn.table_value.emit(self.mnq_name, 8, r"boss远征")
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            pass
+            if self.air_loop_find(ImgEnumG.GAME_ICON, False):
+                return False
+            if self.crop_image_find(ImgEnumG.MR_BAT_EXIT, False):
+                if self.ocr_find(ImgEnumG.MR_YDZXD, True):
+                    self.sn.log_tab.emit(self.mnq_name, r"boss远征-战斗完成")
+                    return True
+                else:
+                    self.sn.log_tab.emit(self.mnq_name, r"boss远征战斗中")
+                    self.time_sleep(15)
+            else:
+                if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
+                    self.crop_image_find(ImgEnumG.MR_MENU)
+                elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
+                    self.ocr_find(ImgEnumG.MR_MENU_KSNR, True)
+                elif self.ocr_find(ImgEnumG.MR_UI_OCR):  # 快速单元界面
+                    if not self.ocr_find([ImgEnumG.MR_AREA, '怪物公'], True):
+                        self.air_swipe((925, 432), (400, 432), swipe_wait=1)
+                elif self.ocr_find(ImgEnumG.MR_WLDC_JR):
+                    self.get_rgb(749, 633, 'EE7047', True)
+                elif self.ocr_find(ImgEnumG.MR_GWGY_OCR):  # 怪物公园界面
+                    if self.get_rgb(1052, 648, 'C3C3C3'):
+                        self.sn.log_tab.emit(self.mnq_name, r"boss远征-未到开启时间")
+                        return True
+                    times = self.get_num((1179, 538, 1228, 562))  # 剩余次数
+                    if times > 0:
+                        self.get_rgb(1084, 656, 'EE7047', True)
+                    else:
+                        self.sn.log_tab.emit(self.mnq_name, r"boss远征-无次数")
+                        return True
+                elif self.ocr_find(ImgEnumG.MR_YDZXD, True):
+                    self.sn.log_tab.emit(self.mnq_name, r"boss远征-战斗完成")
+                    return True
+                else:
+                    self.crop_image_find(ImgEnumG.UI_CLOSE)
+                    self.air_loop_find(ImgEnumG.UI_QR)
+                    if time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
+                        if not self.check_close():
+                            self.sn.log_tab.emit(self.mnq_name, r"boss远征-异常失败")
+                            return False
+        self.sn.log_tab.emit(self.mnq_name, r"boss远征-超时失败")
+        return False
+
+    def hdboss_task(self):
+        s_time = time.time()
+        _JR_TIMES = 0
+        _WAIT_TIMES = 0
+        self.sn.log_tab.emit(self.mnq_name, r"混沌炎魔")
+        self.sn.table_value.emit(self.mnq_name, 8, r"混沌炎魔")
+        while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
+            if self.air_loop_find(ImgEnumG.GAME_ICON, False):
+                return False
+            if self.crop_image_find(ImgEnumG.MR_BAT_EXIT, False):
+                if self.ocr_find(ImgEnumG.YZD_JS):
+                    self.crop_image_find(ImgEnumG.MR_BAT_EXIT)
+                if self.ocr_find(ImgEnumG.MR_YDZXD, True):
+                    self.sn.log_tab.emit(self.mnq_name, r"混沌炎魔-战斗完成")
+                    return True
+                self.sn.log_tab.emit(self.mnq_name, r"混沌炎魔战斗中")
+                self.time_sleep(15)
+            else:
+                if self.air_loop_find(ImgEnumG.TEMA_ING, False):
+                    self.sn.log_tab.emit(self.mnq_name, r"混沌炎魔-组队中")
+                    self.time_sleep(15)
+                    _WAIT_TIMES += 1
+                    self.ocr_find(ImgEnumG.ZD_KS, True)
+                    if _WAIT_TIMES>3:
+                        self.air_touch((433,257),touch_wait=1)
+                else:
+                    if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
+                        self.crop_image_find(ImgEnumG.MR_MENU)
+                    elif self.ocr_find(ImgEnumG.MR_WLDC_PM):  # 排名结算
+                        self.air_loop_find(ImgEnumG.UI_QR)
+                    elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
+                        self.ocr_find(ImgEnumG.MR_MENU_KSNR, True)
+                    elif self.ocr_find(ImgEnumG.MR_UI_OCR):  # 快速单元界面
+                        if not self.ocr_find([ImgEnumG.MR_AREA, '混沌速'], True):
+                            self.air_swipe((925, 432), (400, 432), swipe_wait=1)
+                    elif self.ocr_find(ImgEnumG.MR_WLDC_JR):  # 入场选择
+                        self.ocr_find([(965, 233, 1043, 286), 'MAX'], clicked=True, touch_wait=1)
+                        self.get_rgb(729, 629, 'EE7047', True)
+                    elif self.ocr_find(ImgEnumG.MR_HD_OCR):  # 混沌远征界面
+                        if _JR_TIMES > 3:
+                            self.sn.log_tab.emit(self.mnq_name, r"混沌炎魔-无次数")
+                            return True
+                        times = self.get_ocrres((281, 531, 329, 566))  # 剩余次数
+                        if times == '一':
+                            if self.get_rgb(1180, 653, 'EE7047', True, touch_wait=2):
+                                _JR_TIMES += 1
+                        else:
+                            self.sn.log_tab.emit(self.mnq_name, r"混沌炎魔-无次数")
+                            return True
+                    elif self.ocr_find(ImgEnumG.MR_YDZXD, True):
+                        self.sn.log_tab.emit(self.mnq_name, r"混沌炎魔-战斗完成")
+                        return True
+                    else:
+                        self.crop_image_find(ImgEnumG.UI_CLOSE)
+                        self.air_loop_find(ImgEnumG.UI_QR)
+                        if time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
+                            if not self.check_close():
+                                self.sn.log_tab.emit(self.mnq_name, r"混沌炎魔-异常失败")
+                                return False
+        self.sn.log_tab.emit(self.mnq_name, r"混沌炎魔-超时失败")
+        return False
