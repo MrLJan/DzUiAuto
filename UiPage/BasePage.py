@@ -11,6 +11,7 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
     def __init__(self):
         super(OpenCvTools, self).__init__()
         self.dev = None
+        self.serialno = None
 
     @staticmethod
     def time_sleep(sleep_time):
@@ -21,6 +22,12 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
         """启动游戏"""
         ad = Android(serialno=serialno)
         ad.start_app(GlobalEnumG.GamePackgeName)
+
+    @staticmethod
+    def key_event(serialno, key, wait_time=1):
+        ad = Android(serialno=serialno)
+        ad.keyevent(key)
+        time.sleep(wait_time)
 
     @staticmethod
     def stop_game(serialno):
@@ -48,6 +55,15 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
     def check_close(self):
         if self.crop_image_find(ImgEnumG.GAME_ICON, False):
             return False
+        if self.ocr_find(ImgEnumG.NET_ERR):#掉线
+            _TIMES = 0
+            for i in range(10):
+                if _TIMES > 5:
+                    self.stop_game(self.serialno)
+                    return False
+                if self.ocr_find(ImgEnumG.NET_ERR):
+                    _TIMES += 1
+                    self.time_sleep(10)
         self.crop_image_find(ImgEnumG.CZ_FUHUO)
         self.crop_image_find(ImgEnumG.UI_LB)
         self.crop_image_find(ImgEnumG.UI_CLOSE)
@@ -55,11 +71,13 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
 
     def close_window(self):
         for i in range(10):
+            if self.air_loop_find(ImgEnumG.GAME_ICON, False):
+                return False
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 return True
             self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
             self.air_loop_find(ImgEnumG.UI_CLOSE)
-            self.crop_image_find(ImgEnumG.UI_LB)
+            self.air_loop_find(ImgEnumG.UI_LB)
             self.air_loop_find(ImgEnumG.QD_1)
             self.air_loop_find(ImgEnumG.LOGIN_TIPS)
         return False
@@ -70,7 +88,7 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
             res = self.get_ocrres(area)
             num = ''.join(filter(lambda x: x.isdigit(), res))
             return int(num)
-        except ValueError:
+        except (ValueError, TypeError):
             return 0
 
 

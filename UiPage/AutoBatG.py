@@ -81,7 +81,6 @@ class AutoBatG(BasePageG):
                     return False, x1
             else:
                 if y1 != y:
-
                     return False, x1
                 if x1 in range(louti_x - 5, louti_x + 5):
                     if louti_x in [1172, 972]:
@@ -98,7 +97,7 @@ class AutoBatG(BasePageG):
                     print(self.move_spend)
                     if self.move_spend == 0:
                         t = abs(x1 - louti_x) / 28
-                        self.move_turn('right',t)
+                        self.move_turn('right', t)
                         res_1, x_1, y_1 = self._get_move_xy()
                         if res_1 == 1:
                             if res_1 == 1:
@@ -110,7 +109,7 @@ class AutoBatG(BasePageG):
                         t = abs(x1 - louti_x) / self.move_spend
                         if t > 5:
                             t = abs(x1 - louti_x) / 28
-                        self.move_turn('right',t)
+                        self.move_turn('right', t)
                     if t > 0.7:
                         if saodi_mode == 0:
                             self.move_turn('z', 0.23)
@@ -118,7 +117,7 @@ class AutoBatG(BasePageG):
                     print(self.move_spend)
                     if self.move_spend == 0:
                         t = abs(x1 - louti_x) / 28
-                        self.move_turn('left',t)
+                        self.move_turn('left', t)
                         res_2, x_2, y_2 = self._get_move_xy()
                         if res_2 == 1:
                             spend = abs(x1 - x_2) / t
@@ -127,12 +126,12 @@ class AutoBatG(BasePageG):
                                 self.move_spend = spend
                     else:
                         t = abs(x1 - louti_x) / self.move_spend
-                        self.move_turn('left',t)
+                        self.move_turn('left', t)
                     if t > 0.7:
                         if saodi_mode == 0:
                             self.move_turn('z', 0.23)
                     if i > 8:
-                        self.move_turn('left',0.31)
+                        self.move_turn('left', 0.31)
         res1, x1, y1 = self._get_move_xy()
         return True, x1
 
@@ -166,7 +165,7 @@ class AutoBatG(BasePageG):
                 return True
             # if i == 1:
             #     self.move_turn('up', 1.84)
-                # self.keypress_and_up(self.dm, "up", 1.84)
+            # self.keypress_and_up(self.dm, "up", 1.84)
         return False
 
     def keep_bat(self, turn, auto_time, saodi_mode):
@@ -231,14 +230,29 @@ class AutoBatG(BasePageG):
             else:
                 self.keep_bat('right', key_time, saodi_mode)
 
-    def keyboard_bat(self, map_data, zhiye_id, auto_wait, saodi_mode, louti_queue, turn_queue):
-        self.crop_image_find(ImgEnumG.S_MAP)
+    def keyboard_bat(self,**kwargs):
+        map_data=kwargs['战斗数据']['地图数据']
+        zhiye_id=kwargs['战斗数据']['职业类型']
+        auto_wait=kwargs['战斗数据']['随机休息']
+        saodi_mode=kwargs['战斗数据']['刷图模式']
+        louti_queue=kwargs['战斗数据']['楼梯队列']
+        turn_queue=kwargs['战斗数据']['方向队列']
+        self.crop_image_find(ImgEnumG.S_MAP)  # 打开小地图
         if not self.ocr_find(ImgEnumG.AUTO_BAT_OCR):
             self.air_touch((418, 655))  # 关闭自动战斗
             # 点击确认战斗结果
         for i in range(6):
             if i % 5 == 0:
-                print('检查战斗异常')
+                if self.air_loop_find(ImgEnumG.GAME_ICON,False):
+                    return -1
+                if self.crop_image_find(ImgEnumG.CZ_FUHUO,False):
+                    return -1
+                if not self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
+                    return 1
+                if self.ocr_find(ImgEnumG.HP_NULL_OCR) or self.ocr_find(ImgEnumG.MP_NULL_OCR):
+                    return -1
+                if self.ocr_find(ImgEnumG.BAG_FULL):
+                    return -1
             k_time = round(random.randint(10, 20) / 10, 2)
             print(f"{k_time}k_time")
             res, map_x, map_y = self._get_move_xy()
@@ -250,7 +264,7 @@ class AutoBatG(BasePageG):
             else:
                 turn, turn_y = self.find_map_move(map_data, map_x, map_y,
                                                   auto_wait, louti_queue)
-                print(turn,turn_y)
+                print(turn, turn_y)
                 if turn != 0:
                     if not self.move_up_louti(turn, turn_y, louti_queue, turn_queue, auto_wait, saodi_mode):
                         res4, map_x4, map_y4 = self._get_move_xy()
@@ -265,59 +279,6 @@ class AutoBatG(BasePageG):
                             self.move_turn('up', 2.12)
                 else:
                     res3, map_x3, map_y3 = self._get_move_xy()
-                    # if self.map_id == '4' and self.task_id == 3:
-                    #     if 1150 > map_x3 > 1140:
-                    #         # if abs(map_x3 - 1153) > abs(map_x3 - 1245):
-                    #         turn_queue.task_over('right')
-                    #         turn_queue.put_queue('left')
-                    #     if 1000 > map_x3 > 950:
-                    #         # if abs(map_x3 - 966) > abs(map_x3 - 868):
-                    #         turn_queue.task_over('left')
-                    #         turn_queue.put_queue('right')
-                    #         louti_queue.queue.queue.clear()
-                    #         louti_queue.put_queue('1')
-                    #     move_to = turn_queue.get_task()
-                    #     if move_to == 'left':
-                    #         if zhiye_id == 1:
-                    #             self.turn_left_or_right(t_l, key_time, zhiye_id, saodi_mode)
-                    #         if zhiye_id == 0:
-                    #             self.turn_left_or_right(t_l, key_time, zhiye_id, saodi_mode)
-                    #     else:
-                    #         if zhiye_id == 1:
-                    #             self.turn_left_or_right(t_r, key_time, zhiye_id, saodi_mode)
-                    #         if zhiye_id == 0:
-                    #             self.turn_left_or_right(t_r, key_time, zhiye_id, saodi_mode)
-                    #     res2, map_x2, map_y2 = self.get_move_xy(self.dm)
-                    #     r = random.randint(0, 3)
-                    #     if r == 0 and map_y2 == 137:
-                    #         self.jump_down()
-                    # elif self.map_id == '11' and self.task_id == 3:
-                    #     if 1155 > map_x3 > 1100:
-                    #         # if abs(map_x3 - 1153) > abs(map_x3 - 1245):
-                    #         turn_queue.task_over('right')
-                    #         turn_queue.put_queue('left')
-                    #     if 1000 > map_x3 > 950:
-                    #         # if abs(map_x3 - 966) > abs(map_x3 - 868):
-                    #         turn_queue.task_over('left')
-                    #         turn_queue.put_queue('right')
-                    #         louti_queue.queue.queue.clear()
-                    #         louti_queue.put_queue('1')
-                    #     move_to = turn_queue.get_task()
-                    #     if move_to == 'left':
-                    #         if zhiye_id == 1:
-                    #             self.turn_left_or_right(t_l, key_time, zhiye_id, saodi_mode)
-                    #         if zhiye_id == 0:
-                    #             self.turn_left_or_right(t_l, key_time, zhiye_id, saodi_mode)
-                    #     else:
-                    #         if zhiye_id == 1:
-                    #             self.turn_left_or_right(t_r, key_time, zhiye_id, saodi_mode)
-                    #         if zhiye_id == 0:
-                    #             self.turn_left_or_right(t_r, key_time, zhiye_id, saodi_mode)
-                    #     res2, map_x2, map_y2 = self.get_move_xy(self.dm)
-                    #     r = random.randint(0, 5)
-                    #     if r == 0 and map_y2 in [137, 118, 129]:
-                    #         self.jump_down()
-                    # else:
                     if map_data[-1][0] > map_x3 > map_data[-1][1]:
                         turn_queue.task_over('right')
                         turn_queue.put_queue('left')
@@ -327,27 +288,27 @@ class AutoBatG(BasePageG):
                     move_to = turn_queue.get_task()
                     if move_to == 'left':
                         if zhiye_id == 1:
-                            self.move_bat(t_l, k_time , zhiye_id, saodi_mode)
+                            self.move_bat(t_l, k_time, zhiye_id, saodi_mode)
                         if zhiye_id == 0:
                             self.move_bat(t_l, k_time, zhiye_id, saodi_mode)
                     else:
                         if zhiye_id == 1:
-                            self.move_bat(t_r, k_time , zhiye_id, saodi_mode)
+                            self.move_bat(t_r, k_time, zhiye_id, saodi_mode)
                         if zhiye_id == 0:
                             self.move_bat(t_r, k_time, zhiye_id, saodi_mode)
                     res2, map_x2, map_y2 = self._get_move_xy()
                     r = random.randint(0, 3)
                     if r == 0 and map_y2 == 135:
-                        self.mul_point_touch('down', 'jump',long_click=True)
+                        self.mul_point_touch('down', 'jump', long_click=True)
                     if res2 == 0:
                         """右边触底"""
                         if zhiye_id == 1:
-                            self.move_bat(t_l, k_time , zhiye_id, saodi_mode)
+                            self.move_bat(t_l, k_time, zhiye_id, saodi_mode)
                         if zhiye_id == 0:
                             self.move_bat(t_l, k_time, zhiye_id, saodi_mode)
                         turn_queue.task_over('right')
                         turn_queue.put_queue('left')
-                    if map_x2 == map_x3 and map_x2 not in range(1050, 1070)  :
+                    if map_x2 == map_x3 and map_x2 not in range(1050, 1070):
                         """防止挂绳子上不动"""
                         self.move_turn('up', k_time / 10)
                         res5, map_x5, map_y5 = self._get_move_xy()
@@ -359,10 +320,10 @@ class AutoBatG(BasePageG):
                                 self.move_turn('left', k_time / 5)
             return True
 
-    def double_jump(self,turn):
+    def double_jump(self, turn):
         self.mul_point_touch(turn, 'jump')
-        res,x,y=self._get_move_xy()
+        res, x, y = self._get_move_xy()
         self.move_turn('left', 0.23)
-        res1,x1,y1=self._get_move_xy()
-        if x==x1 and y!=y1:
+        res1, x1, y1 = self._get_move_xy()
+        if x == x1 and y != y1:
             self.move_turn('up', 0.34)

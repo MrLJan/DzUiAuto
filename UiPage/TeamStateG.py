@@ -14,19 +14,114 @@ class TeamStateG(BasePageG):
         self.sn = sn
         self.mnq_name = mnq_name
 
-    def check_team_state(self, task_id, map_ocr):
-        _xt_flag = False
-        if task_id == 3:
-            _xt_flag = True
-        if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
-            if _xt_flag:
-                if self.crop_image_find(ImgEnumG.XT_FLAG, False):
-                    if self.ocr_find(map_ocr[0]):
-                        return True
-                return False
+    def check_team_state(self, **kwargs):
+        select_queue = kwargs['状态队列']['选择器']
+        task_id = kwargs['任务id']
+        if task_id in ['3','4']:
+            if not self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
+                if task_id == '3':
+                    select_queue.put_queue('CheckXT')
+                else:
+                    select_queue.put_queue('CheckYT')
+        if self.air_loop_find(ImgEnumG.GAME_ICON, False):
+            select_queue.put_queue('Login')
+        if self.air_loop_find(ImgEnumG.GAME_ICON, False):
+            select_queue.put_queue('FuHuo')
+        if self.ocr_find(ImgEnumG.HP_NULL_OCR) or self.ocr_find(ImgEnumG.MP_NULL_OCR):
+            select_queue.put_queue('BuyY')
+        if self.ocr_find(ImgEnumG.BAG_FULL):
+            select_queue.put_queue('BagSell')
+
+    def check_xt(self, **kwargs):
+        s_time = time.time()
+        select_queue = kwargs['状态队列']['选择器']
+        _MAP = False
+        _TEAM = False
+        while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
+            if _MAP and _TEAM:
+                select_queue.task_over('CheckXT')
+                return -1
+            if not _TEAM:
+                if self.choose_xt_team():
+                    _TEAM = True
+            if not _MAP:
+                res_map, res_pd = self.check_map_pd(**kwargs)
+                if not res_map:
+                    if self.choose_xt_map():
+                        _MAP = True
+        return -1
+
+    def check_yt(self, **kwargs):
+        s_time = time.time()
+        select_queue = kwargs['状态队列']['选择器']
+        team_queue = kwargs['野图设置']['队伍队列']
+        _MAP = False
+        _PD = False
+        _TEAM = False
+        while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
+            if _MAP and _TEAM and _PD:
+                select_queue.task_over('CheckYT')
+                return -1
+            if not _MAP or not _PD:
+                res_map, res_pd = self.check_map_pd(**kwargs)
+                if not res_map:
+                    if self.choose_yt_map():
+                        _MAP = True
+                if not res_pd:
+                    if self.choose_pindao():
+                        _PD = True
             else:
-                if self.crop_image_find(ImgEnumG.XT_FLAG, False) or not self.ocr_find(map_ocr[0]):
-                    return False
+                if not _TEAM:
+                    if team_queue.queue.empty():
+                        team_queue.put_queue(kwargs['设备名称'])
+                        if self.creat_team(**kwargs):
+                            _TEAM = True
+                        else:
+                            team_queue.task_over(kwargs['设备名称'])
+                    else:
+                        if self.jion_team(**kwargs):
+                            team_queue.put_queue(kwargs['设备名称'])
+                            _TEAM = True
+        return -1
+
+    def check_map_pd(self, **kwargs):
+        s_time = time.time()
+        _MAP = False  # 是否在正确地图
+        _PD = False  # 是否在正确频道
+        _FLAG = False  # 检查是否完成
+        while time.time() - s_time < GlobalEnumG.UiCheckTimeOut / 2:
+            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+                if _FLAG:
+                    return _MAP, _PD
+                self.air_touch((99, 99), duration=2)
+            elif self.ocr_find(ImgEnumG.MAP_UI_OCR):
+                if _FLAG:
+                    self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
+                else:
+                    if kwargs['任务id'] == '3':
+                        _PD = True
+                        xt_num_now = self.get_num((932, 105, 1236, 141))
+                        map_name = self.get_num((932, 105, 1236, 141))
+                        xt_name = kwargs['地图名']
+                        xt_num = kwargs['战斗数据']['地图识别'][-1]
+                        if xt_num_now == xt_num and xt_name in map_name:
+                            _MAP = True
+                        _FLAG = True
+                    else:
+                        pd_num_now = self.get_num((874, 23, 1068, 63))
+                        map_name = self.get_num((932, 105, 1236, 141))
+                        yt_name = kwargs['地图名']
+                        pd_num = kwargs['野图设置']['队伍频道']
+                        if pd_num_now == pd_num:
+                            _PD = True
+                        if yt_name in map_name:
+                            _MAP = True
+                        _FLAG = True
+            else:
+                if time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 4:
+                    if not self.check_close():
+                        return False
+        return _MAP, _PD
 
     def choose_xt_map(self, xt_map=None):
         _times = 0
@@ -47,7 +142,6 @@ class TeamStateG(BasePageG):
                         self.air_swipe((1092, 528), (1092, 298))
                     else:
                         self.air_swipe((1092, 298), (1092, 528))
-
             if self.ocr_find(ImgEnumG.XT_MOVE_QR):
                 if self.get_rgb(699, 523, 'EE7047', True):
                     self.air_loop_find(ImgEnumG.UI_CLOSE)
@@ -60,6 +154,10 @@ class TeamStateG(BasePageG):
                         else:
                             self.air_loop_find(ImgEnumG.UI_CLOSE)
                     return False
+            else:
+                if time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
+                    if not self.check_close():
+                        return False
         return False
 
     def choose_yt_map(self, yt_map=None):
@@ -108,8 +206,8 @@ class TeamStateG(BasePageG):
     def choose_xt_team(self):
         """星图找队伍"""
         s_time = time.time()
-        WAIT_TIMES = 0
-        C_PINDAO = False
+        WAIT_TIMES = 0  # 等待组队次数 1次10秒
+        C_PINDAO = False  # 更换频道
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 if C_PINDAO:
@@ -137,7 +235,7 @@ class TeamStateG(BasePageG):
                     WAIT_TIMES += 1
         return False
 
-    def change_pindao(self):
+    def change_pindao(self, *args, **kwargs):
         """更换频道"""
         s_time = time.time()
         _FLAG = False
@@ -164,10 +262,10 @@ class TeamStateG(BasePageG):
                         return False
         return False
 
-    def choose_pindao(self):
+    def choose_pindao(self, *args, **kwargs):
         s_time = time.time()
-        _FIND_PD = '33'
-        _FIND_PD_F = '102'
+        _FIND_PD = kwargs['pd_num']
+        _FIND_PD_F = kwargs['pd_num_f']
         _PD_POS = None
         _FIND = False
         _FLAG = False
@@ -211,10 +309,11 @@ class TeamStateG(BasePageG):
                         return False
         return False
 
-    def creat_team(self, team_pwd):
+    def creat_team(self, **kwargs):
         s_time = time.time()
-        _PUT_PWD = False
-        _C_FLAG = False
+        team_pwd = kwargs['野图设置']['组队密码']
+        _PUT_PWD = False  # 输入密码标记
+        _C_FLAG = False  # 组队成功标记
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 self.crop_image_find(ImgEnumG.TEAM_TAB)

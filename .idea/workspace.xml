@@ -2,25 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="218bbaa1-7ac1-41ff-a550-012b423f111d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/UiPage/StateCheckG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DzTest/DzModeMachine.py" beforeDir="false" afterPath="$PROJECT_DIR$/DzTest/DzModeMachine.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DzTest/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/DzTest/test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Enum/ResEnum.py" beforeDir="false" afterPath="$PROJECT_DIR$/Enum/ResEnum.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/队伍密码0.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/队伍密码1.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/队伍密码2.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/队伍密码3.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/队伍密码4.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/队伍密码5.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/队伍密码6.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/队伍密码7.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/队伍密码8.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/队伍密码9.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/MAX.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/MAX.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/任务界面.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/任务界面.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/关闭界面.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/关闭界面.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/战斗退出.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/战斗退出.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/游戏icon.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/游戏icon.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/AutoBatG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/AutoBatG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/BasePage.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/BasePage.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/DailyTaskG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/DailyTaskG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/LoginUiPage.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/LoginUiPage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/RewardG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/RewardG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/TaskAutoG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/TaskAutoG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/TeamStateG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/TeamStateG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/UpRoleG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/UpRoleG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/Devicesconnect.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/Devicesconnect.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utils/OpencvG.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/OpencvG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/QueueManageTools.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/QueueManageTools.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dzmainui.py" beforeDir="false" afterPath="$PROJECT_DIR$/dzmainui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -54,7 +56,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../KodAuto" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -65,27 +67,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.OpencvG">
-    <configuration name="DzModeMachine" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="DzUiAuto" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/DzTest" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/DzTest/DzModeMachine.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="OpencvG" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="DzUiAuto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -99,6 +80,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Utils/OpencvG.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="QueueManageTools" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="DzUiAuto" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Utils" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Utils/QueueManageTools.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -194,18 +196,18 @@
     <list>
       <item itemvalue="Python.Unnamed" />
       <item itemvalue="Python.OpencvG" />
-      <item itemvalue="Python.DzModeMachine" />
       <item itemvalue="Python.dzmainui" />
       <item itemvalue="Python.ResEnum" />
       <item itemvalue="Python.test" />
+      <item itemvalue="Python.QueueManageTools" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.OpencvG" />
+        <item itemvalue="Python.dzmainui" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.ResEnum" />
-        <item itemvalue="Python.dzmainui" />
-        <item itemvalue="Python.DzModeMachine" />
+        <item itemvalue="Python.QueueManageTools" />
       </list>
     </recent_temporary>
   </component>
@@ -234,21 +236,6 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/DzTest/DzModeMachine.py</url>
-          <line>176</line>
-          <option name="timeStamp" value="30" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dzmainui.py</url>
-          <line>357</line>
-          <option name="timeStamp" value="65" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dzmainui.py</url>
-          <line>358</line>
-          <option name="timeStamp" value="66" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/UiPage/AutoBatG.py</url>
           <line>26</line>
@@ -281,83 +268,153 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/UiPage/TeamStateG.py</url>
-          <line>114</line>
-          <option name="timeStamp" value="100" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/UiPage/TeamStateG.py</url>
-          <line>120</line>
-          <option name="timeStamp" value="102" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/UiPage/TeamStateG.py</url>
-          <line>265</line>
+          <line>364</line>
           <option name="timeStamp" value="111" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/UiPage/TeamStateG.py</url>
-          <line>294</line>
+          <line>393</line>
           <option name="timeStamp" value="112" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/UiPage/TeamStateG.py</url>
-          <line>292</line>
+          <line>391</line>
           <option name="timeStamp" value="113" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/UiPage/TeamStateG.py</url>
-          <line>298</line>
+          <line>397</line>
           <option name="timeStamp" value="114" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/UiPage/UpRoleG.py</url>
-          <line>79</line>
-          <option name="timeStamp" value="115" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/UiPage/UpRoleG.py</url>
-          <line>177</line>
+          <line>194</line>
           <option name="timeStamp" value="116" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/UiPage/UpRoleG.py</url>
-          <line>178</line>
+          <line>195</line>
           <option name="timeStamp" value="117" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/UiPage/UpRoleG.py</url>
-          <line>173</line>
+          <line>190</line>
           <option name="timeStamp" value="118" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/UiPage/TeamStateG.py</url>
-          <line>186</line>
+          <line>284</line>
           <option name="timeStamp" value="119" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/UiPage/TeamStateG.py</url>
-          <line>189</line>
+          <line>287</line>
           <option name="timeStamp" value="123" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/UiPage/TeamStateG.py</url>
-          <line>190</line>
+          <line>288</line>
           <option name="timeStamp" value="124" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/UiPage/TeamStateG.py</url>
-          <line>201</line>
+          <line>299</line>
           <option name="timeStamp" value="126" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/UiPage/TeamStateG.py</url>
-          <line>203</line>
+          <line>301</line>
           <option name="timeStamp" value="127" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/UiPage/TeamStateG.py</url>
-          <line>202</line>
+          <line>300</line>
           <option name="timeStamp" value="128" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/UiPage/TaskAutoG.py</url>
+          <line>19</line>
+          <option name="timeStamp" value="222" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/UiPage/TaskAutoG.py</url>
+          <line>20</line>
+          <option name="timeStamp" value="223" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/UiPage/DailyTaskG.py</url>
+          <line>46</line>
+          <option name="timeStamp" value="247" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/UiPage/DailyTaskG.py</url>
+          <line>52</line>
+          <option name="timeStamp" value="248" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/UiPage/DailyTaskG.py</url>
+          <line>55</line>
+          <option name="timeStamp" value="249" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DzTest/DzModeMachine.py</url>
+          <line>296</line>
+          <option name="timeStamp" value="250" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DzTest/DzModeMachine.py</url>
+          <line>295</line>
+          <option name="timeStamp" value="251" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DzTest/DzModeMachine.py</url>
+          <line>127</line>
+          <option name="timeStamp" value="252" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DzTest/DzModeMachine.py</url>
+          <line>169</line>
+          <option name="timeStamp" value="253" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DzTest/DzModeMachine.py</url>
+          <line>279</line>
+          <option name="timeStamp" value="254" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DzTest/DzModeMachine.py</url>
+          <line>166</line>
+          <option name="timeStamp" value="255" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DzTest/DzModeMachine.py</url>
+          <line>290</line>
+          <option name="timeStamp" value="256" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DzTest/DzModeMachine.py</url>
+          <line>287</line>
+          <option name="timeStamp" value="257" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DzTest/DzModeMachine.py</url>
+          <line>283</line>
+          <option name="timeStamp" value="258" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DzTest/DzModeMachine.py</url>
+          <line>282</line>
+          <option name="timeStamp" value="259" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DzTest/DzModeMachine.py</url>
+          <line>293</line>
+          <option name="timeStamp" value="260" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DzTest/DzModeMachine.py</url>
+          <line>294</line>
+          <option name="timeStamp" value="261" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

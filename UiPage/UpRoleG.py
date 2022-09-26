@@ -13,8 +13,9 @@ class UpRoleG(BasePageG):
         self.sn = sn
         self.mnq_name = mnq_name
 
-    def upequip(self):
+    def upequip(self, **kwargs):
         s_time = time.time()
+        select_queue = kwargs['状态队列']['选择器']
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):  # 游戏界面
                 self.crop_image_find(ImgEnumG.MR_MENU)
@@ -27,7 +28,8 @@ class UpRoleG(BasePageG):
                     zb_list = self.get_all_text(ImgEnumG.EQ_ZBZ_OCR)
                     if len(zb_list) == 0:
                         self.sn.log_tab.emit(self.mnq_name, r"无可升级装备")
-                        return True
+                        select_queue.task_over('upequip')
+                        return 1
                     else:
                         self.sn.log_tab.emit(self.mnq_name, r"选择装备")
                         self.air_touch(zb_list[0])
@@ -44,25 +46,28 @@ class UpRoleG(BasePageG):
                                     self.sn.log_tab.emit(self.mnq_name, r"无升级材料或金币不足,升级结束")
                                     self.crop_image_find(ImgEnumG.UI_CLOSE)
                                     self.crop_image_find(ImgEnumG.UI_CLOSE)
-                                    return True
+                                    select_queue.task_over('upequip')
+                                    return 1
                                 self.crop_image_find(ImgEnumG.EQ_UP_QR, timeout=20)
                         else:
                             self.air_swipe((912, 507), (912, 303))
             else:
                 if time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
                     if not self.close_window():
-                        return False
-        return False
+                        return 0
+        return 0
 
-    def buyyao(self):
-        hp_level = GlobalEnumG.YS_LEVEL['7']
-        mp_level = GlobalEnumG.YS_LEVEL['4']
+    def buyyao(self, **kwargs):
+        select_queue = kwargs['状态队列']['选择器']
+        hp_level = ImgEnumG.YS_LEVEL[kwargs['商店设置']['HP等级']]
+        mp_level = ImgEnumG.YS_LEVEL[kwargs['商店设置']['MP等级']]
         s_time = time.time()
         _HP = False  # 是否购买HP
         _MP = False
         _YS_TYPE = 0  # 区分HP,MP是否被装备
         _RES = False  # 是否购买成功
-        _NUM = GlobalEnumG.YS_NUM['1']  # 购买数量
+        _NUM_HP = ImgEnumG.YS_NUM[kwargs['商店设置']['HP数量']]  # 购买数量
+        _NUM_MP = ImgEnumG.YS_NUM[kwargs['商店设置']['MP数量']]  # 购买数量
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 if self.ocr_find(ImgEnumG.HP_NULL_OCR):
@@ -76,7 +81,8 @@ class UpRoleG(BasePageG):
                     self.air_touch((1230, 356), duration=2)
                     _YS_TYPE = 2
                 else:
-                    return True
+                    select_queue.task_over('BuyY')
+                    return -1
             elif self.ocr_find(ImgEnumG.BUY_MP_LOGIN):  # 登录药水界面
                 if _RES:
                     if self.crop_image_find(ImgEnumG.BUY_YS_LOGIN):
@@ -92,9 +98,16 @@ class UpRoleG(BasePageG):
                     _RES = True
             elif self.ocr_find(ImgEnumG.YS_GM):
                 self.air_touch((873, 650), duration=2)
-                self.air_touch(_NUM)
-                if self.ocr_find(ImgEnumG.YS_NUM_OCR['1']):
-                    self.get_rgb(1044, 629, 'EE7047', True)
+                if _YS_TYPE == 1:
+                    self.air_touch(_NUM_HP)
+                else:
+                    self.air_touch(_NUM_MP)
+                if _YS_TYPE == 1:
+                    if self.ocr_find(ImgEnumG.YS_NUM_OCR[kwargs['商店设置']['HP数量']]):
+                        self.get_rgb(1044, 629, 'EE7047', True)
+                else:
+                    if self.ocr_find(ImgEnumG.YS_NUM_OCR[kwargs['商店设置']['MP数量']]):
+                        self.get_rgb(1044, 629, 'EE7047', True)
             elif self.ocr_find(ImgEnumG.SD_UI_OCR):
                 if _RES:
                     self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
@@ -108,11 +121,12 @@ class UpRoleG(BasePageG):
             else:
                 if time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
                     if not self.close_window():
-                        return False
-        return False
+                        return -1
+        return 0
 
-    def useskill(self):
+    def useskill(self, **kwargs):
         s_time = time.time()
+        select_queue = kwargs['状态队列']['选择器']
         _ZB_JN = False  # 技能是否装备完成
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):  # 游戏界面
@@ -123,7 +137,8 @@ class UpRoleG(BasePageG):
                 if _ZB_JN:
                     self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
                     self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
-                    return True
+                    select_queue.task_over('UseSkill')
+                    return -1
                 else:
                     if self.get_rgb(125, 491, 'EE7546'):
                         self.air_touch((132, 399), touch_wait=2)
@@ -139,11 +154,12 @@ class UpRoleG(BasePageG):
             else:
                 if time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
                     if not self.close_window():
-                        return False
-        return False
+                        return -1
+        return 0
 
-    def usepet(self):
+    def usepet(self, **kwargs):
         s_time = time.time()
+        select_queue = kwargs['状态队列']['选择器']
         _PET1 = False  # 宠物栏是否装备宠物
         _PET2 = False
         _PET3 = False
@@ -170,7 +186,8 @@ class UpRoleG(BasePageG):
                 if _PET1 and _PET2 and _PET3:
                     self.crop_image_find(ImgEnumG.MR_TIP_CLOSE)
                     self.crop_image_find(ImgEnumG.MR_TIP_CLOSE)
-                    return True
+                    select_queue.task_over('UsePet')
+                    return 1
                 if _PET_TYPE:
                     self.get_rgb(_PET_POS[_PET_FLAG][0], _PET_POS[_PET_FLAG][1], _PET_POS[_PET_FLAG][2], True)
                     if self.get_rgb(_PET_POS[_PET_FLAG][0], _PET_POS[_PET_FLAG][1], _PET_POS[_PET_FLAG][-1]):
@@ -194,20 +211,22 @@ class UpRoleG(BasePageG):
                     elif self.crop_image_find(ImgEnumG.CW_TYPE['C'][0], False):
                         _PET_TYPE = 'C'
                     else:
-                        return True  # 无宠物
+                        select_queue.task_over('UsePet')
+                        return 1  # 无宠物
             else:
                 if time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
                     if not self.close_window():
-                        return False
-        return False
+                        return 0
+        return 0
 
-    def strongequip(self):
+    def strongequip(self, **kwargs):
         s_time = time.time()
-        _QH_LEVEL = 12  # 强化目标等级
-        _USE_BH = False  # 使用道具
-        _USE_DP = False
-        _USE_XY = False
-        _USE_ZK = False
+        select_queue = kwargs['状态队列']['选择器']
+        _QH_LEVEL = kwargs['强化设置']['目标等级']  # 强化目标等级
+        _USE_BH = kwargs['强化设置']['保护卷轴']  # 使用道具
+        _USE_DP = kwargs['强化设置']['盾牌卷轴']
+        _USE_XY = kwargs['强化设置']['幸运卷轴']
+        _USE_ZK = kwargs['强化设置']['强化优惠卷']
         _ZB_LIST = []  # 存放穿戴中装备坐标
         _POS = 0  # 装备序号
         _QH_OVER = False  # 是否强化完成
@@ -223,7 +242,8 @@ class UpRoleG(BasePageG):
                 if _QH_OVER:
                     self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
                     self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
-                    return True
+                    select_queue.task_over('StrongEquip')
+                    return 1
                 if len(_ZB_LIST) == 0:
                     _ZB_LIST = self.get_all_text(ImgEnumG.EQ_ZBZ_OCR)
                     if len(_ZB_LIST) == 0:
@@ -258,7 +278,7 @@ class UpRoleG(BasePageG):
                         else:
                             self.air_touch((453, 162), touch_wait=1)
             else:
-                if time.time()-s_time>GlobalEnumG.UiCheckTimeOut/2:
+                if time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
                     if not self.close_window():
-                        return False
-        return False
+                        return 0
+        return 0

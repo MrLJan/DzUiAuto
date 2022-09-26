@@ -4,7 +4,8 @@ import time
 
 from PyQt5 import QtGui, QtWidgets, uic
 from PyQt5.QtGui import QTextCursor
-from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QHBoxLayout
+from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, \
+    QTreeWidgetItem
 from PyQt5.QtCore import Qt, QTimer
 
 from DzTest.DzModeMachine import switch_case, StateExecute, StateMachine, StateSelect, execute_transition, \
@@ -44,9 +45,9 @@ class DzUi:
         # self.ui_main.yanshi_btn.clicked.connect(self.yanshi_todo_choose)
         # # 滚模拟器
         # self.ui_main.roll_mnq_btn.clicked.connect(self.roll_mnq_dotask)
-        # # 任务树
-        # self.set_tasktree(self.ui_main.task_tree_widget)
-        # self.ui_main.set_task_btn.clicked.connect(self._set_task_list)
+        # 任务树
+        self.set_tasktree(self.ui_main.task_tree_widget)
+        self.ui_main.set_task_btn.clicked.connect(self._set_task_list)
         # self.ui_main.add_diy_task1_btn.clicked.connect(self.add_diy_task1_btn)
         # self.ui_main.add_diy_task2_btn.clicked.connect(self.add_diy_task2_btn)
         # # 停止/打开配置
@@ -202,7 +203,135 @@ class DzUi:
         # self.team_event_dic = self.get_team_event()
         # self.team_queue_dic = self.get_team_queue()
 
-    #
+    def set_tasktree(self, tree_obj):
+        tree_obj.setColumnCount(2)
+        tree_obj.setColumnWidth(0, 130)
+        tree_obj.setColumnWidth(1, 90)
+        tree_obj.setHeaderLabels(['任务', '备注'])
+        root_item = QTreeWidgetItem(tree_obj)
+        root_item.setText(0, '登录游戏')
+        root_item.setText(1, '登录游戏,无其他操作')
+        # child31 = QTreeWidgetItem(tree_obj)
+        # child31.setText(0, '自定义一')
+        # child31.setText(1, '自定义任务顺序')
+        # child32 = QTreeWidgetItem(tree_obj)
+        # child32.setText(0, '自定义二')
+        # child32.setText(1, '自定义任务顺序')
+        child1 = QTreeWidgetItem(tree_obj)
+        child1.setText(0, '自动任务')
+        child1.setText(1, '做任务直到无任务')
+        child2 = QTreeWidgetItem(tree_obj)
+        child2.setText(0, '自动每日')
+        child2.setText(1, '根据设置做每日')
+        child3 = QTreeWidgetItem(tree_obj)
+        child3.setText(0, '混Boss图')
+        child3.setText(1, '混困难炎魔,皮卡啾,女皇')
+        child4 = QTreeWidgetItem(tree_obj)
+        child4.setText(0, '自动星图')
+        child19 = QTreeWidgetItem(child4)
+        child19.setText(0, '西边森林')
+        child19.setText(1, '45星')
+        child17 = QTreeWidgetItem(child4)
+        child17.setText(0, '死亡战场')
+        child17.setText(1, '65星')
+        child37 = QTreeWidgetItem(child4)
+        child37.setText(0, '龙蛋')
+        child37.setText(1, '80星')
+        child5 = QTreeWidgetItem(child4)
+        child5.setText(0, '爱奥斯塔入口')
+        child5.setText(1, '90星')
+        child18 = QTreeWidgetItem(child4)
+        child18.setText(0, '天空露台2')
+        child18.setText(1, '110星')
+        child113 = QTreeWidgetItem(child4)
+        child113.setText(0, '机械室')
+        child113.setText(1, '113星')
+        child115 = QTreeWidgetItem(child4)
+        child115.setText(0, '时间漩涡')
+        child115.setText(1, '115星')
+        child36 = QTreeWidgetItem(child4)
+        child36.setText(0, '忘却4')
+        child36.setText(1, '120星')
+        child35 = QTreeWidgetItem(child4)
+        child35.setText(0, '偏僻泥沼')
+        child35.setText(1, '130星')
+        child351 = QTreeWidgetItem(child4)
+        child351.setText(0, '变形的森林')
+        child351.setText(1, '136星')
+        child34 = QTreeWidgetItem(child4)
+        child34.setText(0, '武器库星图')
+        child34.setText(1, '142星')
+        child144 = QTreeWidgetItem(child4)
+        child144.setText(0, '灰烬之风高原')
+        child144.setText(1, '144星')
+        child6 = QTreeWidgetItem(tree_obj)
+        child6.setText(0, '自动野图')
+        child7 = QTreeWidgetItem(child6)
+        child7.setText(0, '神秘森林')
+        child7.setText(1, '6.65w战力')
+        child8 = QTreeWidgetItem(child6)
+        child8.setText(0, '露台2')
+        child8.setText(1, '13w战力')
+        child9 = QTreeWidgetItem(child6)
+        child9.setText(0, '忘却之路3')
+        child9.setText(1, '20.5w战力')
+        child11 = QTreeWidgetItem(child6)
+        child11.setText(0, '武器库')
+        child11.setText(1, '44w战力')
+        child10 = QTreeWidgetItem(child6)
+        child10.setText(0, '骑士之殿')
+        child10.setText(1, '47w战力')
+        child33 = QTreeWidgetItem(child6)
+        child33.setText(0, '崎岖的荒野')
+        child33.setText(1, '56w战力')
+        child12 = QTreeWidgetItem(tree_obj)
+        child12.setText(0, '其他功能')
+        child13 = QTreeWidgetItem(child12)
+        child13.setText(0, '默认设置')
+        child13.setText(1, '设置游戏及副本入口')
+        child20 = QTreeWidgetItem(child12)
+        child20.setText(0, '强化装备')
+        child20.setText(1, '默认12,可设置强化等级')
+        child21 = QTreeWidgetItem(child12)
+        child21.setText(0, '升级装备')
+        child21.setText(1, '默认使用罕见研磨材料')
+        child14 = QTreeWidgetItem(child12)
+        child14.setText(0, '装备技能')
+        child14.setText(1, '领取成长奖励,摆放技能')
+        child15 = QTreeWidgetItem(child12)
+        child15.setText(0, '穿戴新手宠物')
+        child15.setText(1, '仅限新手宠物摆放')
+        child16 = QTreeWidgetItem(child12)
+        child16.setText(0, '开箱子')
+        child16.setText(1, '仅限任务送的箱子')
+
+        # child13 = QTreeWidgetItem(child12)
+        # child13.setText(0, '装备技能')
+        tree_obj.addTopLevelItem(root_item)
+        tree_obj.clicked.connect(self.task_tree_clicked)
+        # self.ui_main.setCentralWidget(tree_obj)
+
+    def _set_task_list(self):
+        rows = self.ui_main.windows_pid.rowCount()
+        task_name = self.ui_main.task_name_label.text()
+
+        if rows == 0 or task_name == "":
+            pass
+        else:
+            for i in range(rows):
+                if self.ui_main.windows_pid.cellWidget(i, 0).isChecked():
+                    mnq_name = self.ui_main.windows_pid.item(i, 1).text()
+                    if len(self.mnq_thread_tid[mnq_name]) == 0:
+                        self.set_table_value(mnq_name, 2, task_name)  # 设置任务
+
+    def task_tree_clicked(self):
+        res = self.ui_main.task_tree_widget.currentItem()
+        if res.text(0) in ['自动星图', '自动野图', '其他功能']:
+            self.set_label_text(self.ui_main.task_name_label, "")
+        else:
+            self.set_label_text(self.ui_main.task_name_label, res.text(0))
+            self.ui_main.task_name_label.setStyleSheet("color:red")
+
     @staticmethod
     def set_tableitem_center(item):
         """初始化单元格写入文本"""
@@ -218,7 +347,7 @@ class DzUi:
     def set_table_value(self, mnq_name, col_num, value):
         """设置table单元格值"""
         try:
-            row_num = self.mnq_rownum_dic[mnq_name]
+            row_num = self.mnq_rownum_dic[mnq_name]['rownum']
             self.ui_main.windows_pid.setItem(row_num, col_num, self.set_tableitem_center(value))
         except Exception as e:
             print(e)
@@ -309,11 +438,11 @@ class DzUi:
         self.ui_main.console_text.setTextCursor(cursor)
         self.ui_main.console_text.ensureCursorVisible()
 
-    def log_tab_output(self, tab_name, text):
+    def log_tab_output(self, mnq_name, text):
         """单线程日志输出"""
         # print(tab_name)
         now_time = time.strftime("%m-%d %H:%M:%S", time.localtime())
-        edit = self.log_tab_dic[tab_name]
+        edit = self.log_tab_dic[mnq_name]
         if text == 'clear':
             edit.clear()
         else:
@@ -329,7 +458,7 @@ class DzUi:
         for mnq_index in index_list:
             mnq_name = MnqTools().use_index_find_name(mnq_index)
             try:
-                row_num = int(self.mnq_rownum_dic[mnq_name])
+                row_num = int(self.mnq_rownum_dic[mnq_name]['rownum'])
                 self.ui_main.windows_pid.cellWidget(row_num, 0).setChecked(False)
             except BaseException as e:
                 self.get_messagebox("错误", f"模拟器信息异常,启动失败{e}")
@@ -341,26 +470,47 @@ class DzUi:
                     self.get_messagebox("错误", f"模拟器序号[{mnq_index}]未设置执行任务")
                 return False
             else:
-                devname = self.dev_obj_list[mnq_name][0]
+                devname = self.dev_obj_list[mnq_name][0]  # devname 设备名,mnq_name是标题名
                 res, dev = DevicesConnect(devname).connect_device()
                 if not res:
                     self.get_messagebox("错误", f"模拟器序号[{mnq_index}]连接失败{dev}_检查adb")
                     return False
-                devinfo=(dev,devname)
+                devinfo = (dev, devname)
                 mnq_name = self.ui_main.windows_pid.item(row_num, 1).text()
                 mnq_thread_list = self.mnq_thread_tid[mnq_name]
                 login_time = time.strftime('%m-%d %H:%M:%S')
                 LoadConfig.writeconf(mnq_name, '最近登录时间', login_time, ini_name=mnq_name)
                 LoadConfig.writeconf(mnq_name, '最近任务', task_name, ini_name=mnq_name)
-                self.sn.table_value.emit(mnq_name, 9, login_time)
-                self.sn.table_value.emit(mnq_name, 10, '0')
+                self.sn.table_value.emit(mnq_name, 9, login_time)  # 最近登录时间
+                self.sn.table_value.emit(mnq_name, 10, '0')  # 闪退次数
                 self.sn.log_tab.emit(mnq_name, '------启动任务------')
-                execute = StateExecute(devinfo,mnq_name,self.sn)
-                select = StateSelect(devinfo,mnq_name,self.sn)
-                StateMachine(execute, GlobalEnumG.ExecuteStates, execute_transition, "AutoTask")
-                StateMachine(select, GlobalEnumG.SelectStates, select_transition, "Login")
+                taskdic = self.task_dic(devinfo, mnq_name, task_name)
+                StateMachine(taskdic['执行器'], GlobalEnumG.ExecuteStates, execute_transition, "Wait")
+                StateMachine(taskdic['选择器'], GlobalEnumG.SelectStates, select_transition, "Check")
                 check_mnq_thread(f"{mnq_name}_{task_name}", mnq_thread_list,
-                                 switch_case(execute, select,mnq_name, 1, 1, self.sn).do_case, thread_while=True)
+                                 switch_case(self.sn, **taskdic).do_case, thread_while=True)
+
+    def task_dic(self, devinfo, mnq_name, task_name):
+        execute = StateExecute(devinfo, mnq_name, self.sn)
+        select = StateSelect(devinfo, mnq_name, self.sn)
+        taskdic = {
+            '执行器': execute,
+            '选择器': select,
+            '机器名': mnq_name,
+            '任务名': task_name,
+            '位置信息': self.mnq_rownum_dic[mnq_name],
+            '队列': {
+                '执行器任务队列': QueueManage(1),
+                '选择器任务队列': QueueManage(10),
+                '楼梯队列': QueueManage(1),
+                '方向队列': QueueManage(1),
+                '每日任务队列': QueueManage(),
+                '队伍队列': {'team1': QueueManage(), 'team2': QueueManage(), 'team3': QueueManage(),
+                         'team4': QueueManage(), 'team5': QueueManage(), 'team6': QueueManage(), 'team7': QueueManage()}
+            }
+
+        }
+        return taskdic
 
     def _get_windows_pid(self):
         """获取设备信息"""
@@ -393,8 +543,8 @@ class DzUi:
         pop = []
         old = []
         new = []
-        for i in range(1, len(index_list)):
-            table_object.removeRow(i)
+        for _i in range(1, len(index_list) + 1):
+            table_object.removeRow(_i)
         table_object.setRowCount(len(index_list))  # 设置行数
         num = len(index_list)
         if len(self.mnq_name_old_list) > 0:
@@ -409,22 +559,21 @@ class DzUi:
                     self.mnq_name_old_list.append(mnq_name)
             if len(pop) > 0:
                 for mnq_name in pop:
-                    self.ui_main.log_tab_wid.removeTab(self.mnq_rownum_dic[mnq_name])
+                    self.ui_main.log_tab_wid.removeTab(self.mnq_rownum_dic[mnq_name]['rownum'])
         if len(self.mnq_name_old_list) == 0:
-            for i in range(num):
-                self.mnq_name_old_list.append(pinfo_list[i])
+            for _ in range(num):
+                self.mnq_name_old_list.append(pinfo_list[_])
         else:
             self.mnq_name_old_list.clear()
             self.mnq_name_old_list = new + old
-        for i in range(num):
-            # print(f"+++{i}")
-            # self.mnq_name_old_list.append(title_list[i])
-            self.mnq_rownum_dic[pinfo_list[i]] = i
         for i in range(num):  # 写入单元格
             btn_widget, start_btn, stop_btn = self.table_btn_row()
             self.start_btn_dic[pinfo_list[i]] = start_btn
             self.stop_btn_dic[pinfo_list[i]] = stop_btn
             self.btn_widget_dic[pinfo_list[i]] = btn_widget
+            # 存储模拟器行号,序号
+            self.mnq_rownum_dic[pinfo_list[i]] = {'rownum': i,
+                                                  'index': index_list[i]}
             table_object.setCellWidget(i, 11, btn_widget)  # 在单元格中加入启动、停止按钮
             table_object.setCellWidget(i, 0, self.index_check_box(index_list[i]))  # 序号
             table_object.setItem(i, 1, self.set_tableitem_center(pinfo_list[i]))  # 窗口标题
@@ -461,7 +610,6 @@ class DzUi:
                 # print(start_btn.isEnabled())
             # 在单元格中加入启动、停止按钮
 
-            self.mnq_rownum_dic[pinfo_list[i]] = i
             # print(self.log_tab_dic)
             if pinfo_list[i] in self.log_tab_dic.keys():
                 pass

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import time
 
 from Enum.ResEnum import GlobalEnumG, ImgEnumG
@@ -43,16 +45,16 @@ class RewardG(BasePageG):
                 self.ocr_find(ImgEnumG.KT_MENU, True)
             if self.air_loop_find(ImgEnumG.KT_QBLQ):
                 self.air_loop_find(ImgEnumG.UI_QR)
-            if self.get_rgb(175, 128, 'EE7546'):  # Ã¿ÈÕÈÎÎñ
+            if self.get_rgb(175, 128, 'EE7546'):  # æ¯æ—¥ä»»åŠ¡
                 if self.get_rgb(1148, 643, 'C3C3C3', False):
                     self.ocr_find(ImgEnumG.KT_MZRW_OCR, True)
-            if self.get_rgb(48, 207, 'EE7546'):  # Ã¿ÖÜÈÎÎñ
+            if self.get_rgb(48, 207, 'EE7546'):  # æ¯å‘¨ä»»åŠ¡
                 if self.get_rgb(1148, 643, 'C3C3C3', False):
                     self.ocr_find(ImgEnumG.KT_MRSL_OCR, True)
-            if self.get_rgb(169, 309, 'EE7546'):  # Ã¿ÈÕá÷ÁÔ
+            if self.get_rgb(169, 309, 'EE7546'):  # æ¯æ—¥ç‹©çŒ
                 if self.get_rgb(1148, 643, 'C3C3C3', False):
                     self.ocr_find(ImgEnumG.KT_CJ_OCR, True)
-            if self.get_rgb(155, 490, 'EE7546'):  # ³É¾Í
+            if self.get_rgb(155, 490, 'EE7546'):  # æˆå°±
                 if self.get_rgb(1148, 643, 'C3C3C3', False):
                     self.air_loop_find(ImgEnumG.UI_CLOSE)
                     self.air_loop_find(ImgEnumG.UI_CLOSE)
@@ -67,13 +69,13 @@ class RewardG(BasePageG):
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 self.crop_image_find(ImgEnumG.MR_MENU)
-            if self.crop_image_find(ImgEnumG.UI_SET, False):  # ²Ëµ¥½çÃæ
+            if self.crop_image_find(ImgEnumG.UI_SET, False):  # èœå•ç•Œé¢
                 self.ocr_find(ImgEnumG.HD_MENU, True)
             if self.ocr_find(ImgEnumG.HD_UI_OCR):
                 if self.ocr_find(ImgEnumG.HD_DR_OCR, True):
-                    if not self.get_rgb(679, 634, 'EE7047', True):  # ÁìÈ¡½±Àø:
+                    if not self.get_rgb(679, 634, 'EE7047', True):  # é¢†å–å¥–åŠ±:
                         self.ocr_find(ImgEnumG.HD_XX_OCR, True)
-                        if not self.get_rgb(518, 616, 'EE7047', True):  # ÁìÈ¡½±Àø
+                        if not self.get_rgb(518, 616, 'EE7047', True):  # é¢†å–å¥–åŠ±
                             self.air_loop_find(ImgEnumG.UI_CLOSE, touch_wait=2)
                             self.air_loop_find(ImgEnumG.UI_CLOSE, touch_wait=2)
                             break
@@ -82,31 +84,33 @@ class RewardG(BasePageG):
             return True
         return False
 
-    def bagsell(self):
+    def bagsell(self, **kwargs):
         s_time = time.time()
-        _sx_flag = False
+        select_queue = kwargs['çŠ¶æ€é˜Ÿåˆ—']['é€‰æ‹©å™¨']
+        _SX_FLAG = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 self.air_touch((1170, 39))
                 self.time_sleep(2)
             if self.ocr_find(ImgEnumG.BAG_OCR):
                 self.crop_image_find(ImgEnumG.BAG_SELL)
-            if self.ocr_find(ImgEnumG.BAG_CS_OCR):  # ³öÊÛ½çÃæ
+            if self.ocr_find(ImgEnumG.BAG_CS_OCR):  # å‡ºå”®ç•Œé¢
                 if not self.crop_image_find(ImgEnumG.BAG_CS_LIST, False):
-                    if not _sx_flag:
+                    if not _SX_FLAG:
                         self.crop_image_find(ImgEnumG.BAG_SX)
                     else:
+                        select_queue.task_over('BagSell')
                         return True
                 else:
                     if self.get_rgb(1120, 671, 'EE7047', True):
                         self.crop_image_find(ImgEnumG.BAG_CS_QR1, timeout=10)
                     else:
+                        select_queue.task_over('BagSell')
                         return True
             if self.ocr_find(ImgEnumG.BAG_SX_OCR):
-                self.get_rgb(782, 375, 'ADB7C1', True)  # ÊÎÆ·
-                self.get_rgb(698, 451, 'ADB7C1', True)  # ÊÎÆ·
-                self.get_rgb(586, 537, 'ADB7C1', True)  # ÊÎÆ·
-                if self.get_rgb(855,636, 'EE7047', True):
+                self.get_rgb(782, 375, 'ADB7C1', True)  # é¥°å“
+                self.get_rgb(698, 451, 'ADB7C1', True)  # é¥°å“
+                self.get_rgb(586, 537, 'ADB7C1', True)  # é¥°å“
+                if self.get_rgb(855, 636, 'EE7047', True):
                     _sx_flag = True
-
         return False

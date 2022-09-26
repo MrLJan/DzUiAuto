@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from airtest.core.api import device, connect_device
+from airtest.core.api import  connect_device
 from airtest.core.error import DeviceConnectionError
 from Utils.ThreadTools import ThreadTools
 from Utils.OtherTools import catch_ex

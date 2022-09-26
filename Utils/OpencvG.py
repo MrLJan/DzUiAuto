@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
+import re
 import time
 
 import numpy as np
 from airtest.aircv import aircv
 from airtest.core.android.touch_methods.base_touch import DownEvent, SleepEvent, UpEvent
-from airtest.core.api import touch
 from airtest.core.error import TargetNotFoundError
 from cnocr import CnOcr
 
 from Enum.ResEnum import GlobalEnumG, ImgEnumG, BatEnumG
-# from UiPage import DailyTaskG
+from UiPage import DailyTaskG
 # from UiPage import UpRoleG
 # from UiPage import RewardG
 # from UiPage import AutoBatG
-from UiPage import TeamStateG
-
-
+# from UiPage import TeamStateG
+# from UiPage import StateCheckG
 from Utils.Devicesconnect import DevicesConnect
 from Utils.ExceptionTools import NotFindImgErr
 from Utils.QueueManageTools import QueueManage
@@ -209,8 +208,6 @@ class AirImgTools:
             # UpEvent(0), UpEvent(1)]  # 2个手指分别抬起
         self.dev.touch_proxy.perform(multitouch_event)
 
-        # self.dev.touch_proxy.perform(up_ex)
-
 
 class ImageCreat:
     def __init__(self, img):
@@ -243,7 +240,6 @@ class CnOcrTool:
             return False
         for i in range(len(out)):
             ntext = out[i]['text']
-            print(ntext)
             if ocr_list[-1] in ntext:
                 npar = out[i]['position']
                 ls = npar.tolist()
@@ -296,7 +292,7 @@ class CnOcrTool:
 
     def get_all_ocr(self, area):
         screen = self.dev.snapshot()
-        x1,y1,x2,y2=area
+        x1, y1, x2, y2 = area
         img_fp = aircv.crop_image(screen, area)
         res_list = []
         ocr = CnOcr(rec_model_name='densenet_lite_136-fc',
@@ -310,15 +306,15 @@ class CnOcrTool:
             ls = npar.tolist()
             lx = int((ls[-2][0] + ls[0][0]) / 2)
             ly = int((ls[-2][-1] + ls[0][-1]) / 2)
-            if ntext!='':
-                res_list.append((ntext,(lx+x1,ly+y1)))
+            if ntext != '':
+                res_list.append((ntext, (lx + x1, ly + y1)))
         return res_list
 
 
 if __name__ == '__main__':
     # img_fp = r'D:\DzAutoUi\Res\img\21.bmp'
     # res, dev = DevicesConnect('emulator-5554').connect_device()
-    res2, dev2 = DevicesConnect('emulator-5554').connect_device()
+    res2, dev2 = DevicesConnect('127.0.0.1:5557').connect_device()
     print(res2, dev2)
     # img=G.DEVICE.snapshot()
     # aircv.imwrite(r'D:\DzAutoUi\Res\img\21.png',img)
@@ -348,25 +344,31 @@ if __name__ == '__main__':
         # map_data=BatEnumG.MAP_DATA['爱奥斯塔入口']
         # while True:
         #     AutoBatG.AutoBatG((dev2,'emulator-5554'),1,1).keyboard_bat(map_data, 1,auto_wait,1,louti_queue,turn_queue)
-
-        r=TeamStateG.TeamStateG((dev2,'emulator-5554'),1,1).choose_pindao()
-        # r=RewardG.RewardG((dev2,'emulator-5554'),'ld1',1).b()
+        # r=StateCheckG.StateCheckG((dev2,'emulator-5554'),1,1).get_num((685,189,721,218))
+        # r=TeamStateG.TeamStateG((dev2,'emulator-5554'),1,1).choose_pindao()
+        # r=DailyTaskG.DailyTaskAutoG((dev2,'emulator-5556'),1,1).gw_park_task()
         # r=UpRoleG.UpRoleG((dev2,'emulator-5554'),'ld1',1).strongequip()
-        # r=a.crop_image_find(ImgEnumG.CW_A2,False,get_pos=True)
-        # r=a.crop_image_find(ImgEnumG.UI_SET,False)
-        # r=a.find_all_pos(ImgEnumG.JN_XZ)
-        # r=c.ocr_find(ImgEnumG.CW_NULL)
+        r=a.crop_image_find(ImgEnumG.YM_READY)
+        # r=a.air_loop_find(ImgEnumG.UI_QR,False)
+        # r=c.ocr_find(ImgEnumG.MNDC_FQ,True)
+        # a.air_swipe((925, 432), (400, 432))
+        # r = c.get_ocrres((390,641,458,670))#((568,313,708,346))#自勤速腺中
+        # 稻路状熊不佳，伺服器回鹰延避中 招路状熊不佳，伺服器回鹰处涯中
 
-        # r=c.get_all_text([(730,166,1265,616),'装'])
+        # r=o.get_rgb(749, 633)
+        print(r)
+        # r = c.get_ocrres((157,516,188,543))
         # for i in r:
         #     a.air_touch(i,touch_wait=1)
-        # r=o.get_rgb(605,662)
+        # for i in range(3):
+        #     r=o.get_rgb(1238,284+i)
+        #     print(r)
         # r=a.air_loop_find(ImgEnumG.EQ_UP_QR)
 
         # print(r3)
         #     for pos in r[-1]:
         #         a.air_touch(pos)
-        print(r)
+        # print(r)
         # r=c.air_swipe((912,507),(912,343))
         # r = c.get_all_text([(740,234,1254,266),'装'])
         # r=c.get_rgb(1122,648)

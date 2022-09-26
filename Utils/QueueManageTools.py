@@ -15,7 +15,6 @@ class QueueManage:
         try:
             if not self.check_queue(key):
                 self.queue.put(key)
-
         except Exception as e:
             print(f"{key}队列异常{e}")
 
@@ -65,7 +64,7 @@ if __name__ == '__main__':
     print(obj.task_over(2))
     print(obj.get_task())
     print(obj.task_over(3))
-    print(obj.task_over(1))
+    print(obj.task_over(2))
     print(obj.get_task())
     print(obj.get_task())
     print(obj.get_task())
