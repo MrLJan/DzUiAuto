@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import logging
 import os
 import sys
@@ -6,13 +7,13 @@ from frozen import path
 
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.DEBUG)
-handlerTotxt = logging.FileHandler(os.path.join(path, 'res/log.txt'))  # º«¬ºlogµΩtxt÷–
-handlerTotxt.setLevel(logging.DEBUG)
+# handlerTotxt = logging.FileHandler(os.path.join(path, 'res/log.txt'))  # ËÆ∞ÂΩïlogÂà∞txt‰∏≠
+# handlerTotxt.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handlerTotxt.setFormatter(formatter)
+# handlerTotxt.setFormatter(formatter)
 
-console = logging.FileHandler(os.path.join(path, 'res/log.txt'))
-console.setLevel(level=logging.DEBUG)
+# console = logging.FileHandler(os.path.join(path, 'res/log.txt'))
+# console.setLevel(level=logging.DEBUG)
 
 edittext_out = logging.StreamHandler(stream=sys.stdout)
 edittext_out.setLevel(logging.DEBUG)
@@ -20,13 +21,14 @@ edittext_out.setLevel(logging.DEBUG)
 edittext_der = logging.StreamHandler(stream=sys.stderr)
 edittext_der.setLevel(logging.DEBUG)
 
-logger.addHandler(handlerTotxt)
-logger.addHandler(console)
+# logger.addHandler(handlerTotxt)
+# logger.addHandler(console)
 #
 #
-logger1 = logging.getLogger("airtest")  # ≤∂ªÒairtest ‰≥ˆµƒlog
+logger1 = logging.getLogger("airtest")  # ÊçïËé∑airtestËæìÂá∫ÁöÑlog
 logger1.setLevel(logging.ERROR)
-logger1.addHandler(handlerTotxt)
+# logger1.addHandler(handlerTotxt)
+
 
 def catch_ex(func):
     @wraps(func)
@@ -46,7 +48,7 @@ class OtherTools:
         return path + addpath
 
     def imgpath(self, imgname):
-        return path + r'/res/img/' + imgname+'.bmp'
+        return path + r'/res/img/' + imgname + '.bmp'
 
 
 OT = OtherTools()

@@ -1,9 +1,7 @@
-# -*- encoding=utf8 -*-
-import re
+# -*- coding: utf-8 -*-
+import random
 import time
 
-from Enum.ResEnum import ImgEnumG, BatEnumG
-from Utils.ThreadTools import ThreadTools
 
 
 class test:
@@ -32,7 +30,4 @@ class test:
 
 
 if __name__ == '__main__':
-    a = '塔'
-    b = '^金.塔'
-    p=re.match(b,a)
-    print(p)
+    print(round(100/4,2))

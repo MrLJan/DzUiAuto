@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import inspect
 import threading
 import time
@@ -23,7 +24,10 @@ def _async_raise(thread_tid, thread_name, exctype):
 
 
 def stop_thread(thread_tid, thread_name):
-    _async_raise(thread_tid, thread_name, SystemExit)
+    try:
+        _async_raise(thread_tid, thread_name, SystemExit)
+    except ValueError as e:
+        print(e)
 
 
 class ThreadTools(threading.Thread):
@@ -67,6 +71,7 @@ class ThreadTools(threading.Thread):
             self.thread_func(*self._args, **self._kwargs)
             lock.release()
             print(f"任务：{self.name}_{self.ident}" + " 结束\n")
+
 
     def stop(self):
         """停止线程"""

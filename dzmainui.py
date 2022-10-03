@@ -1,15 +1,19 @@
-# -*- encoding=utf8 -*-
+# -*- coding:utf-8 -*-
+import os
 import sys
 import time
 
 from PyQt5 import QtGui, QtWidgets, uic
-from PyQt5.QtGui import QTextCursor
+from PyQt5.QtGui import QTextCursor, QRegExpValidator
 from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, \
-    QTreeWidgetItem
-from PyQt5.QtCore import Qt, QTimer
+    QTreeWidgetItem, QFileDialog
+from PyQt5.QtCore import Qt, QTimer, QRegExp
+from airtest.core.android.touch_methods.base_touch import DownEvent, SleepEvent, UpEvent
+from cnocr import CnOcr
 
 from DzTest.DzModeMachine import switch_case, StateExecute, StateMachine, StateSelect, execute_transition, \
     select_transition
+from Utils.ExceptionTools import RestartTask
 from Utils.LoadConfig import LoadConfig
 from Utils.MnqTools import MnqTools
 from Utils.OtherTools import OT, catch_ex
@@ -24,25 +28,27 @@ from Utils.Devicesconnect import DevicesConnect
 class DzUi:
     def __init__(self):
         self.ui_main = uic.loadUi(OT.abspath('/QtUI/dzmain.ui'))
-        self.ui_main.setWindowTitle(f"岛主-{2.0}_认证群号：795973610 自助提卡网：www.huoniu.buzz")
-        self.ui_main.setWindowIcon(QtGui.QIcon(OT.abspath("/res/dz_icon.ico")))
+        self.ui_main.setWindowTitle(f"岛主-{2.02}_认证群号：795973610 自助提卡网：www.huoniu.buzz")
+        self.ui_main.setWindowIcon(QtGui.QIcon(OT.abspath("/Res/dz_icon.ico")))
         # 禁止窗口拉伸
         self.ui_main.setFixedSize(self.ui_main.width(), self.ui_main.height())
         # # 获取句柄窗口按钮
         self.ui_main.get_windows.clicked.connect(self._get_windows_pid)
         # # 开启/关闭模拟器按钮
-        # self.ui_main.start_mnq_all_btn.clicked.connect(lambda: self.mnq_start_quit(True))
-        # self.ui_main.quit_mnq_all_btn.clicked.connect(lambda: self.mnq_start_quit(False))
-        # self.ui_main.open_index_mnq_btn.clicked.connect(self.start_mnq_index)
-        # # self.ui_main.start_mnq_all_btn.setEnabled(False)
-        # # self.ui_main.quit_mnq_all_btn.setEnabled(False)
+        self.ui_main.filechoose_btn.clicked.connect(self.choose_mnq_file)  # 选中路径
+        self.ui_main.start_mnq_all_btn.clicked.connect(lambda: self.mnq_start_quit(True))
+        self.ui_main.quit_mnq_all_btn.clicked.connect(lambda: self.mnq_start_quit(False))
+        self.ui_main.open_index_mnq_btn.clicked.connect(self.start_mnq_index)
+        # self.ui_main.start_mnq_all_btn.setEnabled(False)
+        # self.ui_main.quit_mnq_all_btn.setEnabled(False)
         # # 全选,取消选中,执行选中,停止选中
-        # self.ui_main.choose_stop_btn.clicked.connect(self.stop_choose)
-        # self.ui_main.choose_all_btn.clicked.connect(self.choose_all)
-        # self.ui_main.choose_cannel_btn.clicked.connect(self.cannel_choose)
-        # self.ui_main.choose_todo_btn.clicked.connect(self.todo_choose)
+        self.ui_main.close_all_task_btn.clicked.connect(self.close_all_task)  # 全部停止
+        self.ui_main.choose_stop_btn.clicked.connect(self.stop_choose)
+        self.ui_main.choose_all_btn.clicked.connect(self.choose_all)
+        self.ui_main.choose_cannel_btn.clicked.connect(self.cannel_choose)
+        self.ui_main.choose_ot_btn.clicked.connect(self.choose_ot)
         # # 延时启动
-        # self.ui_main.yanshi_btn.clicked.connect(self.yanshi_todo_choose)
+        self.ui_main.yanshi_btn.clicked.connect(self.yanshi_todo_choose)
         # # 滚模拟器
         # self.ui_main.roll_mnq_btn.clicked.connect(self.roll_mnq_dotask)
         # 任务树
@@ -50,95 +56,103 @@ class DzUi:
         self.ui_main.set_task_btn.clicked.connect(self._set_task_list)
         # self.ui_main.add_diy_task1_btn.clicked.connect(self.add_diy_task1_btn)
         # self.ui_main.add_diy_task2_btn.clicked.connect(self.add_diy_task2_btn)
-        # # 停止/打开配置
-        # self.ui_main.close_all_task_btn.clicked.connect(self.close_all_task)
-        # self.ui_main.open_set_btn.clicked.connect(self.open_set)
-        # # 窗口排序
-        # self.ui_main.win_index_btn.clicked.connect(self.windows_index)
+        # 停止/打开配置
+
+        self.ui_main.open_set_btn.clicked.connect(self.open_set)
+
         # ---------------设置界面-------------------
         # self.ui_main.hwnd_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,99}")))
         # self.ui_main.skip_mnqindex_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,99}")))
-        # self.ui_main.team_pwd_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,4}")))
-        # self.ui_main.auto_time_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
-        # self.ui_main.task_level_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
-        # self.ui_main.qh_level_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,2}")))
-        # self.ui_main.zhiye_edit.setValidator(QRegExpValidator(QRegExp("[0-9,]+$")))
-        # self.ui_main.d_use_mp_edit.setValidator(QRegExpValidator(QRegExp("[0-9,]+$")))
-        # self.ui_main.start_mnq_index_edit.setValidator(QRegExpValidator(QRegExp("[0-9,]+$")))
-        # self.ui_main.d1_duiyuan_edit.setValidator(QRegExpValidator(QRegExp("[*0-9,]+$")))
-        # self.ui_main.d2_duiyuan_edit.setValidator(QRegExpValidator(QRegExp("[*0-9,]+$")))
-        # self.ui_main.d3_duiyuan_edit.setValidator(QRegExpValidator(QRegExp("[*0-9,]+$")))
-        # self.ui_main.d4_duiyuan_edit.setValidator(QRegExpValidator(QRegExp("[*0-9,]+$")))
-        # self.ui_main.d5_duiyuan_edit.setValidator(QRegExpValidator(QRegExp("[*0-9,]+$")))
-        # self.ui_main.d6_duiyuan_edit.setValidator(QRegExpValidator(QRegExp("[*0-9,]+$")))
-        # self.ui_main.d1_pindao_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
-        # self.ui_main.d2_pindao_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
-        # self.ui_main.d3_pindao_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
-        # self.ui_main.d4_pindao_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
-        # self.ui_main.d5_pindao_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
-        # self.ui_main.d6_pindao_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
-        # self.ui_main.get_gold_time_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,99}")))
+        self.ui_main.team_pwd_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,4}")))
+        self.ui_main.hp_num_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,4}")))
+        self.ui_main.mp_num_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,4}")))
+        self.ui_main.auto_time_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
+        self.ui_main.task_level_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
+        self.ui_main.qh_level_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,2}")))
+        self.ui_main.zhiye_edit.setValidator(QRegExpValidator(QRegExp("[0-9,]+$")))
+        self.ui_main.d_use_mp_edit.setValidator(QRegExpValidator(QRegExp("[0-9,]+$")))
+        self.ui_main.start_mnq_index_edit.setValidator(QRegExpValidator(QRegExp("[0-9,]+$")))
+        self.ui_main.d1_duiyuan_edit.setValidator(QRegExpValidator(QRegExp("[*0-9,]+$")))
+        self.ui_main.d2_duiyuan_edit.setValidator(QRegExpValidator(QRegExp("[*0-9,]+$")))
+        self.ui_main.d3_duiyuan_edit.setValidator(QRegExpValidator(QRegExp("[*0-9,]+$")))
+        self.ui_main.d4_duiyuan_edit.setValidator(QRegExpValidator(QRegExp("[*0-9,]+$")))
+        self.ui_main.d5_duiyuan_edit.setValidator(QRegExpValidator(QRegExp("[*0-9,]+$")))
+        self.ui_main.d6_duiyuan_edit.setValidator(QRegExpValidator(QRegExp("[*0-9,]+$")))
+        self.ui_main.d1_pindao_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
+        self.ui_main.d2_pindao_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
+        self.ui_main.d3_pindao_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
+        self.ui_main.d4_pindao_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
+        self.ui_main.d5_pindao_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
+        self.ui_main.d6_pindao_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
         # 设置保存按钮
-        # self.ui_main.save_setting_btn.clicked.connect(self.save_setting)
-        # self.ui_main.save_setting_btn_2.clicked.connect(self.save_setting)
-        # self.set_setting_label(self.ui_main.line_mnqpath, "路径", "模拟器路径")
-        # self.set_lineedit_text(self.ui_main.start_mnq_index_edit, "全局配置", "启动模拟器序号")
-        # self.set_lineedit_text(self.ui_main.auto_time_edit, "全局配置", "离线时长")
-        # self.set_lineedit_text(self.ui_main.autobat_time_edit, "全局配置", "挂机卡时长")
-        # self.set_lineedit_text(self.ui_main.qh_level_edit, "全局配置", "强化等级")
-        # self.set_lineedit_text(self.ui_main.task_level_edit, "全局配置", "任务停止等级")
-        # self.set_lineedit_text(self.ui_main.zhiye_edit, "野图配置", "短按窗口")
-        # self.set_lineedit_text(self.ui_main.d_use_mp_edit, "全局配置", "无蓝窗口")
-        # self.set_lineedit_text(self.ui_main.autobat_time_edit, "全局配置", "挂机卡时长")
-        # self.set_lineedit_text(self.ui_main.team_pwd_edit, "野图配置", "组队密码")
-        # self.set_lineedit_text(self.ui_main.diy_task1_edit, "全局配置", "自定义一")
-        # self.set_lineedit_text(self.ui_main.diy_task2_edit, "全局配置", "自定义二")
-        # self.set_lineedit_text(self.ui_main.d1_duiyuan_edit, "野图配置", "1队成员")
-        # self.set_lineedit_text(self.ui_main.d2_duiyuan_edit, "野图配置", "2队成员")
-        # self.set_lineedit_text(self.ui_main.d3_duiyuan_edit, "野图配置", "3队成员")
-        # self.set_lineedit_text(self.ui_main.d1_pindao_edit, "野图配置", "1队频道")
-        # self.set_lineedit_text(self.ui_main.d2_pindao_edit, "野图配置", "2队频道")
-        # self.set_lineedit_text(self.ui_main.d3_pindao_edit, "野图配置", "3队频道")
-        # self.set_lineedit_text(self.ui_main.get_gold_time_edit, "全局配置", "检查产出")
-        # self.set_zhiyebox_text(self.ui_main.zhiye_choose_box, "全局配置", "职业类型")
-        # self.set_check_box_text(self.ui_main.is_exitgame_box, "全局配置", "离线使用挂机卡")
-        # self.set_check_box_text(self.ui_main.is_exit_team_box, "全局配置", "人少退组")
-        # self.set_check_box_text(self.ui_main.is_change_role_box, "全局配置", "自动切换角色")
-        # self.set_check_box_text(self.ui_main.pkj_box, "全局配置", "混皮卡啾")
-        # self.set_check_box_text(self.ui_main.nh_box, "全局配置", "混女皇")
-        # self.set_check_box_text(self.ui_main.hd_boss_box, "全局配置", "混沌炎魔")
-        # self.set_check_box_text(self.ui_main.close_game_box, "全局配置", "任务结束关闭游戏")
-        # self.set_check_box_text(self.ui_main.gonghui_box, "全局配置", "公会内容")
-        # self.set_check_box_text(self.ui_main.boss_check_box, "全局配置", "混王图")
-        # self.set_check_box_text(self.ui_main.meiti_check_box, "全局配置", "定时任务")
-        # self.set_check_box_text(self.ui_main.open_auto_box, "全局配置", "混合自动按键")
-        # self.set_check_box_text(self.ui_main.wulin_box, "全局配置", "武陵")
-        # self.set_check_box_text(self.ui_main.jinzita_box, "全局配置", "金字塔")
-        # self.set_check_box_text(self.ui_main.jinghua_box, "全局配置", "进化系统")
-        # self.set_check_box_text(self.ui_main.jingying_box, "全局配置", "菁英地城")
-        # self.set_check_box_text(self.ui_main.startower_box, "全局配置", "星光塔")
-        # self.set_check_box_text(self.ui_main.gw_park_box, "全局配置", "怪物公园")
-        # self.set_check_box_text(self.ui_main.meiri_box, "全局配置", "每日地城")
-        # self.set_check_box_text(self.ui_main.ciyuan_box, "全局配置", "次元入侵")
-        # self.set_check_box_text(self.ui_main.guaiwu_box, "全局配置", "怪物狩猎团")
-        # self.set_check_box_text(self.ui_main.tangbaobao_box, "全局配置", "汤宝宝")
-        # self.set_check_box_text(self.ui_main.mini_dc_box, "全局配置", "迷你地城")
-        # self.set_check_box_text(self.ui_main.qh_youhui_box, "全局配置", "强化优惠卷")
-        # self.set_check_box_text(self.ui_main.xinyun_box, "全局配置", "幸运卷轴")
-        # self.set_check_box_text(self.ui_main.dunpai_box, "全局配置", "盾牌卷轴")
-        # self.set_check_box_text(self.ui_main.baohu_box, "全局配置", "保护卷轴")
-        # self.set_check_box_text(self.ui_main.auto_wait_box, "全局配置", "随机休息")
-        # self.set_check_box_text(self.ui_main.saodi_box, "全局配置", "扫地模式")
-        # self.set_check_box_text(self.ui_main.use_stone_box, "全局配置", "随机使用石头")
-        # self.set_combobox_text(self.ui_main.mode_choose_box, "路径", "绑定模式")
-        # self.set_combobox_text(self.ui_main.hp_box, "全局配置", "HP等级")
-        # self.set_combobox_text(self.ui_main.mp_box, "全局配置", "MP等级")
-        # self.set_radio_btn(self.ui_main.radioButton, '全局配置', '离线休息')
-        # self.set_radio_btn(self.ui_main.radioButton2, '全局配置', '在线休息')
+        self.ui_main.save_setting_btn.clicked.connect(self.save_setting)
+        self.ui_main.save_setting_btn_2.clicked.connect(self.save_setting)
+        self.set_setting_label(self.ui_main.line_mnqpath, "路径", "模拟器路径")
+        self.set_lineedit_text(self.ui_main.start_mnq_index_edit, "全局配置", "启动模拟器序号")
+        self.set_lineedit_text(self.ui_main.auto_time_edit, "全局配置", "离线时长")
+        self.set_lineedit_text(self.ui_main.autobat_time_edit, "全局配置", "挂机卡时长")
+        self.set_lineedit_text(self.ui_main.qh_level_edit, "全局配置", "强化等级")
+        self.set_lineedit_text(self.ui_main.task_level_edit, "全局配置", "任务停止等级")
+        self.set_lineedit_text(self.ui_main.zhiye_edit, "野图配置", "短按窗口")
+        self.set_lineedit_text(self.ui_main.d_use_mp_edit, "全局配置", "无蓝窗口")
+        self.set_lineedit_text(self.ui_main.autobat_time_edit, "全局配置", "挂机卡时长")
+        self.set_lineedit_text(self.ui_main.team_pwd_edit, "野图配置", "组队密码")
+        self.set_lineedit_text(self.ui_main.d1_duiyuan_edit, "野图配置", "1队成员")
+        self.set_lineedit_text(self.ui_main.d2_duiyuan_edit, "野图配置", "2队成员")
+        self.set_lineedit_text(self.ui_main.d3_duiyuan_edit, "野图配置", "3队成员")
+        self.set_lineedit_text(self.ui_main.d4_duiyuan_edit, "野图配置", "4队成员")
+        self.set_lineedit_text(self.ui_main.d5_duiyuan_edit, "野图配置", "5队成员")
+        self.set_lineedit_text(self.ui_main.d6_duiyuan_edit, "野图配置", "6队成员")
+        self.set_lineedit_text(self.ui_main.d1_pindao_edit, "野图配置", "1队频道")
+        self.set_lineedit_text(self.ui_main.d2_pindao_edit, "野图配置", "2队频道")
+        self.set_lineedit_text(self.ui_main.d3_pindao_edit, "野图配置", "3队频道")
+        self.set_lineedit_text(self.ui_main.d4_pindao_edit, "野图配置", "4队频道")
+        self.set_lineedit_text(self.ui_main.d5_pindao_edit, "野图配置", "5队频道")
+        self.set_lineedit_text(self.ui_main.d6_pindao_edit, "野图配置", "6队频道")
+        self.set_zhiyebox_text(self.ui_main.zhiye_choose_box, "全局配置", "职业类型")
+        self.set_check_box_text(self.ui_main.is_exitgame_box, "全局配置", "离线使用挂机卡")
+        self.set_check_box_text(self.ui_main.is_exit_team_box, "全局配置", "人少退组")
+        self.set_check_box_text(self.ui_main.is_change_role_box, "全局配置", "自动切换角色")
+        self.set_check_box_text(self.ui_main.close_game_box, "全局配置", "任务结束关闭游戏")
+        self.set_check_box_text(self.ui_main.gonghui_box, "全局配置", "公会内容")
+        self.set_check_box_text(self.ui_main.boss_check_box, "全局配置", "混王图")
+        self.set_check_box_text(self.ui_main.meiti_check_box, "全局配置", "定时任务")
+        self.set_check_box_text(self.ui_main.open_auto_box, "全局配置", "混合自动按键")
+        self.set_check_box_text(self.ui_main.wulin_box, "全局配置", "武陵")
+        self.set_check_box_text(self.ui_main.jinzita_box, "全局配置", "金字塔")
+        self.set_check_box_text(self.ui_main.jinghua_box, "全局配置", "进化系统")
+        self.set_check_box_text(self.ui_main.jingying_box, "全局配置", "菁英地城")
+        self.set_check_box_text(self.ui_main.startower_box, "全局配置", "星光塔")
+        self.set_check_box_text(self.ui_main.gw_park_box, "全局配置", "怪物公园")
+        self.set_check_box_text(self.ui_main.meiri_box, "全局配置", "每日地城")
+        self.set_check_box_text(self.ui_main.ciyuan_box, "全局配置", "次元入侵")
+        self.set_check_box_text(self.ui_main.guaiwu_box, "全局配置", "怪物狩猎团")
+        self.set_check_box_text(self.ui_main.tangbaobao_box, "全局配置", "汤宝宝")
+        self.set_check_box_text(self.ui_main.mini_dc_box, "全局配置", "迷你地城")
+        self.set_check_box_text(self.ui_main.qh_youhui_box, "全局配置", "强化优惠卷")
+        self.set_check_box_text(self.ui_main.xinyun_box, "全局配置", "幸运卷轴")
+        self.set_check_box_text(self.ui_main.dunpai_box, "全局配置", "盾牌卷轴")
+        self.set_check_box_text(self.ui_main.baohu_box, "全局配置", "保护卷轴")
+        self.set_check_box_text(self.ui_main.auto_wait_box, "全局配置", "随机休息")
+        self.set_check_box_text(self.ui_main.saodi_box, "全局配置", "扫地模式")
+        self.set_check_box_text(self.ui_main.use_stone_box, "全局配置", "随机使用石头")
+        self.set_combobox_text(self.ui_main.hp_box, "全局配置", "HP等级")
+        self.set_combobox_text(self.ui_main.mp_box, "全局配置", "MP等级")
+        self.set_lineedit_text(self.ui_main.hp_num_edit, "全局配置", "hp数量")
+        self.set_lineedit_text(self.ui_main.mp_num_edit, "全局配置", "mp数量")
+        self.set_check_box_text(self.ui_main.ym_box, "全局配置", "炎魔")
+        self.set_check_box_text(self.ui_main.pkj_box, "全局配置", "皮卡啾")
+        self.set_check_box_text(self.ui_main.nh_box, "全局配置", "女皇")
+        self.set_check_box_text(self.ui_main.hd_boss_box, "全局配置", "混沌炎魔")
+        self.set_nd(self.ui_main.ym_pt_rbtn, self.ui_main.ym_kn_rbtn, '全局配置', '炎魔难度')
+        self.set_nd(self.ui_main.pkj_pt_rbtn, self.ui_main.pkj_kn_rbtn, '全局配置', '皮卡啾难度')
+        self.set_nd(self.ui_main.nh_pt_rbtn, self.ui_main.nh_kn_rbtn, '全局配置', '女皇难度')
+        self.set_radio_btn(self.ui_main.radioButton, '全局配置', '离线休息')
+        self.set_radio_btn(self.ui_main.radioButton2, '全局配置', '在线休息')
         #
         # # 设置定时
-        # self.set_meiri_time_box(self.ui_main.meiri_time_box, "全局配置", "固定每日时间", True)
-        # self.set_meiri_time_box(self.ui_main.fenz_box, "全局配置", "固定每日时间", False)
+        self.set_meiri_time_box(self.ui_main.meiri_time_box, "全局配置", "固定每日时间", True)
+        self.set_meiri_time_box(self.ui_main.fenz_box, "全局配置", "固定每日时间", False)
         # dm 设置tablewidget
         self.ui_main.windows_pid.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # 关闭水平进度条
         # self.ui_main.windows_pid.doubleClicked.connect(self.windows_click)
@@ -167,6 +181,7 @@ class DzUi:
         self.sn.label_text.connect(self.set_label_text)  # 版本号label信号
         self.sn.windows_pid.connect(self.set_windows_pid)  # 窗口句柄信号
         self.sn.table_value.connect(self.set_table_value)  # 更改单元格状态栏文本
+        self.sn.restart.connect(self.restart_task)  # 重启模拟器
         # self.sn.task_over_signal.connect(self.roll_mnq_dotask)
         # self.sn.close_mnq_index.connect(self.close_taskover_mnq)  # 关闭无任务模拟器
         # self.sn.btn_enable.connect(self.set_btn_enable)
@@ -179,9 +194,12 @@ class DzUi:
         self.mnq_name_old_list = []  # 存储旧窗口名
         self.mnq_name_pop_list = []  # 存储需要删除的窗口
         self.mnq_name_flag = None
-        self.dev_obj_list = {}  # 初始化每个模拟器的连接对象
+        self.cn_ocr = CnOcr(rec_model_name='densenet_lite_136-fc',
+                            det_model_name= 'ch_PP-OCRv3_det')  # 'ch_PP-OCRv3_det')  # ch_PP-OCRv3繁体中文匹配模型
+        self.dev_obj_list = {}  # 初始化每个模拟器的连接对象名
+        self.dev_list = {}  # 存储连接成功后的dev
         self.mnq_thread_tid = {}  # 存储每个模拟器的线程tid
-        # self.ui_main.filechoose_btn.clicked.connect(self.choose_mnq_file)
+
         self.get_time = 5
         self.get_timer = QTimer()
         self.get_timer.setInterval(1000)
@@ -189,19 +207,362 @@ class DzUi:
         self.stop_time = 15
         self.stop_timer = QTimer()
         self.stop_timer.setInterval(1000)
-        # self.stop_timer.timeout.connect(self.close_btnrefresh)
+        self.stop_timer.timeout.connect(self.close_btnrefresh)
         self.mnq_timer_time = 10
         self.mnq_timer = QTimer()
         self.index_queue = QueueManage()
         self.mnq_timer.setInterval(1000)
-        # self.mnq_timer.timeout.connect(self.open_mnq_dotask)
+        self.mnq_timer.timeout.connect(self.open_mnq_dotask)
         self.roll_mnq_time = 10
         self.roll_mnq_timer = QTimer()
         self.roll_mnq_queue = QueueManage()
         self.roll_mnq_timer.setInterval(1000)
 
-        # self.team_event_dic = self.get_team_event()
-        # self.team_queue_dic = self.get_team_queue()
+        self.team_event_dic = self.get_team_event()
+        self.team_queue_dic = self.get_team_queue()
+
+    def open_mnq_dotask(self):
+        if self.mnq_timer_time > 0:
+            self.ui_main.yanshi_btn.setText(f"{self.mnq_timer_time}秒后启动下一个")
+            self.mnq_timer_time -= 1
+        else:
+            mnq_index = self.index_queue.get_task()
+            if not mnq_index:
+                self.mnq_timer.stop()
+                self.ui_main.yanshi_btn.setText(r"延时启动")
+                self.ui_main.yanshi_btn.setEnabled(True)
+            else:
+                mnq_name = MnqTools().use_index_find_name(mnq_index)
+                if not MnqTools().running_mnq_list(mnq_name):
+                    MnqTools().start_mnq_index_list(mnq_index)
+                if len(self.mnq_thread_tid[mnq_name]) == 0:
+                    self._do_task_list([mnq_index], message=False)
+                    self.start_btn_dic[mnq_name].setEnabled(False)
+                    self.stop_btn_dic[mnq_name].setEnabled(True)
+                self.index_queue.task_over(mnq_index)
+                if not self.index_queue.queue.empty():
+                    try:
+                        self.mnq_timer_time = int(self.ui_main.yanshi_start_edit.text()) * 60
+                    except BaseException:
+                        self.mnq_timer_time = 10
+                else:
+                    print(f"延时启动任务完成")
+
+    def start_mnq_index(self):
+        mnq_index_list = self.ui_main.start_mnq_index_edit.text()
+        mnq_index = mnq_index_list.split(',')
+        if mnq_index_list == '':
+            self.get_messagebox('错误', '未设置需要开启的模拟器序号')
+        else:
+            LoadConfig.writeconf("全局配置", "启动模拟器序号", mnq_index_list)
+            MnqTools().start_mnq_index_list(mnq_index)
+
+    def mnq_start_quit(self, is_start):
+        if is_start:
+            MnqTools().start_mnq_all()
+        else:
+            self.close_all_task()
+            MnqTools().quit_mnq_all()
+
+    def yanshi_todo_choose(self):
+        try:
+            rows = self.ui_main.windows_pid.rowCount()
+            if rows == 0:
+                self.get_messagebox('错误', '先启动模拟器并获取窗口信息')
+            else:
+                for row in range(rows):
+                    mnq_index = str(self.ui_main.windows_pid.cellWidget(row, 0).text())
+                    self.index_queue.put_queue(mnq_index)
+                self.mnq_timer.start()
+                self.ui_main.yanshi_btn.setEnabled(False)
+        except Exception:
+            self.mnq_timer_time = 1
+
+    def choose_ot(self):
+        rows = self.ui_main.windows_pid.rowCount()
+        if rows == 0:
+            pass
+        else:
+            for i in range(rows):
+                if self.ui_main.windows_pid.cellWidget(i, 0).isChecked():
+                    self.ui_main.windows_pid.cellWidget(i, 0).setChecked(False)
+                else:
+                    self.ui_main.windows_pid.cellWidget(i, 0).setChecked(True)
+
+    def choose_all(self):
+        rows = self.ui_main.windows_pid.rowCount()
+        if rows == 0:
+            pass
+        else:
+            for i in range(rows):
+                self.ui_main.windows_pid.cellWidget(i, 0).setChecked(True)
+
+    def cannel_choose(self):
+        rows = self.ui_main.windows_pid.rowCount()
+        if rows == 0:
+            pass
+        else:
+            for i in range(rows):
+                self.ui_main.windows_pid.cellWidget(i, 0).setChecked(False)
+
+    def stop_choose(self):
+        rows = self.ui_main.windows_pid.rowCount()
+        index_list = []
+        if rows == 0:
+            print("没有获取设备信息")
+        else:
+            for i in range(rows):
+                if self.ui_main.windows_pid.cellWidget(i, 0).isChecked():
+                    _index = str(self.ui_main.windows_pid.cellWidget(i, 0).text())
+                    index_list.append(_index)
+            # print(index_list)
+            if len(index_list) > 0:
+                self._stop_task(index_list)
+            else:
+                print('没有选中任何模拟器')
+
+    def close_all_task(self):
+        """关闭所有任务"""
+        close_list = []
+        if self.ui_main.close_all_task_btn.isEnabled():
+            self.stop_timer.start()
+            self.ui_main.close_all_task_btn.setEnabled(False)
+        row = self.ui_main.windows_pid.rowCount()
+        for i in range(row):
+            _index = str(self.ui_main.windows_pid.cellWidget(i, 0).text())
+            close_list.append(_index)
+        if len(close_list) > 0:
+            self._stop_task(close_list)
+
+    @staticmethod
+    def open_set():
+        set_path = OT.abspath('/res/配置文件.ini')
+        os.startfile(set_path)
+
+    def set_setting_label(self, label_obj, data_section, data_name):
+        data_text = LoadConfig.getconf(data_section, data_name)
+        self.set_label_text(label_obj, data_text)
+
+    @staticmethod
+    def set_combobox_text(label_obj, data_section, data_name):
+        data_text = LoadConfig.getconf(data_section, data_name)
+        if data_text == '4阶药水':
+            label_obj.setCurrentIndex(0)
+        elif data_text == '5阶药水':
+            label_obj.setCurrentIndex(1)
+        elif data_text == '6阶药水':
+            label_obj.setCurrentIndex(2)
+        elif data_text == '7阶药水':
+            label_obj.setCurrentIndex(3)
+        elif data_text == '8阶药水':
+            label_obj.setCurrentIndex(4)
+        elif data_text == '9阶药水':
+            label_obj.setCurrentIndex(5)
+        else:
+            label_obj.setCurrentIndex(0)
+
+    @staticmethod
+    def set_lineedit_text(label_obj, data_section, data_name):
+        data_text = LoadConfig.getconf(data_section, data_name)
+        label_obj.setText(data_text)
+
+    @staticmethod
+    def set_check_box_text(check_obj, data_section, data_name):
+        data_text = LoadConfig.getconf(data_section, data_name)
+        if data_text == '0':
+            check_obj.setChecked(False)
+        else:
+            check_obj.setChecked(True)
+
+    @staticmethod
+    def set_radio_btn(radio_obj, data_section, data_name):
+        data_text = LoadConfig.getconf(data_section, data_name)
+        if data_text == '0':
+            radio_obj.setChecked(False)
+        else:
+            radio_obj.setChecked(True)
+
+    @staticmethod
+    def set_nd(pt_obj, kn_obj, data_section, data_name):
+        """难度按钮设置"""
+        data_text = LoadConfig.getconf(data_section, data_name)
+        if data_text == '0':
+            pt_obj.setChecked(True)
+            kn_obj.setChecked(False)
+        else:
+            kn_obj.setChecked(True)
+            pt_obj.setChecked(False)
+
+    @staticmethod
+    def set_meiri_time_box(box_obk, data_section, data_name, is_hour):
+        data_text = LoadConfig.getconf(data_section, data_name)
+        data_list = data_text.split(":")
+        data_h = data_list[0]
+        data_m = data_list[-1]
+        if is_hour:
+            box_obk.setValue(int(data_h))
+        else:
+            box_obk.setValue(int(data_m))
+
+    @staticmethod
+    def set_zhiyebox_text(label_obj, data_section, data_name):
+        data_text = LoadConfig.getconf(data_section, data_name)
+        index_num = int(data_text)
+        label_obj.setCurrentIndex(index_num)
+
+    @staticmethod
+    def set_pindaobox_text(label_obj, data_section, data_name):
+        data_text = LoadConfig.getconf(data_section, data_name)
+        index_num = int(data_text) - 1
+        label_obj.setCurrentIndex(index_num)
+
+    def save_setting(self):
+        """保存设置界面设置，写入配置文件"""
+        ld_mnq_path = self.ui_main.line_mnqpath.text()
+        hp_levle = self.ui_main.hp_box.currentText()
+        mp_levle = self.ui_main.mp_box.currentText()
+        hp_num = self.ui_main.hp_num_edit.text()
+        mp_num = self.ui_main.mp_num_edit.text()
+        zhiye_id = self.ui_main.zhiye_choose_box.currentText()
+        d_use_mp = self.ui_main.d_use_mp_edit.text()
+        zhiye_windows = self.ui_main.zhiye_edit.text()
+        qh_level = self.ui_main.qh_level_edit.text()
+        exit_game_time = self.ui_main.auto_time_edit.text()
+        auto_time = self.ui_main.autobat_time_edit.text()
+        task_level_end = self.ui_main.task_level_edit.text()
+        d1_duiyuan = self.ui_main.d1_duiyuan_edit.text()
+        d2_duiyuan = self.ui_main.d2_duiyuan_edit.text()
+        d3_duiyuan = self.ui_main.d3_duiyuan_edit.text()
+        d4_duiyuan = self.ui_main.d4_duiyuan_edit.text()
+        d5_duiyuan = self.ui_main.d5_duiyuan_edit.text()
+        d6_duiyuan = self.ui_main.d6_duiyuan_edit.text()
+        d1_pindao = self.ui_main.d1_pindao_edit.text()
+        d2_pindao = self.ui_main.d2_pindao_edit.text()
+        d3_pindao = self.ui_main.d3_pindao_edit.text()
+        d4_pindao = self.ui_main.d4_pindao_edit.text()
+        d5_pindao = self.ui_main.d5_pindao_edit.text()
+        d6_pindao = self.ui_main.d6_pindao_edit.text()
+        mnq_index = self.ui_main.start_mnq_index_edit.text()
+        zhiye = GlobalEnumG.ZhiYe
+        team_pwd = self.ui_main.team_pwd_edit.text()
+        meiri_time = self.ui_main.meiri_time_box.value()
+        fenz_time = self.ui_main.fenz_box.value()
+        do_meiri_time = str(meiri_time) + ":" + str(fenz_time)
+        boss_task = '1' if self.ui_main.boss_check_box.isChecked() else '0'
+        dingshi_task = '1' if self.ui_main.meiti_check_box.isChecked() else '0'
+        result = '1' if self.ui_main.open_auto_box.isChecked() else '0'
+        wulin_task = '1' if self.ui_main.wulin_box.isChecked() else '0'
+        jinzita_task = '1' if self.ui_main.jinzita_box.isChecked() else '0'
+        jingying_task = '1' if self.ui_main.jingying_box.isChecked() else '0'
+        meiri_task = '1' if self.ui_main.meiri_box.isChecked() else '0'
+        jinghua_task = '1' if self.ui_main.jinghua_box.isChecked() else '0'
+        ciyuan_task = '1' if self.ui_main.ciyuan_box.isChecked() else '0'
+        guaiwu_task = '1' if self.ui_main.guaiwu_box.isChecked() else '0'
+        startower_task = '1' if self.ui_main.startower_box.isChecked() else '0'
+        tangbaobao_task = '1' if self.ui_main.tangbaobao_box.isChecked() else '0'
+        mini_dc_task = '1' if self.ui_main.mini_dc_box.isChecked() else '0'
+        gw_park_task = '1' if self.ui_main.gw_park_box.isChecked() else '0'
+        use_stone = '1' if self.ui_main.use_stone_box.isChecked() else '0'
+
+        qh_youhui = '1' if self.ui_main.qh_youhui_box.isChecked() else '0'
+        xingyun_jz = '1' if self.ui_main.xinyun_box.isChecked() else '0'
+        dunpai_jz = '1' if self.ui_main.dunpai_box.isChecked() else '0'
+        baohu_jz = '1' if self.ui_main.baohu_box.isChecked() else '0'
+        ym = '1' if self.ui_main.ym_box.isChecked() else '0'
+        ym_nd = '1' if self.ui_main.ym_kn_rbtn.isChecked() else '0'
+        pjk = '1' if self.ui_main.pkj_box.isChecked() else '0'
+        pjk_nd = '1' if self.ui_main.pkj_kn_rbtn.isChecked() else '0'
+        nh = '1' if self.ui_main.nh_box.isChecked() else '0'
+        nh_nd = '1' if self.ui_main.nh_kn_rbtn.isChecked() else '0'
+        hd_ym = '1' if self.ui_main.hd_boss_box.isChecked() else '0'
+        auto_wait = '1' if self.ui_main.auto_wait_box.isChecked() else '0'
+        on_wait_sleep = '1' if self.ui_main.radioButton2.isChecked() else '0'
+        off_wait_sleep = '1' if self.ui_main.radioButton.isChecked() else '0'
+        is_exit_team = '1' if self.ui_main.is_exit_team_box.isChecked() else '0'
+        gonghui = '1' if self.ui_main.gonghui_box.isChecked() else '0'
+        close_game = '1' if self.ui_main.close_game_box.isChecked() else '0'
+        is_exitgame = '1' if self.ui_main.is_exitgame_box.isChecked() else '0'
+        is_change_role = '1' if self.ui_main.is_change_role_box.isChecked() else '0'
+        saodi_mode = '1' if self.ui_main.saodi_box.isChecked() else '0'
+
+        LoadConfig.writeconf("路径", "模拟器路径", ld_mnq_path)
+        LoadConfig.writeconf("全局配置", "扫地模式", saodi_mode)
+        LoadConfig.writeconf("全局配置", "HP等级", hp_levle)
+        LoadConfig.writeconf("全局配置", "MP等级", mp_levle)
+        LoadConfig.writeconf("全局配置", "hp数量", hp_num)
+        LoadConfig.writeconf("全局配置", "mp数量", mp_num)
+        LoadConfig.writeconf("全局配置", "启动模拟器序号", mnq_index)
+        LoadConfig.writeconf("野图配置", "短按窗口", zhiye_windows)
+        LoadConfig.writeconf("野图配置", "组队密码", team_pwd)
+        LoadConfig.writeconf("全局配置", "无蓝窗口", d_use_mp)
+        LoadConfig.writeconf("全局配置", "人少退组", is_exit_team)
+        LoadConfig.writeconf("全局配置", "随机使用石头", use_stone)
+        LoadConfig.writeconf("全局配置", "自动切换角色", is_change_role)
+        LoadConfig.writeconf("全局配置", "任务停止等级", task_level_end)
+        LoadConfig.writeconf("全局配置", "离线时长", exit_game_time)
+        LoadConfig.writeconf("全局配置", "随机休息", auto_wait)
+        LoadConfig.writeconf("全局配置", "在线休息", on_wait_sleep)
+        LoadConfig.writeconf("全局配置", "离线休息", off_wait_sleep)
+        LoadConfig.writeconf("全局配置", "挂机卡时长", auto_time)
+        LoadConfig.writeconf("全局配置", "炎魔", ym)
+        LoadConfig.writeconf("全局配置", "炎魔难度", ym_nd)
+        LoadConfig.writeconf("全局配置", "皮卡啾", pjk)
+        LoadConfig.writeconf("全局配置", "皮卡啾难度", pjk_nd)
+        LoadConfig.writeconf("全局配置", "女皇", nh)
+        LoadConfig.writeconf("全局配置", "女皇难度", nh_nd)
+        LoadConfig.writeconf("全局配置", "混沌炎魔", hd_ym)
+        LoadConfig.writeconf("全局配置", "任务结束关闭游戏", close_game)
+        LoadConfig.writeconf("全局配置", "公会内容", gonghui)
+        LoadConfig.writeconf("全局配置", "混王图", boss_task)
+        LoadConfig.writeconf("全局配置", "定时任务", dingshi_task)
+        LoadConfig.writeconf("全局配置", "固定每日时间", str(do_meiri_time))
+        LoadConfig.writeconf("全局配置", "职业类型", zhiye[zhiye_id])
+        LoadConfig.writeconf("全局配置", "混合自动按键", result)
+        LoadConfig.writeconf("全局配置", "武陵", wulin_task)
+        LoadConfig.writeconf("全局配置", "金字塔", jinzita_task)
+        LoadConfig.writeconf("全局配置", "每日地城", meiri_task)
+        LoadConfig.writeconf("全局配置", "菁英地城", jingying_task)
+        LoadConfig.writeconf("全局配置", "进化系统", jinghua_task)
+        LoadConfig.writeconf("全局配置", "次元入侵", ciyuan_task)
+        LoadConfig.writeconf("全局配置", "怪物狩猎团", guaiwu_task)
+        LoadConfig.writeconf("全局配置", "汤宝宝", tangbaobao_task)
+        LoadConfig.writeconf("全局配置", "星光塔", startower_task)
+        LoadConfig.writeconf("全局配置", "怪物公园", gw_park_task)
+        LoadConfig.writeconf("全局配置", "迷你地城", mini_dc_task)
+        LoadConfig.writeconf("全局配置", "强化等级", qh_level)
+        LoadConfig.writeconf("全局配置", "强化优惠卷", qh_youhui)
+        LoadConfig.writeconf("全局配置", "幸运卷轴", xingyun_jz)
+        LoadConfig.writeconf("全局配置", "盾牌卷轴", dunpai_jz)
+        LoadConfig.writeconf("全局配置", "保护卷轴", baohu_jz)
+        LoadConfig.writeconf("全局配置", "离线使用挂机卡", is_exitgame)
+        LoadConfig.writeconf("野图配置", "1队成员", d1_duiyuan)
+        LoadConfig.writeconf("野图配置", "2队成员", d2_duiyuan)
+        LoadConfig.writeconf("野图配置", "3队成员", d3_duiyuan)
+        LoadConfig.writeconf("野图配置", "4队成员", d4_duiyuan)
+        LoadConfig.writeconf("野图配置", "5队成员", d5_duiyuan)
+        LoadConfig.writeconf("野图配置", "6队成员", d6_duiyuan)
+        LoadConfig.writeconf("野图配置", "1队频道", d1_pindao)
+        LoadConfig.writeconf("野图配置", "2队频道", d2_pindao)
+        LoadConfig.writeconf("野图配置", "3队频道", d3_pindao)
+        LoadConfig.writeconf("野图配置", "4队频道", d4_pindao)
+        LoadConfig.writeconf("野图配置", "5队频道", d5_pindao)
+        LoadConfig.writeconf("野图配置", "6队频道", d6_pindao)
+        self.get_messagebox("设置", "配置已更新")
+
+    @staticmethod
+    def get_team_queue():
+        queue_dic = {'team1': QueueManage(), 'team2': QueueManage(), 'team3': QueueManage(),
+                     'team4': QueueManage(), 'team5': QueueManage(), 'team6': QueueManage(), 'team7': QueueManage()}
+        return queue_dic
+
+    @staticmethod
+    def get_team_event():
+        event_dic = {'team1': ThreadTools.new_event(), 'team2': ThreadTools.new_event(),
+                     'team3': ThreadTools.new_event(),
+                     'team4': ThreadTools.new_event(), 'team5': ThreadTools.new_event(),
+                     'team6': ThreadTools.new_event(),
+                     'team7': ThreadTools.new_event()}
+        return event_dic
 
     def set_tasktree(self, tree_obj):
         tree_obj.setColumnCount(2)
@@ -228,11 +589,14 @@ class DzUi:
         child3.setText(1, '混困难炎魔,皮卡啾,女皇')
         child4 = QTreeWidgetItem(tree_obj)
         child4.setText(0, '自动星图')
+        child40 = QTreeWidgetItem(child4)
+        child40.setText(0, '研究所102')
+        child40.setText(1, '40星')
         child19 = QTreeWidgetItem(child4)
         child19.setText(0, '西边森林')
         child19.setText(1, '45星')
         child17 = QTreeWidgetItem(child4)
-        child17.setText(0, '死亡战场')
+        child17.setText(0, '冰冷死亡战场')
         child17.setText(1, '65星')
         child37 = QTreeWidgetItem(child4)
         child37.setText(0, '龙蛋')
@@ -240,6 +604,9 @@ class DzUi:
         child5 = QTreeWidgetItem(child4)
         child5.setText(0, '爱奥斯塔入口')
         child5.setText(1, '90星')
+        child105 = QTreeWidgetItem(child4)
+        child105.setText(0, '奥斯塔入口')
+        child105.setText(1, '105星')
         child18 = QTreeWidgetItem(child4)
         child18.setText(0, '天空露台2')
         child18.setText(1, '110星')
@@ -250,7 +617,7 @@ class DzUi:
         child115.setText(0, '时间漩涡')
         child115.setText(1, '115星')
         child36 = QTreeWidgetItem(child4)
-        child36.setText(0, '忘却4')
+        child36.setText(0, '忘却之路4')
         child36.setText(1, '120星')
         child35 = QTreeWidgetItem(child4)
         child35.setText(0, '偏僻泥沼')
@@ -264,6 +631,9 @@ class DzUi:
         child144 = QTreeWidgetItem(child4)
         child144.setText(0, '灰烬之风高原')
         child144.setText(1, '144星')
+        child147 = QTreeWidgetItem(child4)
+        child147.setText(0, '崎岖的峡谷')
+        child147.setText(1, '147星')
         child6 = QTreeWidgetItem(tree_obj)
         child6.setText(0, '自动野图')
         child7 = QTreeWidgetItem(child6)
@@ -278,17 +648,17 @@ class DzUi:
         child11 = QTreeWidgetItem(child6)
         child11.setText(0, '武器库')
         child11.setText(1, '44w战力')
-        child10 = QTreeWidgetItem(child6)
-        child10.setText(0, '骑士之殿')
-        child10.setText(1, '47w战力')
         child33 = QTreeWidgetItem(child6)
-        child33.setText(0, '崎岖的荒野')
+        child33.setText(0, '崎岖荒野')
         child33.setText(1, '56w战力')
+        child10 = QTreeWidgetItem(child6)
+        child10.setText(0, '木菇菇林')
+        child10.setText(1, '68.5w战力')
         child12 = QTreeWidgetItem(tree_obj)
         child12.setText(0, '其他功能')
-        child13 = QTreeWidgetItem(child12)
-        child13.setText(0, '默认设置')
-        child13.setText(1, '设置游戏及副本入口')
+        # child13 = QTreeWidgetItem(child12)
+        # child13.setText(0, '默认设置')
+        # child13.setText(1, '设置游戏及副本入口')
         child20 = QTreeWidgetItem(child12)
         child20.setText(0, '强化装备')
         child20.setText(1, '默认12,可设置强化等级')
@@ -301,9 +671,9 @@ class DzUi:
         child15 = QTreeWidgetItem(child12)
         child15.setText(0, '穿戴新手宠物')
         child15.setText(1, '仅限新手宠物摆放')
-        child16 = QTreeWidgetItem(child12)
-        child16.setText(0, '开箱子')
-        child16.setText(1, '仅限任务送的箱子')
+        # child16 = QTreeWidgetItem(child12)
+        # child16.setText(0, '开箱子')
+        # child16.setText(1, '仅限任务送的箱子')
 
         # child13 = QTreeWidgetItem(child12)
         # child13.setText(0, '装备技能')
@@ -356,6 +726,16 @@ class DzUi:
         """消息弹窗"""
         QMessageBox.information(self.ui_main, title, text)
 
+    def choose_mnq_file(self):
+        """设置界面，选择模拟器路径"""
+        file_choose_dialog = QFileDialog(self.ui_main, "选择一个文件", "../", "exe(*.exe)")
+        file_choose_dialog.setLabelText(QFileDialog.FileName, "模拟器路径")
+        file_choose_dialog.setLabelText(QFileDialog.Accept, "确认")
+        file_choose_dialog.setLabelText(QFileDialog.Reject, "取消")
+        file_choose_dialog.setFileMode(QFileDialog.ExistingFiles)
+        file_choose_dialog.fileSelected.connect(lambda f_path: self.set_label_text(self.ui_main.line_mnqpath, f_path))
+        file_choose_dialog.open()
+
     def table_btn_row(self):
         """生成列表按钮组件"""
         widget = QWidget()
@@ -370,7 +750,8 @@ class DzUi:
         widget.setLayout(hLayout)
         return widget, start_task_btn, stop_task_btn
 
-    def index_check_box(self, index):
+    @staticmethod
+    def index_check_box(index):
         """生成列表序号勾选框"""
         checkbox = QtWidgets.QCheckBox(str(index))
         checkbox.setCheckState(Qt.Checked)
@@ -398,10 +779,10 @@ class DzUi:
                     if len(self.mnq_thread_tid[mnq_name]) == 0:
                         self.start_btn_dic[mnq_name].setEnabled(False)
 
-                        # def run():
-                        self._do_task_list([mnq_index])
+                        def run():
+                            self._do_task_list([mnq_index])
 
-                        # ThreadTools('', run).start()
+                        ThreadTools('', run).start()
                         self.stop_btn_dic[mnq_name].setEnabled(True)
                     else:
                         self.get_messagebox("错误", f"模拟器序号[{mnq_index}]之前的任务还在停止中,等待几秒后重试")
@@ -412,6 +793,43 @@ class DzUi:
         """列表停止按钮点击事件"""
 
         def _stop():
+            turn_pos = {'up': (146, 471),
+                        'down': (144, 629),
+                        'left': (79, 543),
+                        'right': (239, 544),
+                        'jump': (1207, 624),
+                        'attack': (1074, 619),
+                        'c': (948, 659),
+                        'v': (958, 559),
+                        'd': (1054, 501),
+                        'f': (1148, 505)}
+            multitouch_event = [
+                DownEvent(turn_pos['up'], 0),
+                DownEvent(turn_pos['down'], 1),
+                DownEvent(turn_pos['left'], 2),
+                DownEvent(turn_pos['right'], 3),
+                DownEvent(turn_pos['jump'], 4),
+                DownEvent(turn_pos['attack'], 5),
+                DownEvent(turn_pos['c'], 6),
+                DownEvent(turn_pos['v'], 7),
+                DownEvent(turn_pos['d'], 8),
+                DownEvent(turn_pos['f'], 9),
+                SleepEvent(0.1),
+                UpEvent(0),
+                UpEvent(1),
+                UpEvent(2),
+                UpEvent(3),
+                UpEvent(4),
+                UpEvent(5),
+                UpEvent(6),
+                UpEvent(7),
+                UpEvent(8),
+                UpEvent(9),
+            ]
+            try:
+                dev.touch_proxy.perform(multitouch_event)
+            except NotImplementedError:
+                pass
             ThreadTools.stop_thread_list(mnq_thread_list)  # 利用tid关闭线程
             mnq_thread_list.clear()
 
@@ -419,6 +837,7 @@ class DzUi:
         if button:  # 确定位置
             row_num = self.ui_main.windows_pid.indexAt(button.parent().pos()).row()
             mnq_name = self.ui_main.windows_pid.item(row_num, 1).text()
+            dev = self.dev_list[mnq_name]
             mnq_thread_list = self.mnq_thread_tid[mnq_name]
             # if :
             if not ThreadTools.is_threadname('停止任务', mnq_thread_list):
@@ -453,6 +872,25 @@ class DzUi:
             edit.setTextCursor(cursor)
             edit.ensureCursorVisible()
 
+    def _stop_task(self, index_list):
+
+        def stop_thread():
+            for mnq_index in index_list:
+                mnq_name = MnqTools().use_index_find_name(mnq_index)
+                mnq_thread_list = self.mnq_thread_tid[mnq_name]
+                if len(mnq_thread_list) != 0:
+                    ThreadTools.stop_thread_list(mnq_thread_list)  # 利用tid关闭线程
+                    mnq_thread_list.clear()
+                    self.sn.table_value.emit(mnq_name, 7, "")
+                    self.stop_btn_dic[mnq_name].setEnabled(False)
+                    self.start_btn_dic[mnq_name].setEnabled(True)
+                    # if close_mnq:
+                    #     self.ui_main.windows_pid.removeRow(self.mnq_rownum_dic[mnq_name])  # 移除模拟器
+                    #     MnqTools().quit_mnq_index(mnq_index)
+
+        st = ThreadTools("停止任务", stop_thread)
+        st.start()
+
     def _do_task_list(self, index_list, message=True):
         """启动任务"""
         for mnq_index in index_list:
@@ -475,6 +913,7 @@ class DzUi:
                 if not res:
                     self.get_messagebox("错误", f"模拟器序号[{mnq_index}]连接失败{dev}_检查adb")
                     return False
+                self.dev_list[mnq_name] = dev  # dev是连接成功后的设备对象
                 devinfo = (dev, devname)
                 mnq_name = self.ui_main.windows_pid.item(row_num, 1).text()
                 mnq_thread_list = self.mnq_thread_tid[mnq_name]
@@ -484,31 +923,86 @@ class DzUi:
                 self.sn.table_value.emit(mnq_name, 9, login_time)  # 最近登录时间
                 self.sn.table_value.emit(mnq_name, 10, '0')  # 闪退次数
                 self.sn.log_tab.emit(mnq_name, '------启动任务------')
-                taskdic = self.task_dic(devinfo, mnq_name, task_name)
+                taskdic = self.task_dic(devinfo, mnq_name, task_name, mnq_thread_list)
                 StateMachine(taskdic['执行器'], GlobalEnumG.ExecuteStates, execute_transition, "Wait")
                 StateMachine(taskdic['选择器'], GlobalEnumG.SelectStates, select_transition, "Check")
-                check_mnq_thread(f"{mnq_name}_{task_name}", mnq_thread_list,
-                                 switch_case(self.sn, **taskdic).do_case, thread_while=True)
+                try:
+                    check_mnq_thread(f"{mnq_name}_{task_name}", mnq_thread_list,
+                                     switch_case(self.sn, **taskdic).do_case, thread_while=True)
+                except (ConnectionResetError, RestartTask):
+                    ThreadTools.stop_thread_list(mnq_thread_list)
+                    mnq_thread_list.clear()
+                    self._do_task_list(index_list)
 
-    def task_dic(self, devinfo, mnq_name, task_name):
-        execute = StateExecute(devinfo, mnq_name, self.sn)
-        select = StateSelect(devinfo, mnq_name, self.sn)
+    def restart_task(self, mnq_name, mnq_thread_list):
+        """重启任务"""
+
+        def stop():
+            turn_pos = {'up': (146, 471),
+                        'down': (144, 629),
+                        'left': (79, 543),
+                        'right': (239, 544),
+                        'jump': (1207, 624),
+                        'attack': (1074, 619),
+                        'c': (948, 659),
+                        'v': (958, 559),
+                        'd': (1054, 501),
+                        'f': (1148, 505)}
+            multitouch_event = [
+                DownEvent(turn_pos['up'], 0),
+                DownEvent(turn_pos['down'], 1),
+                DownEvent(turn_pos['left'], 2),
+                DownEvent(turn_pos['right'], 3),
+                DownEvent(turn_pos['jump'], 4),
+                DownEvent(turn_pos['attack'], 5),
+                DownEvent(turn_pos['c'], 6),
+                DownEvent(turn_pos['v'], 7),
+                DownEvent(turn_pos['d'], 8),
+                DownEvent(turn_pos['f'], 9),
+                SleepEvent(0.1),
+                UpEvent(0),
+                UpEvent(1),
+                UpEvent(2),
+                UpEvent(3),
+                UpEvent(4),
+                UpEvent(5),
+                UpEvent(6),
+                UpEvent(7),
+                UpEvent(8),
+                UpEvent(9)]
+            try:
+                dev.touch_proxy.perform(multitouch_event)
+            except NotImplementedError:
+                pass
+            ThreadTools.stop_thread_list(mnq_thread_list)
+            mnq_thread_list.clear()
+
+        dev = self.dev_list[mnq_name]
+        index_list = [self.mnq_rownum_dic[mnq_name]['index']]
+        ThreadTools('Restart', stop).start()
+        self._do_task_list(index_list)
+
+    def task_dic(self, devinfo, mnq_name, task_name, mnq_thread_list):
+        execute = StateExecute(devinfo, mnq_name, self.sn,self.cn_ocr)
+        select = StateSelect(devinfo, mnq_name, self.sn,self.cn_ocr)
         taskdic = {
             '执行器': execute,
             '选择器': select,
             '机器名': mnq_name,
+            '设备名': devinfo[-1],
+            '线程列表': mnq_thread_list,
             '任务名': task_name,
             '位置信息': self.mnq_rownum_dic[mnq_name],
             '队列': {
                 '执行器任务队列': QueueManage(1),
-                '选择器任务队列': QueueManage(10),
+                '选择器任务队列': QueueManage(10, lifo=True),
                 '楼梯队列': QueueManage(1),
                 '方向队列': QueueManage(1),
                 '每日任务队列': QueueManage(),
-                '队伍队列': {'team1': QueueManage(), 'team2': QueueManage(), 'team3': QueueManage(),
-                         'team4': QueueManage(), 'team5': QueueManage(), 'team6': QueueManage(), 'team7': QueueManage()}
+                '休息队列': QueueManage(),
+                '队伍队列': self.team_queue_dic,
+                '队伍锁': self.team_event_dic,
             }
-
         }
         return taskdic
 
@@ -517,7 +1011,7 @@ class DzUi:
 
         def ldconsole_find_dev():
             mnq_index_list, mnq_name_list, mnq_devname_list = MnqTools().get_mnq_list()
-            print(mnq_index_list, mnq_name_list, mnq_devname_list)
+            # print(mnq_index_list, mnq_name_list, mnq_devname_list)
             self.sn.windows_pid.emit(self.ui_main.windows_pid, mnq_index_list, mnq_name_list, mnq_devname_list)
 
         def phone_devices():
@@ -528,7 +1022,6 @@ class DzUi:
             if self.ui_main.get_windows.isEnabled():
                 self.get_timer.start()
                 self.ui_main.get_windows.setEnabled(False)
-            print()
             ld_thread = ThreadTools("获取模拟器窗口句柄", ldconsole_find_dev)
             ld_thread.start()
         except Exception as e:
@@ -614,18 +1107,18 @@ class DzUi:
             if pinfo_list[i] in self.log_tab_dic.keys():
                 pass
             else:
-                try:
-                    wd = QtWidgets.QWidget()
-                    ed = QtWidgets.QTextEdit()
-                    ed.setReadOnly(True)
-                    layout = QVBoxLayout()
-                    layout.addWidget(ed)
-                    self.log_tab_dic[pinfo_list[i]] = ed
-                    wd.setLayout(layout)
-                    self.ui_main.log_tab_wid.insertTab(i, wd, f"窗口{index_list[i]}")
-                except BaseException as e:
-                    # DTools.error_log(e)
-                    print(e)
+                # try:
+                wd = QtWidgets.QWidget()
+                ed = QtWidgets.QTextEdit()
+                ed.setReadOnly(True)
+                layout = QVBoxLayout()
+                layout.addWidget(ed)
+                self.log_tab_dic[pinfo_list[i]] = ed
+                wd.setLayout(layout)
+                self.ui_main.log_tab_wid.insertTab(i, wd, f"窗口{index_list[i]}")
+                # except BaseException as e:
+                #     # DTools.error_log(e)
+                #     print(e)
         if len(self.dev_obj_list) > 0:
             for i in range(num):
                 if not pinfo_list[i] in self.dev_obj_list.keys():
@@ -657,6 +1150,16 @@ class DzUi:
             self.ui_main.get_windows.setText(f"获取窗口信息")
             self.get_time = 5
 
+    def close_btnrefresh(self):
+        if self.stop_time > 0:
+            self.ui_main.close_all_task_btn.setText(f"{self.stop_time}秒后可点击")
+            self.stop_time -= 1
+        else:
+            self.stop_timer.stop()
+            self.ui_main.close_all_task_btn.setEnabled(True)
+            self.ui_main.close_all_task_btn.setText(f"全部停止")
+            self.stop_time = 3
+
 
 def main():
     app = QApplication(sys.argv)
@@ -664,6 +1167,5 @@ def main():
     dz.ui_main.show()
     app.exec_()
 
-
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()

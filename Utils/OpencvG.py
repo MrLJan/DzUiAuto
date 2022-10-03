@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
 import time
 
 import numpy as np
@@ -8,8 +7,8 @@ from airtest.core.android.touch_methods.base_touch import DownEvent, SleepEvent,
 from airtest.core.error import TargetNotFoundError
 from cnocr import CnOcr
 
-from Enum.ResEnum import GlobalEnumG, ImgEnumG, BatEnumG
-from UiPage import DailyTaskG
+from Enum.ResEnum import GlobalEnumG
+# from UiPage import DailyTaskG
 # from UiPage import UpRoleG
 # from UiPage import RewardG
 # from UiPage import AutoBatG
@@ -17,7 +16,7 @@ from UiPage import DailyTaskG
 # from UiPage import StateCheckG
 from Utils.Devicesconnect import DevicesConnect
 from Utils.ExceptionTools import NotFindImgErr
-from Utils.QueueManageTools import QueueManage
+from Utils.OtherTools import OT
 
 
 class OpenCvTools:
@@ -34,7 +33,7 @@ class OpenCvTools:
         expoint = ''
         for point in r:
             expoint += str(hex(point))[-2:].replace('x', '0').upper()
-        print(expoint)
+        # print(expoint)
         if expoint == find_color:
             if clicked:
                 self.dev.touch((get_x, get_y))
@@ -46,7 +45,6 @@ class OpenCvTools:
     def mulcolor_check(self, find_list, clicked=True, touch_wait=GlobalEnumG.TouchWaitTime):
         """对比多个点的颜色，只要有一个错误就返回"""
         for _p in find_list:
-            print(_p)
             if self.get_rgb(_p[0], _p[1]) != _p[-1]:
                 return False
         if clicked:
@@ -137,8 +135,7 @@ class AirImgTools:
                         res = pos['result']
                         pos_list.append(res)
                     return True, pos_list
-        except TargetNotFoundError as e:
-            print(e.value)
+        except TargetNotFoundError:
             return False, (0, 0)
 
     def air_loop_find(self, temp, clicked=True, timeout=GlobalEnumG.FindImgTimeOut,
@@ -163,8 +160,7 @@ class AirImgTools:
                             if touch_wait > 0:
                                 time.sleep(touch_wait)
                     return True
-        except TargetNotFoundError as e:
-            print(e.value)
+        except TargetNotFoundError:
             return False
 
     def air_touch(self, touch_xy, duration=0.2, touch_wait=0):
@@ -194,18 +190,34 @@ class AirImgTools:
                 UpEvent(0), UpEvent(1)
             ]
         else:
-            multitouch_event = [
-                DownEvent(t_pos, 0),  # 手指1按下(100, 100)
-                DownEvent(a_pos, 1),  # 手指2按下(200, 200)
-                UpEvent(1),
-                SleepEvent(0.1),
-                DownEvent(a_pos, 1),
-                SleepEvent(0.1),
-                UpEvent(1),
-                SleepEvent(k_time),
-                UpEvent(0)
-            ]
-            # UpEvent(0), UpEvent(1)]  # 2个手指分别抬起
+            if action == 'jump' and turn != 'down':
+                multitouch_event = [
+                    DownEvent(self.turn_pos['up'], 2),
+                    DownEvent(t_pos, 0),  # 手指1按下(100, 100)
+                    DownEvent(a_pos, 1),  # 手指2按下(200, 200)
+                    UpEvent(1),
+                    SleepEvent(0.1),
+                    DownEvent(a_pos, 1),
+                    SleepEvent(0.1),
+                    UpEvent(1),
+                    SleepEvent(k_time),
+                    UpEvent(2),
+                    UpEvent(0)
+                ]
+                # UpEvent(0), UpEvent(1)]  # 2个手指分别抬起
+            else:
+                multitouch_event = [
+                    DownEvent(t_pos, 0),  # 手指1按下(100, 100)
+                    DownEvent(a_pos, 1),  # 手指2按下(200, 200)
+                    UpEvent(1),
+                    SleepEvent(0.1),
+                    DownEvent(a_pos, 1),
+                    SleepEvent(0.1),
+                    UpEvent(1),
+                    SleepEvent(k_time),
+                    UpEvent(0)
+                ]
+                # UpEvent(0), UpEvent(1)]  # 2个手指分别抬起
         self.dev.touch_proxy.perform(multitouch_event)
 
 
@@ -221,6 +233,7 @@ class ImageCreat:
 class CnOcrTool:
     def __init__(self):
         self.dev = None
+        self.cn_ocr = None
 
     def ocr_find(self, ocr_list, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime):
         """
@@ -233,13 +246,14 @@ class CnOcrTool:
         x1, y1, x2, y2 = ocr_list[0]
         screen = self.dev.snapshot()
         img_fp = aircv.crop_image(screen, (x1, y1, x2, y2))
-        ocr = CnOcr(rec_model_name='densenet_lite_136-fc',
-                    det_model_name='ch_PP-OCRv3_det')  # 'ch_PP-OCRv3_det')  # ch_PP-OCRv3繁体中文匹配模型
-        out = ocr.ocr(img_fp)
+        t1 = time.time()
+        out = self.cn_ocr.ocr(img_fp, resized_shape=(720, 1280), batch_size=1)
+        print(time.time() - t1)
         if len(out) == 0:
             return False
         for i in range(len(out)):
             ntext = out[i]['text']
+            print(ntext)
             if ocr_list[-1] in ntext:
                 npar = out[i]['position']
                 ls = npar.tolist()
@@ -249,7 +263,6 @@ class CnOcrTool:
                     self.dev.touch((lx + x1, ly + y1))
                     if touch_wait > 0:
                         time.sleep(touch_wait)
-                print(ocr_list[-1])
                 return True
         return False
 
@@ -258,9 +271,7 @@ class CnOcrTool:
         x1, y1, x2, y2 = ocr_list[0]
         screen = self.dev.snapshot()
         img_fp = aircv.crop_image(screen, (x1, y1, x2, y2))
-        ocr = CnOcr(rec_model_name='densenet_lite_136-fc',
-                    det_model_name='ch_PP-OCRv3_det')  # 'ch_PP-OCRv3_det')  # ch_PP-OCRv3繁体中文匹配模型
-        out = ocr.ocr(img_fp)
+        out = self.cn_ocr.ocr(img_fp)
         if len(out) == 0:
             return False
         for i in range(len(out)):
@@ -281,13 +292,12 @@ class CnOcrTool:
         """
         screen = self.dev.snapshot()
         img_fp = aircv.crop_image(screen, area)
-        ocr = CnOcr(rec_model_name='densenet_lite_136-fc',
-                    det_model_name='ch_PP-OCRv3_det')  # 'ch_PP-OCRv3_det')  # ch_PP-OCRv3繁体中文匹配模型
-        out = ocr.ocr(img_fp)
+        out = self.cn_ocr.ocr_for_single_line(img_fp)
+        # print(out)
         if len(out) == 0:
             return False
         for i in range(len(out)):
-            ntext = out[i]['text']
+            ntext = out['text']
             return ntext
 
     def get_all_ocr(self, area):
@@ -295,9 +305,7 @@ class CnOcrTool:
         x1, y1, x2, y2 = area
         img_fp = aircv.crop_image(screen, area)
         res_list = []
-        ocr = CnOcr(rec_model_name='densenet_lite_136-fc',
-                    det_model_name='ch_PP-OCRv3_det')  # 'ch_PP-OCRv3_det')  # ch_PP-OCRv3繁体中文匹配模型
-        out = ocr.ocr(img_fp)
+        out = self.cn_ocr.ocr(img_fp)
         if len(out) == 0:
             return False
         for i in range(len(out)):
@@ -314,105 +322,46 @@ class CnOcrTool:
 if __name__ == '__main__':
     # img_fp = r'D:\DzAutoUi\Res\img\21.bmp'
     # res, dev = DevicesConnect('emulator-5554').connect_device()
-    res2, dev2 = DevicesConnect('127.0.0.1:5557').connect_device()
+    res2, dev2 = DevicesConnect('127.0.0.1:5555').connect_device()
     print(res2, dev2)
     # img=G.DEVICE.snapshot()
     # aircv.imwrite(r'D:\DzAutoUi\Res\img\21.png',img)
     # loop_find(img_fp)
-    try:
-        # start_time = time.time()
-        # print(start_time)
-        c = CnOcrTool()
-        a = AirImgTools()
-        o = OpenCvTools()
-        c.dev = dev2
-        a.dev = dev2
-        o.dev = dev2
-        # while True:
-        #     r=c.crop_image_find(ImgEnumG.PERSON_POS,clicked=False,get_pos=True)
-        #     print(r)
-        # r = c.mul_point_touch('down', 'jdown', k_time=1)
-        # r=UpRoleG.UpRoleG((dev2,'emulator-5556'),'ld1',1).upequip()
-        # while True:
-        #     r=c.crop_image_find(ImgEnumG.PERSON_POS,clicked=False,get_pos=True)
-        #     print(r)
-        #     time.sleep(1)
-        # r=c.mul_point_touch('down', 'jump',long_click=True)
-        # louti_queue = QueueManage(1)
-        # turn_queue = QueueManage(1)
-        # auto_wait = QueueManage(1)
-        # map_data=BatEnumG.MAP_DATA['爱奥斯塔入口']
-        # while True:
-        #     AutoBatG.AutoBatG((dev2,'emulator-5554'),1,1).keyboard_bat(map_data, 1,auto_wait,1,louti_queue,turn_queue)
-        # r=StateCheckG.StateCheckG((dev2,'emulator-5554'),1,1).get_num((685,189,721,218))
-        # r=TeamStateG.TeamStateG((dev2,'emulator-5554'),1,1).choose_pindao()
-        # r=DailyTaskG.DailyTaskAutoG((dev2,'emulator-5556'),1,1).hdboss_task()
-        # r=UpRoleG.UpRoleG((dev2,'emulator-5554'),'ld1',1).strongequip()
-        # r=a.crop_image_find(ImgEnumG.YM_READY)
-        # r=a.air_loop_find(ImgEnumG.UI_QR,False)
-        r=c.ocr_find(ImgEnumG.MNDC_JSQR,True)
-        # a.air_swipe((925, 432), (400, 432))
-        # r = c.get_ocrres((464,324,804,362))#((568,313,708,346))#自勤速腺中
-        # 稻路状熊不佳，伺服器回鹰延避中 招路状熊不佳，伺服器回鹰处涯中
-        #游咸罪元结束!275秒俊自勤退出
-
-        # r=o.get_rgb(1180, 653)
-        print(r)
-        # r = c.get_ocrres((157,516,188,543))
-        # for i in r:
-        #     a.air_touch(i,touch_wait=1)
-        # for i in range(3):
-        #     r=o.get_rgb(1238,284+i)
-        #     print(r)
-        # r=a.air_loop_find(ImgEnumG.EQ_UP_QR)
-
-        # print(r3)
-        #     for pos in r[-1]:
-        #         a.air_touch(pos)
-        # print(r)
-        # r=c.air_swipe((912,507),(912,343))
-        # r = c.get_all_text([(740,234,1254,266),'装'])
-        # r=c.get_rgb(1122,648)
-        # r = c.ocr_find([(577,157,704,196),'装'])
-        # r = c.get_all_text([(779,664,864,689),'装'])
-        # try:
-        #     r=c.get_ocrres((1116,368,1184,387))
-        #     print(int(r))
-        # except ValueError:
-        #     print(0)
-        # r=touch(ImgEnumG.GAME_ICON,times=1)
-        # AirImgTools.air_loop_find(ImgEnumG.TEST, 0.1)
-        # r=CnOcrTool.ocr_find(0,0,1280,720,'rr')
-        # r = ImgEnumG.LOGIN_FLAG1[0]
-        # x = ImgEnumG.LOGIN_FLAG1[-1]
-        # print(r, x)
-        # r1 = AirImgTools.crop_image_find(dev, ImgEnumG.GAME_ICON)
-        # r = AirImgTools.crop_image_find(dev2, ImgEnumG.GAME_ICON, True)
-        # r=OpenCvTools().mulcolor_check(UiEnumG.BAG_UI)
-        # print(r, r1)
-        # print(time.time() - start_time)
-    except TargetNotFoundError:
-        print('err')
-    # r=AirImgTools.air_loop_find(ResEnumG.GAME_ICON,1)
-
-    # ocr = CnOcr(rec_model_name='densenet_lite_136-fc',det_model_name='ch_PP-OCRv3_det')
-    # out = ocr.ocr(img_fp)
-    # print(out)
-    # img = cv2.imread(r"C:\Users\igg\Pictures\08_18_21_04_39.bmp")
-    # print(aircv.get_resolution(img))
-    # resize = cv2.resize(img, (), fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
-    # OpenCvTools(img).find_color()
-    # t = time.time()
-    # r = OpenCvTools(img).find_color(1250, 160, 1255, 172, 'DCDEE1')
-    # t2 = time.time() - t
-    # print(t2, r)
-    # print(len(img))
-    # img2 = aircv.crop_image(img, (100, 200, 151, 252))
-    # print(len(img2))
-    # print(aircv.get_resolution(img2))
-    # OpenCvTools(img2).get_rgb(10, 10)
-    # print(type(img2))
-    # cv2.imshow('t', img2)
+    c = CnOcrTool()
+    a = AirImgTools()
+    o = OpenCvTools()
+    c.dev = dev2
+    a.dev = dev2
+    o.dev = dev2
     # while True:
-    #     if cv2.waitKey(0):
-    #         break
+    #     r=c.crop_image_find(ImgEnumG.PERSON_POS,clicked=False,get_pos=True)
+    #     print(r)
+    # r = c.mul_point_touch('down', 'jdown', k_time=1)
+    # r=UpRoleG.UpRoleG((dev2,'emulator-5556'),'ld1',1).upequip()
+
+    # r=c.mul_point_touch('down', 'jump',long_click=True)
+    # louti_queue = QueueManage(1)
+    # turn_queue = QueueManage(1)
+    # auto_wait = QueueManage(1)
+    # map_data=BatEnumG.MAP_DATA['爱奥斯塔入口']
+    # while True:
+    #     AutoBatG.AutoBatG((dev2,'emulator-5554'),1,1).keyboard_bat(map_data, 1,auto_wait,1,louti_queue,turn_queue)
+    # r=StateCheckG.StateCheckG((dev2,'emulator-5554'),1,1).get_num((685,189,721,218))
+    # r=TeamStateG.TeamStateG((dev2,'emulator-5554'),1,1).choose_pindao()
+    # r=DailyTaskG.DailyTaskAutoG((dev2,'emulator-5556'),1,1).boss_task()
+    # r=UpRoleG.UpRoleG((dev2,'emulator-5554'),'ld1',1).strongequip()
+    # r=RewardG.RewardG((dev2,'emulator'),'ld1',1).get_equip()
+    # r=a.crop_image_find(ImgEnumG.L_BS)
+    # r=a.air_loop_find(ImgEnumG.FJ_HE2)
+    # r=a.find_all_pos(ImgEnumG.ZB_TS)
+
+    r = c.ocr_find([(0, 0, 1280, 720), 'LV'])
+    # a.air_swipe((925, 432), (400, 432))x
+    # r = c.get_ocrres((41, 66, 165, 87))  # ((568,313,708,346))#自勤速腺中
+    # r=o.get_rgb(1167, 642)
+    print(r)
+    # while True:
+    #     r=a.crop_image_find(ImgEnumG.PERSON_POS,clicked=False,get_pos=True)
+    #     print(r)
+    #     time.sleep(1)
+#

@@ -1,4 +1,4 @@
-# -*- encoding=utf8 -*-
+# -*- coding:utf-8 -*-
 import os
 
 from Utils.LoadConfig import LoadConfig
@@ -32,9 +32,10 @@ class MnqTools:
                 if mnq_name[7] != '1280' or mnq_name[8] != '720':
                     # self.reboot_mnq_index(mnq_name[0])
                     self.reset_resolution(mnq_name[0])
-                    print(f'模拟器:{mnq_name[1]}大小异常,已重设')
+                    # print(f'模拟器:{mnq_name[1]}大小异常,已重设')
                 # self.lockwindow(mnq_name[0])
-                devname = 'emulator-'+str(int(mnq_name[0]) * 2 + 5554)  # 雷电模拟器默认5554开始
+                devname = '127.0.0.1:' + str(int(mnq_name[0]) * 2 + 5555)
+                # devname = 'emulator-'+str(int(mnq_name[0]) * 2 + 5554)  # 雷电模拟器默认5554开始
                 mnq_index_list.append(mnq_name[0])
                 mnq_name_list.append(mnq_name[1])
                 mnq_devname_list.append(devname)
@@ -75,6 +76,27 @@ class MnqTools:
         """根据模拟器名关闭模拟器"""
         cmd = os.popen(self.ld_path + r" quit --name " + str(name))
         cmd.close()
+
+    def running_mnq_list(self, mnq_name):
+        cmd = os.popen(self.ld_path + r" runninglist")
+        running_list = cmd.read()
+        cmd.close()
+        mnq_name_list = running_list.split('\n')
+        if mnq_name in mnq_name_list:
+            return True
+        return False
+
+    def start_mnq_all(self):
+        f = os.popen(self.ld_path + f" list")
+        t = f.read().split('\n')
+        f.close()
+        for i in t:
+            if i == '':
+                t.pop(t.index(i))
+        for i in range(len(t)):
+            cmd = os.popen(self.ld_path + f" launch --index {i}")
+            cmd.close()
+            print(f"模拟器 {t[i]} 启动")
 
     def quit_mnq_all(self):
         """退出所有模拟器"""

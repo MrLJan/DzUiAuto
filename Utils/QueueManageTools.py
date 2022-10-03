@@ -1,14 +1,12 @@
-# -*- encoding=utf8 -*-
-from queue import Queue
-
-from Utils.OtherTools import OT
+# -*- coding: utf-8 -*-
+from queue import Queue, LifoQueue
 
 
 class QueueManage:
     """状态队列，后续用来检查游戏状态"""
 
-    def __init__(self, num=50):
-        self.queue = Queue(num)
+    def __init__(self, num=50,lifo=False):
+        self.queue = Queue(num) if not lifo else LifoQueue(num)
 
     def put_queue(self, key):
         """存数据"""
@@ -52,16 +50,17 @@ class QueueManage:
 
 
 if __name__ == '__main__':
-    obj = QueueManage()
+    obj = QueueManage(lifo=True)
 
     # for i in range(5):
     #     obj.put_queue(i)
     obj.put_queue(1)
     obj.put_queue(2)
-    obj.put_queue(3)
+    obj.put_queue(2)
+    print(obj.queue.qsize())
     # print(obj.queue.empty())
     print(obj.get_task())
-    print(obj.task_over(2))
+    print(obj.get_task())
     print(obj.get_task())
     print(obj.task_over(3))
     print(obj.task_over(2))
@@ -73,6 +72,6 @@ if __name__ == '__main__':
     # print(obj.queue.qsize())
     # obj.get_queue('q')
     if obj.queue.qsize() > 1:
-        print(11)
+        print(obj.queue.qsize())
     else:
         print(21)

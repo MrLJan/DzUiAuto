@@ -13,7 +13,7 @@
     <x>0</x>
     <y>0</y>
     <width>1259</width>
-    <height>663</height>
+    <height>742</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -65,7 +65,7 @@
           <height>401</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0">
+        <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0">
          <item>
           <widget class="QTableWidget" name="windows_pid">
            <property name="enabled">
@@ -366,13 +366,6 @@
            </item>
           </layout>
          </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_31" stretch="3">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_11"/>
-           </item>
-          </layout>
-         </item>
         </layout>
        </widget>
       </widget>
@@ -661,7 +654,7 @@
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>170</y>
+          <y>90</y>
           <width>531</width>
           <height>41</height>
          </rect>
@@ -715,7 +708,7 @@
         <property name="geometry">
          <rect>
           <x>200</x>
-          <y>150</y>
+          <y>70</y>
           <width>101</width>
           <height>21</height>
          </rect>
@@ -754,24 +747,11 @@
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
-       <widget class="QLabel" name="label_15">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>370</y>
-          <width>241</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>例:幻影是长按技能类型,凯撒是短按</string>
-        </property>
-       </widget>
        <widget class="Line" name="line_2">
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>140</y>
+          <y>60</y>
           <width>551</width>
           <height>16</height>
          </rect>
@@ -953,7 +933,7 @@
           <x>560</x>
           <y>130</y>
           <width>367</width>
-          <height>136</height>
+          <height>164</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -1118,13 +1098,50 @@
            </item>
           </layout>
          </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_12" stretch="1,2,1,2,6">
+           <item>
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>HP数量</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="hp_num_edit"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_16">
+             <property name="text">
+              <string>MP数量</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="mp_num_edit"/>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
         </layout>
        </widget>
        <widget class="QLabel" name="label_45">
         <property name="geometry">
          <rect>
           <x>190</x>
-          <y>280</y>
+          <y>190</y>
           <width>121</width>
           <height>21</height>
          </rect>
@@ -1143,44 +1160,11 @@
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
-       <widget class="QWidget" name="horizontalLayoutWidget_9">
-        <property name="geometry">
-         <rect>
-          <x>100</x>
-          <y>310</y>
-          <width>287</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_23">
-         <item>
-          <widget class="QLabel" name="label_46">
-           <property name="text">
-            <string>低于120级不生效</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="pkj_box">
-           <property name="text">
-            <string>皮卡啾</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="nh_box">
-           <property name="text">
-            <string>女皇</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
        <widget class="QWidget" name="horizontalLayoutWidget_2">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>210</y>
+          <y>130</y>
           <width>537</width>
           <height>31</height>
          </rect>
@@ -1223,24 +1207,11 @@
          </item>
         </layout>
        </widget>
-       <widget class="QCheckBox" name="hd_boss_box">
-        <property name="geometry">
-         <rect>
-          <x>130</x>
-          <y>340</y>
-          <width>231</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>混沌炎魔(在打完普通王图后开始混）</string>
-        </property>
-       </widget>
        <widget class="QCheckBox" name="gw_park_box">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>250</y>
+          <y>170</y>
           <width>141</width>
           <height>16</height>
          </rect>
@@ -1248,6 +1219,124 @@
         <property name="text">
          <string>怪物公园（140级）</string>
         </property>
+       </widget>
+       <widget class="QWidget" name="verticalLayoutWidget_3">
+        <property name="geometry">
+         <rect>
+          <x>130</x>
+          <y>330</y>
+          <width>261</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_9">
+         <item>
+          <widget class="QCheckBox" name="hd_boss_box">
+           <property name="text">
+            <string>混沌炎魔(在打完普通王图后开始混）</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>130</x>
+          <y>300</y>
+          <width>261</width>
+          <height>30</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_27">
+         <item>
+          <widget class="QCheckBox" name="nh_box">
+           <property name="text">
+            <string>女皇</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="nh_pt_rbtn">
+           <property name="text">
+            <string>普通</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="nh_kn_rbtn">
+           <property name="text">
+            <string>困难</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>130</x>
+          <y>240</y>
+          <width>261</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_23">
+         <item>
+          <widget class="QCheckBox" name="ym_box">
+           <property name="text">
+            <string>炎魔</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="ym_pt_rbtn">
+           <property name="text">
+            <string>普通</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="ym_kn_rbtn">
+           <property name="text">
+            <string>困难</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>130</x>
+          <y>270</y>
+          <width>261</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_26">
+         <item>
+          <widget class="QCheckBox" name="pkj_box">
+           <property name="text">
+            <string>皮卡啾</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="pkj_pt_rbtn">
+           <property name="text">
+            <string>普通</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="pkj_kn_rbtn">
+           <property name="text">
+            <string>困难</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </widget>
       <widget class="QWidget" name="tab_2">
@@ -1485,25 +1574,6 @@
          </item>
         </layout>
        </widget>
-       <widget class="QLabel" name="label_16">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>200</y>
-          <width>281</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>频道范围：1-54,105-154</string>
-        </property>
-       </widget>
        <widget class="QWidget" name="verticalLayoutWidget_6">
         <property name="geometry">
          <rect>
@@ -1574,47 +1644,6 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_12" stretch="2,2,1,0,5">
-           <item>
-            <widget class="QLabel" name="label_21">
-             <property name="text">
-              <string>检查金币间隔</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="get_gold_time_edit"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_22">
-             <property name="text">
-              <string>分钟</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_41">
-             <property name="text">
-              <string>（野图和星图生效,统计金币收益）</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_16">
            <item>
             <widget class="QLabel" name="label_7">
@@ -1660,7 +1689,7 @@
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>220</y>
+          <y>190</y>
           <width>401</width>
           <height>31</height>
          </rect>
@@ -1846,28 +1875,6 @@
          </item>
         </layout>
        </widget>
-       <widget class="QLabel" name="label_39">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>250</y>
-          <width>221</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>短按职业挂机技能要摆满！</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
        <widget class="Line" name="line">
         <property name="geometry">
          <rect>
@@ -1893,6 +1900,41 @@
         <property name="text">
          <string>保存设置</string>
         </property>
+       </widget>
+       <widget class="QWidget" name="horizontalLayoutWidget_3">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>220</y>
+          <width>401</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLabel" name="label_15">
+           <property name="text">
+            <string>例:幻影是长按技能类型,凯撒是短按</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_39">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>短按职业挂机技能要摆满！</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </widget>
      </widget>
@@ -1932,7 +1974,7 @@
    <property name="geometry">
     <rect>
      <x>980</x>
-     <y>80</y>
+     <y>70</y>
      <width>271</width>
      <height>251</height>
     </rect>
@@ -1971,23 +2013,7 @@
       </item>
      </layout>
     </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout_5"/>
-    </item>
    </layout>
-  </widget>
-  <widget class="QTabWidget" name="log_tab_wid">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>450</y>
-     <width>961</width>
-     <height>201</height>
-    </rect>
-   </property>
-   <property name="currentIndex">
-    <number>-1</number>
-   </property>
   </widget>
   <widget class="QTextEdit" name="console_text">
    <property name="geometry">
@@ -1995,44 +2021,18 @@
      <x>980</x>
      <y>450</y>
      <width>271</width>
-     <height>201</height>
+     <height>241</height>
     </rect>
    </property>
    <property name="readOnly">
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QPushButton" name="check_ziti_btn">
-   <property name="geometry">
-    <rect>
-     <x>750</x>
-     <y>510</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>检查字体</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="open_ziti_btn">
-   <property name="geometry">
-    <rect>
-     <x>790</x>
-     <y>570</y>
-     <width>80</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>开启字体平滑</string>
-   </property>
-  </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>1120</x>
-     <y>340</y>
+     <y>320</y>
      <width>131</width>
      <height>101</height>
     </rect>
@@ -2053,9 +2053,9 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="win_index_btn">
+     <widget class="QPushButton" name="choose_stop_btn">
       <property name="text">
-       <string>窗口排序</string>
+       <string>停止选中</string>
       </property>
      </widget>
     </item>
@@ -2065,9 +2065,9 @@
    <property name="geometry">
     <rect>
      <x>980</x>
-     <y>340</y>
+     <y>320</y>
      <width>131</width>
-     <height>112</height>
+     <height>101</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2079,37 +2079,41 @@
      </widget>
     </item>
     <item>
+     <widget class="QPushButton" name="choose_ot_btn">
+      <property name="text">
+       <string>反选</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QPushButton" name="choose_cannel_btn">
       <property name="text">
        <string>取消选中</string>
       </property>
      </widget>
     </item>
-    <item>
-     <widget class="QPushButton" name="choose_todo_btn">
-      <property name="text">
-       <string>执行选中</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="choose_stop_btn">
-      <property name="text">
-       <string>停止选中</string>
-      </property>
-     </widget>
-    </item>
    </layout>
+  </widget>
+  <widget class="QTabWidget" name="log_tab_wid">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>450</y>
+     <width>961</width>
+     <height>241</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>-1</number>
+   </property>
   </widget>
   <zorder>console_text</zorder>
   <zorder>layoutWidget</zorder>
-  <zorder>open_ziti_btn</zorder>
-  <zorder>check_ziti_btn</zorder>
   <zorder>verticalLayoutWidget</zorder>
   <zorder>verticalLayoutWidget_4</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>layoutWidget</zorder>
   <zorder>log_tab_wid</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>layoutWidget</zorder>
  </widget>
  <tabstops>
   <tabstop>console_text</tabstop>

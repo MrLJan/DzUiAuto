@@ -1,9 +1,10 @@
-# -*- coding: utf-8 -*-
+# -*- coding:utf-8 -*-
 import time
 
 from airtest.core.android import Android
 from Enum.ResEnum import GlobalEnumG, ImgEnumG
 from Utils.Devicesconnect import DevicesConnect
+from Utils.ExceptionTools import NotInGameErr, FuHuoRoleErr
 from Utils.OpencvG import OpenCvTools, AirImgTools, CnOcrTool
 
 
@@ -12,6 +13,7 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
         super(OpenCvTools, self).__init__()
         self.dev = None
         self.serialno = None
+        self.cn_ocr=None
 
     @staticmethod
     def time_sleep(sleep_time):
@@ -52,34 +54,59 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
                 return True
         return False
 
+    def check_allpic(self, pic_list, clicked=True):
+        """检查多个图，未找到其中1个则返回Flase"""
+        for pic in pic_list:
+            if not self.crop_image_find(pic, clicked):
+                return False
+        return True
+
     def check_close(self):
         if self.crop_image_find(ImgEnumG.GAME_ICON, False):
-            return False
-        if self.ocr_find(ImgEnumG.NET_ERR):#掉线
+            raise NotInGameErr
+        if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            return True
+        if self.ocr_find(ImgEnumG.NET_ERR):  # 网络异常掉线
             _TIMES = 0
             for i in range(10):
                 if _TIMES > 5:
                     self.stop_game(self.serialno)
-                    return False
+                    raise NotInGameErr
                 if self.ocr_find(ImgEnumG.NET_ERR):
                     _TIMES += 1
                     self.time_sleep(10)
         self.crop_image_find(ImgEnumG.CZ_FUHUO)
         self.crop_image_find(ImgEnumG.UI_LB)
         self.crop_image_find(ImgEnumG.UI_CLOSE)
-        return True
+        self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
+        self.air_loop_find(ImgEnumG.UI_QR)
+        return False
+
+    def check_err(self):
+        if self.air_loop_find(ImgEnumG.GAME_ICON, False):
+            raise NotInGameErr
+        if self.crop_image_find(ImgEnumG.CZ_FUHUO):
+            raise FuHuoRoleErr
+        if self.ocr_find(ImgEnumG.AUTO_JG):
+            self.air_loop_find(ImgEnumG.UI_QR)
+        self.crop_image_find(ImgEnumG.UI_LB)
 
     def close_window(self):
         for i in range(10):
             if self.air_loop_find(ImgEnumG.GAME_ICON, False):
-                return False
+                raise NotInGameErr
+            if self.crop_image_find(ImgEnumG.CZ_FUHUO):
+                raise FuHuoRoleErr
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 return True
             self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
             self.air_loop_find(ImgEnumG.UI_CLOSE)
             self.air_loop_find(ImgEnumG.UI_LB)
             self.air_loop_find(ImgEnumG.QD_1)
+            self.air_loop_find(ImgEnumG.UI_QR)
             self.air_loop_find(ImgEnumG.LOGIN_TIPS)
+            if i > 5:
+                self.key_event(self.serialno, 'BACK')
         return False
 
     def get_num(self, area):

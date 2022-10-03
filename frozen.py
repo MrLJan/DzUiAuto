@@ -1,4 +1,4 @@
-# coding=gbk
+# -*- coding: utf-8 -*-
 import os
 import sys
 
@@ -6,9 +6,9 @@ import sys
 def exe_path():
     if hasattr(sys, 'frozen'):
         path_sys = os.path.dirname(sys.executable)
-        return path_sys  # 使用pyinstaller打包后的exe目录
+        return path_sys  # 浣跨敤pyinstaller鎵撳寘鍚庣殑exe鐩綍
     path_py = os.path.dirname(__file__)
-    return path_py  # 没打包前的py目录
+    return path_py  # 娌℃墦鍖呭墠鐨刾y鐩綍
 
 
 path = exe_path()
