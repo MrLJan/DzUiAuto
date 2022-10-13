@@ -45,6 +45,7 @@ class BuyYErr(BaseError):
     """没药"""
     pass
 
+
 class RestartTask(BaseError):
     """重启任务"""
     pass

@@ -2,7 +2,7 @@
 import random
 import time
 
-from Enum.ResEnum import ImgEnumG, GlobalEnumG
+from Enum.ResEnum import ImgEnumG, GlobalEnumG, ColorEnumG
 from UiPage.BasePage import BasePageG
 
 
@@ -15,6 +15,7 @@ class AutoBatG(BasePageG):
         self.mnq_name = mnq_name
         self.move_spend = 0
         self.cn_ocr = ocr
+
 
     def _get_move_xy(self):
         return self.crop_image_find(ImgEnumG.PERSON_POS, clicked=False, get_pos=True)
@@ -246,34 +247,36 @@ class AutoBatG(BasePageG):
         louti_queue = kwargs['战斗数据']['楼梯队列']
         turn_queue = kwargs['战斗数据']['方向队列']
         use_mp = kwargs['挂机设置']['无蓝窗口']
-        self.crop_image_find(ImgEnumG.S_MAP)  # 打开小地图
-        if not self.ocr_find(ImgEnumG.AUTO_BAT_OCR):
-            self.air_touch((418, 655))  # 关闭自动战斗
-            # 点击确认战斗结果
-        self.ocr_find(ImgEnumG.XC_OCR, True)
-        for i in range(10):
-            if self.ocr_find(ImgEnumG.AUTO_JG):
-                self.air_loop_find(ImgEnumG.UI_QR)
+        i=0
+        while True:
             if i % 5 == 0:
-                if self.ocr_find(ImgEnumG.TC_XX):
-                    if not self.use_auto(10):
-                        return -1
                 self.check_err()
-                if not self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
+                self.mulcolor_check(ColorEnumG.BAT_RES, True, touch_wait=0)
+                if not self.crop_image_find(ImgEnumG.INGAME_FLAG2, False,touch_wait=0):
                     return -1
-                if self.ocr_find(ImgEnumG.HP_NULL_OCR):
-                    return -1
-                if self.ocr_find(ImgEnumG.MP_NULL_OCR) and use_mp:
-                    return -1
-                if self.ocr_find(ImgEnumG.BAG_FULL):
-                    return -1
+                else:
+                    self.get_rgb(836, 391, '607B96', True)
+                    if not self.crop_image_find(ImgEnumG.AUTO_BAT, False,touch_wait=0):
+                        self.air_touch((423, 655), touch_wait=2)  # 点击确认战斗结果
+                    else:
+                        self.crop_image_find(ImgEnumG.XC_IMG)
+                    self.crop_image_find(ImgEnumG.S_MAP,touch_wait=0)  # 打开小地图
+                    if self.air_loop_find(ImgEnumG.RES_EXIT_TEAM, False,touch_wait=0):
+                        if not self.use_auto(10):
+                            return -1
+                    elif not self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
+                        return -1
+                # elif self.ocr_find(ImgEnumG.HP_NULL_OCR,touch_wait=0):
+                #     return -1
+                # elif self.ocr_find(ImgEnumG.MP_NULL_OCR,touch_wait=0) and use_mp:
+                #     return -1
+                # elif self.ocr_find(ImgEnumG.BAG_FULL,touch_wait=0):
+                #     return -1
             if map_data[-1][-1] > 870:
                 k_time = round(random.randint(5, 10) / 10, 2)
             else:
                 k_time = round(random.randint(10, 20) / 10, 2)
-            # print(f"{k_time}k_time")
             res, map_x, map_y = self._get_move_xy()
-            # print(f"k1_{map_x}_{map_y}")
             t_l = random.randint(1, 2)
             t_r = random.randint(3, 4)
             if not res:
@@ -327,8 +330,8 @@ class AutoBatG(BasePageG):
                     else:
                         r = random.randint(0, 3)
                     if r == 0 and map_y2 == 135:
-                        self.mul_point_touch('down', 'jump', long_click=True)
-                    if map_y2 < 132 and map_x2 == map_x3:
+                        self.mul_point_touch('down', 'jump',k_time=1.5, long_click=True)
+                    if map_y2 < 132 or map_x2 == map_x3:
                         """右边触底"""
                         if zhiye_id == '1':
                             self.move_bat(t_l, k_time, zhiye_id, saodi_mode)
@@ -348,7 +351,7 @@ class AutoBatG(BasePageG):
                             if map_x6 == map_x5:
                                 self.move_turn('up', k_time / 5)
                                 self.move_turn('left', k_time / 5)
-        return 0
+            i+=1
 
     def double_jump(self, turn):
         self.mul_point_touch(turn, 'jump')
@@ -366,37 +369,38 @@ class AutoBatG(BasePageG):
         _AUTO_START = False
         _AUTO_OVER = False
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
-            if self.ocr_find(ImgEnumG.AUTO_UI_OCR):
+            if self.mulcolor_check(ColorEnumG.BAT_MAIN):
                 now_time = self.get_num((385, 352, 441, 388))  # 剩余时间
                 if int(now_time) > 1:
-                    if self.get_rgb(733, 563, 'EE7047', True):
+                    if self.get_rgb(733, 563, 'EE7046', True):
                         _AUTO_START = True
                 else:
                     if _NO_TIMECARD:
                         self.air_loop_find(ImgEnumG.UI_CLOSE)
-                        return True
-                    if self.get_rgb(897, 391, '617B96', True):
-                        pass
-                    elif self.get_rgb(709, 344, 'FFD741', True):
-                        pass
-                    elif self.get_rgb(840, 336, 'FFD741', True):
-                        pass
-                    elif self.get_rgb(908, 338, 'FFD741', True):
-                        pass
                     else:
-                        _NO_TIMECARD = True
-            elif self.ocr_find(ImgEnumG.AUTO_JG):
+                        if self.get_rgb(897, 391, '617B96', True):
+                            pass
+                        elif self.get_rgb(709, 344, 'FFD741', True):
+                            pass
+                        elif self.get_rgb(840, 336, 'FFD741', True):
+                            pass
+                        elif self.get_rgb(908, 338, 'FFD741', True):
+                            pass
+                        else:
+                            _NO_TIMECARD = True
+            elif self.mulcolor_check(ColorEnumG.BAT_RES,True):
                 self.air_loop_find(ImgEnumG.UI_QR)
+                _AUTO_OVER=True
             elif self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
-                if _AUTO_OVER:
-                    if self.ocr_find(ImgEnumG.AUTO_JG):
+                if _AUTO_OVER or _NO_TIMECARD:
+                    if self.mulcolor_check(ColorEnumG.BAT_RES,True):
                         self.air_loop_find(ImgEnumG.UI_QR)
                     return True
-                if not self.ocr_find(ImgEnumG.AUTO_BAT_OCR, True):
+                if not self.crop_image_find(ImgEnumG.AUTO_BAT, True):
                     if _AUTO_START:
                         self.time_sleep(AUTO_TIME)
                         self.air_touch((422, 655))
-                        _AUTO_OVER = True
+                        # _AUTO_OVER = True
                     else:
                         self.air_touch((422, 655))
             else:

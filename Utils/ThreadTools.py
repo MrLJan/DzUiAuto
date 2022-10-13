@@ -51,6 +51,10 @@ class ThreadTools(threading.Thread):
     def new_event():
         return threading.Event()
 
+    @staticmethod
+    def new_lock():
+        return threading.Lock()
+
     def run(self):
         # with lock:
         lock.acquire()

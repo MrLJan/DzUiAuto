@@ -53,6 +53,7 @@ class PhoneDevives:
         return self.adb.get_top_activity()[0]
 
 
+
 PD = PhoneDevives()
 if __name__ == '__main__':
     print(PD.get_devices())

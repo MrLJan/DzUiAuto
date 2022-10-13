@@ -48,7 +48,11 @@ class OtherTools:
         return path + addpath
 
     def imgpath(self, imgname):
-        return path + r'/res/img/' + imgname + '.bmp'
+        try:
+            res_path= path + r'/res/img/' + imgname + '.bmp'
+        except BaseException:
+            res_path=path + r'/res/img/' + imgname + '.bmp'
+        return res_path
 
 
 OT = OtherTools()

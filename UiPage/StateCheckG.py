@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 import time
 
-from Enum.ResEnum import GlobalEnumG, ImgEnumG
+from Enum.ResEnum import GlobalEnumG, ImgEnumG, ColorEnumG
 from UiPage.BasePage import BasePageG
 from Utils.LoadConfig import LoadConfig
 
 
 class StateCheckG(BasePageG):
-    def __init__(self, devinfo, mnq_name, sn,ocr):
+    def __init__(self, devinfo, mnq_name, sn, ocr):
         super(StateCheckG, self).__init__()
         self.dev = devinfo[0]
         self.serialno = devinfo[-1]
         self.sn = sn
         self.mnq_name = mnq_name
-        self.cn_ocr=ocr
+        self.cn_ocr = ocr
 
     def choose_task(self, **kwargs):
         exec_queue = kwargs['状态队列']['执行器']
         select_queue = kwargs['状态队列']['选择器']
-        use_mp=kwargs['挂机设置']['无蓝窗口']
+        use_mp = kwargs['挂机设置']['无蓝窗口']
         if select_queue.queue.empty():
             if not self.check_hp_mp(use_mp):
                 select_queue.put_queue('BuyY')
@@ -34,7 +34,7 @@ class StateCheckG(BasePageG):
             if select_queue.queue.empty():
                 return 1
 
-    def check_hp_mp(self,use_mp):
+    def check_hp_mp(self, use_mp):
         if self.ocr_find(ImgEnumG.HP_NULL_OCR):
             return False
         if self.ocr_find(ImgEnumG.MP_NULL_OCR) and use_mp:
@@ -93,29 +93,33 @@ class StateCheckG(BasePageG):
                     self.sn.table_value.emit(self.mnq_name, 4, f"{STAR}")
                     self.sn.table_value.emit(self.mnq_name, 5, f"{BAT_NUM}")
                     self.sn.table_value.emit(self.mnq_name, 6, f"{GOLD}")
+                    self.sn.log_tab.emit(self.mnq_name, f"等级：{LEVEL}_星力{STAR}_战力{BAT_NUM}_金币{GOLD}")
                     select_queue.task_over('CheckRole')
                     return True
-                self.air_touch((1170, 39), touch_wait=2)
-            elif self.ocr_find(ImgEnumG.BAG_GOLD_OCR):
+                self.air_touch((1170, 39), touch_wait=3)
+            elif self.mulcolor_check(ColorEnumG.BAG_GOLD):
                 if _C_OVER:
-                    self.air_loop_find(ImgEnumG.UI_QR)
+                    self.get_rgb(579, 510, 'EE7046', True)
                 else:
-                    GOLD = self.get_num((694, 368, 927, 412))
-                    RED_COIN = self.get_num((398, 370, 630, 413))
+                    res = self.get_roleinfo([(694, 368, 927, 412), (398, 370, 630, 413)])
+                    GOLD = res[0]
+                    RED_GOLD = res[-1]
                     LoadConfig.writeconf(self.mnq_name, '金币', str(GOLD), ini_name=self.mnq_name)
-                    LoadConfig.writeconf(self.mnq_name, '红币', str(RED_COIN), ini_name=self.mnq_name)
+                    LoadConfig.writeconf(self.mnq_name, '红币', str(RED_GOLD), ini_name=self.mnq_name)
                     _C_OVER = True
-            elif self.ocr_find(ImgEnumG.BAG_OCR):
+            elif self.mulcolor_check(ColorEnumG.BAG_MAIN):
+                self.time_sleep(1)
                 if _C_OVER:
-                    self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
+                    self.mulcolor_check(ColorEnumG.BAG_MAIN,True)
                 else:
-                    LEVEL = self.get_num((225, 162, 326, 187))
-                    STAR = self.get_num((253, 218, 307, 243))
-                    BAT_NUM = self.get_num((315,505,469,536))
+                    _res = self.get_roleinfo([(225, 162, 326, 187), (253, 218, 307, 243), (315, 505, 469, 536)])
+                    LEVEL = _res[0]
+                    STAR = _res[1]
+                    BAT_NUM = _res[-1]
                     if LEVEL > 0:
                         LoadConfig.writeconf(self.mnq_name, '等级', str(LEVEL), ini_name=self.mnq_name)
                         LoadConfig.writeconf(self.mnq_name, '星力', str(STAR), ini_name=self.mnq_name)
                         LoadConfig.writeconf(self.mnq_name, '战力', str(BAT_NUM), ini_name=self.mnq_name)
-                        self.crop_image_find(ImgEnumG.BAG_GOLD, touch_wait=2)
+                        self.crop_image_find(ImgEnumG.BAG_GOLD,timeout=10, touch_wait=1)
             else:
                 self.check_close()
