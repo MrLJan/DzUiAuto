@@ -87,7 +87,8 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
             if self.mulcolor_check(ColorEnumG.EXIT_GAME,True):
                 pass
             else:
-                self.crop_image_find(ImgEnumG.CZ_FUHUO)
+                if self.crop_image_find(ImgEnumG.CZ_FUHUO):
+                    raise FuHuoRoleErr
                 self.crop_image_find(ImgEnumG.UI_LB)
                 self.crop_image_find(ImgEnumG.UI_CLOSE)
                 self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
@@ -146,13 +147,13 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
             return 0
 
     def check_is_stop(self):
-        _COLOR = self.get_rgb(447, 699)
+        _COLOR = self.get_rgb(924, 781)
         if self.crop_image_find(ImgEnumG.MOVE_NOW, False):
             self.time_sleep(GlobalEnumG.TaskWaitTime)
-        _COLOR_1 = self.get_rgb(447, 699)
+        _COLOR_1 = self.get_rgb(924, 781)
         if _COLOR == _COLOR_1:
             self.time_sleep(2)
-            _COLOR_1 = self.get_rgb(447, 699)
+            _COLOR_1 = self.get_rgb(924, 781)
             if _COLOR_1 == _COLOR:
                 return True
         return False
@@ -178,12 +179,14 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 if not self.crop_image_find(ImgEnumG.SKIP_NEW, timeout=3):
                     return True
-
             elif self.mulcolor_check(ColorEnumG.SKIP_NEW) or self.get_rgb(622, 213, 'FFE'):
                 self.air_touch((328, 369))
                 self.air_touch((469, 369))
+                self.air_touch((456, 369))
                 self.air_touch((625, 369))
                 self.air_touch((773, 369))
+                self.air_touch((655, 369))
+                self.air_touch((788, 369))
                 if not self.get_rgb(374, 528, '4C87', True):
                     if _C_TIMES > 10:
                         self.mulcolor_check(ColorEnumG.SKIP_NEW, True)

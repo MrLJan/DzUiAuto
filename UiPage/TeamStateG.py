@@ -4,6 +4,7 @@ import time
 
 from Enum.ResEnum import GlobalEnumG, ImgEnumG, ColorEnumG
 from UiPage.BasePage import BasePageG
+from Utils.ExceptionTools import FuHuoRoleErr
 
 
 class TeamStateG(BasePageG):
@@ -32,6 +33,7 @@ class TeamStateG(BasePageG):
             select_queue.put_queue('Login')
         if self.air_loop_find(ImgEnumG.CZ_FUHUO, False):
             select_queue.put_queue('FuHuo')
+            raise FuHuoRoleErr
         if self.ocr_find(ImgEnumG.HP_NULL_OCR):
             select_queue.put_queue('BuyY')
         if self.ocr_find(ImgEnumG.MP_NULL_OCR) and use_mp:

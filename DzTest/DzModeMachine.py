@@ -197,6 +197,7 @@ class switch_case:
         _C_ROLE = False
         if LoadConfig.getconf(self.mnq_name, '等级', ini_name=self.mnq_name) == '0':
             _C_ROLE = True
+        # if LoadConfig.getconf()
         if task_name in all_task:
             _id = BatEnumG.TASK_ID[task_name]['id']
             if _id in ['1']:
@@ -214,10 +215,8 @@ class switch_case:
             return BatEnumG.TASK_ID[task_name]['id'], 'NULL'
         elif task_name in xt_map:
             self.select_queue.put_queue('CheckXT')
-            self.select_queue.put_queue('CheckRole')
             if _C_ROLE:
                 self.select_queue.put_queue('CheckRole')
-
             self.exec_queue.put_queue('AutoBat')
             return '3', task_name
         elif task_name in yt_map:
@@ -430,8 +429,8 @@ class switch_case:
             if af_res != 0:
                 self.exec_func[state][af_res](**self.data_dic)
         else:
-            se_res=self.select_func[state][0](**self.data_dic)
-            if se_res!=0:
+            se_res = self.select_func[state][0](**self.data_dic)
+            if se_res != 0:
                 self.select_func[state][-1](**self.data_dic)
 
     def get_task_time(self):

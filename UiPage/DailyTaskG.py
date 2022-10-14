@@ -65,7 +65,7 @@ class DailyTaskAutoG(BasePageG):
                         select_queue.put_queue('Check')
                         return 0
                 self.back_mr_main()
-        if level>=90:
+        if level >= 100:
             if is_gonghui:
                 self.gonghui_task()
             select_queue.put_queue('GetReward')
@@ -132,7 +132,7 @@ class DailyTaskAutoG(BasePageG):
                         if self.mulcolor_check(ColorEnumG.WL_JR, True):
                             self.sn.log_tab.emit(self.mnq_name, r"武林道场-无次数")
                             return True
-                    elif self.get_rgb(976, 242, '627A94', True):
+                    elif self.get_rgb(976, 242, '617A95', True):
                         if self.get_rgb(729, 629, 'EE7046', True):
                             _JION_TIMES += 1
                 elif self.mulcolor_check(ColorEnumG.WL_MAIN):  # 道场界面
@@ -163,13 +163,16 @@ class DailyTaskAutoG(BasePageG):
                     self.sn.log_tab.emit(self.mnq_name, r"金字塔-战斗完成")
                     return True
                 self.sn.log_tab.emit(self.mnq_name, r"金字塔战斗中")
-                self.time_sleep(15)
+                self.time_sleep(10)
             else:
                 if self.air_loop_find(ImgEnumG.TEMA_ING, False):
                     self.sn.log_tab.emit(self.mnq_name, r'金字塔-组队中')
                     self.time_sleep(15)
                     self.get_rgb(398, 389, '5E5536', True)  # 开始
-                if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
+                elif self.mulcolor_check(ColorEnumG.JZT_END, True):
+                    self.sn.log_tab.emit(self.mnq_name, r"金字塔-战斗完成")
+                    return True
+                elif self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
                     if _JION:
                         if _WAIT_TIMES > 3:
                             self.time_sleep(10)
@@ -209,9 +212,7 @@ class DailyTaskAutoG(BasePageG):
                     # else:
                     #     self.sn.log_tab.emit(self.mnq_name, r"金字塔-无次数")
                     #     return True
-                elif self.mulcolor_check(ColorEnumG.JZT_END, True):
-                    self.sn.log_tab.emit(self.mnq_name, r"金字塔-战斗完成")
-                    return True
+
                 elif self.ocr_find(ImgEnumG.MR_YDZXD, True):
                     self.sn.log_tab.emit(self.mnq_name, r"金字塔-战斗完成")
                     return True
@@ -329,18 +330,18 @@ class DailyTaskAutoG(BasePageG):
                         if _C_OVER:
                             self.mulcolor_check(ColorEnumG.MRDC_JR, True)
                         # self.ocr_find([(819, 279, 875, 310), 'MAX'], clicked=True, touch_wait=1)
-                        if self.get_rgb(833, 282, '627A94', True):
+                        if self.get_rgb(833, 282, '617A95', True):
                             if self.get_rgb(716, 626, 'EE7046', True, touch_wait=2):
                                 _JION_TIMES += 1
                     elif self.mulcolor_check(ColorEnumG.MRDC_MAIN1):
                         if self.get_rgb(143, 620, 'EE7546'):  # 混沌模式
-                            self.get_rgb(151, 542, '2B3747', True)
+                            self.get_rgb(151, 542, '2B3646', True)
                     elif self.mulcolor_check(ColorEnumG.MRDC_MAIN):  # 每日地城界面
                         if _C_OVER:
                             self.sn.log_tab.emit(self.mnq_name, r"每日地城-无次数")
                             return True
                         if self.get_rgb(143, 620, 'EE7546'):  # 混沌模式
-                            self.get_rgb(151, 542, '2B3747', True)
+                            self.get_rgb(151, 542, '2B3646', True)
                         # times = self.get_num((342, 533, 373, 571))  # 剩余次数
                         # if times > 0:
                         self.get_rgb(1078, 647, 'EE7046', True)
@@ -647,8 +648,8 @@ class DailyTaskAutoG(BasePageG):
                     #     self.sn.log_tab.emit(self.mnq_name, r"迷你地城-无次数")
                     #     return True
                     # else:
-                    self.get_rgb(54, 138, '2B3747', True)
-                    self.get_rgb(78, 214, '2B3747', True)
+                    self.get_rgb(54, 138, '2B3646', True)
+                    self.get_rgb(78, 214, '2B3646', True)
                     self.get_rgb(633, 331, 'FFFFFF', True)
                     self.get_rgb(1053, 650, 'EE7046', True)
                 elif self.ocr_find(ImgEnumG.MNDC_JG):
@@ -884,27 +885,27 @@ class DailyTaskAutoG(BasePageG):
                         elif _YM and not _YM_OVER:
                             if self.crop_image_find(ImgEnumG.YM):
                                 if _YM_KN:
-                                    self.get_rgb(159, 339, '2B3747', True)  # 困难
+                                    self.get_rgb(159, 339, '2B3646', True)  # 困难
                                 else:
-                                    self.get_rgb(156, 259, '2B3747', True)
+                                    self.get_rgb(156, 259, '2B3646', True)
                                 _YM_ING = True
                             elif self.ocr_find(ImgEnumG.YM_OVER):
                                 _YM_OVER = True
                         elif _PKJ and not _PKJ_OVER:
                             if self.crop_image_find(ImgEnumG.PKJ):
                                 if _PKJ_KN:
-                                    self.get_rgb(156, 339, '2B3747', True)  # 困难
+                                    self.get_rgb(156, 339, '2B3646', True)  # 困难
                                 else:
-                                    self.get_rgb(159, 259, '2B3747', True)
+                                    self.get_rgb(159, 259, '2B3646', True)
                                 _PKJ_ING = True
                             elif self.ocr_find(ImgEnumG.PKJ_OVER):
                                 _PKJ_OVER = True
                         elif _NH and not _NH_OVER:
                             if self.crop_image_find(ImgEnumG.NH):
                                 if _NH_KN:
-                                    self.get_rgb(156, 339, '2B3747', True)  # 困难
+                                    self.get_rgb(156, 339, '2B3646', True)  # 困难
                                 else:
-                                    self.get_rgb(159, 259, '2B3747', True)
+                                    self.get_rgb(159, 259, '2B3646', True)
                                 _NH_ING = True
                             elif self.ocr_find(ImgEnumG.NH_OVER):
                                 _NH_OVER = True
@@ -1023,7 +1024,7 @@ class DailyTaskAutoG(BasePageG):
                     elif _RYZ:
                         self.sn.log_tab.emit(self.mnq_name, r"公会荣誉战-战斗完成")
                 else:
-                    # self.sn.log_tab.emit(self.mnq_name, r"公会战斗中")
+                    self.sn.log_tab.emit(self.mnq_name, r"公会战斗中")
                     self.time_sleep(15)
             else:
                 if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):

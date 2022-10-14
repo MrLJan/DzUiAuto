@@ -19,6 +19,7 @@ from Enum.ResEnum import GlobalEnumG, ImgEnumG, ColorEnumG, UiEnumG
 # from UiPage import AutoBatG
 # from UiPage import TeamStateG
 # from UiPage import StateCheckG
+from Utils.AdbUtils import PhoneDevives
 from Utils.Devicesconnect import DevicesConnect
 from Utils.ExceptionTools import NotFindImgErr
 from Utils.OtherTools import OT
@@ -36,7 +37,7 @@ class OpenCvTools:
         color = self.nd_to_hex(screen[get_y,get_x])
         if t_log:
             print(f'expoint:{color}_find:{find_color}_x,y:{get_x},{get_y}')
-        if find_color in screen:
+        if find_color in color:
             if clicked:
                 self.dev.touch((get_x, get_y))
                 if touch_wait > 0:
@@ -346,14 +347,13 @@ class CnOcrTool:
         :param ocr_list:查找文字范围和文字
         :return: 查找结果
         """
-        # screen = self.dev.snapshot()
-        self.dev.snapshot(filename=OT.abspath('/Res/ASSS.png'))
-        screen = aircv.imread(OT.abspath('/Res/ASSS.png'))
+        screen = self.dev.snapshot()
+        # self.dev.snapshot(filename=OT.abspath('/Res/ASSS.png'))
+        # screen = aircv.imread(OT.abspath('/Res/ASSS.png'))
         img_fp = aircv.crop_image(screen, area)
         self.cn_ocr[-1].acquire()
         out = self.cn_ocr[0].ocr(img_fp)
         self.cn_ocr[-1].release()
-        print(out)
         if len(out) == 0:
             time.sleep(GlobalEnumG.WaitTime / 2)
             return False
@@ -417,10 +417,10 @@ class CnOcrTool:
 if __name__ == '__main__':
     # img_fp = r'D:\DzAutoUi\Res\img\21.bmp'
     # res, dev = DevicesConnect('emulator-5554').connect_device()
-    res2, dev2 = DevicesConnect('127.0.0.1:5555').connect_device()
-    print(res2, dev2)
-    cv2.setNumThreads(1)
-    cv2.ocl.setUseOpenCL(False)
+    # res2, dev2 = DevicesConnect('127.0.0.1:5555').connect_device()
+    # print(res2, dev2)
+    # cv2.setNumThreads(1)
+    # cv2.ocl.setUseOpenCL(False)
     # torch.set_num_threads(1)
     # torch.no_grad()
     # torch.set_grad_enabled(False)
@@ -433,10 +433,10 @@ if __name__ == '__main__':
     # loop_find(img_fp)
     # c = CnOcrTool()
     # a = AirImgTools()
-    o = OpenCvTools()
+    # o = OpenCvTools()
     # c.dev = dev2
     # a.dev = dev2
-    o.dev = dev2
+    # o.dev = dev2
     # c.cn_ocr = cn_ocr
     # DailyTaskG.DailyTaskAutoG((dev2, 'emulator-5556'), 1, 1, cn_ocr).gonghui_task()
     # r=c.get_ocrres((17,4,103,29),t_log=True)
@@ -444,22 +444,37 @@ if __name__ == '__main__':
     # tr1 = tracker.SummaryTracker()
     # tr.print_diff()
     # tr1.print_diff()
-    while True:
+    # while True:
         # r = c.get_ocrres((17, 4, 103, 29), t_log=True)
-        t1=time.time()
-        r=o.get_rgb(444,222)
-        # r = o.mulcolor_check(ColorEnumG.MAP_MAIN, t_log=True)
-        # r=o.get_rgb(14,44,t_log=True)
+    # t1=time.time()
+    # r=o.get_rgb(311,519)
+    # r = o.mulcolor_check(ColorEnumG.MAP_MAIN, t_log=True)
+    # r=o.get_rgb(14,44,t_log=True)
     #     r=c.get_roleinfo([(223,165,325,210), (253, 218, 307, 243), (315, 505, 469, 536)])
     # num = ''.join(filter(lambda x: x.isdigit(), r))
     # r=a.find_all_pos(ImgEnumG.JN_ZB)
-    # r=o.mulcolor_check([(1231, 67), (687, 112), (22, 67)],get_grb=True)
-    # r = o.mulcolor_check(ColorEnumG.MAP_MAIN, t_log=True)
+    # r=o.mulcolor_check([(1144,60), (147, 93), (816, 677)],get_grb=True)
+    # r = o.mulcolor_check(ColorEnumG.JZT_END, t_log=True)
 
-    # r=a.air_touch((38,149))
-    # r=c.ocr_find(ImgEnumG.MR_KSDY,True)
-    #     r=a.crop_image_find(ImgEnumG.JN_TEACH)
-        print(r,time.time()-t1)
+    serialno = '127.0.0.1:5555'
+    r = serialno.split(':')[-1]
+    adb = PhoneDevives(serialno=serialno, display_id=r'D:\DzUiAuto\Res\ddd.png').adb
+    while True:
+        t1 = time.time()
+
+        adb.shell('screencap -p > /sdcard/screen.png')
+        adb.pull(local=OT.abspath(f'/Res/{r}.png'), remote='/sdcard/screen.png')
+        color=cv2.imread(OT.abspath(f'/Res/{r}.png'))
+        # cv2.imshow("img", color)
+        # cv2.waitKey(0)
+        r = color[264,38]
+        expoint = ''
+        for point in r:
+            expoint = str(hex(point))[-2:].replace('x', '0').upper() + expoint
+        # r=a.air_touch((38,149))
+        # r=c.ocr_find(ImgEnumG.MR_KSDY,True)
+        #     r=a.crop_image_find(ImgEnumG.JN_TEACH)
+        print(expoint,time.time()-t1)
 
     # while True:
     #     r=c.crop_image_find(ImgEnumG.PERSON_POS,clicked=False,get_pos=True)

@@ -56,25 +56,28 @@ class ThreadTools(threading.Thread):
         return threading.Lock()
 
     def run(self):
-        # with lock:
-        lock.acquire()
-        self.setName(self.thread_name)
-        print(f"任务：{self.name}_{self.ident}" + " 开始\n")
-        if self.thread_while:
-            lock.release()
-            while self.stop_flag.is_set():  # 判断线程是否停止
-                if self.running_flag.is_set():
-                    self.thread_func(*self._args, **self._kwargs)
-                else:
-                    print(f"任务：{self.name}_{self.ident}" + " 暂停\n")
-                    while not self.running_flag.is_set():  # 判断线程是否暂停
-                        time.sleep(1)
-            print(f"任务：{self.name}_{self.ident}" + " 停止\n")
-            self.stop_flag.set()
-        else:
-            self.thread_func(*self._args, **self._kwargs)
-            lock.release()
-            print(f"任务：{self.name}_{self.ident}" + " 结束\n")
+        try:
+            # with lock:
+            lock.acquire()
+            self.setName(self.thread_name)
+            print(f"任务：{self.name}_{self.ident}" + " 开始\n")
+            if self.thread_while:
+                lock.release()
+                while self.stop_flag.is_set():  # 判断线程是否停止
+                    if self.running_flag.is_set():
+                        self.thread_func(*self._args, **self._kwargs)
+                    else:
+                        print(f"任务：{self.name}_{self.ident}" + " 暂停\n")
+                        while not self.running_flag.is_set():  # 判断线程是否暂停
+                            time.sleep(1)
+                print(f"任务：{self.name}_{self.ident}" + " 停止\n")
+                self.stop_flag.set()
+            else:
+                self.thread_func(*self._args, **self._kwargs)
+                lock.release()
+                print(f"任务：{self.name}_{self.ident}" + " 结束\n")
+        except Exception as e:
+            print(e)
 
 
     def stop(self):

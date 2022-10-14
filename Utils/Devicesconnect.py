@@ -2,6 +2,8 @@
 
 from airtest.core.api import connect_device
 from airtest.core.error import DeviceConnectionError
+
+from Utils.AdbUtils import PhoneDevives
 from Utils.ThreadTools import ThreadTools
 from Utils.OtherTools import catch_ex
 
@@ -13,11 +15,14 @@ class DevicesConnect:
 
     def connect_device(self):
         try:
-            # dev = connect_device(f"Android://127.0.0.1:5037/{self.devname}?cap_method=ADBCAP")
-            dev = connect_device(f"Android://127.0.0.1:5037/{self.devname}?cap_method=MINICAP"")  # ?cap_method=JAVACAP&&ori_method=ADBORI")
+            PhoneDevives(serialno=self.devname).get_state()
+            dev = connect_device(f"Android://127.0.0.1:5037/{self.devname}?cap_method=ADBCAP")
+            # dev = connect_device(f"Android://127.0.0.1:5037/{self.devname}?cap_method=MINICAP"")  # ?cap_method=JAVACAP&&ori_method=ADBORI")
             print(f"{self.devname}_连接成功")
             return True, dev
         except (DeviceConnectionError, ConnectionResetError) as e:
+            return False, e
+        except Exception as e:
             return False, e
 
 

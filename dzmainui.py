@@ -843,6 +843,8 @@ class DzUi:
                 pass
             if self.ocr_lock.locked():
                 self.ocr_lock.release()
+            serialno = self.dev_obj_list[mnq_name][0]
+            PhoneDevives(serialno=serialno).disconnect()
             ThreadTools.stop_thread_list(mnq_thread_list)  # 利用tid关闭线程
             mnq_thread_list.clear()
 
@@ -891,9 +893,11 @@ class DzUi:
             for mnq_index in index_list:
                 mnq_name = MnqTools().use_index_find_name(mnq_index)
                 mnq_thread_list = self.mnq_thread_tid[mnq_name]
+                serialno=self.dev_obj_list[mnq_name][0]
                 if len(mnq_thread_list) != 0:
                     if self.ocr_lock.locked():
                         self.ocr_lock.release()
+                    PhoneDevives(serialno=serialno).disconnect()
                     ThreadTools.stop_thread_list(mnq_thread_list)  # 利用tid关闭线程
                     mnq_thread_list.clear()
                     self.sn.table_value.emit(mnq_name, 7, "")
@@ -947,6 +951,8 @@ class DzUi:
                 except (ConnectionResetError, RestartTask):
                     if self.ocr_lock.locked():
                         self.ocr_lock.release()
+                    serialno = self.dev_obj_list[mnq_name][0]
+                    PhoneDevives(serialno=serialno).disconnect()
                     ThreadTools.stop_thread_list(mnq_thread_list)
                     mnq_thread_list.clear()
                     self._do_task_list(index_list)
@@ -995,6 +1001,8 @@ class DzUi:
                 pass
             if self.ocr_lock.locked():
                 self.ocr_lock.release()
+            serialno = self.dev_obj_list[mnq_name][0]
+            PhoneDevives(serialno=serialno).disconnect()
             ThreadTools.stop_thread_list(mnq_thread_list)
             mnq_thread_list.clear()
 

@@ -76,7 +76,7 @@ class TaskAutoG(BasePageG):
                     self.air_loop_find(ImgEnumG.UI_QR)
             else:
                 if self.crop_image_find(ImgEnumG.SKIP_NEW, touch_wait=1):
-                    pass
+                    self.skip_new()
                 elif self.get_rgb(394, 403, 'EE7046'):
                     self.air_touch((710, 204))
                 self.get_rgb(835, 354, 'BC3B57', True)  # 自动分配技能
@@ -102,7 +102,7 @@ class TaskAutoG(BasePageG):
                     if use_stone:
                         r = random.randint(0, 2)
                         if r == 0:
-                            if not self.get_rgb(734, 206, '617A98', True):
+                            if self.get_rgb(1058, 376, '617A98', True):
                                 self.time_sleep(GlobalEnumG.TaskWaitTime)
                         # else:
                         #     self.time_sleep(GlobalEnumG.TaskWaitTime)
@@ -148,12 +148,15 @@ class TaskAutoG(BasePageG):
             raise NotInGameErr
         elif kwargs['角色信息']['等级'] >= 90 and not _L3_FLAG:
             r = random.randint(1, 3)
+            exec_queue=kwargs['状态队列']['执行器']
             mrtask_queue.put_queue(str(r))  # 武林
             select_queue.put_queue('AutoMR')
             select_queue.put_queue('GetLevelReard')
             # select_queue.put_queue('CheckRole')
             self.change_mapdata('3','西边森林',**kwargs)
             kwargs['角色信息']['90级'] = True
+            exec_queue.task_over('AutoTask')
+            exec_queue.put_queue('AutoBat')
             _L3_FLAG = True
             raise NotInGameErr
 
@@ -161,8 +164,14 @@ class TaskAutoG(BasePageG):
         res = [0, 0]
         s_time = time.time()
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
+            if self.get_rgb(805, 376, '617A98', True):
+                self.air_touch((852, 114))
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
-                self.air_touch((72, 17), touch_wait=2)
+                if self.check_is_stop():
+                    self.air_touch((72, 17), touch_wait=2)
+                else:
+                    if not self.air_loop_find(ImgEnumG.TASK_POINT):
+                        self.air_loop_find(ImgEnumG.TASK_TAB)
             elif self.mulcolor_check(ColorEnumG.ROLE_INFO):
                 res = self.get_roleinfo([(328, 133, 498, 173), (319, 235, 524, 268)])
                 self.mulcolor_check(ColorEnumG.ROLE_INFO, True)

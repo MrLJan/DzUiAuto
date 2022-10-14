@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+import cmd
 import shutil
+import subprocess
 from time import sleep
 
 import re
@@ -14,9 +16,11 @@ from Utils.OtherTools import OT
 install_success = False
 
 
-class PhoneDevives:
-    def __init__(self, serialno=None):
+class PhoneDevives(ADB):
+    def __init__(self, serialno=None,display_id=None):
+        super(PhoneDevives,self).__init__()
         self.adb = self.adb_init(serialno)
+        self.display_id=display_id
 
     def adb_init(self, serialno=None):
         return ADB(serialno=serialno, adb_path=OT.abspath('/Adb/adb.exe'))
@@ -52,7 +56,24 @@ class PhoneDevives:
         """返回当前界面应用名"""
         return self.adb.get_top_activity()[0]
 
+    def get_state(self):
+        if not self.adb.get_status():
+            self.adb.remove_forward()
 
+    def shell_cmd(self, command):
+        """adb shell命令"""
+        result = None
+        try:
+            result = self.adb.shell(command)
+        except Exception as e:
+            print("shell exception:{},{}".format(command, e))
+
+        if result is not None:
+            result = str.strip(result)
+        return result
+
+    def disconnect(self):
+        return self.adb.remove_forward()
 
 PD = PhoneDevives()
 if __name__ == '__main__':

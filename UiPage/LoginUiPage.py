@@ -22,8 +22,6 @@ class LoginUiPageG(BasePageG):
         while time.time() - s_time < GlobalEnumG.LoginGameTimeOut:
             if self.air_loop_find(ImgEnumG.GAME_ICON, False, timeout=1):
                 self.start_game(self.serialno)
-            # elif self.ocr_find(ImgEnumG.GAME_XZ):
-            #     self.air_loop_find(ImgEnumG.UI_QR)
             elif self.mulcolor_check(ColorEnumG.LOGIN_MAIN) or self.air_loop_find(ImgEnumG.LOGIN_FLAG, False):
                 self.air_touch((524, 390), duration=GlobalEnumG.TouchDurationTime)  # 点击空白区域登录
             elif self.mulcolor_check(ColorEnumG.LOGIN_START, clicked=True, touch_wait=10):
@@ -35,6 +33,7 @@ class LoginUiPageG(BasePageG):
                 select_queue.task_over('Login')
                 return -1
             else:
+                self.air_loop_find(ImgEnumG.CZ_FUHUO)
                 self.crop_image_find(ImgEnumG.LOGIN_TIPS)
                 self.mulcolor_check(ColorEnumG.LOGIN_CLOSE,True)
                 self.mulcolor_check(ColorEnumG.QD_HD_BJBS,True, touch_wait=2)
@@ -47,13 +46,15 @@ class LoginUiPageG(BasePageG):
 
     def check_ingame(self, **kwargs):
         select_queue = kwargs['状态队列']['选择器']
-        # self.air_loop_find(ImgEnumG.UI_CLOSE)
-        self.air_loop_find(ImgEnumG.UI_QR)
-        # self.crop_image_find(ImgEnumG.TIP_ClOSE)
         if self.crop_image_find(ImgEnumG.MR_BAT_EXIT):
             self.ocr_find(ImgEnumG.MR_YDZXD, True)
             self.ocr_find([(810, 519, 872, 548), '结'], True)
             self.get_rgb(734, 549, 'EE7046', True)
+        elif self.air_loop_find(ImgEnumG.GAME_ICON):
+            self.sn.log_tab.emit(self.mnq_name, r"检查到掉线")
+            select_queue.task_over('Check')
+            select_queue.put_queue('Login')
+            return -1
         elif self.crop_image_find(ImgEnumG.CZ_FUHUO):
             self.sn.log_tab.emit(self.mnq_name, r"检查到死亡")
             select_queue.task_over('Check')
@@ -65,18 +66,12 @@ class LoginUiPageG(BasePageG):
             #     select_queue.put_queue('CheckRole')
             select_queue.task_over('Check')
             return -1
-        elif self.check_mulpic([ImgEnumG.GAME_ICON, ImgEnumG.START_GAME, ImgEnumG.LOGIN_FLAG,
-                                ImgEnumG.INGAME_FLAG2], False):
-            self.sn.log_tab.emit(self.mnq_name, r"检查到在登录相关界面")
-            select_queue.task_over('Check')
-            select_queue.put_queue('Login')
-            return -1
         elif self.mulcolor_check(ColorEnumG.LOGIN_MAIN) or self.mulcolor_check(ColorEnumG.LOGIN_START):
             self.sn.log_tab.emit(self.mnq_name, r"检查到在登录相关界面")
             select_queue.task_over('Check')
             select_queue.put_queue('Login')
-        elif kwargs['任务id'] == '1':
-            if self.crop_image_find(ImgEnumG.TASK_CLOSE, False):
+        else:
+            if self.crop_image_find(ImgEnumG.TASK_CLOSE, False) and kwargs['任务id'] == '1':
                 self.sn.log_tab.emit(self.mnq_name, r"检查到任务界面")
                 while not self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                     if self.crop_image_find(ImgEnumG.TASK_ARROW, timeout=0.5, touch_wait=0):pass
@@ -87,19 +82,10 @@ class LoginUiPageG(BasePageG):
                     elif self.crop_image_find(ImgEnumG.TASK_REWARD, touch_wait=0):pass
                     elif self.ocr_find(ImgEnumG.SKIP_OCR, True):pass
                     else:
-                        if not self.check_err():
-                            self.key_event(self.serialno,'back')
+                        self.close_all()
                 select_queue.task_over('Check')
                 return -1
-
-        self.close_all()
-            # if not :
-            # if self.check_ui():
-            #     pass
-            # elif self.ocr_find(ImgEnumG.GAME_END):
-            #     self.air_loop_find(ImgEnumG.UI_NO)
-            # elif self.ocr_find(ImgEnumG.GAME_XZ):
-            #     self.air_loop_find(ImgEnumG.UI_QR)
+            self.close_all()
         return 0
 
     def check_ui(self):
@@ -127,20 +113,19 @@ class LoginUiPageG(BasePageG):
         while time.time()-s_time<GlobalEnumG.UiCheckTimeOut:
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 self.sn.log_tab.emit(self.mnq_name, r"在游戏主界面")
-                return True
+                break
             elif self.crop_image_find(ImgEnumG.GAME_ICON, False):
                 self.sn.log_tab.emit(self.mnq_name, r"掉线")
                 raise NotInGameErr
             elif self.mulcolor_check(ColorEnumG.EXIT_GAME, True):
-                return True
+                break
             elif self.ocr_find(ImgEnumG.MNDC_JG):
                 self.get_rgb(564, 593, 'EE7046', True)
-                return True
+                break
             else:
+                self.key_event(self.serialno, 'BACK')
                 if self.get_rgb(394, 403, 'EE7046'):
                     self.air_touch((710, 211))
-                self.check_close()
-                self.key_event(self.serialno, 'BACK')
         return False
 
     def close_game(self):
@@ -150,19 +135,23 @@ class LoginUiPageG(BasePageG):
         s_time = time.time()
         self.sn.log_tab.emit(self.mnq_name, r"复活检查")
         select_queue = kwargs['状态队列']['选择器']
+        exec_queue=kwargs['状态队列']['执行器']
+        task_id=kwargs['任务id']
         use_mp = kwargs['挂机设置']['无蓝窗口']
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.air_loop_find(ImgEnumG.INGAME_FLAG2, False):
                 if self.ocr_find(ImgEnumG.BAG_FULL):
                     select_queue.put_queue('BagSell')
-                if self.ocr_find(ImgEnumG.HP_NULL_OCR):
+                elif self.ocr_find(ImgEnumG.HP_NULL_OCR):
                     select_queue.put_queue('BuyY')
-                if self.ocr_find(ImgEnumG.MP_NULL_OCR) and use_mp:
+                elif self.ocr_find(ImgEnumG.MP_NULL_OCR) and use_mp:
                     select_queue.put_queue('BuyY')
                 select_queue.task_over('FuHuo')
-                return 0
+                if task_id in ['3','4']:
+                    exec_queue.task_over('AutoBat')
+                return -1
             elif self.crop_image_find(ImgEnumG.CZ_FUHUO):
                 pass
             else:
-                self.close_all()
+                self.key_event(self.serialno, 'BACK')
         raise ControlTimeOut('复活检查-超时异常')
