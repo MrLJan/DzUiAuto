@@ -2,7 +2,7 @@
 import random
 import time
 
-from Enum.ResEnum import ImgEnumG, ColorEnumG, GlobalEnumG, BatEnumG
+from Enum.ResEnum import ImgEnumG, ColorEnumG, GlobalEnumG, BatEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
 from Utils.ExceptionTools import RestartTask, NotInGameErr
 from Utils.LoadConfig import LoadConfig
@@ -41,55 +41,55 @@ class TaskAutoG(BasePageG):
                 self.check_err()
                 s_time = time.time()
             if not self.air_loop_find(ImgEnumG.INGAME_FLAG2, False):
-                if not self.get_rgb(1033, 414, 'EE7046', True):  # 完成/接受
+                if not self.get_rgb([1033, 414, 'EE7047'], True):  # 完成/接受
                     self.air_touch((1168, 495))
-                    if self.get_rgb(367, 565, '4C87AF', True):
+                    if self.get_rgb([367, 565, '4C87AF'], True):
                         pass
-                    elif self.get_rgb(367, 565, 'EE7046', True):
+                    elif self.get_rgb([367, 565, 'EE7047'], True):
                         pass
-                    elif self.get_rgb(359, 636, 'EE7046', True):
+                    elif self.get_rgb([359, 636, 'EE7047'], True):
                         pass  # 领取奖励
-                    elif self.get_rgb(531, 632, 'EE7046', True):
+                    elif self.get_rgb([531, 632, 'EE7047'], True):
                         pass  # 领取奖励
-                    elif self.get_rgb(685, 515, 'EE7046', True):
+                    elif self.get_rgb([685, 515, 'EE7047'], True):
                         pass
-                    elif self.mulcolor_check(ColorEnumG.SKIP_NEW, touch_wait=1):
+                    elif self.get_rgb(RgbEnumG.SKIP_NEW, touch_wait=1):
                         if self.crop_image_find(ImgEnumG.JN_TEACH, touch_wait=1):
                             self.skip_fever_buff()
                         self.skip_new()
-                    elif self.get_rgb(1033, 414, 'EE7046', True):
+                    elif self.get_rgb([1033, 414, 'EE7047'], True):
                         pass
-                    elif self.get_rgb(541, 537, 'EE7046', True):
+                    elif self.get_rgb([541, 537, 'EE7047'], True):
                         pass
-                    elif self.get_rgb(1140, 80, '415067', True):
+                    elif self.get_rgb([1140, 80, '415067'], True):
                         pass
-                    elif self.get_rgb(1140, 90, 'FFFFFF', True):
+                    elif self.get_rgb([1140, 90, 'EE7047'], True):
                         pass
 
-                    elif self.mulcolor_check(ColorEnumG.SKIP_NEW, True):
+                    elif self.get_rgb(RgbEnumG.SKIP_NEW, True):
                         pass
                     else:
                         self.close_window()
-                elif self.get_rgb(563, 634, 'EE7046', True):
+                elif self.get_rgb([563, 634, 'EE7047'], True):
                     pass
                 else:
                     self.air_loop_find(ImgEnumG.UI_QR)
             else:
                 if self.crop_image_find(ImgEnumG.SKIP_NEW, touch_wait=1):
                     self.skip_new()
-                elif self.get_rgb(394, 403, 'EE7046'):
+                elif self.get_rgb([394, 403, 'EE7047']):
                     self.air_touch((710, 204))
-                self.get_rgb(835, 354, 'BC3B57', True)  # 自动分配技能
-                self.get_rgb(737, 395, '617B96', True)  # 穿戴装备
+                self.get_rgb([835, 354, 'BC3B57'], True)  # 自动分配技能
+                self.get_rgb([737, 395, '617B96'], True)  # 穿戴装备
                 if self.check_is_stop():
                     if time.time() - t_time > GlobalEnumG.TaskCheckTime:
                         t_time = time.time()
                         self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
                                         **kwargs)
-                if self.crop_image_find(ImgEnumG.AUTO_BAT, False) or self.get_rgb(427, 653, 'D3D3') or self.get_rgb(427,
+                if self.crop_image_find(ImgEnumG.AUTO_BAT, False) or self.get_rgb([427, 653, 'D3D3']) or self.get_rgb([427,
                                                                                                                     653,
-                                                                                                                    '7575'):  # self.crop_image_find(ImgEnumG.AUTO_BAT1):
-                    self.get_rgb(711, 206, 'FEFFF5', True)  # 提示装备技能
+                                                                                                                    '7575']):  # self.crop_image_find(ImgEnumG.AUTO_BAT1):
+                    self.get_rgb([711, 206, 'FEFFF5'], True)  # 提示装备技能
                     if time.time() - t_time > GlobalEnumG.TaskCheckTime:
                         t_time = time.time()
                         self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG, **kwargs)
@@ -102,7 +102,7 @@ class TaskAutoG(BasePageG):
                     if use_stone:
                         r = random.randint(0, 2)
                         if r == 0:
-                            if self.get_rgb(1058, 376, '617A98', True):
+                            if self.get_rgb([1058, 376, '617A98'], True):
                                 self.time_sleep(GlobalEnumG.TaskWaitTime)
                         # else:
                         #     self.time_sleep(GlobalEnumG.TaskWaitTime)
@@ -164,23 +164,20 @@ class TaskAutoG(BasePageG):
         res = [0, 0]
         s_time = time.time()
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
-            if self.get_rgb(805, 376, '617A98', True):
-                self.air_touch((852, 114))
+            # if self.get_rgb(805, 376, '617A98', True):
+            #     self.air_touch((852, 114))
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 if self.check_is_stop():
                     self.air_touch((72, 17), touch_wait=2)
                 else:
                     if not self.air_loop_find(ImgEnumG.TASK_POINT):
                         self.air_loop_find(ImgEnumG.TASK_TAB)
-            elif self.mulcolor_check(ColorEnumG.ROLE_INFO):
+            elif self.get_rgb(RgbEnumG.ROLE_INFO):
                 res = self.get_roleinfo([(328, 133, 498, 173), (319, 235, 524, 268)])
-                self.mulcolor_check(ColorEnumG.ROLE_INFO, True)
+                self.back(self.serialno)
                 return res
-            elif self.key_event(self.serialno, 'back'):
-                self.mulcolor_check(ColorEnumG.EXIT_GAME, True, touch_wait=1)
             else:
-                if time.time() - s_time > GlobalEnumG.SelectCtrTimeOut / 2:
-                    self.close_window()
+                self.close_window()
         return res
 
     def change_mapdata(self, xt_yt, map_name, **kwargs):

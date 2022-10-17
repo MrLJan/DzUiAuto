@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 
-from Enum.ResEnum import GlobalEnumG, ImgEnumG, ColorEnumG
+from Enum.ResEnum import GlobalEnumG, ImgEnumG, ColorEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
 from Utils.ExceptionTools import ControlTimeOut
 from Utils.LoadConfig import LoadConfig
@@ -26,18 +26,9 @@ class UpRoleG(BasePageG):
                 self.ocr_find(ImgEnumG.EQ_TJP_OCR, True)
             elif self.ocr_find(ImgEnumG.EQ_UP_OCR):
                 self.air_touch((84, 268))
-            elif self.ocr_find(ImgEnumG.TJP_UI_OCR):  # 进入铁匠铺
-                if self.crop_image_find(ImgEnumG.EQ_WZB):  # 装备槽
-                    zb_list = self.get_all_text(ImgEnumG.EQ_ZBZ_OCR)
-                    if len(zb_list) == 0:
-                        self.sn.log_tab.emit(self.mnq_name, r"无可升级装备")
-                        select_queue.task_over('upequip')
-                        return 1
-                    else:
-                        self.sn.log_tab.emit(self.mnq_name, r"选择装备")
-                        self.air_touch(zb_list[0])
-                if not self.crop_image_find(ImgEnumG.EQ_UP):  # 强化按钮
-                    self.crop_image_find(ImgEnumG.EQ_ZDXZ)  # 自动选择
+            elif self.get_rgb(RgbEnumG.TJP_SJ_M):  # 进入铁匠铺
+                if self.get_rgb(RgbEnumG.TJP_SJ_BTN,True):  # 强化按钮
+                    # self.crop_image_find(ImgEnumG.EQ_ZDXZ)  # 自动选择
                     if self.ocr_find(ImgEnumG.EQ_ZDXZ_UI_OCR):
                         if self.ocr_find(ImgEnumG.EQ_ZDXZ_SD_OCR):
                             self.get_rgb(375, 557, 'C2C5CA', True)
@@ -54,10 +45,17 @@ class UpRoleG(BasePageG):
                                 self.crop_image_find(ImgEnumG.EQ_UP_QR, timeout=20)
                         else:
                             self.air_swipe((912, 507), (912, 303))
+                    elif self.crop_image_find(ImgEnumG.EQ_WZB):  # 装备槽
+                        zb_list = self.get_all_text(ImgEnumG.EQ_ZBZ_OCR)
+                        if len(zb_list) == 0:
+                            self.sn.log_tab.emit(self.mnq_name, r"无可升级装备")
+                            select_queue.task_over('upequip')
+                            return 1
+                        else:
+                            self.sn.log_tab.emit(self.mnq_name, r"选择装备")
+                            self.air_touch(zb_list[0])
             else:
-                if time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
-                    if not self.close_window():
-                        return 0
+                self.close_window()
         return 0
 
     def buyyao(self, **kwargs):
@@ -73,7 +71,6 @@ class UpRoleG(BasePageG):
         _NUM_HP = kwargs['商店设置']['HP数量']  # 购买数量
         _NUM_MP = kwargs['商店设置']['MP数量']  # 购买数量
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            self.check_err()
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 if self.ocr_find(ImgEnumG.HP_NULL_OCR):
                     _HP = True
@@ -88,7 +85,7 @@ class UpRoleG(BasePageG):
                 else:
                     select_queue.task_over('BuyY')
                     return -1
-            elif self.mulcolor_check(ColorEnumG.YS_LOGIN):  # 登录药水界面
+            elif self.get_rgb(RgbEnumG.YS_LOGIN):  # 登录药水界面
                 if _RES:
                     if self.ocr_find([(791, 161, 920, 682), '登'], True):
                         _RES = False
@@ -99,37 +96,35 @@ class UpRoleG(BasePageG):
                 else:
                     self.ocr_find([(791, 161, 920, 682), '立'], True)
                     # self.crop_image_find(ImgEnumG.BUY_NOW_MOVE)  # 立即前往
-            elif self.mulcolor_check(ColorEnumG.YS_GM_QR):
-                if self.get_rgb(718, 515, 'EE7046', True):
+            elif self.get_rgb(RgbEnumG.YS_GMQR):
+                if self.get_rgb(RgbEnumG.YS_GMQR, True):
                     _RES = True
-            elif self.mulcolor_check(ColorEnumG.YS_XQ):
+            elif self.get_rgb(RgbEnumG.YS_XQ):
                 self.air_touch((940, 638), duration=2)
                 if _YS_TYPE == 1:
                     if self.ocr_find([(733, 631, 810, 658), _NUM_HP]):
-                        self.get_rgb(1044, 629, 'EE7046', True)
+                        self.get_rgb(RgbEnumG.YS_XQ, True)
                     else:
                         for _N in _NUM_HP:
                             self.air_touch(ImgEnumG.YS_NUM[_N], touch_wait=1)
                 else:
                     if self.ocr_find([(733, 631, 810, 658), _NUM_MP]):
-                        self.get_rgb(1044, 629, 'EE7046', True)
+                        self.get_rgb(RgbEnumG.YS_XQ, True)
                     else:
                         for _N in _NUM_MP:
                             self.air_touch(ImgEnumG.YS_NUM[_N], touch_wait=1)
-            elif self.mulcolor_check(ColorEnumG.YS_SHOP):
+            elif self.get_rgb(RgbEnumG.YS_SHOP):
                 if _RES:
-                    self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
+                    self.back(self.serialno)
                 else:
                     if _HP:
                         self.air_touch(hp_level)
                     elif _MP:
                         self.air_touch(mp_level)
                     else:
-                        self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
+                        self.back(self.serialno)
             else:
-                if time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
-                    if not self.close_window():
-                        return -1
+                self.close_window()
         raise ControlTimeOut(r'买药异常超时')
 
     def useskill(self, **kwargs):
@@ -137,8 +132,8 @@ class UpRoleG(BasePageG):
         select_queue = kwargs['状态队列']['选择器']
         _ZB_JN = False  # 技能是否装备完成
         _ZB_JN_POS = [
-            (1017, 253, '4C87AF'), (1017, 383, '4C87AF'),
-            (1017, 513, '4C87AF'), (1017, 643, '4C87AF')
+            [1017, 253, '4C87AF'], [1017, 383, '4C87AF'],
+            [1017, 513, '4C87AF'], [1017, 643, '4C87AF']
         ]
         _ZB_FLAG = 0
         _ZB_JN_NUM = 0
@@ -147,12 +142,12 @@ class UpRoleG(BasePageG):
                 self.crop_image_find(ImgEnumG.MR_MENU)
             elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
                 self.ocr_find(ImgEnumG.MENU_JN, True)
-            elif self.mulcolor_check(ColorEnumG.JN_MAIN):
-                if self.get_rgb(491, 396, '4C87AF', True, touch_wait=2):
-                    self.get_rgb(723, 532, 'EE7046', True)
+            elif self.get_rgb(RgbEnumG.SKILL_M):
+                if self.get_rgb(491, 396, '4C87AF', True):
+                    self.get_rgb(723, 532, 'EE7047', True)
                 if _ZB_JN:
-                    self.mulcolor_check(ColorEnumG.JN_MAIN, True)
-                    self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
+                    self.back(self.serialno)
+                    self.back(self.serialno)
                     select_queue.task_over('UseSkill')
                     if 90 > kwargs['角色信息']['等级'] >= 60:
                         LoadConfig.writeconf(self.mnq_name, '60级', '1', ini_name=self.mnq_name)
@@ -160,12 +155,12 @@ class UpRoleG(BasePageG):
                         LoadConfig.writeconf(self.mnq_name, '90级', '1', ini_name=self.mnq_name)
                     return -1
                 else:
-                    if self.get_rgb(125, 491, 'EE7546'):
+                    if self.get_rgb(RgbEnumG.SKILL_CJN):
                         self.air_touch((132, 399), touch_wait=1)
                     else:
                         if _ZB_JN_NUM == 0:
                             for _pos in _ZB_JN_POS:
-                                if self.get_rgb(_pos[0], _pos[1], _pos[-1]):
+                                if self.get_rgb(_pos):
                                     _ZB_JN_NUM += 1
                         else:
                             if _ZB_FLAG + 1 == _ZB_JN_NUM:
@@ -190,8 +185,8 @@ class UpRoleG(BasePageG):
         _PET3 = False
         _C_JN = False  # 装技能
         _JN_OVER = False  # 技能装备完成
-        _JN_POS_LIST = [(349, 539, 'DDDEE2'), (407, 540, 'DDDEE2'),
-                        (521, 545, 'DDDEE2'), (618, 541, 'DDDEE2')]  # 技能登录list
+        _JN_POS_LIST = [[349, 539, 'DDDEE2'], [407, 540, 'DDDEE2'],
+                        [521, 545, 'DDDEE2'], [618, 541, 'DDDEE2']]  # 技能登录list
         _JN_FLAG = 0
         _PET_FLAG = 1  # 宠物栏位置顺序
         _PET_TYPE = None  # 确定宠物种类
@@ -201,7 +196,7 @@ class UpRoleG(BasePageG):
                 self.crop_image_find(ImgEnumG.MR_MENU)
             elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
                 self.ocr_find(ImgEnumG.MENU_CW, True)  # 宠物
-            elif self.mulcolor_check(ColorEnumG.PET_XQ):  # 宠物装备-详情
+            elif self.get_rgb(RgbEnumG.ZB_XQ):  # 宠物装备-详情
                 if self.get_rgb(1143, 622, 'EB7245', True):
                     if _PET_FLAG == 1:
                         _PET1 = True
@@ -212,31 +207,31 @@ class UpRoleG(BasePageG):
                     _PET_FLAG += 1
                     if _PET_FLAG > 3:
                         _PET_FLAG = 1
-            elif self.mulcolor_check(ColorEnumG.PET_JN_LOGIN):
+            elif self.get_rgb(RgbEnumG.PET_JN):
                 if _C_JN:
-                    self.get_rgb(821, 205, 'EE7046', True)
-                    self.get_rgb(821, 325, 'EE7046', True)
+                    self.get_rgb(RgbEnumG.PET_JN_LOGIN1, True)
+                    self.get_rgb(RgbEnumG.PET_JN_LOGIN2, True)
                     self.crop_image_find(ImgEnumG.BUY_YS_LOGIN)
                     self.crop_image_find(ImgEnumG.JN_LOGIN_2)
                     _C_JN = False
                     _JN_FLAG += 1
                 else:
-                    self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
-            elif self.mulcolor_check(ColorEnumG.PET_MAIN):  # 宠物界面
+                    self.back(self.serialno)
+            elif self.get_rgb(RgbEnumG.PET_M):  # 宠物界面
                 if _PET1 and _PET2 and _PET3 and _JN_OVER:
-                    self.mulcolor_check(ColorEnumG.PET_MAIN, True)
-                    self.crop_image_find(ImgEnumG.MR_TIP_CLOSE)
+                    self.back(self.serialno)
+                    self.back(self.serialno)
                     select_queue.task_over('UsePet')
                     kwargs['角色信息']['宠物'] = '1'
                     LoadConfig.writeconf(self.mnq_name, '宠物', kwargs['角色信息']['宠物'], ini_name=self.mnq_name)
                     return 1
                 if _PET1 and _PET2 and _PET3 and not _JN_OVER:
-                    if not self.get_rgb(248, 543, 'DDDEE2', True):  # 点开Ferver技能槽
+                    if not self.get_rgb(RgbEnumG.PET_FEVER_JN, True):  # 点开Ferver技能槽
                         if _JN_FLAG == 4:
                             _JN_OVER = True
                         else:
                             for _ in _JN_POS_LIST:
-                                if self.get_rgb(_[0], _[1], _[-1], True):
+                                if self.get_rgb(_, True):
                                     _C_JN = True
                                 # else:
                                 #     _JN_FLAG += 1
@@ -244,9 +239,9 @@ class UpRoleG(BasePageG):
                         _C_JN = True
                 else:
                     if _PET_TYPE:
-                        self.get_rgb(_PET_POS[_PET_FLAG][0], _PET_POS[_PET_FLAG][1], _PET_POS[_PET_FLAG][2], True)
-                        if self.get_rgb(_PET_POS[_PET_FLAG][0], _PET_POS[_PET_FLAG][1], _PET_POS[_PET_FLAG][-1]):
-                            if self.mulcolor_check(ColorEnumG.PET_NULL) or self.check_mulpic([ImgEnumG.PET_1,
+                        self.get_rgb([_PET_POS[_PET_FLAG][0], _PET_POS[_PET_FLAG][1], _PET_POS[_PET_FLAG][2]], True)
+                        if self.get_rgb([_PET_POS[_PET_FLAG][0], _PET_POS[_PET_FLAG][1], _PET_POS[_PET_FLAG][-1]]):
+                            if self.get_rgb(RgbEnumG.PET_NULL) or self.check_mulpic([ImgEnumG.PET_1,
                                                                                               ImgEnumG.PET_2],
                                                                                              clicked=False):
                                 self.crop_image_find(ImgEnumG.CW_TYPE[_PET_TYPE][_PET_FLAG - 1])
@@ -270,9 +265,7 @@ class UpRoleG(BasePageG):
                         else:
                             _PET1 = _PET2 = _PET3 = _JN_OVER = True  # 无宠物
             else:
-                if time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
-                    if not self.close_window():
-                        return 0
+                self.close_window()
         raise ControlTimeOut(r'装备宠物-异常超时')
 
     def strongequip(self, **kwargs):
@@ -289,23 +282,23 @@ class UpRoleG(BasePageG):
         _QH_FLAG = False  # 点击强化后
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             self.check_err()
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):  # 游戏界面
+            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):  # 游戏界面
                 self.crop_image_find(ImgEnumG.MR_MENU)
-            elif self.ocr_find(ImgEnumG.EQ_QH_OCR):  # 星力强化
-                self.air_touch((210, 263), touch_wait=1)
+            elif self.get_rgb(RgbEnumG.QH_JG):  # 星力强化结果
+                pass
             elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
                 self.ocr_find(ImgEnumG.EQ_TJP_OCR, True)  # 铁匠铺
-            elif self.ocr_find(ImgEnumG.TJP_UI_OCR):  # 进入铁匠铺
+            elif self.get_rgb(RgbEnumG.TJP_QH_M):  # 进入铁匠铺
                 if _QH_OVER:
-                    self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
-                    self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
+                    self.back(self.serialno)
+                    self.back(self.serialno)
                     select_queue.task_over('StrongEquip')
                     return 1
                 if len(_ZB_LIST) == 0:
                     _ZB_LIST = self.get_all_text(ImgEnumG.EQ_ZBZ_OCR)
                     if len(_ZB_LIST) == 0:
                         _QH_OVER = True
-                if self.ocr_find(ImgEnumG.EQ_QH_NULL):
+                if self.get_rgb(RgbEnumG.TJP_QH_BTN_F):
                     if _QH_FLAG:
                         res = self.get_all_text(ImgEnumG.EQ_ZBZ_OCR)
                         if len(res) != len(_ZB_LIST):
@@ -323,14 +316,14 @@ class UpRoleG(BasePageG):
                         now_level = self.get_num((281, 280, 368, 329))
                         if now_level < _QH_LEVEL:
                             if _USE_XY:
-                                self.get_rgb(206, 552, 'DEDFE3', True, 1)
+                                self.get_rgb(RgbEnumG.QH_XYJ, True)
                             if _USE_DP:
-                                self.get_rgb(287, 553, 'DEDFE3', True, 1)
+                                self.get_rgb(RgbEnumG.QH_DP, True)
                             if _USE_BH:
-                                self.get_rgb(369, 553, 'DEDFE3', True, 1)
+                                self.get_rgb(RgbEnumG.QH_BH, True)
                             if _USE_ZK:
                                 self.air_touch((446, 552), touch_wait=1)
-                            if self.get_rgb(605, 662, 'EE7046', True, 2):
+                            if self.get_rgb(RgbEnumG.TJP_QH_BTN, True):
                                 _QH_FLAG = True
                         else:
                             self.air_touch((453, 162), touch_wait=1)

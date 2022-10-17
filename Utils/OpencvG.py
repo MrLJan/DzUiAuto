@@ -1,89 +1,80 @@
 # -*- coding: utf-8 -*-
 import time
-from sys import getrefcount
 
-import torch
-from PIL import Image
 from airtest.aircv import aircv
-from airtest.core.android.adb import ADB
 from airtest.core.android.touch_methods.base_touch import DownEvent, SleepEvent, UpEvent
-from airtest.core.error import TargetNotFoundError
 from cnocr import CnOcr
-from cv2 import cv2
-from pympler import tracker
-
-from Enum.ResEnum import GlobalEnumG, ImgEnumG, ColorEnumG, UiEnumG
-# from UiPage import DailyTaskG
-# from UiPage import UpRoleG
-# from UiPage import RewardG
-# from UiPage import AutoBatG
-# from UiPage import TeamStateG
-# from UiPage import StateCheckG
-from Utils.AdbUtils import PhoneDevives
+from Enum.ResEnum import GlobalEnumG, ColorEnumG, ImgEnumG
+from UiPage import UpRoleG, RewardG
+from Utils.QtSignals import sn
 from Utils.Devicesconnect import DevicesConnect
-from Utils.ExceptionTools import NotFindImgErr
-from Utils.OtherTools import OT
 from Utils.ThreadTools import ThreadTools
 
 
 class OpenCvTools:
     def __init__(self):
         self.dev = None
+        self._img = None
 
-    def get_rgb(self, get_x, get_y, find_color='', clicked=False, touch_wait=GlobalEnumG.TouchWaitTime,
+    def get_rgb(self, rgb_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime,
                 t_log=GlobalEnumG.TestLog):
         """获取某一像素点RBG数据"""
-        screen = self.dev.snapshot()
-        color = self.nd_to_hex(screen[get_y,get_x])
-        if t_log:
-            print(f'expoint:{color}_find:{find_color}_x,y:{get_x},{get_y}')
-        if find_color in color:
-            if clicked:
-                self.dev.touch((get_x, get_y))
-                if touch_wait > 0:
-                    time.sleep(touch_wait)
-            return True
+        get_x, get_y, find_color = rgb_info
+        self._img = self.dev.snapshot()
+        if self._img is not None:
+            _color = self.nd_to_hex(self._img[get_y, get_x])
+            if t_log:
+                print(f'expoint:{_color}_find:{find_color}_x,y:{get_x},{get_y}')
+            if find_color in _color:
+                if clicked:
+                    self.dev.touch((get_x, get_y))
+                    if touch_wait > 0:
+                        time.sleep(touch_wait)
+                return True
         return False
 
     def rgb(self, get_x, get_y):
-        screen = self.dev.snapshot()
-        color = screen[get_y, get_x]  # 横屏1280x720
-        return self.nd_to_hex(color)
+        self._img = self.dev.snapshot()
+        _color = self._img[get_y, get_x]  # 横屏1280x720
+        return self.nd_to_hex(_color)
 
-    def nd_to_hex(self, ndarry):
-        expoint = ''
-        for point in ndarry:
-            expoint = str(hex(point))[-2:].replace('x', '0').upper() + expoint
-        return expoint
+    @staticmethod
+    def nd_to_hex(ndarry):
+        _point = ''
+        for _p in ndarry:
+            _point = str(hex(_p))[-2:].replace('x', '0').upper() + _point
+        return _point
 
     def mulcolor_check(self, find_list, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog,
                        get_grb=False):
         """对比多个点的颜色，只要有一个错误就返回"""
-        screen = self.dev.snapshot()
-        c_list = []
-        if get_grb:
-            _list = find_list
-        else:
-            _list = find_list[0]
-        for _p in _list:
+        self._img = self.dev.snapshot()
+        if self._img is not None:
+            c_list = []
             if get_grb:
-                color=self.nd_to_hex(screen[_p[1], _p[0]])
-                c_list.append((_p[0], _p[1],color))
+                _list = find_list
             else:
-                if _p[-1] not in self.nd_to_hex(screen[_p[1], _p[0]]):
-                    if t_log:
-                        print(f"{_p},{self.nd_to_hex(screen[_p[1], _p[0]])} {find_list[-1]}")
-                    return False
-        if t_log:
-            print(c_list)
-        if clicked:
-            self.dev.touch((find_list[0][0][0], find_list[0][0][1]))
-            if touch_wait > 0:
-                time.sleep(touch_wait)
-        if t_log:
-            print(f'T_{find_list[-1]}')
-            time.sleep(GlobalEnumG.WaitTime)
-        return True
+                _list = find_list[0]
+            for _p in _list:
+                if get_grb:
+                    _color = self.nd_to_hex(self._img[_p[1], _p[0]])
+                    c_list.append((_p[0], _p[1], _color))
+                else:
+                    if _p[-1] not in self.nd_to_hex(self._img[_p[1], _p[0]]):
+                        if t_log:
+                            print(f"{_p},{self.nd_to_hex(self._img[_p[1], _p[0]])} {find_list[-1]}")
+                        return False
+            if t_log:
+                print(c_list)
+            if clicked:
+                self.dev.touch((find_list[0][0][0], find_list[0][0][1]))
+                if touch_wait > 0:
+                    time.sleep(touch_wait)
+            if t_log:
+                print(f'T_{find_list[-1]}')
+                time.sleep(GlobalEnumG.WaitTime)
+            return True
+        return False
 
     def find_color(self, get_x, get_y, get_x1, get_y1, f_color):
         """
@@ -106,7 +97,7 @@ class OpenCvTools:
 class AirImgTools:
     def __init__(self):
         self.dev = None
-        self.screen = None
+        self._img = None
 
     turn_pos = {
         'up': (146, 471),
@@ -125,85 +116,72 @@ class AirImgTools:
     def crop_image_find(self, area_temp, clicked=True, timeout=0.1, touch_wait=GlobalEnumG.TouchWaitTime,
                         get_pos=False, t_log=GlobalEnumG.TestLog):
         """区域找图"""
-        try:
-            screen = self.dev.snapshot()
+        self._img = self.dev.snapshot()
+        if self._img is not None:
             area = area_temp[0]
             temp = area_temp[-1]
-            crop_img = aircv.crop_image(screen, area)
-            s_time = time.time()
-            while time.time() - s_time < timeout:
-                res = temp.match_in(crop_img)
-                if res:
-                    pos = (res[0] + area[0], res[1] + area[1])
-                    if clicked:
-                        self.dev.touch(pos)
-                        if touch_wait > 0:
-                            time.sleep(touch_wait)
-                    if get_pos:
-                        if t_log:
-                            print(f"crop_image_find:{temp}")
-                        return True, pos[0], pos[-1]
+            crop_img = aircv.crop_image(self._img, area)
+            res = temp.match_in(crop_img)
+            if res:
+                pos = (res[0] + area[0], res[1] + area[1])
+                if clicked:
+                    self.dev.touch(pos)
+                    if touch_wait > 0:
+                        time.sleep(touch_wait)
+                if get_pos:
                     if t_log:
                         print(f"crop_image_find:{temp}")
-                    return True
+                    return True, pos[0], pos[-1]
+                if t_log:
+                    print(f"crop_image_find:{temp}")
+                return True
             if get_pos:
                 return False, 0, 0
             if t_log:
                 print(f"f_crop_image_find:{temp}")
             return False
-        except (NotFindImgErr, AttributeError) as e:
-            print(e)
-            return False
+        return False
 
     def find_all_pos(self, temp, timeout=GlobalEnumG.FindImgTimeOut):
-        try:
-            img = temp[-1]
-            s_time = time.time()
-            pos_list = []
-            screen = self.dev.snapshot()
-            while time.time() - s_time < timeout:  # 超时
-                match_pos = img.match_all_in(screen)
-                if not match_pos:
-                    return False, (0, 0)
-                for pos in match_pos:
-                    res = pos['result']
-                    pos_list.append(res)
-                return True, pos_list
-        except TargetNotFoundError:
-            return False, (0, 0)
+        img = temp[-1]
+        pos_list = []
+        self._img = self.dev.snapshot()
+        if self._img is not None:
+            match_pos = img.match_all_in(self._img)
+            if not match_pos:
+                return False, (0, 0)
+            for pos in match_pos:
+                res = pos['result']
+                pos_list.append(res)
+            return True, pos_list
+        return False, (0, 0)
 
     def air_loop_find(self, temp, clicked=True, timeout=GlobalEnumG.FindImgTimeOut,
                       touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog):
         """
         循环查找图片并点击，超时返回
         """
-        try:
-            img = temp[-1]
-            s_time = time.time()
-            screen = self.dev.snapshot()
-            while time.time() - s_time < timeout:  # 超时
-                match_pos = img.match_in(screen)
-                if not match_pos:
-                    if t_log:
-                        print(f"f_air_loop_find:{temp}")
-                    return False
-                if match_pos:
-                    if clicked:
-                        self.dev.touch(match_pos)
-                        if touch_wait > 0:
-                            time.sleep(touch_wait)
+        img = temp[-1]
+        self._img = self.dev.snapshot()
+        if self._img is not None:
+            match_pos = img.match_in(self._img)
+            if not match_pos:
                 if t_log:
-                    print(f"air_loop_find:{temp}")
-                return True
+                    print(f"f_air_loop_find:{temp}")
+                return False
+            if match_pos:
+                if clicked:
+                    self.dev.touch(match_pos)
+                    if touch_wait > 0:
+                        time.sleep(touch_wait)
             if t_log:
-                print(f"f_air_loop_find:{temp}")
-            return False
-        except TargetNotFoundError:
-            if t_log:
-                print(f"f_air_loop_find:{temp}")
-            return False
+                print(f"air_loop_find:{temp}")
+            return True
+        if t_log:
+            print(f"f_air_loop_find:{temp}")
+        return False
 
-    def air_touch(self, touch_xy, duration=0.2, touch_wait=0):
+    def air_touch(self, touch_xy, duration=0.2, touch_wait=1):
         self.dev.touch(touch_xy, duration=duration)
         if touch_wait > 0:
             time.sleep(touch_wait)
@@ -274,8 +252,10 @@ class CnOcrTool:
     def __init__(self):
         self.dev = None
         self.cn_ocr = None
+        self._img = None
 
-    def ocr_find(self, ocr_list, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog,get_pos=False):
+    def ocr_find(self, ocr_list, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog,
+                 get_pos=False):
         """
         范围查找文字，返回坐标
         :param ocr_list:查找文字范围和文字
@@ -284,60 +264,62 @@ class CnOcrTool:
         :return: 查找结果
         """
         x1, y1, x2, y2 = ocr_list[0]
-        screen = self.dev.snapshot()
-        img_fp = aircv.crop_image(screen, (x1, y1, x2, y2))
-        t1 = time.time()
-        self.cn_ocr[-1].acquire()
-        out = self.cn_ocr[0].ocr(img_fp, resized_shape=(720, 1280), batch_size=1)
-        self.cn_ocr[-1].release()
-        if t_log:
-            print(time.time() - t1)
-        if len(out) == 0:
-            time.sleep(GlobalEnumG.WaitTime / 2)
+        self._img = self.dev.snapshot()
+        if self._img is not None:
+            img_fp = aircv.crop_image(self._img, (x1, y1, x2, y2))
+            t1 = time.time()
+            self.cn_ocr[-1].acquire()
+            out = self.cn_ocr[0].ocr(img_fp, resized_shape=(720, 1280), batch_size=1)
+            self.cn_ocr[-1].release()
             if t_log:
-                print(f"f_{ocr_list}")
-            return False
-        for i in range(len(out)):
-            ntext = out[i]['text']
-            if t_log:
-                print(ntext)
-            if ocr_list[-1] in ntext:
-                npar = out[i]['position']
-                ls = npar.tolist()
-                lx = int((ls[-2][0] + ls[0][0]) / 2)
-                ly = int((ls[-2][-1] + ls[0][-1]) / 2)
-                if clicked:
-                    self.dev.touch((lx + x1, ly + y1))
-                    if touch_wait > 0:
-                        time.sleep(touch_wait)
+                print(time.time() - t1)
+            if len(out) == 0:
+                time.sleep(GlobalEnumG.WaitTime / 2)
                 if t_log:
-                    print(f"T_{ocr_list}")
-                time.sleep(touch_wait)
-                if get_pos:
-                    return lx + x1, ly + y1
-                return True
+                    print(f"f_{ocr_list}")
+                return False
+            for i in range(len(out)):
+                ntext = out[i]['text']
+                if t_log:
+                    print(ntext)
+                if ocr_list[-1] in ntext:
+                    npar = out[i]['position']
+                    ls = npar.tolist()
+                    lx = int((ls[-2][0] + ls[0][0]) / 2)
+                    ly = int((ls[-2][-1] + ls[0][-1]) / 2)
+                    if clicked:
+                        self.dev.touch((lx + x1, ly + y1))
+                        if touch_wait > 0:
+                            time.sleep(touch_wait)
+                    if t_log:
+                        print(f"T_{ocr_list}")
+                    time.sleep(touch_wait)
+                    if get_pos:
+                        return lx + x1, ly + y1
+                    return True
         time.sleep(touch_wait / 2)
         return False
 
     def get_all_text(self, ocr_list):
         find_pos_list = []
         x1, y1, x2, y2 = ocr_list[0]
-        screen = self.dev.snapshot()
-        self.cn_ocr[-1].acquire()
-        img_fp = aircv.crop_image(screen, (x1, y1, x2, y2))
-        out = self.cn_ocr[0].ocr(img_fp)
-        self.cn_ocr[-1].release()
-        if len(out) == 0:
-            time.sleep(GlobalEnumG.WaitTime / 2)
-            return False
-        for i in range(len(out)):
-            ntext = out[i]['text']
-            if ocr_list[-1] in ntext:
-                npar = out[i]['position']
-                ls = npar.tolist()
-                lx = int((ls[-2][0] + ls[0][0]) / 2)
-                ly = int((ls[-2][-1] + ls[0][-1]) / 2)
-                find_pos_list.append((lx + x1, ly + y1))
+        self._img = self.dev.snapshot()
+        if self._img is not None:
+            self.cn_ocr[-1].acquire()
+            img_fp = aircv.crop_image(self._img, (x1, y1, x2, y2))
+            out = self.cn_ocr[0].ocr(img_fp)
+            self.cn_ocr[-1].release()
+            if len(out) == 0:
+                time.sleep(GlobalEnumG.WaitTime / 2)
+                return find_pos_list
+            for i in range(len(out)):
+                ntext = out[i]['text']
+                if ocr_list[-1] in ntext:
+                    npar = out[i]['position']
+                    ls = npar.tolist()
+                    lx = int((ls[-2][0] + ls[0][0]) / 2)
+                    ly = int((ls[-2][-1] + ls[0][-1]) / 2)
+                    find_pos_list.append((lx + x1, ly + y1))
         time.sleep(GlobalEnumG.WaitTime)
         return find_pos_list
 
@@ -347,69 +329,72 @@ class CnOcrTool:
         :param ocr_list:查找文字范围和文字
         :return: 查找结果
         """
-        screen = self.dev.snapshot()
-        # self.dev.snapshot(filename=OT.abspath('/Res/ASSS.png'))
-        # screen = aircv.imread(OT.abspath('/Res/ASSS.png'))
-        img_fp = aircv.crop_image(screen, area)
-        self.cn_ocr[-1].acquire()
-        out = self.cn_ocr[0].ocr(img_fp)
-        self.cn_ocr[-1].release()
-        if len(out) == 0:
-            time.sleep(GlobalEnumG.WaitTime / 2)
-            return False
-        if t_log:
-            print(f"get_ocrres:{area}_ntext:{out[0]['text']}")
-        time.sleep(GlobalEnumG.WaitTime)
-        return out[0]['text']
+        self._img = self.dev.snapshot()
+        if self._img is not None:
+            img_fp = aircv.crop_image(self._img, area)
+            self.cn_ocr[-1].acquire()
+            out = self.cn_ocr[0].ocr(img_fp)
+            self.cn_ocr[-1].release()
+            if len(out) == 0:
+                time.sleep(GlobalEnumG.WaitTime / 2)
+                return ''
+            if t_log:
+                print(f"get_ocrres:{area}_ntext:{out[0]['text']}")
+            time.sleep(GlobalEnumG.WaitTime)
+            return out[0]['text']
+        return ''
 
     def get_roleinfo(self, area_list, t_log=GlobalEnumG.TestLog):
-        screen = self.dev.snapshot()
+        self._img = self.dev.snapshot()
         img_area = []
         out_list = []
         ntext_list = []
-        for _a in area_list:
-            img_fp = aircv.crop_image(screen, _a)
-            img_area.append(img_fp)
-        self.cn_ocr[-1].acquire()
-        for _img in img_area:
-            out = self.cn_ocr[0].ocr(_img)
-            if len(out) > 0:
-                out_list.append(out)
-        self.cn_ocr[-1].release()
-        if t_log:
-            print(f"get_roleinfo:out_{out_list}")
-        if len(out_list) == 0:
-            time.sleep(GlobalEnumG.WaitTime / 2)
-            return False
-        for _o in out_list:
-            ntext = ''.join(filter(lambda x: x.isdigit(), _o[0]['text']))
-            ntext_list.append(int(ntext))
-        time.sleep(GlobalEnumG.WaitTime)
-        if t_log:
-            print(f"get_roleinfo:ntext_list_{ntext_list}")
+        if self._img is not None:
+            for _a in area_list:
+                img_fp = aircv.crop_image(self._img, _a)
+                img_area.append(img_fp)
+            self.cn_ocr[-1].acquire()
+            for _img in img_area:
+                out = self.cn_ocr[0].ocr(_img)
+                if len(out) > 0:
+                    out_list.append(out)
+            self.cn_ocr[-1].release()
+            if t_log:
+                print(f"get_roleinfo:out_{out_list}")
+            if len(out_list) == 0:
+                time.sleep(GlobalEnumG.WaitTime / 2)
+                return False
+            for _o in out_list:
+                ntext = ''.join(filter(lambda x: x.isdigit(), _o[0]['text']))
+                ntext_list.append(int(ntext))
+            time.sleep(GlobalEnumG.WaitTime)
+            if t_log:
+                print(f"get_roleinfo:ntext_list_{ntext_list}")
+            return ntext_list
         return ntext_list
 
     def get_all_ocr(self, area, t_log=False):
-        screen = self.dev.snapshot()
-        x1, y1, x2, y2 = area
-        img_fp = aircv.crop_image(screen, area)
+        self._img = self.dev.snapshot()
         res_list = []
-        self.cn_ocr[-1].acquire()
-        out = self.cn_ocr[0].ocr(img_fp)
-        self.cn_ocr[-1].release()
-        if len(out) == 0:
-            time.sleep(GlobalEnumG.WaitTime / 2)
-            if t_log:
-                print(f"F_get_all_ocr:{area}")
-            return False
-        for i in range(len(out)):
-            ntext = out[i]['text']
-            npar = out[i]['position']
-            ls = npar.tolist()
-            lx = int((ls[-2][0] + ls[0][0]) / 2)
-            ly = int((ls[-2][-1] + ls[0][-1]) / 2)
-            if ntext != '':
-                res_list.append((ntext, (lx + x1, ly + y1)))
+        if self._img is not None:
+            x1, y1, x2, y2 = area
+            img_fp = aircv.crop_image(self._img, area)
+            self.cn_ocr[-1].acquire()
+            out = self.cn_ocr[0].ocr(img_fp)
+            self.cn_ocr[-1].release()
+            if len(out) == 0:
+                time.sleep(GlobalEnumG.WaitTime / 2)
+                if t_log:
+                    print(f"F_get_all_ocr:{area}")
+                return False
+            for i in range(len(out)):
+                ntext = out[i]['text']
+                npar = out[i]['position']
+                ls = npar.tolist()
+                lx = int((ls[-2][0] + ls[0][0]) / 2)
+                ly = int((ls[-2][-1] + ls[0][-1]) / 2)
+                if ntext != '':
+                    res_list.append((ntext, (lx + x1, ly + y1)))
         time.sleep(GlobalEnumG.WaitTime)
         return res_list
 
@@ -417,70 +402,46 @@ class CnOcrTool:
 if __name__ == '__main__':
     # img_fp = r'D:\DzAutoUi\Res\img\21.bmp'
     # res, dev = DevicesConnect('emulator-5554').connect_device()
-    # res2, dev2 = DevicesConnect('127.0.0.1:5555').connect_device()
+    res2, dev2 = DevicesConnect('127.0.0.1:5555').connect_device()
     # print(res2, dev2)
     # cv2.setNumThreads(1)
     # cv2.ocl.setUseOpenCL(False)
     # torch.set_num_threads(1)
     # torch.no_grad()
     # torch.set_grad_enabled(False)
-    # cnocr = CnOcr(rec_model_name='densenet_lite_136-fc',
-    #               det_model_name='db_shufflenet_v2_small')  # 'ch_PP-OCRv3_det')  # ch_PP-OCRv3繁体中文匹配模型
-    # ocr_lock = ThreadTools.new_lock()
-    # cn_ocr = [cnocr, ocr_lock]
+    cnocr = CnOcr(rec_model_name='densenet_lite_136-fc',
+                  det_model_name='db_shufflenet_v2_small')  # 'ch_PP-OCRv3_det')  # ch_PP-OCRv3繁体中文匹配模型
+    ocr_lock = ThreadTools.new_lock()
+    cn_ocr = [cnocr, ocr_lock]
     # img=G.DEVICE.snapshot()
     # aircv.imwrite(r'D:\DzAutoUi\Res\img\21.png',img)
     # loop_find(img_fp)
-    # c = CnOcrTool()
-    # a = AirImgTools()
-    # o = OpenCvTools()
-    # c.dev = dev2
-    # a.dev = dev2
-    # o.dev = dev2
-    # c.cn_ocr = cn_ocr
-    # DailyTaskG.DailyTaskAutoG((dev2, 'emulator-5556'), 1, 1, cn_ocr).gonghui_task()
-    # r=c.get_ocrres((17,4,103,29),t_log=True)
-    # tr = tracker.SummaryTracker()
-    # tr1 = tracker.SummaryTracker()
-    # tr.print_diff()
-    # tr1.print_diff()
+    c = CnOcrTool()
+    a = AirImgTools()
+    o = OpenCvTools()
+    c.dev = dev2
+    a.dev = dev2
+    o.dev = dev2
+    c.cn_ocr = cn_ocr
+    # r=o.mulcolor_check(ColorEnumG.LOGIN_MAIN)
     # while True:
-        # r = c.get_ocrres((17, 4, 103, 29), t_log=True)
-    # t1=time.time()
-    # r=o.get_rgb(311,519)
-    # r = o.mulcolor_check(ColorEnumG.MAP_MAIN, t_log=True)
-    # r=o.get_rgb(14,44,t_log=True)
-    #     r=c.get_roleinfo([(223,165,325,210), (253, 218, 307, 243), (315, 505, 469, 536)])
-    # num = ''.join(filter(lambda x: x.isdigit(), r))
-    # r=a.find_all_pos(ImgEnumG.JN_ZB)
-    # r=o.mulcolor_check([(1144,60), (147, 93), (816, 677)],get_grb=True)
-    # r = o.mulcolor_check(ColorEnumG.JZT_END, t_log=True)
 
-    serialno = '127.0.0.1:5555'
-    r = serialno.split(':')[-1]
-    adb = PhoneDevives(serialno=serialno, display_id=r'D:\DzUiAuto\Res\ddd.png').adb
-    while True:
-        t1 = time.time()
-
-        adb.shell('screencap -p > /sdcard/screen.png')
-        adb.pull(local=OT.abspath(f'/Res/{r}.png'), remote='/sdcard/screen.png')
-        color=cv2.imread(OT.abspath(f'/Res/{r}.png'))
-        # cv2.imshow("img", color)
-        # cv2.waitKey(0)
-        r = color[264,38]
-        expoint = ''
-        for point in r:
-            expoint = str(hex(point))[-2:].replace('x', '0').upper() + expoint
-        # r=a.air_touch((38,149))
-        # r=c.ocr_find(ImgEnumG.MR_KSDY,True)
-        #     r=a.crop_image_find(ImgEnumG.JN_TEACH)
-        print(expoint,time.time()-t1)
+    #     t1=time.time()
+    #     r=a.crop_image_find(ImgEnumG.INGAME_FLAG2,False)
+    #     print(r,time.time()-t1)
+    # r=o.rgb(1132, 641)
+    r = RewardG.RewardG((dev2, 'emulator-5554'), 'ld1',1,cn_ocr).bag_clear()
+    print(r)
+    # for x in range(285,332):
+    #     for y in range(498,522):
+    #         print(f"{x},{y},{o.rgb(x,y)}")
+    # r = a.crop_image_find(ImgEnumG.UI_SET, False)
 
     # while True:
     #     r=c.crop_image_find(ImgEnumG.PERSON_POS,clicked=False,get_pos=True)
     #     print(r)
     # r = c.mul_point_touch('down', 'jdown', k_time=1)
-    # r=UpRoleG.UpRoleG((dev2,'emulator-5556'),'ld1',1).upequip()
+
 
     # r=c.mul_point_touch('down', 'jump',long_click=True)
     # louti_queue = QueueManage(1)

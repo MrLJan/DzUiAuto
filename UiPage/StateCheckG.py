@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 
-from Enum.ResEnum import GlobalEnumG, ImgEnumG, ColorEnumG
+from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
 from Utils.LoadConfig import LoadConfig
 
@@ -50,6 +50,8 @@ class StateCheckG(BasePageG):
                     return True
                 else:
                     return False
+            else:
+                self.check_close()
         return False
 
     def close_all(self):
@@ -61,14 +63,10 @@ class StateCheckG(BasePageG):
             elif self.crop_image_find(ImgEnumG.GAME_ICON, False):
                 self.sn.log_tab.emit(self.mnq_name, r"掉线")
                 return True
-            elif not self.ocr_find(ImgEnumG.GAME_END):
-                self.check_close()
-                self.key_event(self.serialno, 'BACK')
             elif self.air_loop_find(ImgEnumG.MR_BAT_EXIT):
                 self.ocr_find(ImgEnumG.MR_YDZXD, clicked=True)
             else:
-                if time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
-                    self.key_event(self.serialno, 'BACK')
+                self.check_close()
         return False
 
     def check_roleinfo(self, **kwargs):
@@ -81,7 +79,6 @@ class StateCheckG(BasePageG):
         LEVEL = 0  # 等级
         STAR = 0  # 星力
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            self.check_err()
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 if _C_OVER:
                     kwargs['角色信息']['等级'] = LEVEL
@@ -97,9 +94,9 @@ class StateCheckG(BasePageG):
                     select_queue.task_over('CheckRole')
                     return True
                 self.air_touch((1170, 39), touch_wait=3)
-            elif self.mulcolor_check(ColorEnumG.BAG_GOLD):
+            elif self.get_rgb(RgbEnumG.BAG_GOLD_QR):
                 if _C_OVER:
-                    self.get_rgb(579, 510, 'EE7046', True)
+                    self.get_rgb(RgbEnumG.BAG_GOLD_QR, True)
                 else:
                     res = self.get_roleinfo([(694, 368, 927, 412), (398, 370, 630, 413)])
                     GOLD = res[0]
@@ -107,10 +104,10 @@ class StateCheckG(BasePageG):
                     LoadConfig.writeconf(self.mnq_name, '金币', str(GOLD), ini_name=self.mnq_name)
                     LoadConfig.writeconf(self.mnq_name, '红币', str(RED_GOLD), ini_name=self.mnq_name)
                     _C_OVER = True
-            elif self.mulcolor_check(ColorEnumG.BAG_MAIN):
+            elif self.get_rgb(RgbEnumG.BAG_M):
                 self.time_sleep(1)
                 if _C_OVER:
-                    self.mulcolor_check(ColorEnumG.BAG_MAIN,True)
+                    self.back(self.serialno)
                 else:
                     _res = self.get_roleinfo([(225, 162, 326, 187), (253, 218, 307, 243), (315, 505, 469, 536)])
                     LEVEL = _res[0]
@@ -120,6 +117,6 @@ class StateCheckG(BasePageG):
                         LoadConfig.writeconf(self.mnq_name, '等级', str(LEVEL), ini_name=self.mnq_name)
                         LoadConfig.writeconf(self.mnq_name, '星力', str(STAR), ini_name=self.mnq_name)
                         LoadConfig.writeconf(self.mnq_name, '战力', str(BAT_NUM), ini_name=self.mnq_name)
-                        self.crop_image_find(ImgEnumG.BAG_GOLD,timeout=10, touch_wait=1)
+                        self.crop_image_find(ImgEnumG.BAG_GOLD, touch_wait=2)
             else:
                 self.check_close()

@@ -214,13 +214,11 @@ class switch_case:
                     self.select_queue.put_queue('CheckRole')
             return BatEnumG.TASK_ID[task_name]['id'], 'NULL'
         elif task_name in xt_map:
-            self.select_queue.put_queue('CheckXT')
             if _C_ROLE:
                 self.select_queue.put_queue('CheckRole')
             self.exec_queue.put_queue('AutoBat')
             return '3', task_name
         elif task_name in yt_map:
-            self.select_queue.put_queue('CheckYT')
             if _C_ROLE:
                 self.select_queue.put_queue('CheckRole')
             self.exec_queue.put_queue('AutoBat')

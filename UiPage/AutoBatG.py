@@ -2,7 +2,7 @@
 import random
 import time
 
-from Enum.ResEnum import ImgEnumG, GlobalEnumG, ColorEnumG
+from Enum.ResEnum import ImgEnumG, GlobalEnumG, ColorEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
 
 
@@ -17,7 +17,10 @@ class AutoBatG(BasePageG):
         self.cn_ocr = ocr
 
     def _get_move_xy(self):
-        return self.crop_image_find(ImgEnumG.PERSON_POS, clicked=False, get_pos=True)
+        res=self.crop_image_find(ImgEnumG.PERSON_POS, clicked=False, get_pos=True)
+        if not res[0]:
+            self.crop_image_find(ImgEnumG.S_MAP, touch_wait=1)
+        return res
 
     def find_map_move(self, map_data, map_x, map_y, wait_queue, louti_queue):
         if map_y == map_data[0][-1] and not louti_queue.check_queue('1') and map_y != 135:
@@ -254,15 +257,14 @@ class AutoBatG(BasePageG):
         elif self.ocr_find(ImgEnumG.BAG_FULL, touch_wait=0):
             return -1
         while True:
-            if self.get_rgb(311,519,'4C87B0'):
+            if self.get_rgb(RgbEnumG.FUHUO_BTN):
                 self.check_err()
-            if self.get_rgb(587, 528, 'EE7046',True):pass
+            if self.get_rgb(RgbEnumG.BAT_JG,True):pass
             if i % 5 == 0:
-                self.mulcolor_check(ColorEnumG.BAT_RES, True, touch_wait=0)
                 if not self.crop_image_find(ImgEnumG.INGAME_FLAG2, False, touch_wait=0):
                     return -1
                 else:
-                    self.get_rgb(836, 391, '607B96', True)
+                    # self.get_rgb(836, 391, '607B96', True)
                     if not self.crop_image_find(ImgEnumG.AUTO_BAT, False, touch_wait=0):
                         self.air_touch((423, 655), touch_wait=2)  # 点击确认战斗结果
                     else:
@@ -371,32 +373,34 @@ class AutoBatG(BasePageG):
         _AUTO_START = False
         _AUTO_OVER = False
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
-            if self.mulcolor_check(ColorEnumG.BAT_MAIN):
-                now_time = self.get_num((385, 352, 441, 388))  # 剩余时间
-                if int(now_time) > 1:
-                    if self.get_rgb(733, 563, 'EE7046', True):
-                        _AUTO_START = True
-                else:
-                    if _NO_TIMECARD:
-                        self.air_loop_find(ImgEnumG.UI_CLOSE)
+            if self.get_rgb(RgbEnumG.BAT_AUTO_M):
+                if not self.get_rgb(RgbEnumG.AUTO_TIME):
+                    now_time = self.get_num((385, 352, 441, 388))  # 剩余时间
+                    if int(now_time) > 1:
+                        if self.get_rgb(RgbEnumG.BAT_AUTO_QR, True):
+                            _AUTO_START = True
                     else:
-                        if self.get_rgb(897, 391, '617A95', True):
-                            pass
-                        elif self.get_rgb(709, 344, 'FFD741', True):
-                            pass
-                        elif self.get_rgb(840, 336, 'FFD741', True):
-                            pass
-                        elif self.get_rgb(908, 338, 'FFD741', True):
-                            pass
+                        if _NO_TIMECARD:
+                            self.air_loop_find(ImgEnumG.UI_CLOSE)
                         else:
-                            _NO_TIMECARD = True
-            elif self.mulcolor_check(ColorEnumG.BAT_RES, True):
-                self.air_loop_find(ImgEnumG.UI_QR)
+                            if self.get_rgb(RgbEnumG.AUTO_FREE, True):
+                                pass
+                            elif self.get_rgb(RgbEnumG.AUTO_10, True):
+                                pass
+                            elif self.get_rgb(RgbEnumG.AUTO_30, True):
+                                pass
+                            elif self.get_rgb(RgbEnumG.AUTO_60, True):
+                                pass
+                            else:
+                                _NO_TIMECARD = True
+                else:
+                    if self.get_rgb(RgbEnumG.BAT_AUTO_QR, True):
+                        _AUTO_START = True
+            elif self.get_rgb(RgbEnumG.BAT_JG, True):
                 _AUTO_OVER = True
             elif self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 if _AUTO_OVER or _NO_TIMECARD:
-                    if self.mulcolor_check(ColorEnumG.BAT_RES, True):
-                        self.air_loop_find(ImgEnumG.UI_QR)
+                    self.get_rgb(RgbEnumG.BAT_JG, True)
                     return True
                 if not self.crop_image_find(ImgEnumG.AUTO_BAT, True):
                     if _AUTO_START:

@@ -843,8 +843,6 @@ class DzUi:
                 pass
             if self.ocr_lock.locked():
                 self.ocr_lock.release()
-            serialno = self.dev_obj_list[mnq_name][0]
-            PhoneDevives(serialno=serialno).disconnect()
             ThreadTools.stop_thread_list(mnq_thread_list)  # 利用tid关闭线程
             mnq_thread_list.clear()
 
@@ -893,11 +891,9 @@ class DzUi:
             for mnq_index in index_list:
                 mnq_name = MnqTools().use_index_find_name(mnq_index)
                 mnq_thread_list = self.mnq_thread_tid[mnq_name]
-                serialno=self.dev_obj_list[mnq_name][0]
                 if len(mnq_thread_list) != 0:
                     if self.ocr_lock.locked():
                         self.ocr_lock.release()
-                    PhoneDevives(serialno=serialno).disconnect()
                     ThreadTools.stop_thread_list(mnq_thread_list)  # 利用tid关闭线程
                     mnq_thread_list.clear()
                     self.sn.table_value.emit(mnq_name, 7, "")
@@ -948,16 +944,14 @@ class DzUi:
                 try:
                     check_mnq_thread(f"{mnq_name}_{task_name}", mnq_thread_list,
                                      switch_case(self.sn, **taskdic).do_case, thread_while=True)
-                except (ConnectionResetError, RestartTask):
+                except (ConnectionResetError, RestartTask,Exception):
                     if self.ocr_lock.locked():
                         self.ocr_lock.release()
-                    serialno = self.dev_obj_list[mnq_name][0]
-                    PhoneDevives(serialno=serialno).disconnect()
                     ThreadTools.stop_thread_list(mnq_thread_list)
                     mnq_thread_list.clear()
                     self._do_task_list(index_list)
-                except Exception:
-                    self.ocr_lock.clear()
+                # except Exception:
+                #     self.ocr_lock.clear()
 
     def restart_task(self, mnq_name, mnq_thread_list):
         """重启任务"""
@@ -997,12 +991,10 @@ class DzUi:
                 UpEvent(9)]
             try:
                 dev.touch_proxy.perform(multitouch_event)
-            except NotImplementedError:
+            except (NotImplementedError,ConnectionResetError):
                 pass
             if self.ocr_lock.locked():
                 self.ocr_lock.release()
-            serialno = self.dev_obj_list[mnq_name][0]
-            PhoneDevives(serialno=serialno).disconnect()
             ThreadTools.stop_thread_list(mnq_thread_list)
             mnq_thread_list.clear()
 

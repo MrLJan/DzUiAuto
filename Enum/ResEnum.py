@@ -15,13 +15,15 @@ class GlobalEnumG:
     TestLog = True if LoadConfig.getconf('全局配置', '日志') == '1' else False
     GamePackgeName = r'com.nexon.maplem.global'
     WaitTime = 1
+    ExitBtnTime = 2  # 点击退出游戏否按钮等待时长
     FindImgTimeOut = 20  # 查找图片等待超时时间
     TouchDurationTime = 1  # 延时点击
     LoginGameTimeOut = 600  # 登录超时时长
     UiCheckTimeOut = 600  # 界面操作超时时长
     SelectCtrTimeOut = 150  # 操作超时时长
-    TouchWaitTime = 1  # 点击后等待时长
+    TouchWaitTime = 2  # 点击后等待时长
     TaskWaitTime = 2  # 任务等待时长
+    BackWaitTime = 1.5  # 按back后等待时长
     TaskCheckTime = 600  # 任务检查等级时间
 
     PWD_POS = {
@@ -124,11 +126,11 @@ class ImgEnumG:
     QD_1 = [(1218, 12, 1265, 55), Template(OT.imgpath('活动签到1'))]
     # 登录相关
     GAME_ICON = [(0, 0, 1280, 720), Template(OT.imgpath('游戏icon'))]
-    LOGIN_FLAG = [(0, 0, 1280, 720), Template(OT.imgpath('游戏登陆标志'))]
+    LOGIN_FLAG = [(973, 485, 1278, 715), Template(OT.imgpath('游戏登陆标志'))]
     LOGIN_FLAG1 = [(0, 0, 1280, 720), Template(OT.imgpath('登录区域'))]  # 20,665,56,701
-    START_GAME = [(0, 0, 1280, 720), Template(OT.imgpath('游戏开始'))]  # 963,481,1278,688
-    INGAME_FLAG = [(0, 0, 1280, 720), Template(OT.imgpath('验证登录标记'))]  # 734,9,1253,64
-    INGAME_FLAG2 = [(0, 0, 1280, 720), Template(OT.imgpath('验证登录标记2'))]
+    START_GAME = [(916, 572, 1234, 660), Template(OT.imgpath('游戏开始'))]  # 963,481,1278,688
+    INGAME_FLAG = [(1143, 546, 1276, 692), Template(OT.imgpath('验证登录标记'))]  # 734,9,1253,64
+    INGAME_FLAG2 = [(877, 307, 969, 396), Template(OT.imgpath('验证登录标记2'))]
     LOGIN_TIPS = [(1240, 14, 1264, 61), Template(OT.imgpath('登录弹窗'))]
     # 任务相关
     SKIP_OCR = [(1121, 6, 1273, 55), '略']  # 略过
@@ -160,6 +162,7 @@ class ImgEnumG:
     CZZY = [(28, 125, 468, 178), Template(OT.imgpath('成长奖励'))]
     # 背包清理
     BAG_FULL = [(1140, 36, 1195, 64), 'FULL']  # 背包满
+    BAG_MAX_IMG = [(1140, 36, 1195, 64), Template(OT.imgpath('背包满'))]
     BAG_SELL = [(1167, 663, 1215, 687), Template(OT.imgpath('贩售'))]
     BAG_FJ = [(1026, 661, 1071, 688), Template(OT.imgpath('分解'))]
     BAG_CS_LIST = [(644, 110, 697, 579), Template(OT.imgpath('出售1'))]
@@ -354,7 +357,7 @@ class ImgEnumG:
     MR_WLDC_JR = [(584, 43, 698, 95), '入']  # 进入界面
     MR_JZT_JR = [(593, 153, 682, 193), '入']  # 进入界面
     MR_MRDC_JR = [(601, 39, 680, 81), '入']  # 进入界面
-    MR_YDZXD = [(311, 487, 960, 660), '移勤至']  # 移勤至遐革
+    MR_YDZXD = [(311, 487, 960, 660), '至']  # 移勤至遐革
     MR_MAX = [(984, 249, 1029, 273), Template(OT.imgpath('MAX'))]
     MR_JHXT_OCR = [(9, 7, 314, 73), '化系']  # 淮化系流
     MR_TBB_OCR = [(9, 7, 314, 73), '寳寳的']  # 温寳寳的料
@@ -597,3 +600,183 @@ class ColorEnumG:
     MENU_MAIN = [[(1231, 34, 'FFFFFF'), (1222, 655, 'FFFFFF'), (841, 659, 'FFFFFF'), (873, 24, 'FFFFFF')], '菜单-主界面']
     FEVER_BUFF = [[(984, 125, 'FFFFFF'), (631, 582, 'F2F2F2'), (283, 194, 'F2F2F2'), (768, 228, 'FFFFFF')],
                   'fever_buff']
+
+
+class RgbEnumG:
+    EXIT_FOU = [391, 532, '4C87AF']  # 退出游戏-否
+    FUHUO_BTN = [293, 522, '4C87AF']  # 复活按钮
+    BG_PINDAO = [1083, 55, 'EE7047']  # 地图主界面-变更频道
+    MAP_QWPD = [529, 635, 'EE7047']  # 地图-前往频道
+    MAP_SJYD = [927, 657, '4C87AF']  # 瞬间移动
+    HD_BJBS = [1058, 655, 'EDCE01']  # 活动签到
+    HD_BJBS_LQ=[1058, 655,'EC9C00']
+
+    KSDY = [16, 14, '415067']  # 快速单元
+    XLZC = [53, 429, '617B96']  # 星力战场
+    XLZC_YD = [1117, 658, 'EE7047']  # 星力战场-移动
+    XLZC_YDQR = [699, 523, 'EE7047']  # 星力战场-移动确认
+    XLZC_YDOK = [568, 519, 'EE7047']  # 星力战场-移动完成
+    YS_LOGIN = [565, 128, 'F2F2F2']  # 药水登录界面
+    YS_SHOP = [925, 544, 'F2F2F2']  # 药水商店
+    YS_XQ = [1040, 648, 'EE7047']  # 药水详情
+    YS_GMQR = [686, 523, 'EE7047']  # 药水购买确认
+    BACK = [16, 10, '344154']  # 左上角返回
+    JR=[1012, 645,'EE7047']#进入按钮
+    MR_EXIT_TEAM=[678, 517,'EE7047']#进入副本提示有队伍
+    TEAM_KS=[398, 389, '5E5536']#组队进入
+    EXIT_TEAM_QR=[714, 525, 'EE7047']
+    WL_PM = [592, 633, 'EE7047']  # 武林排名界面
+    WL_M = [16, 10, '344154']  # 武林界面
+    WL_JR = [1068, 650, 'EE7047']  # 武林进入
+    WL_JRQR = [669, 630, 'EE7047']  # 武林进入确认
+    JZT_JR=[999, 646,'EE7047']#金字塔进入
+    JZT_JRQR=[659, 514,'EE7047']#金字塔进入确认
+    JZT_END=[566,574,'4C87AF']
+    JYDC_END=[273, 638, '4C87AF']#菁英地城结束
+    JYDC_MAX=[825, 439, '607B96']#菁英地城max
+
+    MRDC_JR=[1012, 645,'EE7047']#每日地城进入
+    MRDC_JRQR=[661,625,'EE7047']#每日地城进入确认
+    MRDC_HD=[143, 620, 'EE7546']#混沌模式
+
+    TBB_JR=[768, 618, 'EE7047']
+    TBB_QR=[567, 523,'EE7047']
+
+    JHXT_JRQR=[734, 640, 'EE7047']
+    JHXT_END=[556,616,'4C87AF']
+
+    CYRQ_END=[376, 517, '4C87AF']
+    CYRQ_JR=[1055, 656, 'EE7047']
+    CYRQ_JR_F=[1055, 656, 'C3C3C3']
+
+    MNDC_XZ=[54, 138, '2B3747']
+    MNDC_XZ2 = [78, 214, '2B3747']
+    MNDC_XZ3=[633, 331, 'FFFFFF']
+    MNDC_JRQR=[670, 652,'EE7047']
+    MNDC_JR=[1053, 650, 'EE7047']
+    MNDC_END=[564, 593, 'EE7047']
+    MNDC_JG_QR=[564, 593, 'EE7047']
+    MNDC_JG=[384,598,'4C87AF']#迷你地城结果-移动
+    MNDC_JG_LK=[523,604,'EE7047']
+    BAT_JG=[540,524,'EE7047']#自动战斗结果
+    BAT_AUTO_QR=[733, 563, 'EE7047']#自动战斗确认
+    BAT_AUTO_M=[505, 543,'DDDDDD']#自动战斗界面
+
+    AUTO_TIME=[447, 268,'519DF1']
+    AUTO_FREE=[897, 391, '617B96']
+    AUTO_10=[709, 344, 'FFD741']
+    AUTO_30=[840, 336, 'FFD741']
+    AUTO_60=[908, 338, 'FFD741']
+
+
+    XGT_JR=[1167, 642, 'EE7047']
+    XGT_ZCJR=[983,621,'EE7047']
+    XGT_JR_F=[1167, 642, 'C3C3C3']
+
+    GWGY_JR=[1084, 656, 'EE7047']
+    GWGY_JR_F=[1084, 656, 'C3C3C3']
+    GWGY_JRQR=[749, 633, 'EE7047']
+
+    YZD_KN=[156, 339, '2B3747']
+    YZD_PT=[159, 259, '2B3747']
+    YZD_JR=[1055, 651, 'EE7047']
+    YZD_JR_F=[1052, 648, 'C3C3C3']
+
+    GH_M=[549, 104,'EAEAEA']
+    GH_JR=[692, 515, 'EE7047']
+    GH_XJR=[925, 662, 'EE7047']#加入新公会
+    GH_JRQR=[840, 528, 'EE7047']
+    GH_RYZ=[709, 668,'F1F1F1']
+    GH_RYZ_JR=[433, 666, 'EE7047']
+    GH_RYZ_JR_F=[433, 666, 'C3C3C3']
+    GH_WXDC=[709, 668,'F2F2F2']
+    GH_WXDC_JR=[449, 653, 'EE7047']
+    GH_WXDC_JR_F=[449, 653, 'C3C3C3']
+
+    EXIT_TEAM=[669, 534, 'EE7047']#离队确认
+    TEAM_ZDJR=[99, 277,'EE7047']#自动加入
+    TEAM_ZDJR_QR=[1126,162,'617B96']#自动加入-确认
+
+    TEAM_CLDW_M=[53, 671,'F2F2F2']#创立队伍界面
+    TEAM_MMDW=[102, 521,'3B759B']#密码队伍选项
+    TEAM_QRMM=[524,609,'EE7047']#确认密码
+
+    TEAM_SQJR=[1125, 647, 'EE7047']#申请加入
+    TEAM_SQJR_F=[1125, 647, 'C3C3C3']#无法申请加入
+
+    MAP_XL=[1108,655,'EE7047']#寻路按钮
+    MAP_XLQR=[660,521,'EE7047']#寻路按钮确认
+    MAP_ERR=[520,520,'EE7047']#无法瞬间移动
+
+    BAG_M=[407, 32,'EE7047']
+    BAG_GOLD_QR=[579, 510, 'EE7047']
+    BAG_BS=[1043, 132, 'AAB5CB']#宝石栏
+    BAG_SP=[954, 129, 'AAB5C7']#饰品
+    BAG_FJ=[860, 122, 'A9B6C9']#防具
+    BAG_WQ=[770, 133, 'A4AFC3']#武器
+    ZB_XQ=[1188, 106,'415067']
+    ZB_JD=[1062, 626, 'EE7047'] # 鉴定
+    ZB_JDQR=[725, 516, 'EE7047']# 鉴定确认
+    ZB_CD=[1211, 625, 'EE7047']# 穿戴
+
+    BAG_SX=[374, 624,'4C87AF']#出售筛选
+    BAG_SX_TY=[855, 636, 'EE7047']#套用
+    SX_SP=[782, 375, 'ADB7C1']
+    SX_SP2 = [698, 451, 'ADB7C1']
+    SX_SP3 = [586, 537, 'ADB7C1']
+    BAG_FJSX=[374, 533,'4C87AF']#分解筛选
+    FJ_SX=[627, 307, 'ADB7C1']
+    FJ_SX2=[498, 385, 'ADB7C1']
+    FJ_TY=[690, 545, 'EE7047']#套用
+    CSFJ_M=[683, 674,'E9E9E9']#出售分解界面
+    CS_QR=[1120, 671, 'EE7047']#贩售/分解
+    CS_NULL=[599,132,'FFFFFF']#出售不为空
+    FJ_NULL=[88,152,'E9E9E9']#分解栏空
+    FJ_END=[711, 645, 'EE7047']
+    QR=[676,521,'EE7047']
+    FJ=[1009, 667, '4C87AF']#分解
+    CS=[1138, 675,'4C87AF']#出售
+
+    RE_LQJL=[679, 634, 'EE7047']
+    RE_LQJL1 = [518, 616, 'EE7047']
+    KT_M=[61, 681,'2B3747']
+    KT_CJ=[155, 490, 'EE7546']
+    KT_MRSL=[169, 309, 'EE7546']
+    KT_MZRW=[48, 207, 'EE7546']
+    KT_MRRW=[175, 128, 'EE7546']
+    KT_F=[1148, 643, 'C3C3C3']#课题领取按钮灰置
+
+    MAIL_M=[614, 666,'F2F2F2']
+    MAIL_LQ=[1022, 624, 'EE7047']
+    MAIL_LQ_F=[1022, 624, 'C3C3C3']
+    MAIL_GR=[922, 160, 'EE7546']#个人栏
+    MAIL_GR_F=[922, 160, '2B3747']
+
+    SKIP_BTN=[374, 528, '4C87']
+    SKIP_NEW=[551, 534, 'EE7047']
+    SKIP_NEW1=[622, 213, 'FFE']
+    FEVER_BUFF=[582, 191, 'F2F2F2']
+
+    PET_M=[162, 32,'4C87AF']
+    PET_NULL=[487, 188,'636D79']
+    PET_JN=[637, 369,'F2F2F2']
+    PET_JN_LOGIN1=[821, 205, 'EE7047']
+    PET_JN_LOGIN2 = [821, 325, 'EE7047']
+    PET_FEVER_JN=[248, 543, 'DDDEE2']# 点开Ferver技能槽
+
+    ROLE_INFO=[1128, 124, 'EE7047']
+
+    SKILL_M=[299, 504,'525F6F']
+    SKILL_CJN=[125, 491, 'EE7546']#超级能栏
+
+    TJP_QH_M=[992, 121,'FFFFFF']
+    TJP_QH_BTN = [580, 645, 'EE7047']
+    TJP_QH_BTN_F=[580, 645,'C3C3C3']
+
+    QH_XYJ=[206, 552, 'DEDFE3']
+    QH_DP=[287, 553, 'DEDFE3']
+    QH_BH=[369, 553, 'DEDFE3']
+    QH_JG=[760, 656,'EE7047']
+
+    TJP_SJ_M=[260, 639,'DDDEE2']
+    TJP_SJ_BTN=[1132, 641,'EE7047']
