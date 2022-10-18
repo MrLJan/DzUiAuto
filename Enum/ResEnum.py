@@ -11,7 +11,7 @@ from Utils.OtherTools import OT
 class GlobalEnumG:
     if not os.path.exists(OT.abspath(f"/Res/配置文件.ini")):
         LoadConfig.init_config()
-    Ver = '2.03'
+    Ver = '2.07'
     TestLog = True if LoadConfig.getconf('全局配置', '日志') == '1' else False
     GamePackgeName = r'com.nexon.maplem.global'
     WaitTime = 1
@@ -24,7 +24,7 @@ class GlobalEnumG:
     TouchWaitTime = 2  # 点击后等待时长
     TaskWaitTime = 2  # 任务等待时长
     BackWaitTime = 1.5  # 按back后等待时长
-    TaskCheckTime = 600  # 任务检查等级时间
+    TaskCheckTime = 120  # 任务检查等级时间
 
     PWD_POS = {
         '0': (805, 478),
@@ -639,6 +639,8 @@ class RgbEnumG:
     MRDC_JRQR=[661,625,'EE7047']#每日地城进入确认
     MRDC_HD=[143, 620, 'EE7546']#混沌模式
 
+    GWSL_END=[283, 206,'F2F2F2']
+
     TBB_JR=[768, 618, 'EE7047']
     TBB_QR=[567, 523,'EE7047']
 
@@ -714,6 +716,9 @@ class RgbEnumG:
     BAG_SP=[954, 129, 'AAB5C7']#饰品
     BAG_FJ=[860, 122, 'A9B6C9']#防具
     BAG_WQ=[770, 133, 'A4AFC3']#武器
+    BAG_DQ=[685, 637,'4C87AF']#丢弃
+    BAG_DQQR=[670, 523,'EE7047']
+
     ZB_XQ=[1188, 106,'415067']
     ZB_JD=[1062, 626, 'EE7047'] # 鉴定
     ZB_JDQR=[725, 516, 'EE7047']# 鉴定确认
@@ -747,8 +752,8 @@ class RgbEnumG:
     KT_F=[1148, 643, 'C3C3C3']#课题领取按钮灰置
 
     MAIL_M=[614, 666,'F2F2F2']
-    MAIL_LQ=[1022, 624, 'EE7047']
-    MAIL_LQ_F=[1022, 624, 'C3C3C3']
+    MAIL_LQ=[890, 630, 'EE7047']
+    MAIL_LQ_F=[890, 630, 'C3C3C3']
     MAIL_GR=[922, 160, 'EE7546']#个人栏
     MAIL_GR_F=[922, 160, '2B3747']
 
@@ -759,12 +764,12 @@ class RgbEnumG:
 
     PET_M=[162, 32,'4C87AF']
     PET_NULL=[487, 188,'636D79']
-    PET_JN=[637, 369,'F2F2F2']
+    PET_JN=[612, 133,'F2F2F2']
     PET_JN_LOGIN1=[821, 205, 'EE7047']
     PET_JN_LOGIN2 = [821, 325, 'EE7047']
     PET_FEVER_JN=[248, 543, 'DDDEE2']# 点开Ferver技能槽
 
-    ROLE_INFO=[1128, 124, 'EE7047']
+    ROLE_INFO=[1126, 131, 'EE7047']
 
     SKILL_M=[299, 504,'525F6F']
     SKILL_CJN=[125, 491, 'EE7546']#超级能栏
@@ -780,3 +785,6 @@ class RgbEnumG:
 
     TJP_SJ_M=[260, 639,'DDDEE2']
     TJP_SJ_BTN=[1132, 641,'EE7047']
+
+    HD_M=[286, 41,'415067']
+    HD_CZZY=[240,280,'FF8D4F']#成长支援

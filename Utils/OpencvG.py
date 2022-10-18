@@ -4,9 +4,7 @@ import time
 from airtest.aircv import aircv
 from airtest.core.android.touch_methods.base_touch import DownEvent, SleepEvent, UpEvent
 from cnocr import CnOcr
-from Enum.ResEnum import GlobalEnumG, ColorEnumG, ImgEnumG
-from UiPage import UpRoleG, RewardG
-from Utils.QtSignals import sn
+from Enum.ResEnum import GlobalEnumG, ImgEnumG
 from Utils.Devicesconnect import DevicesConnect
 from Utils.ThreadTools import ThreadTools
 
@@ -333,15 +331,15 @@ class CnOcrTool:
         if self._img is not None:
             img_fp = aircv.crop_image(self._img, area)
             self.cn_ocr[-1].acquire()
-            out = self.cn_ocr[0].ocr(img_fp)
+            out = self.cn_ocr[0].ocr_for_single_line(img_fp)
             self.cn_ocr[-1].release()
             if len(out) == 0:
                 time.sleep(GlobalEnumG.WaitTime / 2)
                 return ''
             if t_log:
-                print(f"get_ocrres:{area}_ntext:{out[0]['text']}")
+                print(f"get_ocrres:{area}_ntext:{out['text']}")
             time.sleep(GlobalEnumG.WaitTime)
-            return out[0]['text']
+            return out['text']
         return ''
 
     def get_roleinfo(self, area_list, t_log=GlobalEnumG.TestLog):
@@ -355,7 +353,7 @@ class CnOcrTool:
                 img_area.append(img_fp)
             self.cn_ocr[-1].acquire()
             for _img in img_area:
-                out = self.cn_ocr[0].ocr(_img)
+                out = self.cn_ocr[0].ocr_for_single_line(_img)
                 if len(out) > 0:
                     out_list.append(out)
             self.cn_ocr[-1].release()
@@ -365,8 +363,11 @@ class CnOcrTool:
                 time.sleep(GlobalEnumG.WaitTime / 2)
                 return False
             for _o in out_list:
-                ntext = ''.join(filter(lambda x: x.isdigit(), _o[0]['text']))
-                ntext_list.append(int(ntext))
+                ntext = ''.join(filter(lambda x: x.isdigit(), _o['text']))
+                try:
+                    ntext_list.append(int(ntext))
+                except ValueError:
+                    ntext_list.append(0)
             time.sleep(GlobalEnumG.WaitTime)
             if t_log:
                 print(f"get_roleinfo:ntext_list_{ntext_list}")
@@ -402,7 +403,7 @@ class CnOcrTool:
 if __name__ == '__main__':
     # img_fp = r'D:\DzAutoUi\Res\img\21.bmp'
     # res, dev = DevicesConnect('emulator-5554').connect_device()
-    res2, dev2 = DevicesConnect('127.0.0.1:5555').connect_device()
+    res2, dev2 = DevicesConnect('127.0.0.1:5581').connect_device()
     # print(res2, dev2)
     # cv2.setNumThreads(1)
     # cv2.ocl.setUseOpenCL(False)
@@ -429,11 +430,12 @@ if __name__ == '__main__':
     #     t1=time.time()
     #     r=a.crop_image_find(ImgEnumG.INGAME_FLAG2,False)
     #     print(r,time.time()-t1)
-    # r=o.rgb(1132, 641)
-    r = RewardG.RewardG((dev2, 'emulator-5554'), 'ld1',1,cn_ocr).bag_clear()
+    r=o.rgb(922, 160)
+    #
+    # r=c.get_ocrres([33,1,86,29],t_log=True)
     print(r)
-    # for x in range(285,332):
-    #     for y in range(498,522):
+    # for x in range(833,867):
+    #     for y in range(377,411):
     #         print(f"{x},{y},{o.rgb(x,y)}")
     # r = a.crop_image_find(ImgEnumG.UI_SET, False)
 

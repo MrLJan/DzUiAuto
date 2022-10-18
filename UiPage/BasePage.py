@@ -78,9 +78,9 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
         while True:
             if time.time() - w_time > GlobalEnumG.UiCheckTimeOut:
                 self.stop_game(self.serialno)
-            if self.get_rgb(RgbEnumG.EXIT_FOU, True, touch_wait=GlobalEnumG.ExitBtnTime):  # 退出游戏-否
-                if self.crop_image_find(ImgEnumG.GAME_ICON, False):
-                    raise NotInGameErr
+            elif self.crop_image_find(ImgEnumG.GAME_ICON, False):
+                raise NotInGameErr
+            elif self.get_rgb(RgbEnumG.EXIT_FOU, True, touch_wait=GlobalEnumG.ExitBtnTime):  # 退出游戏-否
                 if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                     return True
                 if self.crop_image_find(ImgEnumG.CZ_FUHUO):
@@ -89,6 +89,7 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
                     raise NotInGameErr
             elif self.get_rgb(RgbEnumG.HD_BJBS, True):
                 pass
+
             # if self.ocr_find(ImgEnumG.NET_ERR):  # 网络异常掉线
             #     _TIMES = 0
             #     for i in range(10):
@@ -132,9 +133,9 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
                 while not self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                     self.crop_image_find(ImgEnumG.TASK_ARROW, timeout=0.5, touch_wait=0)
                     self.ocr_find(ImgEnumG.SKIP_OCR, True)
-                    self.air_loop_find(ImgEnumG.TASK_OVER, timeout=0.5, touch_wait=1)
-                    self.air_loop_find(ImgEnumG.TASK_START, timeout=0.5, touch_wait=1)
-                    self.crop_image_find(ImgEnumG.TASK_ARROW, timeout=0.5, touch_wait=1)
+                    self.air_loop_find(ImgEnumG.TASK_OVER, timeout=0.5, touch_wait=0)
+                    self.air_loop_find(ImgEnumG.TASK_START, timeout=0.5, touch_wait=0)
+                    self.crop_image_find(ImgEnumG.TASK_ARROW, timeout=0.5, touch_wait=0)
                     self.crop_image_find(ImgEnumG.TASK_TAKE, touch_wait=0)
                     self.crop_image_find(ImgEnumG.TASK_REWARD, touch_wait=0)
                     self.check_err()
@@ -151,13 +152,13 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
             return 0
 
     def check_is_stop(self):
-        _COLOR = self.rgb(924, 781)
+        _COLOR = self.rgb(450, 654)
         if self.crop_image_find(ImgEnumG.MOVE_NOW, False):
             self.time_sleep(GlobalEnumG.TaskWaitTime)
-        _COLOR_1 = self.rgb(924, 781)
+        _COLOR_1 = self.rgb(450, 654)
         if _COLOR == _COLOR_1:
             self.time_sleep(2)
-            _COLOR_1 = self.rgb(924, 781)
+            _COLOR_1 = self.rgb(450, 654)
             if _COLOR_1 == _COLOR:
                 return True
         return False
@@ -179,17 +180,14 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
         s_time = time.time()
         _C_TIMES = 0
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
-                if not self.crop_image_find(ImgEnumG.SKIP_NEW, timeout=3):
-                    return True
-            elif self.get_rgb(RgbEnumG.SKIP_NEW) or self.get_rgb(RgbEnumG.SKIP_NEW1):
-                self.air_touch((328, 369))
-                self.air_touch((469, 369))
-                self.air_touch((456, 369))
-                self.air_touch((625, 369))
-                self.air_touch((773, 369))
-                self.air_touch((655, 369))
-                self.air_touch((788, 369))
+            if self.get_rgb(RgbEnumG.SKIP_NEW) or self.get_rgb(RgbEnumG.SKIP_NEW1):
+                self.air_touch((328, 369),touch_wait=0)
+                self.air_touch((469, 369),touch_wait=0)
+                self.air_touch((456, 369),touch_wait=0)
+                self.air_touch((625, 369),touch_wait=0)
+                self.air_touch((773, 369),touch_wait=0)
+                self.air_touch((655, 369),touch_wait=0)
+                self.air_touch((788, 369),touch_wait=0)
                 if not self.get_rgb(RgbEnumG.SKIP_BTN, True):
                     if _C_TIMES > 10:
                         self.get_rgb(RgbEnumG.SKIP_NEW,True)
@@ -202,8 +200,11 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
                     self.get_rgb(RgbEnumG.SKIP_NEW,True)
                 else:
                     _C_TIMES += 1
+            elif self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+                if not self.crop_image_find(ImgEnumG.SKIP_NEW, timeout=3):
+                    return True
             else:
-                self.check_err()
+                self.check_close()
         return False
 
 

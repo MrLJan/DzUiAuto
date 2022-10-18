@@ -2,7 +2,7 @@
 import random
 import time
 
-from Enum.ResEnum import ImgEnumG, GlobalEnumG, ColorEnumG, RgbEnumG
+from Enum.ResEnum import ImgEnumG, GlobalEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
 
 
@@ -265,6 +265,8 @@ class AutoBatG(BasePageG):
                     return -1
                 else:
                     # self.get_rgb(836, 391, '607B96', True)
+                    if self.get_rgb([736,394,'617B96']):
+                        self.air_touch((845,390))
                     if not self.crop_image_find(ImgEnumG.AUTO_BAT, False, touch_wait=0):
                         self.air_touch((423, 655), touch_wait=2)  # 点击确认战斗结果
                     else:

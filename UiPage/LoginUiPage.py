@@ -92,10 +92,10 @@ class LoginUiPageG(BasePageG):
                     elif self.ocr_find(ImgEnumG.SKIP_OCR, True):
                         pass
                     else:
-                        self.close_all()
+                        self.close_all(**kwargs)
                 select_queue.task_over('Check')
                 return -1
-            self.close_all()
+            self.close_all(**kwargs)
         return 0
 
     def check_ui(self):
@@ -120,6 +120,7 @@ class LoginUiPageG(BasePageG):
 
     def close_all(self, **kwargs):
         s_time = time.time()
+        task_id=kwargs['任务id']
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.get_rgb(RgbEnumG.EXIT_FOU, True):  # 退出游戏-否
                 if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
@@ -132,10 +133,17 @@ class LoginUiPageG(BasePageG):
                     if self.crop_image_find(ImgEnumG.CZ_FUHUO):
                         self.sn.log_tab.emit(self.mnq_name, r"检查到掉线")
                         raise FuHuoRoleErr
+                elif self.crop_image_find(ImgEnumG.TASK_ARROW):
+                    pass
                 # elif self.ocr_find(ImgEnumG.MNDC_JG):
                 # elif self.get_rgb(564, 593, 'EE7047', True):
                 #     pass
             else:
+                if task_id in ['1']:
+                    if self.crop_image_find(ImgEnumG.TASK_ARROW):
+                        for i in range(3):
+                            self.crop_image_find(ImgEnumG.TASK_ARROW)
+                    self.get_rgb([1033, 414, 'EE7047'], True)
                 self.key_event(self.serialno, 'BACK')
                 # if self.get_rgb(394, 403, 'EE7047'):
                 #     self.air_touch((710, 211))
@@ -166,5 +174,5 @@ class LoginUiPageG(BasePageG):
             elif self.crop_image_find(ImgEnumG.CZ_FUHUO):
                 pass
             else:
-                self.close_all()
+                self.close_all(**kwargs)
         raise ControlTimeOut('复活检查-超时异常')

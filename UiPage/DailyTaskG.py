@@ -82,7 +82,7 @@ class DailyTaskAutoG(BasePageG):
                 self.ocr_find(ImgEnumG.MR_YDZXD, True)
             if self.get_rgb(RgbEnumG.KSDY):
                 return True
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2,False):
+            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 pass
             if self.air_loop_find(ImgEnumG.GAME_ICON, False):
                 raise NotInGameErr
@@ -109,6 +109,8 @@ class DailyTaskAutoG(BasePageG):
                     self.crop_image_find(ImgEnumG.MR_MENU)
                 elif self.get_rgb(RgbEnumG.WL_PM, True):  # 排名结算
                     pass
+                elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
+                    pass
                 elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
                     if self.ksnr_pos[0] == 0:
                         pos = self.ocr_find(ImgEnumG.MR_MENU_KSNR, True, get_pos=True)
@@ -129,7 +131,7 @@ class DailyTaskAutoG(BasePageG):
                         self.sn.log_tab.emit(self.mnq_name, r"武林道场-无次数")
                         return True
                     else:
-                        self.air_touch((976, 242),touch_wait=1)
+                        self.air_touch((976, 242), touch_wait=1)
                         self.air_touch((729, 629), touch_wait=1)
                         _JION_TIMES += 1
                 elif self.get_rgb(RgbEnumG.WL_M):  # 道场界面
@@ -162,7 +164,7 @@ class DailyTaskAutoG(BasePageG):
                     self.sn.log_tab.emit(self.mnq_name, r'金字塔-组队中')
                     self.time_sleep(15)
                     self.get_rgb(RgbEnumG.TEAM_KS, True)  # 开始
-                elif self.get_rgb(RgbEnumG.JZT_END,True):
+                elif self.get_rgb(RgbEnumG.JZT_END, True):
                     pass
                 elif self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                     if _JION:
@@ -178,7 +180,7 @@ class DailyTaskAutoG(BasePageG):
                         pos = self.ocr_find(ImgEnumG.MR_MENU_KSNR, True, get_pos=True)
                         self.ksnr_pos = tuple(pos)
                     else:
-                        self.air_touch(self.ksnr_pos,touch_wait=2)
+                        self.air_touch(self.ksnr_pos, touch_wait=2)
                 elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.ocr_find([ImgEnumG.MR_AREA, r'学塔'], True):
                         if _SWIPE_TIMES < 3:
@@ -243,7 +245,7 @@ class DailyTaskAutoG(BasePageG):
                             pos = self.ocr_find(ImgEnumG.MR_MENU_KSNR, True, get_pos=True)
                             self.ksnr_pos = tuple(pos)
                         else:
-                            self.air_touch(self.ksnr_pos,touch_wait=2)
+                            self.air_touch(self.ksnr_pos, touch_wait=2)
                     elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                         if not self.ocr_find([ImgEnumG.MR_AREA, '菁英'], True):
                             if _SWIPE_TIMES < 3:
@@ -255,14 +257,14 @@ class DailyTaskAutoG(BasePageG):
                             _SWIPE_TIMES += 1
                     elif self.get_rgb(RgbEnumG.JZT_JRQR):  # 进入界面 和金字塔一样
                         if self.get_rgb(RgbEnumG.JYDC_MAX, True):
-                            if self.get_rgb(RgbEnumG.JZT_JRQR, True,touch_wait=3):
+                            if self.get_rgb(RgbEnumG.JZT_JRQR, True, touch_wait=3):
                                 _JION = True
                     elif self.get_rgb(RgbEnumG.BACK):  # 菁英地城界面
                         if _JION:
                             self.sn.log_tab.emit(self.mnq_name, r"菁英地城-战斗完成")
                             return True
                         self.get_rgb(RgbEnumG.JR, True)
-                    elif self.get_rgb(RgbEnumG.JYDC_END,True):
+                    elif self.get_rgb(RgbEnumG.JYDC_END, True):
                         self.sn.log_tab.emit(self.mnq_name, r"菁英地城-战斗完成")
                         return True
                     else:
@@ -296,7 +298,7 @@ class DailyTaskAutoG(BasePageG):
                             pos = self.ocr_find(ImgEnumG.MR_MENU_KSNR, True, get_pos=True)
                             self.ksnr_pos = tuple(pos)
                         else:
-                            self.air_touch(self.ksnr_pos,touch_wait=2)
+                            self.air_touch(self.ksnr_pos, touch_wait=2)
                     elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                         if not self.ocr_find([ImgEnumG.MR_AREA, '每日'], True):
                             if _SWIPE_TIMES < 3:
@@ -333,15 +335,19 @@ class DailyTaskAutoG(BasePageG):
         s_time = time.time()
         _SWIPE_TIMES = 0
         _JION_TIEMS = 1
+        _BAT_END = False
         self.sn.log_tab.emit(self.mnq_name, r"怪物狩猎团")
         self.sn.table_value.emit(self.mnq_name, 8, r"怪物狩猎团")
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.crop_image_find(ImgEnumG.MR_BAT_EXIT, False, touch_wait=3):
-                if self.ocr_find(ImgEnumG.MR_YDZXD, True):
-                    self.sn.log_tab.emit(self.mnq_name, r"怪物狩猎团-战斗完成")
-                elif self.ocr_find(ImgEnumG.GWSLT_ZDJS):  # 战斗结束
-                    self.crop_image_find(ImgEnumG.MR_BAT_EXIT, touch_wait=3)
-                    self.ocr_find(ImgEnumG.MR_YDZXD, True)
+                if _BAT_END:
+                    if self.ocr_find(ImgEnumG.MR_YDZXD, True):
+                        self.sn.log_tab.emit(self.mnq_name, r"怪物狩猎团-战斗完成")
+                        _BAT_END = False
+                    elif self.ocr_find(ImgEnumG.GWSLT_ZDJS):  # 战斗结束
+                        self.crop_image_find(ImgEnumG.MR_BAT_EXIT, touch_wait=3)
+                        self.ocr_find(ImgEnumG.MR_YDZXD, True)
+                        _BAT_END = False
                 else:
                     self.sn.log_tab.emit(self.mnq_name, r"怪物狩猎团战斗中")
                     self.time_sleep(15)
@@ -358,7 +364,7 @@ class DailyTaskAutoG(BasePageG):
                             pos = self.ocr_find(ImgEnumG.MR_MENU_KSNR, True, get_pos=True)
                             self.ksnr_pos = tuple(pos)
                         else:
-                            self.air_touch(self.ksnr_pos,touch_wait=2)
+                            self.air_touch(self.ksnr_pos, touch_wait=2)
                     elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                         if not self.ocr_find([ImgEnumG.MR_AREA, '怪物狩'], True):
                             if _SWIPE_TIMES < 3:
@@ -368,13 +374,15 @@ class DailyTaskAutoG(BasePageG):
                                     _SWIPE_TIMES = 0
                                 self.air_swipe((400, 432), (925, 432), swipe_wait=1)
                             _SWIPE_TIMES += 1
-                    elif self.ocr_find(ImgEnumG.GWSLT_ZDJL):
-                        self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
+                    elif self.get_rgb(RgbEnumG.GWSL_END):
+                        _BAT_END = True
+                        if self.ocr_find(ImgEnumG.GWSLT_ZDJL):
+                            self.back(self.serialno)
                     elif self.get_rgb(RgbEnumG.BACK):  # 怪物狩猎团界面
                         if _JION_TIEMS > 3:
                             self.sn.log_tab.emit(self.mnq_name, r"怪物狩猎团-无次数")
                             return True
-                        if self.get_rgb(RgbEnumG.JR, True,touch_wait=2):
+                        if self.get_rgb(RgbEnumG.JR, True, touch_wait=2):
                             _JION_TIEMS += 1
                     elif self.ocr_find(ImgEnumG.MR_YDZXD, True):
                         self.sn.log_tab.emit(self.mnq_name, r"怪物狩猎团-战斗完成")
@@ -393,7 +401,7 @@ class DailyTaskAutoG(BasePageG):
         _TASK_OVER = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.crop_image_find(ImgEnumG.MR_BAT_EXIT, False, touch_wait=3):
-                if self.get_rgb(RgbEnumG.TBB_QR,True):
+                if self.get_rgb(RgbEnumG.TBB_QR, True):
                     pass
                 elif self.ocr_find(ImgEnumG.MR_YDZXD, True):
                     pass
@@ -436,18 +444,20 @@ class DailyTaskAutoG(BasePageG):
                     if self.ocr_find(ImgEnumG.MR_YDZXD, True):
                         self.sn.log_tab.emit(self.mnq_name, r"进化系统-战斗完成")
                         return True
-                    self.get_rgb(RgbEnumG.JHXT_END,True)
+                    self.get_rgb(RgbEnumG.JHXT_END, True)
                 self.sn.log_tab.emit(self.mnq_name, r"进化系统战斗中")
                 self.time_sleep(15)
             else:
                 if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
                     self.crop_image_find(ImgEnumG.MR_MENU)
+                elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
+                    pass
                 elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
                     if self.ksnr_pos[0] == 0:
                         pos = self.ocr_find(ImgEnumG.MR_MENU_KSNR, True, get_pos=True)
                         self.ksnr_pos = tuple(pos)
                     else:
-                        self.air_touch(self.ksnr_pos,touch_wait=2)
+                        self.air_touch(self.ksnr_pos, touch_wait=2)
                 elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.ocr_find([ImgEnumG.MR_AREA, '化系'], True):
                         if _SWIPE_TIMES < 3:
@@ -457,7 +467,7 @@ class DailyTaskAutoG(BasePageG):
                                 _SWIPE_TIMES = 0
                             self.air_swipe((400, 432), (925, 432), swipe_wait=1)
                         _SWIPE_TIMES += 1
-                elif self.get_rgb(RgbEnumG.MR_EXIT_TEAM,True):
+                elif self.get_rgb(RgbEnumG.MR_EXIT_TEAM, True):
                     pass
                 elif self.get_rgb(RgbEnumG.JHXT_JRQR):  # 入场选择
                     self.air_touch((953, 244))
@@ -501,7 +511,7 @@ class DailyTaskAutoG(BasePageG):
                         pos = self.ocr_find(ImgEnumG.MR_MENU_KSNR, True, get_pos=True)
                         self.ksnr_pos = tuple(pos)
                     else:
-                        self.air_touch(self.ksnr_pos,touch_wait=2)
+                        self.air_touch(self.ksnr_pos, touch_wait=2)
                 elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.ocr_find([ImgEnumG.MR_AREA, '次元入侵'], True):
                         if _SWIPE_TIMES < 3:
@@ -513,7 +523,7 @@ class DailyTaskAutoG(BasePageG):
                         _SWIPE_TIMES += 1
                 elif self.get_rgb(RgbEnumG.BACK):  # 次元入侵系统界面
                     if _BAT:
-                        self.get_rgb(RgbEnumG.BACK,True)
+                        self.get_rgb(RgbEnumG.BACK, True)
                     if self.get_rgb(RgbEnumG.CYRQ_JR_F):
                         self.sn.log_tab.emit(self.mnq_name, r"次元入侵-无次数")
                         return True
@@ -539,17 +549,20 @@ class DailyTaskAutoG(BasePageG):
                         self.ocr_find([(401, 586, 877, 635), '离'], True)
                         self.sn.log_tab.emit(self.mnq_name, r"迷你地城-战斗完成")
                         return True
-                elif self.get_rgb(RgbEnumG.BAT_JG,True):
+                elif self.get_rgb(RgbEnumG.BAT_JG, True):
                     pass
                 self.sn.log_tab.emit(self.mnq_name, r"迷你地城战斗中")
                 self.time_sleep(15)
             else:
                 if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                     self.crop_image_find(ImgEnumG.MR_MENU)
-                elif self.get_rgb(RgbEnumG.BAT_JG, True):pass
+                elif self.get_rgb(RgbEnumG.BAT_JG, True):
+                    pass
+                elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
+                    pass
                 elif self.get_rgb(RgbEnumG.MNDC_JG_LK):
                     if self.ocr_find(ImgEnumG.MNDC_JG):
-                        self.get_rgb(RgbEnumG.MNDC_JG_LK,True)
+                        self.get_rgb(RgbEnumG.MNDC_JG_LK, True)
                     self.sn.log_tab.emit(self.mnq_name, r"迷你地城-战斗完成")
                     return True
                 elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
@@ -557,7 +570,7 @@ class DailyTaskAutoG(BasePageG):
                         pos = self.ocr_find(ImgEnumG.MR_MENU_KSNR, True, get_pos=True)
                         self.ksnr_pos = tuple(pos)
                     else:
-                        self.air_touch(self.ksnr_pos,touch_wait=2)
+                        self.air_touch(self.ksnr_pos, touch_wait=2)
                 elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.ocr_find([ImgEnumG.MR_AREA, '迷你'], True):
                         if _SWIPE_TIMES < 3:
@@ -567,7 +580,7 @@ class DailyTaskAutoG(BasePageG):
                                 _SWIPE_TIMES = 0
                             self.air_swipe((400, 432), (925, 432), swipe_wait=1)
                         _SWIPE_TIMES += 1
-                elif self.get_rgb(RgbEnumG.MNDC_JRQR,True):  # 入场选择
+                elif self.get_rgb(RgbEnumG.MNDC_JRQR, True):  # 入场选择
                     pass
                 elif self.get_rgb(RgbEnumG.BACK):  # 迷你地城界面
                     self.get_rgb(RgbEnumG.MNDC_XZ, True)
@@ -599,12 +612,14 @@ class DailyTaskAutoG(BasePageG):
             else:
                 if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
                     self.crop_image_find(ImgEnumG.MR_MENU)
+                elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
+                    pass
                 elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
                     if self.ksnr_pos[0] == 0:
                         pos = self.ocr_find(ImgEnumG.MR_MENU_KSNR, True, get_pos=True)
                         self.ksnr_pos = tuple(pos)
                     else:
-                        self.air_touch(self.ksnr_pos,touch_wait=2)
+                        self.air_touch(self.ksnr_pos, touch_wait=2)
                 elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.ocr_find([ImgEnumG.MR_AREA, '星光M塔'], True):
                         if _SWIPE_TIMES < 3:
@@ -614,7 +629,7 @@ class DailyTaskAutoG(BasePageG):
                                 _SWIPE_TIMES = 0
                             self.air_swipe((400, 432), (925, 432), swipe_wait=1)
                         _SWIPE_TIMES += 1
-                elif self.get_rgb(RgbEnumG.MR_EXIT_TEAM,True):
+                elif self.get_rgb(RgbEnumG.MR_EXIT_TEAM, True):
                     # self.air_loop_find(ImgEnumG.UI_QR)
                     pass
                 elif self.ocr_find(ImgEnumG.MR_XGT_JR):  # 入场选择
@@ -625,9 +640,9 @@ class DailyTaskAutoG(BasePageG):
                     elif self.get_rgb(RgbEnumG.XGT_JR_F):
                         self.sn.log_tab.emit(self.mnq_name, r"星光塔-无次数")
                         return True
-                elif self.get_rgb(RgbEnumG.XGT_JR,True):
+                elif self.get_rgb(RgbEnumG.XGT_JR, True):
                     pass
-                elif self.get_rgb(RgbEnumG.XGT_ZCJR,True):
+                elif self.get_rgb(RgbEnumG.XGT_ZCJR, True):
                     pass
                 elif self.ocr_find(ImgEnumG.MR_YDZXD, True):
                     self.sn.log_tab.emit(self.mnq_name, r"星光M塔-战斗完成")
@@ -658,12 +673,14 @@ class DailyTaskAutoG(BasePageG):
             else:
                 if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
                     self.crop_image_find(ImgEnumG.MR_MENU)
+                elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
+                    pass
                 elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
                     if self.ksnr_pos[0] == 0:
                         pos = self.ocr_find(ImgEnumG.MR_MENU_KSNR, True, get_pos=True)
                         self.ksnr_pos = tuple(pos)
                     else:
-                        self.air_touch(self.ksnr_pos,touch_wait=2)
+                        self.air_touch(self.ksnr_pos, touch_wait=2)
                 elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.ocr_find([ImgEnumG.MR_AREA, '怪物公'], True):
                         if _SWIPE_TIMES < 3:
@@ -716,7 +733,6 @@ class DailyTaskAutoG(BasePageG):
         self.sn.log_tab.emit(self.mnq_name, r"boss远征")
         self.sn.table_value.emit(self.mnq_name, 8, r"boss远征")
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            self.check_err()
             if self.crop_image_find(ImgEnumG.MR_BAT_EXIT, False, touch_wait=3):
                 if self.ocr_find(ImgEnumG.BOSS_DJ):
                     self.air_loop_find(ImgEnumG.UI_QR)
@@ -784,7 +800,7 @@ class DailyTaskAutoG(BasePageG):
                             pos = self.ocr_find(ImgEnumG.MR_MENU_KSNR, True, get_pos=True)
                             self.ksnr_pos = tuple(pos)
                         else:
-                            self.air_touch(self.ksnr_pos,touch_wait=2)
+                            self.air_touch(self.ksnr_pos, touch_wait=2)
                     elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                         if not self.ocr_find([ImgEnumG.MR_AREA, '征'], True):
                             if _SWIPE_TIMES < 3:
@@ -878,7 +894,7 @@ class DailyTaskAutoG(BasePageG):
                             pos = self.ocr_find(ImgEnumG.MR_MENU_KSNR, True, get_pos=True)
                             self.ksnr_pos = tuple(pos)
                         else:
-                            self.air_touch(self.ksnr_pos,touch_wait=2)
+                            self.air_touch(self.ksnr_pos, touch_wait=2)
                     elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                         if not self.ocr_find([ImgEnumG.MR_AREA, '混沌速'], True):
                             if _SWIPE_TIMES < 3:
@@ -893,7 +909,7 @@ class DailyTaskAutoG(BasePageG):
                             self.sn.log_tab.emit(self.mnq_name, r"混沌炎魔-无次数")
                             select_queue.task_over('AutoHDboss')
                             return True
-                        if self.get_rgb(RgbEnumG.JR,True):
+                        if self.get_rgb(RgbEnumG.JR, True):
                             _JR_TIMES += 1
                     elif self.ocr_find(ImgEnumG.MR_YDZXD, True):
                         self.sn.log_tab.emit(self.mnq_name, r"混沌炎魔-战斗完成")
@@ -908,7 +924,7 @@ class DailyTaskAutoG(BasePageG):
         self.sn.log_tab.emit(self.mnq_name, r"公会任务")
         self.sn.table_value.emit(self.mnq_name, 8, r"公会任务")
         _JION = False
-        _SWIPE_TIMES=1
+        _SWIPE_TIMES = 1
         _JION_TIMES = 1
         _JR_TIMES = 0
         _WXDC = False
@@ -930,6 +946,8 @@ class DailyTaskAutoG(BasePageG):
                 if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                     if not self.crop_image_find(ImgEnumG.MR_MENU):
                         self.air_touch((1239, 36))
+                elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
+                    pass
                 elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
                     if self.ksnr_pos[0] == 0:
                         pos = self.ocr_find(ImgEnumG.MR_MENU_KSNR, True, get_pos=True)

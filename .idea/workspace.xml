@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="218bbaa1-7ac1-41ff-a550-012b423f111d" name="Changes" comment="">
+    <list default="true" id="218bbaa1-7ac1-41ff-a550-012b423f111d" name="Changes" comment="Changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DzTest/DzModeMachine.py" beforeDir="false" afterPath="$PROJECT_DIR$/DzTest/DzModeMachine.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Enum/ResEnum.py" beforeDir="false" afterPath="$PROJECT_DIR$/Enum/ResEnum.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/LDPlayer-13.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/LDPlayer-13.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Res/LDPlayer.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/LDPlayer.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Res/配置文件.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/配置文件.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/AutoBatG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/AutoBatG.py" afterDir="false" />
@@ -12,15 +12,9 @@
       <change beforePath="$PROJECT_DIR$/UiPage/DailyTaskG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/DailyTaskG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/LoginUiPage.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/LoginUiPage.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/RewardG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/RewardG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/StateCheckG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/StateCheckG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/TaskAutoG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/TaskAutoG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/TeamStateG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/TeamStateG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/UpRoleG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/UpRoleG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/AdbUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/AdbUtils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/Devicesconnect.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/Devicesconnect.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utils/OpencvG.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/OpencvG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/ThreadTools.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/ThreadTools.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dzmainui.py" beforeDir="false" afterPath="$PROJECT_DIR$/dzmainui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +84,7 @@
       <recent name="D:\DzAutoUi\Enum" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.OpencvG">
+  <component name="RunManager" selected="Python.main">
     <configuration name="OpencvG" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="DzUiAuto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -227,8 +221,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.OpencvG" />
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.OpencvG" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.device" />
         <item itemvalue="Python.ResEnum" />
@@ -296,26 +290,6 @@
           <option name="timeStamp" value="423" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/UiPage/AutoBatG.py</url>
-          <line>187</line>
-          <option name="timeStamp" value="471" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/UiPage/AutoBatG.py</url>
-          <line>183</line>
-          <option name="timeStamp" value="472" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/UiPage/AutoBatG.py</url>
-          <line>190</line>
-          <option name="timeStamp" value="473" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/UiPage/AutoBatG.py</url>
-          <line>189</line>
-          <option name="timeStamp" value="474" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/venv/Lib/site-packages/airtest/utils/logwraper.py</url>
           <line>2</line>
           <option name="timeStamp" value="481" />
@@ -351,16 +325,6 @@
           <option name="timeStamp" value="501" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/UiPage/BasePage.py</url>
-          <line>174</line>
-          <option name="timeStamp" value="796" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/UiPage/UpRoleG.py</url>
-          <line>226</line>
-          <option name="timeStamp" value="851" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/venv/Lib/site-packages/airtest/core/android/adb.py</url>
           <line>762</line>
           <option name="timeStamp" value="883" />
@@ -391,11 +355,6 @@
           <option name="timeStamp" value="895" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/DzTest/DzModeMachine.py</url>
-          <line>198</line>
-          <option name="timeStamp" value="912" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/venv/Lib/site-packages/airtest/core/android/adb.py</url>
           <line>549</line>
           <option name="timeStamp" value="916" />
@@ -409,31 +368,6 @@
           <url>file://$PROJECT_DIR$/UiPage/TeamStateG.py</url>
           <line>175</line>
           <option name="timeStamp" value="947" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/UiPage/LoginUiPage.py</url>
-          <line>39</line>
-          <option name="timeStamp" value="1037" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/UiPage/TeamStateG.py</url>
-          <line>389</line>
-          <option name="timeStamp" value="1041" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/UiPage/TeamStateG.py</url>
-          <line>390</line>
-          <option name="timeStamp" value="1042" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/UiPage/AutoBatG.py</url>
-          <line>375</line>
-          <option name="timeStamp" value="1044" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/UiPage/AutoBatG.py</url>
-          <line>398</line>
-          <option name="timeStamp" value="1045" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

@@ -27,14 +27,14 @@ class UpRoleG(BasePageG):
             elif self.ocr_find(ImgEnumG.EQ_UP_OCR):
                 self.air_touch((84, 268))
             elif self.get_rgb(RgbEnumG.TJP_SJ_M):  # 进入铁匠铺
-                if self.get_rgb(RgbEnumG.TJP_SJ_BTN,True):  # 强化按钮
+                if self.get_rgb(RgbEnumG.TJP_SJ_BTN, True):  # 强化按钮
                     # self.crop_image_find(ImgEnumG.EQ_ZDXZ)  # 自动选择
                     if self.ocr_find(ImgEnumG.EQ_ZDXZ_UI_OCR):
                         if self.ocr_find(ImgEnumG.EQ_ZDXZ_SD_OCR):
-                            self.get_rgb(375, 557, 'C2C5CA', True)
-                            self.get_rgb(739, 296, 'AEB8C2', True)
-                            self.get_rgb(478, 344, 'AEB8C2', True)
-                            self.get_rgb(572, 345, 'AEB8C2', True)
+                            self.get_rgb([375, 557, 'C2C5CA'], True)
+                            self.get_rgb([739, 296, 'AEB8C2'], True)
+                            self.get_rgb([478, 344, 'AEB8C2'], True)
+                            self.get_rgb([572, 345, 'AEB8C2'], True)
                             if self.crop_image_find(ImgEnumG.UI_QR):
                                 if not self.crop_image_find(ImgEnumG.EQ_UP):
                                     self.sn.log_tab.emit(self.mnq_name, r"无升级材料或金币不足,升级结束")
@@ -143,8 +143,8 @@ class UpRoleG(BasePageG):
             elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
                 self.ocr_find(ImgEnumG.MENU_JN, True)
             elif self.get_rgb(RgbEnumG.SKILL_M):
-                if self.get_rgb(491, 396, '4C87AF', True):
-                    self.get_rgb(723, 532, 'EE7047', True)
+                if self.get_rgb([491, 396, '4C87AF'], True):
+                    self.get_rgb([723, 532, 'EE7047'], True)
                 if _ZB_JN:
                     self.back(self.serialno)
                     self.back(self.serialno)
@@ -170,7 +170,7 @@ class UpRoleG(BasePageG):
                                 self.air_touch(GlobalEnumG.JN_POS[_ZB_FLAG], touch_wait=1)
                                 _ZB_FLAG += 1
             else:
-                if self.get_rgb(723, 532, 'EE7046', True):
+                if self.get_rgb([723, 532, 'EE7047'], True):
                     pass
                 elif time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
                     if not self.close_window():
@@ -197,7 +197,7 @@ class UpRoleG(BasePageG):
             elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
                 self.ocr_find(ImgEnumG.MENU_CW, True)  # 宠物
             elif self.get_rgb(RgbEnumG.ZB_XQ):  # 宠物装备-详情
-                if self.get_rgb(1143, 622, 'EB7245', True):
+                if self.get_rgb([1143, 622, 'EB7245'], True):
                     if _PET_FLAG == 1:
                         _PET1 = True
                     elif _PET_FLAG == 2:
@@ -209,6 +209,8 @@ class UpRoleG(BasePageG):
                         _PET_FLAG = 1
             elif self.get_rgb(RgbEnumG.PET_JN):
                 if _C_JN:
+                    if self.get_rgb([821, 205, 'C3C3C3']):
+                        _JN_OVER = True
                     self.get_rgb(RgbEnumG.PET_JN_LOGIN1, True)
                     self.get_rgb(RgbEnumG.PET_JN_LOGIN2, True)
                     self.crop_image_find(ImgEnumG.BUY_YS_LOGIN)
@@ -227,14 +229,14 @@ class UpRoleG(BasePageG):
                     return 1
                 if _PET1 and _PET2 and _PET3 and not _JN_OVER:
                     if not self.get_rgb(RgbEnumG.PET_FEVER_JN, True):  # 点开Ferver技能槽
-                        if _JN_FLAG == 4:
+                        if _JN_FLAG > 4:
                             _JN_OVER = True
                         else:
                             for _ in _JN_POS_LIST:
                                 if self.get_rgb(_, True):
                                     _C_JN = True
-                                # else:
-                                #     _JN_FLAG += 1
+                                else:
+                                    _JN_FLAG += 1
                     else:
                         _C_JN = True
                 else:
@@ -242,8 +244,8 @@ class UpRoleG(BasePageG):
                         self.get_rgb([_PET_POS[_PET_FLAG][0], _PET_POS[_PET_FLAG][1], _PET_POS[_PET_FLAG][2]], True)
                         if self.get_rgb([_PET_POS[_PET_FLAG][0], _PET_POS[_PET_FLAG][1], _PET_POS[_PET_FLAG][-1]]):
                             if self.get_rgb(RgbEnumG.PET_NULL) or self.check_mulpic([ImgEnumG.PET_1,
-                                                                                              ImgEnumG.PET_2],
-                                                                                             clicked=False):
+                                                                                     ImgEnumG.PET_2],
+                                                                                    clicked=False):
                                 self.crop_image_find(ImgEnumG.CW_TYPE[_PET_TYPE][_PET_FLAG - 1])
                             else:
                                 if _PET_FLAG == 1:
@@ -263,7 +265,7 @@ class UpRoleG(BasePageG):
                         elif self.crop_image_find(ImgEnumG.CW_TYPE['C'][0], False):
                             _PET_TYPE = 'C'
                         else:
-                            _PET1 = _PET2 = _PET3 = _JN_OVER = True  # 无宠物
+                            _PET1 = _PET2 = _PET3 = True  # 无宠物
             else:
                 self.close_window()
         raise ControlTimeOut(r'装备宠物-异常超时')
