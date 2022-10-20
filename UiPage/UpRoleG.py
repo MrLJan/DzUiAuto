@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 
-from Enum.ResEnum import GlobalEnumG, ImgEnumG, ColorEnumG, RgbEnumG
+from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
 from Utils.ExceptionTools import ControlTimeOut
 from Utils.LoadConfig import LoadConfig
@@ -22,14 +22,10 @@ class UpRoleG(BasePageG):
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):  # 游戏界面
                 self.crop_image_find(ImgEnumG.MR_MENU)
-            if self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
-                self.ocr_find(ImgEnumG.EQ_TJP_OCR, True)
-            elif self.ocr_find(ImgEnumG.EQ_UP_OCR):
-                self.air_touch((84, 268))
             elif self.get_rgb(RgbEnumG.TJP_SJ_M):  # 进入铁匠铺
-                if self.get_rgb(RgbEnumG.TJP_SJ_BTN, True):  # 强化按钮
+                if self.get_rgb(RgbEnumG.TJP_SJ_BTN_F, True):  # 强化按钮
                     # self.crop_image_find(ImgEnumG.EQ_ZDXZ)  # 自动选择
-                    if self.ocr_find(ImgEnumG.EQ_ZDXZ_UI_OCR):
+                    if self.get_rgb(RgbEnumG.TJP_SJXZ_BTN_F):
                         if self.ocr_find(ImgEnumG.EQ_ZDXZ_SD_OCR):
                             self.get_rgb([375, 557, 'C2C5CA'], True)
                             self.get_rgb([739, 296, 'AEB8C2'], True)
@@ -54,8 +50,16 @@ class UpRoleG(BasePageG):
                         else:
                             self.sn.log_tab.emit(self.mnq_name, r"选择装备")
                             self.air_touch(zb_list[0])
+                else:
+                    self.get_rgb(RgbEnumG.TJP_SJ_BTN,True)
+            elif self.get_rgb(RgbEnumG.TJP_SJ_BTN,True):
+                pass
+            elif self.ocr_find(ImgEnumG.EQ_UP_OCR):
+                self.air_touch((84, 268))
+            elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
+                self.ocr_find(ImgEnumG.EQ_TJP_OCR, True)
             else:
-                self.close_window()
+                self.check_close()
         return 0
 
     def buyyao(self, **kwargs):
@@ -74,7 +78,7 @@ class UpRoleG(BasePageG):
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 if self.ocr_find(ImgEnumG.HP_NULL_OCR):
                     _HP = True
-                if self.ocr_find(ImgEnumG.MP_NULL_OCR) and _USE_MP:
+                if _USE_MP and self.ocr_find(ImgEnumG.MP_NULL_OCR):
                     _MP = True
                 if _HP:
                     self.air_touch((1148, 364), duration=2)
@@ -124,7 +128,7 @@ class UpRoleG(BasePageG):
                     else:
                         self.back(self.serialno)
             else:
-                self.close_window()
+                self.check_close()
         raise ControlTimeOut(r'买药异常超时')
 
     def useskill(self, **kwargs):
@@ -163,7 +167,7 @@ class UpRoleG(BasePageG):
                                 if self.get_rgb(_pos):
                                     _ZB_JN_NUM += 1
                         else:
-                            if _ZB_FLAG + 1 == _ZB_JN_NUM:
+                            if _ZB_FLAG == _ZB_JN_NUM:
                                 _ZB_JN = True
                             else:
                                 self.air_touch((_ZB_JN_POS[_ZB_FLAG][0], _ZB_JN_POS[_ZB_FLAG][1]), touch_wait=1)
@@ -173,7 +177,7 @@ class UpRoleG(BasePageG):
                 if self.get_rgb([723, 532, 'EE7047'], True):
                     pass
                 elif time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
-                    if not self.close_window():
+                    if not self.check_close():
                         return -1
         raise ControlTimeOut(r'装备技能-异常超时')
 
@@ -267,7 +271,7 @@ class UpRoleG(BasePageG):
                         else:
                             _PET1 = _PET2 = _PET3 = True  # 无宠物
             else:
-                self.close_window()
+                self.check_close()
         raise ControlTimeOut(r'装备宠物-异常超时')
 
     def strongequip(self, **kwargs):
@@ -282,14 +286,14 @@ class UpRoleG(BasePageG):
         _POS = 0  # 装备序号
         _QH_OVER = False  # 是否强化完成
         _QH_FLAG = False  # 点击强化后
+        _WITE = 0
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            self.check_err()
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):  # 游戏界面
                 self.crop_image_find(ImgEnumG.MR_MENU)
-            elif self.get_rgb(RgbEnumG.QH_JG):  # 星力强化结果
+            elif self.get_rgb(RgbEnumG.QH_JG, True):  # 星力强化结果
                 pass
-            elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
-                self.ocr_find(ImgEnumG.EQ_TJP_OCR, True)  # 铁匠铺
+            elif self.get_rgb(RgbEnumG.QH_BTN, True):  # 强化星
+                pass
             elif self.get_rgb(RgbEnumG.TJP_QH_M):  # 进入铁匠铺
                 if _QH_OVER:
                     self.back(self.serialno)
@@ -307,16 +311,16 @@ class UpRoleG(BasePageG):
                             _ZB_LIST = res
                             _POS = 0
                             _QH_FLAG = False
+
+                    if _POS == len(_ZB_LIST):
+                        _QH_OVER = True
                     else:
-                        if _POS == len(_ZB_LIST):
-                            _QH_OVER = True
-                        else:
-                            self.air_touch(_ZB_LIST[_POS])
-                            _POS += 1
+                        self.air_touch(_ZB_LIST[_POS])
+                        _POS += 1
                 else:
                     if not self.air_loop_find(ImgEnumG.EQ_UP_QR):  # 确认
                         now_level = self.get_num((281, 280, 368, 329))
-                        if now_level < _QH_LEVEL:
+                        if now_level < int(_QH_LEVEL):
                             if _USE_XY:
                                 self.get_rgb(RgbEnumG.QH_XYJ, True)
                             if _USE_DP:
@@ -329,8 +333,15 @@ class UpRoleG(BasePageG):
                                 _QH_FLAG = True
                         else:
                             self.air_touch((453, 162), touch_wait=1)
+            elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
+                if self.ocr_find(ImgEnumG.EQ_QH_OCR, True):
+                    self.air_touch((208, 259), touch_wait=2)
+                else:
+                    self.ocr_find(ImgEnumG.EQ_TJP_OCR, True)  # 铁匠铺
             else:
-                if time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
-                    if not self.close_window():
-                        return 0
+                if _WITE > 10:
+                    self.check_close()
+                    _WITE = 0
+                _WITE += 1
+                self.time_sleep(2)
         raise ControlTimeOut(r'强化装备-异常超时')

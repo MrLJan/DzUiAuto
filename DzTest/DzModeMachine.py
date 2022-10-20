@@ -149,19 +149,22 @@ class switch_case:
         self.hd_boss = LoadConfig.getconf('全局配置', '混沌炎魔')
         self.random_tasktime = random.randint(200, 600)  # 随机定时任务等待时间
         self.meiri_time = self.get_task_time()  # 获取每日任务设定时间
-        self._t_time = time.time()  # 计算任务时间时的当前时间
-        self._t = 0  # 距离下次任务的时间
-        self._id = 1  # 下次定时任务的id
+        # self._t_time = time.time()  # 计算任务时间时的当前时间
+        # self._t = 0  # 距离下次任务的时间
+        # self._id = 1  # 下次定时任务的id
         self._c_time = time.time()  # 计算产出时间时的当前时间
+        self.login_time = LoadConfig.getconf(self.mnq_name, '最近登录时间', ini_name=self.mnq_name)
+        self._r_time = time.time() if self.login_time == '0' else float(self.login_time)
         self.taskid, self.mapname = self.get_taskid(kwargs['任务名'])
         self.sn = sn
         self.team_id, self.pd_num = self.get_team_id(kwargs['位置信息'])
         self.use_mp = self.get_use_mp(kwargs['位置信息'])
         self.data_dic = self.get_data_dic()
         self.exec_func = {
-            'AutoTask': [self.exec.autotask, self.exec.to_Nothing, self.exec.to_AutoTask, self.exec.checkstate],
-            'AutoBat': [self.exec.autobat, self.exec.to_Nothing, self.exec.to_AutoBat, self.exec.checkstate],
-            'Nothing': [self.exec.to_Nothing, self.exec.to_Nothing, self.exec.to_Nothing, self.exec.to_Nothing],
+            'AutoTask': [self.exec.autotask, self.exec.to_Nothing, self.exec.to_AutoTask],
+            'AutoBat': [self.exec.autobat, self.exec.to_Nothing, self.exec.to_CheckTeamState],
+            'Nothing': [self.exec.to_Nothing, self.exec.to_Nothing, self.exec.to_Nothing],
+            'CheckTeamState': [self.exec.checkstate, self.exec.to_Nothing, self.exec.to_AutoBat],
             'Wait': [self.exec.to_Nothing]
         }
         self.select_func = {
@@ -246,7 +249,7 @@ class switch_case:
                 '战力': int(LoadConfig.getconf(self.mnq_name, '战力', ini_name=self.mnq_name)),
                 '金币': int(LoadConfig.getconf(self.mnq_name, '金币', ini_name=self.mnq_name)),
                 '红币': int(LoadConfig.getconf(self.mnq_name, '红币', ini_name=self.mnq_name)),
-                '产金量': int(LoadConfig.getconf(self.mnq_name, '产金量', ini_name=self.mnq_name)),
+                '产金量': LoadConfig.getconf(self.mnq_name, '产金量', ini_name=self.mnq_name),
                 '宠物': LoadConfig.getconf(self.mnq_name, '宠物', ini_name=self.mnq_name),
                 '60级': LoadConfig.getconf(self.mnq_name, '60级', ini_name=self.mnq_name),
                 '90级': LoadConfig.getconf(self.mnq_name, '90级', ini_name=self.mnq_name),
@@ -266,10 +269,16 @@ class switch_case:
                 '休息队列': self.queue_dic['休息队列']
             },
             '挂机设置': {
+                '混合自动按键': True if LoadConfig.getconf('全局配置', '混合自动按键') == '1' else False,
+                '挂机卡时长': LoadConfig.getconf('全局配置', '挂机卡时长'),
                 '人少退组': LoadConfig.getconf('全局配置', '人少退组'),
                 '定时任务': LoadConfig.getconf('全局配置', '定时任务'),
-                '随机休息': LoadConfig.getconf('全局配置', '随机休息'),
+                '随机休息': True if LoadConfig.getconf('全局配置', '随机休息') == '1' else False,
+                '休息方式': LoadConfig.getconf('全局配置', '在线休息'),
+                '离线使用挂机卡': LoadConfig.getconf('全局配置', '离线使用挂机卡'),
+                '离线时长': int(LoadConfig.getconf('全局配置', '离线时长')),
                 '无蓝窗口': self.use_mp,
+                '任务延时': self.random_tasktime,
             },
             '野图设置': {
                 '队伍id': self.team_id,
@@ -300,9 +309,17 @@ class switch_case:
                 '随机使用石头': True if LoadConfig.getconf('全局配置', '随机使用石头') == '1' else False,
             },
             '每日任务': {
+                '定时任务': self.dingshi,
+                '每日时间': self.meiri_time,
                 '任务列表': self.get_mr_task(),
                 '每日任务队列': self.queue_dic['每日任务队列'],
-                '公会': True if LoadConfig.getconf('全局配置', '公会内容') == '1' else False},
+                '公会': True if LoadConfig.getconf('全局配置', '公会内容') == '1' else False
+            },
+            '定时设置': {
+                '启动时间': time.time(),  # 计算任务时间时的当前时间
+                '距离任务开始时间': 0,  # 距离下次任务的时间
+                '定时任务ID': 1,  # 下次定时任务的id
+            },
             '强化设置': {
                 '目标等级': LoadConfig.getconf('全局配置', '强化等级'),
                 '幸运卷轴': True if LoadConfig.getconf('全局配置', '幸运卷轴') == '1' else False,
@@ -365,9 +382,10 @@ class switch_case:
 
     def do_case(self):
         try:
-            if self.taskid in ['3', '4']:
-                self.get_time_to_dotask()  # 计算是否有定时任务需要进行
-                self.calculation_gold()
+            # if self.taskid in ['3', '4']:
+            #     self.get_time_to_dotask()  # 计算是否有定时任务需要进行
+                # self.calculation_gold()
+                # self.check_roleinfo()
             select_state = self.select.state
             if select_state != "InGame":
                 self.select_machine_do()
@@ -381,7 +399,7 @@ class switch_case:
                 else:
                     task = self.select_queue.get_task()  # 获取选择器任务
                     self.select_func[task][1]()  # 切换选择器状态
-        except (ConnectionResetError, DeviceConnectionError):
+        except (ConnectionResetError, DeviceConnectionError, ConnectionAbortedError):
             self.sn.log_tab.emit(self.mnq_name, f"模拟器adb连接异常断开,尝试重连")
             self.sn.restart.emit(self.mnq_name, self.mnq_thread_list)
         except RestartTask:
@@ -444,57 +462,13 @@ class switch_case:
         meiri_time = f" {meiri_time_h}:{meiri_time_m}:00"  # 设定时间
         return meiri_time
 
-    def get_time_to_dotask(self):
-        if self.dingshi == '1' and self.taskid in ['3', '4']:
-            if time.time() - self._t_time > self._t:
-                if self._id == 0:
-                    self.select_queue.put_queue('AutoMR')
-                elif self._id in [2, 3] and self.boss_map == '1':
-                    if self.hd_boss == '1':
-                        self.select_queue.put_queue('AutoHDboss')
-                    self.select_queue.put_queue('AutoBoss')
-                else:
-                    pass
-                now_time = int(time.time())
-                date = self.meiri_time  # 设定时间
-                date2 = f" 23:59:59"  # 跨天判断
-                date3 = f" 12:00:00"  # 固定时间点
-                date4 = f" 20:00:00"  # 固定时间点
-                time_now = time.strftime("%Y-%m-%d", time.localtime())
-                time_now1 = time_now + date
-                time_now2 = time_now + date2
-                if self.boss_map == '1':
-                    time_now3 = time_now + date3
-                    time_now4 = time_now + date4
-                else:
-                    time_now3 = time_now + date2
-                    time_now4 = time_now + date2
-                trigger_time = int(time.mktime(time.strptime(time_now1, "%Y-%m-%d %H:%M:%S")))
-                trigger_time2 = int(time.mktime(time.strptime(time_now2, "%Y-%m-%d %H:%M:%S")))
-                trigger_time3 = int(time.mktime(time.strptime(time_now3, "%Y-%m-%d %H:%M:%S")))
-                trigger_time4 = int(time.mktime(time.strptime(time_now4, "%Y-%m-%d %H:%M:%S")))
-                seconds = (trigger_time - now_time) + self.random_tasktime
-                seconds2 = (trigger_time2 - now_time) + self.random_tasktime
-                seconds3 = (trigger_time3 - now_time) + self.random_tasktime
-                seconds4 = (trigger_time4 - now_time) + self.random_tasktime
-                if -1500 < seconds3 < 0:
-                    seconds3 = 0
-                if -1500 < seconds4 < 0:
-                    seconds4 = 0
-                li = [seconds, seconds2, seconds3, seconds4]
-                _t = 99999
-                for _ in li:
-                    if _t > int(_) > 0:
-                        _t = _
-                self._id = li.index(_t)
-                self._t = _t
-                self._t_time = time.time()
-                if self._id == 0:
-                    self.sn.log_tab.emit(self.mnq_name, f"距离每日任务开始还有{self._t}秒")
-                elif self._id in [2, 3]:
-                    self.sn.log_tab.emit(self.mnq_name, f"距离混boss图开始还有{self._t}秒")
 
     def calculation_gold(self):
-        if time.time() - self._c_time > 3600:
+        if time.time() - self._c_time > GlobalEnumG.CheckRoleTime:
             self.select_queue.put_queue("CheckGold")
             self._c_time = time.time()
+
+    def check_roleinfo(self):
+        if time.time() - self._r_time > GlobalEnumG.CheckRoleTime:
+            self.select_queue.put_queue("CheckRole")
+            self._r_time = time.time()

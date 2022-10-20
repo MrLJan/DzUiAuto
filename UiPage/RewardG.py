@@ -2,7 +2,7 @@
 
 import time
 
-from Enum.ResEnum import GlobalEnumG, ImgEnumG, ColorEnumG, RgbEnumG
+from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
 from Utils.ExceptionTools import ControlTimeOut
 from Utils.LoadConfig import LoadConfig
@@ -73,7 +73,10 @@ class RewardG(BasePageG):
                 if _WQ and _FJ:
                     self.back(self.serialno)
                     return True
-                self.air_touch((1170, 39), touch_wait=1)
+                elif self.get_rgb([720, 395, '617B96']):
+                    pass
+                else:
+                    self.air_touch((1170, 39), touch_wait=1)
             elif self.get_rgb(RgbEnumG.ZB_XQ):
                 self.get_rgb(RgbEnumG.ZB_JD, True)  # 鉴定
                 self.get_rgb(RgbEnumG.ZB_JDQR, True)  # 鉴定确认
@@ -81,7 +84,7 @@ class RewardG(BasePageG):
             elif self.get_rgb(RgbEnumG.QR, True):
                 pass
             elif self.get_rgb(RgbEnumG.BAG_M):
-                if not self.crop_image_find(ImgEnumG.ZB_TS):
+                if not self.air_loop_find(ImgEnumG.ZB_TS):
                     if not _WQ:
                         self.air_touch((780, 127), touch_wait=1)
                         _WQ = True
@@ -165,7 +168,8 @@ class RewardG(BasePageG):
                 self.air_loop_find(ImgEnumG.UI_QR)
             elif self.air_loop_find(ImgEnumG.UI_QR):
                 pass
-            elif self.get_rgb([687, 524,'EE7047']):pass
+            elif self.get_rgb([687, 524, 'EE7047']):
+                pass
             else:
                 self.check_close()
         if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
@@ -293,23 +297,11 @@ class RewardG(BasePageG):
         _OVER = False
         _FJ_OVER = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            self.check_err()
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 if _OVER:
                     select_queue.task_over('BagSell')
                     return True
                 self.air_touch((1170, 39), touch_wait=2)
-            elif self.get_rgb(RgbEnumG.BAG_SX):
-                self.get_rgb(RgbEnumG.SX_SP, True)  # 饰品
-                self.get_rgb(RgbEnumG.SX_SP2, True)  # 饰品
-                self.get_rgb(RgbEnumG.SX_SP3, True)  # 饰品
-                if self.get_rgb(RgbEnumG.BAG_SX_TY, True):
-                    _SX_FLAG = True
-            elif self.get_rgb(RgbEnumG.BAG_FJSX):
-                self.get_rgb(RgbEnumG.FJ_SX, True)  # 史诗
-                self.get_rgb(RgbEnumG.FJ_SX2, True)  # 史诗
-                if self.get_rgb(RgbEnumG.FJ_TY, True):
-                    _FJSX_FLAG = True
             elif self.get_rgb(RgbEnumG.CSFJ_M):  # 出售界面
                 if _OVER and _FJ_OVER:
                     self.back(self.serialno)
@@ -336,7 +328,8 @@ class RewardG(BasePageG):
                             self.get_rgb(RgbEnumG.CS_QR, True)
                             if self.get_rgb(RgbEnumG.QR, True, touch_wait=2):
                                 _FJ_OVER = True
-            elif self.get_rgb(RgbEnumG.FJ_END, True, touch_wait=5):
+            elif self.get_rgb(RgbEnumG.FJ_END) and _FJSX_FLAG:
+                self.get_rgb(RgbEnumG.FJ_END, True, touch_wait=5)
                 _FJ_OVER = True
             elif self.get_rgb(RgbEnumG.BAG_M):
                 if _OVER and _FJ_OVER:
@@ -346,8 +339,21 @@ class RewardG(BasePageG):
                         self.get_rgb(RgbEnumG.CS, True)
                     elif not _FJ_OVER:
                         self.get_rgb(RgbEnumG.FJ, True)
+            elif self.get_rgb(RgbEnumG.BAG_SX) and not _SX_FLAG:
+                self.get_rgb(RgbEnumG.SX_SP, True)  # 饰品
+                self.get_rgb(RgbEnumG.SX_SP2, True)  # 饰品
+                self.get_rgb(RgbEnumG.SX_SP3, True)  # 饰品
+                if self.get_rgb(RgbEnumG.BAG_SX_TY, True):
+                    _SX_FLAG = True
+            elif self.get_rgb(RgbEnumG.BAG_FJSX) and not _FJSX_FLAG:
+                self.get_rgb(RgbEnumG.FJ_SX, True)  # 史诗
+                self.get_rgb(RgbEnumG.FJ_SX2, True)  # 史诗
+                if self.get_rgb(RgbEnumG.FJ_TY, True):
+                    _FJSX_FLAG = True
             else:
-                self.check_close()
+                if time.time()-s_time>60:
+                    self.check_close()
+                    s_time=time.time()
         raise ControlTimeOut(r'出售背包-异常超时')
 
     def calculationgold(self, **kwargs):
@@ -392,4 +398,7 @@ class RewardG(BasePageG):
                         LoadConfig.writeconf(self.mnq_name, '星力', str(STAR), ini_name=self.mnq_name)
                         LoadConfig.writeconf(self.mnq_name, '战力', str(BAT_NUM), ini_name=self.mnq_name)
                         self.crop_image_find(ImgEnumG.BAG_GOLD, touch_wait=2)
+            else:
+                self.check_close()
+        select_queue.task_over('CheckGold')
         raise ControlTimeOut(r'计算产出-异常超时')

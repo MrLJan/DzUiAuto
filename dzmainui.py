@@ -32,7 +32,7 @@ from Utils.Devicesconnect import DevicesConnect
 class DzUi:
     def __init__(self):
         self.ui_main = uic.loadUi(OT.abspath('/QtUI/dzmain.ui'))
-        self.ui_main.setWindowTitle(f"岛主-{GlobalEnumG.Ver}_认证群号：795973610 自助提卡网：www.huoniu.buzz")
+        self.ui_main.setWindowTitle(f"岛主-{GlobalEnumG.Ver}_自助提卡网：www.huoniu.buzz")
         self.ui_main.setWindowIcon(QtGui.QIcon(OT.abspath("/Res/dz_icon.ico")))
         # 禁止窗口拉伸
         self.ui_main.setFixedSize(self.ui_main.width(), self.ui_main.height())
@@ -56,6 +56,7 @@ class DzUi:
         # # 滚模拟器
         # self.ui_main.roll_mnq_btn.clicked.connect(self.roll_mnq_dotask)
         # 任务树
+        self.set_link_label()
         self.set_tasktree(self.ui_main.task_tree_widget)
         self.ui_main.set_task_btn.clicked.connect(self._set_task_list)
         # self.ui_main.add_diy_task1_btn.clicked.connect(self.add_diy_task1_btn)
@@ -99,7 +100,6 @@ class DzUi:
         self.set_lineedit_text(self.ui_main.task_level_edit, "全局配置", "任务停止等级")
         self.set_lineedit_text(self.ui_main.zhiye_edit, "野图配置", "短按窗口")
         self.set_lineedit_text(self.ui_main.d_use_mp_edit, "全局配置", "无蓝窗口")
-        self.set_lineedit_text(self.ui_main.autobat_time_edit, "全局配置", "挂机卡时长")
         self.set_lineedit_text(self.ui_main.team_pwd_edit, "野图配置", "组队密码")
         self.set_lineedit_text(self.ui_main.d1_duiyuan_edit, "野图配置", "1队成员")
         self.set_lineedit_text(self.ui_main.d2_duiyuan_edit, "野图配置", "2队成员")
@@ -160,7 +160,7 @@ class DzUi:
         # dm 设置tablewidget
         self.ui_main.windows_pid.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # 关闭水平进度条
         # self.ui_main.windows_pid.doubleClicked.connect(self.windows_click)
-        # self.ui_main.windows_pid.itemClicked.connect(self.item_choose)
+        self.ui_main.windows_pid.itemClicked.connect(self.item_choose)
         self.ui_main.windows_pid.setColumnCount(12)  # 设置列数
         self.ui_main.windows_pid.setColumnWidth(0, 40)
         self.ui_main.windows_pid.setColumnWidth(1, 95)
@@ -350,10 +350,19 @@ class DzUi:
         set_path = OT.abspath('/res')
         os.startfile(set_path)
 
+    def item_choose(self, Item):
+        row = Item.row()  # 获取行数
+        self.ui_main.windows_pid.cellWidget(row, 0).setChecked(True)
+
     def set_setting_label(self, label_obj, data_section, data_name):
         data_text = LoadConfig.getconf(data_section, data_name)
         self.set_label_text(label_obj, data_text)
 
+    def set_link_label(self):
+        self.ui_main.label_21.setText("<a style='color: red; text-decoration: none' href = https://www.huoniu.buzz>岛主24小时自助提卡网址,点击跳转")
+        self.ui_main.label_21.setAlignment(Qt.AlignCenter)
+        # self.set_label_text(self.ui_main.label_21,"<A href='1'><font color=red><b>https://www.huoniu.buzz</b></font></style><A href='1'>" )
+        self.ui_main.label_21.setOpenExternalLinks(True)
     @staticmethod
     def set_combobox_text(label_obj, data_section, data_name):
         data_text = LoadConfig.getconf(data_section, data_name)
@@ -682,9 +691,12 @@ class DzUi:
         child15 = QTreeWidgetItem(child12)
         child15.setText(0, '穿戴新手宠物')
         child15.setText(1, '仅限新手宠物摆放')
-        # child16 = QTreeWidgetItem(child12)
-        # child16.setText(0, '开箱子')
-        # child16.setText(1, '仅限任务送的箱子')
+        child161 = QTreeWidgetItem(child12)
+        child161.setText(0, '背包出售')
+        child161.setText(1, '出售/分解')
+        child16 = QTreeWidgetItem(child12)
+        child16.setText(0, '背包清理')
+        child16.setText(1, '丢弃部分垃圾')
 
         # child13 = QTreeWidgetItem(child12)
         # child13.setText(0, '装备技能')
@@ -932,8 +944,9 @@ class DzUi:
                 devinfo = (dev, devname)
                 mnq_name = self.ui_main.windows_pid.item(row_num, 1).text()
                 mnq_thread_list = self.mnq_thread_tid[mnq_name]
-                login_time = time.strftime('%m-%d %H:%M:%S')
-                LoadConfig.writeconf(mnq_name, '最近登录时间', login_time, ini_name=mnq_name)
+                _time = time.time()
+                login_time = time.strftime('%m-%d %H:%M:%S',time.localtime(_time))
+                LoadConfig.writeconf(mnq_name, '最近登录时间', str(_time), ini_name=mnq_name)
                 LoadConfig.writeconf(mnq_name, '最近任务', task_name, ini_name=mnq_name)
                 self.sn.table_value.emit(mnq_name, 9, login_time)  # 最近登录时间
                 self.sn.table_value.emit(mnq_name, 10, '0')  # 闪退次数
@@ -944,7 +957,7 @@ class DzUi:
                 try:
                     check_mnq_thread(f"{mnq_name}_{task_name}", mnq_thread_list,
                                      switch_case(self.sn, **taskdic).do_case, thread_while=True)
-                except (ConnectionResetError, RestartTask,Exception):
+                except (ConnectionResetError, RestartTask,Exception,ConnectionAbortedError):
                     if self.ocr_lock.locked():
                         self.ocr_lock.release()
                     ThreadTools.stop_thread_list(mnq_thread_list)
@@ -991,7 +1004,7 @@ class DzUi:
                 UpEvent(9)]
             try:
                 dev.touch_proxy.perform(multitouch_event)
-            except (NotImplementedError,ConnectionResetError):
+            except (NotImplementedError,ConnectionResetError,ConnectionAbortedError):
                 pass
             if self.ocr_lock.locked():
                 self.ocr_lock.release()
@@ -1105,9 +1118,8 @@ class DzUi:
                                  self.set_tableitem_center(
                                      LoadConfig.getconf(pinfo_list[i], '产金量', ini_name=pinfo_list[i])))  # 产金量
             table_object.setItem(i, 8, self.set_tableitem_center(''))  # 状态
-            table_object.setItem(i, 9,
-                                 self.set_tableitem_center(
-                                     LoadConfig.getconf(pinfo_list[i], '最近登录时间', ini_name=pinfo_list[i])))  # 最近登录时间
+            _time=LoadConfig.getconf(pinfo_list[i], '最近登录时间', ini_name=pinfo_list[i])
+            table_object.setItem(i, 9,self.set_tableitem_center(time.strftime('%m-%d %H:%M:%S',time.localtime(float(_time)))))  # 最近登录时间
             table_object.setItem(i, 10, self.set_tableitem_center('0'))  # 闪退次数
 
             if pinfo_list[i] in self.mnq_thread_tid.keys():

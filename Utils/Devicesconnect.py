@@ -16,7 +16,7 @@ class DevicesConnect:
             return True, dev
         except DeviceConnectionError as e:
             return False, e
-        except (UnicodeDecodeError, ConnectionResetError, Exception):
+        except (UnicodeDecodeError, ConnectionResetError, Exception,ConnectionAbortedError):
             print(f"Adb重连")
             self.connect_device()
 

@@ -2,7 +2,7 @@
 import random
 import time
 
-from Enum.ResEnum import GlobalEnumG, ImgEnumG, ColorEnumG, RgbEnumG
+from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
 from Utils.ExceptionTools import FuHuoRoleErr, BuyYErr
 
@@ -21,27 +21,36 @@ class TeamStateG(BasePageG):
         select_queue = kwargs['状态队列']['选择器']
         use_mp = kwargs['挂机设置']['无蓝窗口']
         task_id = kwargs['任务id']
+        gold = kwargs['角色信息']['金币']
+        if gold < 1:
+            select_queue.put_queue('CheckRole')
         self.sn.log_tab.emit(self.mnq_name, r"检查队伍状态")
         self.sn.table_value.emit(self.mnq_name, 8, r"检查队伍状态")
         if task_id in ['3', '4']:
-            if not self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
-                if task_id == '3':
-                    select_queue.put_queue('CheckXT')
-                else:
-                    select_queue.put_queue('CheckYT')
+            # if not self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
+            if task_id == '3':
+                select_queue.put_queue('CheckXT')
+            else:
+                select_queue.put_queue('CheckYT')
         if self.air_loop_find(ImgEnumG.GAME_ICON, False):
             select_queue.put_queue('Login')
         if self.air_loop_find(ImgEnumG.CZ_FUHUO, False):
             select_queue.put_queue('FuHuo')
             raise FuHuoRoleErr
         if self.ocr_find(ImgEnumG.HP_NULL_OCR):
+            self.sn.log_tab.emit(self.mnq_name, r"检查HP")
             select_queue.put_queue('BuyY')
             raise BuyYErr
-        if self.ocr_find(ImgEnumG.MP_NULL_OCR) and use_mp:
-            select_queue.put_queue('BuyY')
-            raise BuyYErr
+        if use_mp:
+            if self.ocr_find(ImgEnumG.MP_NULL_OCR):
+                self.sn.log_tab.emit(self.mnq_name, r"检查MP")
+                select_queue.put_queue('BuyY')
+                raise BuyYErr
         if self.crop_image_find(ImgEnumG.BAG_MAX_IMG, False):
+            self.sn.log_tab.emit(self.mnq_name, r"检查背包状态")
             select_queue.put_queue('BagSell')
+        self.skip_new()
+        return 2
 
     def check_xt(self, **kwargs):
         s_time = time.time()
@@ -51,7 +60,6 @@ class TeamStateG(BasePageG):
         _TEAM = False
         self.sn.log_tab.emit(self.mnq_name, r"检查星图状态")
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            self.check_err()
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 if _MAP and _TEAM:
                     select_queue.task_over('CheckXT')
@@ -71,8 +79,7 @@ class TeamStateG(BasePageG):
                     else:
                         return -1
             else:
-                if not self.check_close():
-                    self.close_window()
+                self.check_close()
         return -1
 
     def check_yt(self, **kwargs):
@@ -149,6 +156,8 @@ class TeamStateG(BasePageG):
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut / 2:
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 if _FLAG:
+                    if self.crop_image_find(ImgEnumG.XT_FLAG, False) and kwargs['任务id'] == '4':
+                        _MAP = False
                     return _MAP, _PD
                 self.air_touch((99, 99), touch_wait=3)
             elif self.get_rgb(RgbEnumG.BG_PINDAO):
@@ -161,8 +170,8 @@ class TeamStateG(BasePageG):
                     else:
                         if kwargs['任务id'] == '3':
                             _PD = True
-                            xt_num_now = self.get_num((932, 105, 1236, 141))
                             map_name = self.get_ocrres((932, 105, 1236, 141))
+                            xt_num_now = ''.join(filter(lambda x: x.isdigit(), map_name))
                             xt_name = kwargs['地图名']
                             xt_num = kwargs['战斗数据']['地图识别'][-1]
                             if str(xt_num) in str(xt_num_now) and xt_name in map_name:
@@ -175,6 +184,7 @@ class TeamStateG(BasePageG):
                             pd_num = kwargs['野图设置']['队伍频道']
                             if str(pd_num_now) in str(pd_num):
                                 _PD = True
+
                             if yt_name in map_name:
                                 _MAP = True
                             _FLAG = True
@@ -249,7 +259,6 @@ class TeamStateG(BasePageG):
         WAIT_XL_TIMES = 0
         self.sn.log_tab.emit(self.mnq_name, r"选择野图地图")
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            self.check_err()
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 if self.ocr_find(ImgEnumG.MAP_MOVE_END):  # 移动完成
                     self.air_loop_find(ImgEnumG.UI_QR)
@@ -269,11 +278,11 @@ class TeamStateG(BasePageG):
                             MOVE_FLAG2 = False
                 else:
                     self.air_touch((99, 99))
-            elif self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
-                self.air_loop_find(ImgEnumG.UI_QR)
+            # elif self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
+            #     self.air_loop_find(ImgEnumG.UI_QR)
             elif self.get_rgb(RgbEnumG.MAP_XLQR, True):
                 pass
-            elif self.get_rgb(RgbEnumG.MAP_ERR):
+            elif self.get_rgb(RgbEnumG.MAP_ERR,True):
                 # self.get_rgb(713, 524, 'EE7047', True)
                 # self.get_rgb(713, 524, '4C87AF', True)
                 MOVE_FLAG = True  # 无法瞬间移动,该从星图出发
@@ -343,10 +352,10 @@ class TeamStateG(BasePageG):
             elif self.ocr_find(ImgEnumG.TEAM_ZDJR_OCR):
                 if WAIT_TIMES > 2:
                     self.sn.log_tab.emit(self.mnq_name, f"已等待{(WAIT_TIMES + 1) * 10}秒,切换频道重新组队")
-                    self.air_touch((147, 350))
+                    self.air_touch((147, 350),touch_wait=GlobalEnumG.TouchWaitTime)
                     C_PINDAO = True
                 else:
-                    self.get_rgb(RgbEnumG.TEAM_ZDJR_QR,True)
+                    self.get_rgb(RgbEnumG.TEAM_ZDJR_QR, True)
                     self.time_sleep(10)
                     WAIT_TIMES += 1
             elif self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
@@ -355,15 +364,11 @@ class TeamStateG(BasePageG):
                         WAIT_TIMES = 0
                         C_PINDAO = False
                 else:
-                    if not self.get_rgb(RgbEnumG.TEAM_ZDJR,True):
+                    if not self.get_rgb(RgbEnumG.TEAM_ZDJR, True):
                         self.air_loop_find(ImgEnumG.TEAM_TAB)
-                    self.get_rgb(RgbEnumG.TEAM_ZDJR_QR,True)
+                    self.get_rgb(RgbEnumG.TEAM_ZDJR_QR, True)
             else:
-                self.crop_image_find(ImgEnumG.TEAM_TAB)
-                if time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
-                    if not self.check_close():
-                        self.sn.log_tab.emit(self.mnq_name, r"选择星图地图-异常失败")
-                        return False
+                self.check_close()
         self.sn.log_tab.emit(self.mnq_name, r"选择星图地图-超时失败")
         return False
 
@@ -372,24 +377,25 @@ class TeamStateG(BasePageG):
         s_time = time.time()
         _FLAG = False
         self.sn.log_tab.emit(self.mnq_name, r"变更频道")
-        while time.time() - s_time < 300:
+        while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 if _FLAG:
                     return True
                 self.air_touch((99, 99), touch_wait=4)
             elif self.get_rgb(RgbEnumG.MAP_QWPD):
                 _FLAG = False
-                pindao_list = [(340, 314), (332, 533), (954, 317), (952, 529),(561,521),(771,515),
-                               (737,298),(530,293),(977,409),(314,407),(573,175),(734,185)]  # 频道坐标
+                pindao_list = [(340, 314), (332, 533), (954, 317), (952, 529), (561, 521), (771, 515),
+                               (737, 298), (530, 293), (977, 409), (314, 407), (573, 175), (734, 185)]  # 频道坐标
                 i = random.randint(0, 11)
-                r=random.randint(0,3)
+                r = random.randint(0, 3)
                 _pos = pindao_list[i]
                 for _ in range(r):
                     self.air_swipe((639, 510), (639, 316))
                 self.air_touch(_pos, touch_wait=5)
                 if self.get_rgb(RgbEnumG.MAP_QWPD, True):
                     _FLAG = True
-            elif self.get_rgb(RgbEnumG.BG_PINDAO,True):
+                    self.time_sleep(5)
+            elif self.get_rgb(RgbEnumG.BG_PINDAO, True):
                 pass
             else:
                 self.check_close()
@@ -434,7 +440,7 @@ class TeamStateG(BasePageG):
                     self.air_touch(_PD_POS, duration=1)
                     if self.get_rgb(RgbEnumG.MAP_QWPD, True):
                         _FLAG = True
-            elif self.get_rgb(RgbEnumG.BG_PINDAO,True):
+            elif self.get_rgb(RgbEnumG.BG_PINDAO, True):
                 pass
             else:
                 self.check_close()
@@ -461,19 +467,19 @@ class TeamStateG(BasePageG):
                         return True
             elif self.get_rgb(RgbEnumG.TEAM_CLDW_M):
                 if self.get_rgb(RgbEnumG.TEAM_MMDW):
-                    self.get_rgb(RgbEnumG.TEAM_CLDW_M, True)
+                    self.get_rgb(RgbEnumG.TEAM_CLQR, True)
                 else:
                     self.air_touch((102, 521), touch_wait=2)
                     self.air_touch((942, 261))
             elif self.get_rgb(RgbEnumG.TEAM_QRMM):
                 if not _PUT_PWD:
                     for pwd in team_pwd:
-                        self.air_touch(GlobalEnumG.PWD_POS[pwd], duration=2)
+                        self.air_touch(GlobalEnumG.PWD_POS[pwd], duration=1)
                     _PUT_PWD = True
                 else:
                     put_res = self.get_ocrres((597, 212, 681, 246))
                     if put_res == team_pwd:
-                        if self.air_touch((524,609),touch_wait=2):
+                        if self.air_touch((524, 609), touch_wait=2):
                             _C_FLAG = True
                     else:
                         self.back(self.serialno)
@@ -506,7 +512,7 @@ class TeamStateG(BasePageG):
                     else:
                         put_res = self.get_ocrres((597, 212, 681, 246))
                         if put_res == team_pwd:
-                            if self.get_rgb(RgbEnumG.TEAM_QRMM,True):
+                            if self.get_rgb(RgbEnumG.TEAM_QRMM, True):
                                 _C_FLAG = True
                         else:
                             self.back(self.serialno)

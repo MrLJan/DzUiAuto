@@ -12,7 +12,9 @@ from Utils.ThreadTools import ThreadTools
 class OpenCvTools:
     def __init__(self):
         self.dev = None
+        self.sn = None
         self._img = None
+        self.mnq_name = None
 
     def get_rgb(self, rgb_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime,
                 t_log=GlobalEnumG.TestLog):
@@ -22,7 +24,7 @@ class OpenCvTools:
         if self._img is not None:
             _color = self.nd_to_hex(self._img[get_y, get_x])
             if t_log:
-                print(f'expoint:{_color}_find:{find_color}_x,y:{get_x},{get_y}')
+                self.sn.log_tab.emit(self.mnq_name, f'expoint:{_color}_find:{find_color}_x,y:{get_x},{get_y}')
             if find_color in _color:
                 if clicked:
                     self.dev.touch((get_x, get_y))
@@ -60,16 +62,17 @@ class OpenCvTools:
                 else:
                     if _p[-1] not in self.nd_to_hex(self._img[_p[1], _p[0]]):
                         if t_log:
-                            print(f"{_p},{self.nd_to_hex(self._img[_p[1], _p[0]])} {find_list[-1]}")
+                            self.sn.log_tab.emit(self.mnq_name,
+                                                 f"{_p},{self.nd_to_hex(self._img[_p[1], _p[0]])} {find_list[-1]}")
                         return False
             if t_log:
-                print(c_list)
+                self.sn.log_tab.emit(self.mnq_name, c_list)
             if clicked:
                 self.dev.touch((find_list[0][0][0], find_list[0][0][1]))
                 if touch_wait > 0:
                     time.sleep(touch_wait)
             if t_log:
-                print(f'T_{find_list[-1]}')
+                self.sn.log_tab.emit(self.mnq_name, f'T_{find_list[-1]}')
                 time.sleep(GlobalEnumG.WaitTime)
             return True
         return False
@@ -96,6 +99,8 @@ class AirImgTools:
     def __init__(self):
         self.dev = None
         self._img = None
+        self.sn = None
+        self.mnq_name = None
 
     turn_pos = {
         'up': (146, 471),
@@ -128,15 +133,15 @@ class AirImgTools:
                         time.sleep(touch_wait)
                 if get_pos:
                     if t_log:
-                        print(f"crop_image_find:{temp}")
+                        self.sn.log_tab.emit(self.mnq_name, f"crop_image_find:{temp}")
                     return True, pos[0], pos[-1]
                 if t_log:
-                    print(f"crop_image_find:{temp}")
+                    self.sn.log_tab.emit(self.mnq_name, f"crop_image_find:{temp}")
                 return True
             if get_pos:
                 return False, 0, 0
             if t_log:
-                print(f"f_crop_image_find:{temp}")
+                self.sn.log_tab.emit(self.mnq_name, f"f_crop_image_find:{temp}")
             return False
         return False
 
@@ -165,7 +170,7 @@ class AirImgTools:
             match_pos = img.match_in(self._img)
             if not match_pos:
                 if t_log:
-                    print(f"f_air_loop_find:{temp}")
+                    self.sn.log_tab.emit(self.mnq_name, f"f_air_loop_find:{temp}")
                 return False
             if match_pos:
                 if clicked:
@@ -173,13 +178,13 @@ class AirImgTools:
                     if touch_wait > 0:
                         time.sleep(touch_wait)
             if t_log:
-                print(f"air_loop_find:{temp}")
+                self.sn.log_tab.emit(self.mnq_name, f"air_loop_find:{temp}")
             return True
         if t_log:
-            print(f"f_air_loop_find:{temp}")
+            self.sn.log_tab.emit(self.mnq_name, f"f_air_loop_find:{temp}")
         return False
 
-    def air_touch(self, touch_xy, duration=0.2, touch_wait=1):
+    def air_touch(self, touch_xy, duration=0.2, touch_wait=0):
         self.dev.touch(touch_xy, duration=duration)
         if touch_wait > 0:
             time.sleep(touch_wait)
@@ -236,14 +241,33 @@ class AirImgTools:
                 # UpEvent(0), UpEvent(1)]  # 2个手指分别抬起
         self.dev.touch_proxy.perform(multitouch_event)
 
+    def double_jump_touch(self, turn, k_time=0.2):
+        t_pos = self.turn_pos[turn]
+        up_pos = self.turn_pos['up']
+        a_pos = self.turn_pos['jump']
+        multitouch_event = [
+            DownEvent(t_pos, 0),  # 手指1按下(100, 100)
+            DownEvent(a_pos, 2),  # 手指2按下(200, 200)
+            UpEvent(2),
+            SleepEvent(0.1),
+            DownEvent(a_pos, 2),
+            SleepEvent(0.1),
+            DownEvent(up_pos, 1),
+            UpEvent(2), SleepEvent(k_time), UpEvent(0),UpEvent(1)
+        ]
+        self.dev.touch_proxy.perform(multitouch_event)
 
-class ImageCreat:
-    def __init__(self, img):
-        self.img = img
-
-    def crop_image(self, area):
-        """"区域裁剪"""
-        return aircv.crop_image(self.img, area)
+    def jump_down_touch(self, k_time=1):
+        t_pos = self.turn_pos['down']
+        a_pos = self.turn_pos['jump']
+        multitouch_event = [
+            DownEvent(t_pos, 0),  # 手指1按下(100, 100)
+            SleepEvent(k_time),
+            DownEvent(a_pos, 1),  # 手指2按下(200, 200)
+            SleepEvent(0.1),
+            UpEvent(0), UpEvent(1),
+        ]
+        self.dev.touch_proxy.perform(multitouch_event)
 
 
 class CnOcrTool:
@@ -251,6 +275,8 @@ class CnOcrTool:
         self.dev = None
         self.cn_ocr = None
         self._img = None
+        self.sn = None
+        self.mnq_name = None
 
     def ocr_find(self, ocr_list, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog,
                  get_pos=False):
@@ -269,17 +295,15 @@ class CnOcrTool:
             self.cn_ocr[-1].acquire()
             out = self.cn_ocr[0].ocr(img_fp, resized_shape=(720, 1280), batch_size=1)
             self.cn_ocr[-1].release()
-            if t_log:
-                print(time.time() - t1)
             if len(out) == 0:
                 time.sleep(GlobalEnumG.WaitTime / 2)
                 if t_log:
-                    print(f"f_{ocr_list}")
+                    self.sn.log_tab.emit(self.mnq_name, f"f_{ocr_list}_time:{time.time() - t1}")
                 return False
             for i in range(len(out)):
                 ntext = out[i]['text']
                 if t_log:
-                    print(ntext)
+                    self.sn.log_tab.emit(self.mnq_name, ntext)
                 if ocr_list[-1] in ntext:
                     npar = out[i]['position']
                     ls = npar.tolist()
@@ -290,7 +314,7 @@ class CnOcrTool:
                         if touch_wait > 0:
                             time.sleep(touch_wait)
                     if t_log:
-                        print(f"T_{ocr_list}")
+                        self.sn.log_tab.emit(self.mnq_name, f"T_{ocr_list}_time:{time.time() - t1}")
                     time.sleep(touch_wait)
                     if get_pos:
                         return lx + x1, ly + y1
@@ -337,7 +361,7 @@ class CnOcrTool:
                 time.sleep(GlobalEnumG.WaitTime / 2)
                 return ''
             if t_log:
-                print(f"get_ocrres:{area}_ntext:{out['text']}")
+                self.sn.log_tab.emit(self.mnq_name, f"get_ocrres:{area}_ntext:{out['text']}")
             time.sleep(GlobalEnumG.WaitTime)
             return out['text']
         return ''
@@ -353,24 +377,24 @@ class CnOcrTool:
                 img_area.append(img_fp)
             self.cn_ocr[-1].acquire()
             for _img in img_area:
-                out = self.cn_ocr[0].ocr_for_single_line(_img)
+                out = self.cn_ocr[0].ocr(_img)
                 if len(out) > 0:
                     out_list.append(out)
             self.cn_ocr[-1].release()
             if t_log:
-                print(f"get_roleinfo:out_{out_list}")
+                self.sn.log_tab.emit(self.mnq_name, f"get_roleinfo:out_{out_list}")
             if len(out_list) == 0:
                 time.sleep(GlobalEnumG.WaitTime / 2)
                 return False
             for _o in out_list:
-                ntext = ''.join(filter(lambda x: x.isdigit(), _o['text']))
+                ntext = ''.join(filter(lambda x: x.isdigit(), _o[0]['text']))
                 try:
                     ntext_list.append(int(ntext))
                 except ValueError:
                     ntext_list.append(0)
             time.sleep(GlobalEnumG.WaitTime)
             if t_log:
-                print(f"get_roleinfo:ntext_list_{ntext_list}")
+                self.sn.log_tab.emit(self.mnq_name, f"get_roleinfo:ntext_list_{ntext_list}")
             return ntext_list
         return ntext_list
 
@@ -386,7 +410,7 @@ class CnOcrTool:
             if len(out) == 0:
                 time.sleep(GlobalEnumG.WaitTime / 2)
                 if t_log:
-                    print(f"F_get_all_ocr:{area}")
+                    self.sn.log_tab.emit(self.mnq_name, f"F_get_all_ocr:{area}")
                 return False
             for i in range(len(out)):
                 ntext = out[i]['text']
@@ -403,7 +427,7 @@ class CnOcrTool:
 if __name__ == '__main__':
     # img_fp = r'D:\DzAutoUi\Res\img\21.bmp'
     # res, dev = DevicesConnect('emulator-5554').connect_device()
-    res2, dev2 = DevicesConnect('127.0.0.1:5581').connect_device()
+    res2, dev2 = DevicesConnect('127.0.0.1:5583').connect_device()
     # print(res2, dev2)
     # cv2.setNumThreads(1)
     # cv2.ocl.setUseOpenCL(False)
@@ -426,16 +450,18 @@ if __name__ == '__main__':
     c.cn_ocr = cn_ocr
     # r=o.mulcolor_check(ColorEnumG.LOGIN_MAIN)
     # while True:
+    # a.double_jump_touch('right')
 
     #     t1=time.time()
     #     r=a.crop_image_find(ImgEnumG.INGAME_FLAG2,False)
     #     print(r,time.time()-t1)
-    r=o.rgb(922, 160)
-    #
-    # r=c.get_ocrres([33,1,86,29],t_log=True)
+    r = o.rgb(536,642)
     print(r)
-    # for x in range(833,867):
-    #     for y in range(377,411):
+    # r=a.air_loop_find(ImgEnumG.ZB_TS,False)
+    # r=c.get_ocrres([33,1,86,29],t_log=True)
+    # print(r)
+    # for x in range(532,578):
+    #     for y in range(514,550):
     #         print(f"{x},{y},{o.rgb(x,y)}")
     # r = a.crop_image_find(ImgEnumG.UI_SET, False)
 
@@ -443,7 +469,6 @@ if __name__ == '__main__':
     #     r=c.crop_image_find(ImgEnumG.PERSON_POS,clicked=False,get_pos=True)
     #     print(r)
     # r = c.mul_point_touch('down', 'jdown', k_time=1)
-
 
     # r=c.mul_point_touch('down', 'jump',long_click=True)
     # louti_queue = QueueManage(1)

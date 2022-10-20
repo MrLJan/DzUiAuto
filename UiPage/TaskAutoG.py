@@ -2,7 +2,7 @@
 import random
 import time
 
-from Enum.ResEnum import ImgEnumG, ColorEnumG, GlobalEnumG, BatEnumG, RgbEnumG
+from Enum.ResEnum import ImgEnumG, GlobalEnumG, BatEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
 from Utils.ExceptionTools import RestartTask, NotInGameErr
 from Utils.LoadConfig import LoadConfig
@@ -38,7 +38,7 @@ class TaskAutoG(BasePageG):
         _COLOR_1 = 'FFFFFF'
         while True:
             if time.time() - s_time > 300:
-                self.close_window()
+                self.check_close()
                 s_time = time.time()
             if not self.air_loop_find(ImgEnumG.INGAME_FLAG2, False):
                 if not self.get_rgb([1033, 414, 'EE7047'], True):  # 完成/接受
@@ -69,11 +69,14 @@ class TaskAutoG(BasePageG):
                         pass
                     elif self.get_rgb([1140, 90, 'EE7047'], True):
                         pass
+                    elif self.get_rgb([528, 658,'EE7047'],True):
+                        pass
                     elif self.get_rgb(RgbEnumG.SKIP_NEW, True):
                         pass
+                    elif self.air_loop_find(ImgEnumG.UI_QBLQ):pass
                     else:
                         if not self.crop_image_find(ImgEnumG.TASK_ARROW):
-                            self.close_window()
+                            self.check_close()
                         else:
                             for i in range(3):
                                 self.crop_image_find(ImgEnumG.TASK_ARROW)
@@ -193,7 +196,7 @@ class TaskAutoG(BasePageG):
                 self.back(self.serialno)
                 return res
             else:
-                self.close_window()
+                self.check_close()
         return res
 
     def change_mapdata(self, xt_yt, map_name, **kwargs):

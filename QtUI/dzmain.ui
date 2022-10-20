@@ -2107,6 +2107,33 @@
     <number>-1</number>
    </property>
   </widget>
+  <widget class="QLabel" name="label_21">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>700</y>
+     <width>1211</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Adobe Arabic</family>
+     <pointsize>26</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>www.huoniu.buzz</string>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+   <property name="textInteractionFlags">
+    <set>Qt::LinksAccessibleByMouse</set>
+   </property>
+  </widget>
   <zorder>console_text</zorder>
   <zorder>layoutWidget</zorder>
   <zorder>verticalLayoutWidget</zorder>
@@ -2114,6 +2141,7 @@
   <zorder>layoutWidget</zorder>
   <zorder>layoutWidget</zorder>
   <zorder>log_tab_wid</zorder>
+  <zorder>label_21</zorder>
  </widget>
  <tabstops>
   <tabstop>console_text</tabstop>

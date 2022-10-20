@@ -37,7 +37,7 @@ class StateCheckG(BasePageG):
     def check_hp_mp(self, use_mp):
         if self.ocr_find(ImgEnumG.HP_NULL_OCR):
             return False
-        if self.ocr_find(ImgEnumG.MP_NULL_OCR) and use_mp:
+        if use_mp and self.ocr_find(ImgEnumG.MP_NULL_OCR):
             return False
         return True
 
@@ -75,6 +75,7 @@ class StateCheckG(BasePageG):
         _C_OVER = False  # 检查是否完成
         RED_GOLD = 0  # 红币
         GOLD = 0  # 金币
+        _GOLD_NUM = LoadConfig.getconf(self.mnq_name, '金币', ini_name=self.mnq_name)
         BAT_NUM = 0  # 战力
         LEVEL = 0  # 等级
         STAR = 0  # 星力
@@ -86,11 +87,14 @@ class StateCheckG(BasePageG):
                     kwargs['角色信息']['战力'] = BAT_NUM
                     kwargs['角色信息']['金币'] = GOLD
                     kwargs['角色信息']['红币'] = RED_GOLD
+                    _T_GOLD = round((GOLD - int(_GOLD_NUM)) / 10000, 2)
                     self.sn.table_value.emit(self.mnq_name, 3, f"{LEVEL}")
                     self.sn.table_value.emit(self.mnq_name, 4, f"{STAR}")
                     self.sn.table_value.emit(self.mnq_name, 5, f"{BAT_NUM}")
                     self.sn.table_value.emit(self.mnq_name, 6, f"{GOLD}")
-                    self.sn.log_tab.emit(self.mnq_name, f"等级：{LEVEL}_星力{STAR}_战力{BAT_NUM}_金币{GOLD}")
+                    self.sn.table_value.emit(self.mnq_name, 7, f"{round(_T_GOLD / 10000, 1)}万")
+                    LoadConfig.writeconf(self.mnq_name, '产金量', str(_T_GOLD)+'万', ini_name=self.mnq_name)
+                    self.sn.log_tab.emit(self.mnq_name, f"等级：{LEVEL}_星力{STAR}_战力{BAT_NUM}_金币{GOLD}_红币{RED_GOLD}_产金{_T_GOLD}")
                     select_queue.task_over('CheckRole')
                     return True
                 self.air_touch((1170, 39), touch_wait=3)

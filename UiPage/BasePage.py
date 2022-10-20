@@ -4,7 +4,7 @@ import time
 from airtest.core.android import Android
 from airtest.core.android.adb import ADB
 
-from Enum.ResEnum import GlobalEnumG, ImgEnumG, ColorEnumG, RgbEnumG
+from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG
 from Utils.Devicesconnect import DevicesConnect
 from Utils.ExceptionTools import NotInGameErr, FuHuoRoleErr
 from Utils.OpencvG import OpenCvTools, AirImgTools, CnOcrTool
@@ -16,6 +16,8 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
         self.dev = None
         self.serialno = None
         self.cn_ocr = None
+        self.sn = None
+        self.mnq_name = None
 
     def snap(self):
         return ADB(self.serialno).snapshot()
@@ -24,15 +26,15 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
     def time_sleep(sleep_time):
         time.sleep(sleep_time)
 
-    @staticmethod
-    def start_game(serialno, wait_time=10):
+    def start_game(self,serialno, wait_time=10):
         """启动游戏"""
+        self.sn.log_tab.emit(self.mnq_name, r"启动游戏")
         ad = Android(serialno=serialno)
         ad.start_app(GlobalEnumG.GamePackgeName)
         time.sleep(wait_time)
 
     @staticmethod
-    def key_event(serialno, key, wait_time=1.5):
+    def key_event(serialno, key, wait_time=2):
         ad = Android(serialno=serialno)
         ad.keyevent(key)
         time.sleep(wait_time)
@@ -43,9 +45,9 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
         ad.keyevent('back')
         time.sleep(wait_time)
 
-    @staticmethod
-    def stop_game(serialno):
+    def stop_game(self,serialno):
         """关闭游戏"""
+        self.sn.log_tab.emit(self.mnq_name, r"关闭游戏")
         ad = Android(serialno=serialno)
         ad.stop_app(GlobalEnumG.GamePackgeName)
 
@@ -76,11 +78,11 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
     def check_close(self):
         w_time = time.time()
         while True:
-            if time.time() - w_time > GlobalEnumG.UiCheckTimeOut:
+            if time.time() - w_time > GlobalEnumG.SelectCtrTimeOut:
                 self.stop_game(self.serialno)
             elif self.crop_image_find(ImgEnumG.GAME_ICON, False):
                 raise NotInGameErr
-            elif self.get_rgb(RgbEnumG.EXIT_FOU, True, touch_wait=GlobalEnumG.ExitBtnTime):  # 退出游戏-否
+            elif self.get_rgb(RgbEnumG.EXIT_FOU, True, touch_wait=GlobalEnumG.ExitBtnTime) or self.get_rgb(RgbEnumG.CLOSE_GAME,True,touch_wait=GlobalEnumG.ExitBtnTime):  # 退出游戏-否
                 if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                     return True
                 if self.crop_image_find(ImgEnumG.CZ_FUHUO):
