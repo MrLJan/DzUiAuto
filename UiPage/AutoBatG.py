@@ -178,7 +178,7 @@ class AutoBatG(BasePageG):
                 else:
                     self.move_turn('up', 1.42)
                     if louti_x in [1212, 1022, 1067]:  # 绳子长的补一下
-                        self.move_turn('up', 0.42)
+                        self.move_turn('up', 0.67)
                     if louti_x in [1036]:
                         self.move_turn('jump', 0.38)
                     # self.keypress_and_up(self.dm, "up", 2.12)
@@ -246,8 +246,13 @@ class AutoBatG(BasePageG):
                 self.keep_bat('right', key_time, saodi_mode)
 
     def keyboard_bat(self, **kwargs):
+        auto_choose = kwargs['托管模式']
+        if auto_choose:
+            self.get_mapdata(**kwargs)
+            map_data = kwargs['战斗数据']['地图数据'][0]
+        else:
+            map_data = list(kwargs['战斗数据']['地图数据'])
         select_queue = kwargs['状态队列']['选择器']
-        map_data = kwargs['战斗数据']['地图数据']
         zhiye_id = kwargs['战斗数据']['职业类型']
         wait_queue = kwargs['战斗数据']['休息队列']
         saodi_mode = kwargs['战斗数据']['刷图模式']
@@ -258,7 +263,9 @@ class AutoBatG(BasePageG):
         use_time = int(kwargs['挂机设置']['挂机卡时长'])
         bat_sleep = kwargs['挂机设置']['随机休息']
         bat_sleep_mode = kwargs['挂机设置']['休息方式']
+        min_x=map_data[-1][-1]
         dingshi = True if kwargs['每日任务']['定时任务'] == '1' else False
+
         _r = random.randint(30, 60)
         _use = time.time()
         _s_time = time.time()
@@ -313,8 +320,7 @@ class AutoBatG(BasePageG):
                         return -1
                     if self.crop_image_find(ImgEnumG.BAG_MAX_IMG, False):
                         return -1
-
-            if map_data[-1][-1] > 870:
+            if min_x > 871:
                 k_time = round(random.randint(5, 10) / 10, 2)
             else:
                 k_time = round(random.randint(10, 20) / 10, 2)
@@ -464,11 +470,13 @@ class AutoBatG(BasePageG):
             _id = kwargs['定时设置']['定时任务ID']
             if _id == 0:
                 select_queue.put_queue('AutoMR')
+                kwargs['定时设置']['定时任务ID'] = 1
                 return 0
             elif _id in [2, 3] and boss_map == '1':
                 if hd_boss == '1':
                     select_queue.put_queue('AutoHDboss')
                 select_queue.put_queue('AutoBoss')
+                kwargs['定时设置']['定时任务ID'] = 1
                 return 0
             else:
                 pass

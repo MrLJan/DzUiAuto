@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
-import os
 import sys
 from functools import wraps
+
 from frozen import path
 
 logger = logging.getLogger(__name__)
@@ -37,7 +37,9 @@ def catch_ex(func):
         try:
             result = func(*args, **kwargs)
         except Exception as e:
-            print(e)
+            pass
+            # if GlobalEnumG.TestLog:
+            #     print(e)
         return result
 
     return try_catch

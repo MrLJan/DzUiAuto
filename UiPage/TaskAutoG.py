@@ -37,19 +37,19 @@ class TaskAutoG(BasePageG):
         _COLOR = self.rgb(447, 699)
         _COLOR_1 = 'FFFFFF'
         while True:
-            if time.time() - s_time > 300:
+            if time.time() - s_time > GlobalEnumG.SelectCtrTimeOut:
                 self.check_close()
                 s_time = time.time()
             if not self.air_loop_find(ImgEnumG.INGAME_FLAG2, False):
                 if not self.get_rgb([1033, 414, 'EE7047'], True):  # 完成/接受
                     for i in range(2):
-                        self.air_touch((1168, 495),touch_wait=0)
-                        self.air_touch((1168, 495),touch_wait=0)
+                        self.air_touch((1168, 495), touch_wait=0)
+                        self.air_touch((1168, 495), touch_wait=0)
                     if not self.get_rgb([367, 565, '4C87AF'], True):
                         pass
                     elif not self.get_rgb([367, 565, 'EE7047'], True):
-                        self.air_touch((1168, 495),touch_wait=0)
-                    elif self.get_rgb([361,570,'EE7047'],True):
+                        self.air_touch((1168, 495), touch_wait=0)
+                    elif self.get_rgb([361, 570, 'EE7047'], True):
                         pass
                     elif self.get_rgb([359, 636, 'EE7047'], True):
                         pass  # 领取奖励
@@ -69,11 +69,12 @@ class TaskAutoG(BasePageG):
                         pass
                     elif self.get_rgb([1140, 90, 'EE7047'], True):
                         pass
-                    elif self.get_rgb([528, 658,'EE7047'],True):
+                    elif self.get_rgb([528, 658, 'EE7047'], True):
                         pass
                     elif self.get_rgb(RgbEnumG.SKIP_NEW, True):
                         pass
-                    elif self.air_loop_find(ImgEnumG.UI_QBLQ):pass
+                    elif self.air_loop_find(ImgEnumG.UI_QBLQ):
+                        pass
                     else:
                         if not self.crop_image_find(ImgEnumG.TASK_ARROW):
                             self.check_close()
@@ -104,7 +105,7 @@ class TaskAutoG(BasePageG):
                             self.air_loop_find(ImgEnumG.TASK_TAB)
                 # elif not self.ocr_find(ImgEnumG.TASK_OCR):
                 elif self.crop_image_find(ImgEnumG.AUTO_BAT, False) or self.get_rgb([427, 653, 'D3D3']) or self.get_rgb(
-                        [427, 653,'7A7']):  # self.crop_image_find(ImgEnumG.AUTO_BAT1):
+                        [427, 653, '7A7']):  # self.crop_image_find(ImgEnumG.AUTO_BAT1):
                     self.get_rgb([711, 206, 'FEFFF5'], True)  # 提示装备技能
                     if time.time() - t_time > GlobalEnumG.TaskCheckTime:
                         t_time = time.time()
@@ -134,8 +135,8 @@ class TaskAutoG(BasePageG):
             if self.crop_image_find(ImgEnumG.JN_TEACH, touch_wait=1):
                 self.skip_fever_buff()
             self.skip_new()
-        res=self.get_roleinfo([(33,1,86,29),(42,63,151,89)])
-        if res[0]>150 or res[0]<1:
+        res = self.get_roleinfo([(33, 1, 86, 29), (42, 63, 151, 89)])
+        if res[0] > 150 or res[0] < 1:
             res = self.check_rolelevel()
         if res[0] == 0 and res[-1] == 0:
             return 0
@@ -167,15 +168,16 @@ class TaskAutoG(BasePageG):
             raise NotInGameErr
         elif kwargs['角色信息']['等级'] >= 90 and not _L3_FLAG:
             r = random.randint(1, 3)
-            exec_queue = kwargs['状态队列']['执行器']
+            # exec_queue = kwargs['状态队列']['执行器']
+            select_queue.put_queue('CheckRole')
             mrtask_queue.put_queue(str(r))  # 武林
             select_queue.put_queue('AutoMR')
             select_queue.put_queue('GetLevelReard')
             # select_queue.put_queue('CheckRole')
-            self.change_mapdata('3', '西边森林', **kwargs)
-            kwargs['角色信息']['90级'] = True
-            exec_queue.task_over('AutoTask')
-            exec_queue.put_queue('AutoBat')
+            # self.sete_mapdata('3', '西边森林', **kwargs)
+            # kwargs['角色信息']['90级'] = True
+            # exec_queue.task_over('AutoTask')
+            # exec_queue.put_queue('AutoBat')
             _L3_FLAG = True
             raise NotInGameErr
 
@@ -199,7 +201,7 @@ class TaskAutoG(BasePageG):
                 self.check_close()
         return res
 
-    def change_mapdata(self, xt_yt, map_name, **kwargs):
+    def sete_mapdata(self, xt_yt, map_name, **kwargs):
         kwargs['任务id'] = xt_yt
         kwargs['战斗数据']['地图数据'] = BatEnumG.MAP_DATA[xt_yt][map_name],
         kwargs['战斗数据']['地图识别'] = BatEnumG.MAP_OCR[map_name]

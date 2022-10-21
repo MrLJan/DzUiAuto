@@ -26,9 +26,9 @@ class TeamStateG(BasePageG):
             select_queue.put_queue('CheckRole')
         self.sn.log_tab.emit(self.mnq_name, r"检查队伍状态")
         self.sn.table_value.emit(self.mnq_name, 8, r"检查队伍状态")
-        if task_id in ['3', '4']:
+        if task_id in ['3', '4','99']:
             # if not self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
-            if task_id == '3':
+            if task_id in ['3','99']:
                 select_queue.put_queue('CheckXT')
             else:
                 select_queue.put_queue('CheckYT')
@@ -55,6 +55,9 @@ class TeamStateG(BasePageG):
     def check_xt(self, **kwargs):
         s_time = time.time()
         select_queue = kwargs['状态队列']['选择器']
+        auto_choose = kwargs['托管模式']
+        if auto_choose:
+            self.get_mapdata(**kwargs)
         map_data = kwargs['战斗数据']['地图识别']
         _MAP = False
         _TEAM = False
@@ -158,6 +161,9 @@ class TeamStateG(BasePageG):
                 if _FLAG:
                     if self.crop_image_find(ImgEnumG.XT_FLAG, False) and kwargs['任务id'] == '4':
                         _MAP = False
+                    if kwargs['任务id'] in ['3','99']:
+                        if not self.crop_image_find(ImgEnumG.XT_FLAG,False):
+                            _MAP=False
                     return _MAP, _PD
                 self.air_touch((99, 99), touch_wait=3)
             elif self.get_rgb(RgbEnumG.BG_PINDAO):

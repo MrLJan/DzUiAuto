@@ -35,7 +35,12 @@ class test:
 
 
 if __name__ == '__main__':
-    c=time.time()
-    r=time.localtime(c)
-    t=time.strftime('%m-%d %H:%M:%S',r)
-    print(t)
+    XT_MAP = {
+        147: '崎岖的峡谷',
+        144: '灰烬之风高原'
+    }
+    x = 145
+    print(XT_MAP.keys())
+    for i in XT_MAP.keys():
+        if x > i:
+            print(XT_MAP[i])

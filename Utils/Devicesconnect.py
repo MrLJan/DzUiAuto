@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from airtest.core.android import Android
-from airtest.core.error import DeviceConnectionError
+from airtest.core.error import DeviceConnectionError, AdbError
 
 
 class DevicesConnect:
@@ -16,7 +16,7 @@ class DevicesConnect:
             return True, dev
         except DeviceConnectionError as e:
             return False, e
-        except (UnicodeDecodeError, ConnectionResetError, Exception,ConnectionAbortedError):
+        except (UnicodeDecodeError, ConnectionResetError, Exception,ConnectionAbortedError,AdbError):
             print(f"Adb重连")
             self.connect_device()
 

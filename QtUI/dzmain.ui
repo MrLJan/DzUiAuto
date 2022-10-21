@@ -12,7 +12,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1259</width>
+    <width>1326</width>
     <height>742</height>
    </rect>
   </property>
@@ -39,7 +39,7 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>961</width>
+     <width>1031</width>
      <height>431</height>
     </rect>
    </property>
@@ -61,7 +61,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>951</width>
+          <width>1021</width>
           <height>401</height>
          </rect>
         </property>
@@ -241,6 +241,20 @@
            </column>
            <column>
             <property name="text">
+             <string>操作</string>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
+            </property>
+           </column>
+           <column>
+            <property name="text">
              <string>最近登录时间</string>
             </property>
             <property name="font">
@@ -256,20 +270,6 @@
            <column>
             <property name="text">
              <string>闪退次数</string>
-            </property>
-            <property name="font">
-             <font>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="textAlignment">
-             <set>AlignCenter</set>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>操作</string>
             </property>
             <property name="font">
              <font>
@@ -370,18 +370,21 @@
        </widget>
       </widget>
       <widget class="QWidget" name="tab_4">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <attribute name="title">
         <string>手机设备</string>
        </attribute>
        <widget class="QTableWidget" name="windows_pid_2">
         <property name="enabled">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>951</width>
+          <width>1021</width>
           <height>391</height>
          </rect>
         </property>
@@ -604,10 +607,10 @@
        <widget class="QPushButton" name="save_setting_btn">
         <property name="geometry">
          <rect>
-          <x>810</x>
-          <y>380</y>
-          <width>75</width>
-          <height>23</height>
+          <x>924</x>
+          <y>362</y>
+          <width>91</width>
+          <height>31</height>
          </rect>
         </property>
         <property name="text">
@@ -659,7 +662,7 @@
           <height>41</height>
          </rect>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,1,1,1,3,5">
+        <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,1,1,1,3">
          <item>
           <widget class="QCheckBox" name="jinzita_box">
            <property name="text">
@@ -695,13 +698,6 @@
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QCheckBox" name="ciyuan_box">
-           <property name="text">
-            <string>次元入侵（130级）</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
        <widget class="QLabel" name="label_9">
@@ -727,7 +723,7 @@
        <widget class="QLabel" name="label_3">
         <property name="geometry">
          <rect>
-          <x>650</x>
+          <x>710</x>
           <y>10</y>
           <width>121</width>
           <height>21</height>
@@ -765,7 +761,7 @@
          <rect>
           <x>560</x>
           <y>30</y>
-          <width>329</width>
+          <width>451</width>
           <height>28</height>
          </rect>
         </property>
@@ -827,7 +823,7 @@
          <rect>
           <x>560</x>
           <y>60</y>
-          <width>329</width>
+          <width>451</width>
           <height>34</height>
          </rect>
         </property>
@@ -896,7 +892,7 @@
          <rect>
           <x>550</x>
           <y>100</y>
-          <width>341</width>
+          <width>461</width>
           <height>16</height>
          </rect>
         </property>
@@ -907,7 +903,7 @@
        <widget class="QLabel" name="label_42">
         <property name="geometry">
          <rect>
-          <x>650</x>
+          <x>710</x>
           <y>110</y>
           <width>121</width>
           <height>21</height>
@@ -932,18 +928,11 @@
          <rect>
           <x>560</x>
           <y>130</y>
-          <width>367</width>
-          <height>164</height>
+          <width>451</width>
+          <height>211</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_11">
-         <item>
-          <widget class="QCheckBox" name="is_change_role_box">
-           <property name="text">
-            <string>自动切换角色（用于自动任务、自动每日最大支持6角色）</string>
-           </property>
-          </widget>
-         </item>
          <item>
           <widget class="QLabel" name="label_59">
            <property name="text">
@@ -1141,7 +1130,7 @@
         <property name="geometry">
          <rect>
           <x>190</x>
-          <y>190</y>
+          <y>250</y>
           <width>121</width>
           <height>21</height>
          </rect>
@@ -1164,8 +1153,8 @@
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>130</y>
-          <width>537</width>
+          <y>140</y>
+          <width>531</width>
           <height>31</height>
          </rect>
         </property>
@@ -1174,13 +1163,6 @@
           <widget class="QCheckBox" name="startower_box">
            <property name="text">
             <string>星光塔</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="guaiwu_box">
-           <property name="text">
-            <string>怪物狩猎团</string>
            </property>
           </widget>
          </item>
@@ -1198,33 +1180,13 @@
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QCheckBox" name="gonghui_box">
-           <property name="text">
-            <string>公会无限地城|公会荣誉战</string>
-           </property>
-          </widget>
-         </item>
         </layout>
-       </widget>
-       <widget class="QCheckBox" name="gw_park_box">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>170</y>
-          <width>141</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>怪物公园（140级）</string>
-        </property>
        </widget>
        <widget class="QWidget" name="verticalLayoutWidget_3">
         <property name="geometry">
          <rect>
           <x>130</x>
-          <y>330</y>
+          <y>370</y>
           <width>261</width>
           <height>31</height>
          </rect>
@@ -1243,7 +1205,7 @@
         <property name="geometry">
          <rect>
           <x>130</x>
-          <y>300</y>
+          <y>340</y>
           <width>261</width>
           <height>30</height>
          </rect>
@@ -1276,7 +1238,7 @@
         <property name="geometry">
          <rect>
           <x>130</x>
-          <y>240</y>
+          <y>280</y>
           <width>261</width>
           <height>31</height>
          </rect>
@@ -1309,7 +1271,7 @@
         <property name="geometry">
          <rect>
           <x>130</x>
-          <y>270</y>
+          <y>310</y>
           <width>261</width>
           <height>31</height>
          </rect>
@@ -1333,6 +1295,39 @@
           <widget class="QRadioButton" name="pkj_kn_rbtn">
            <property name="text">
             <string>困难</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="horizontalLayoutWidget_7">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>180</y>
+          <width>531</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_11">
+         <item>
+          <widget class="QCheckBox" name="gw_park_box">
+           <property name="text">
+            <string>怪物公园（140级）</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="ciyuan_box">
+           <property name="text">
+            <string>次元入侵（130级）</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="gonghui_box">
+           <property name="text">
+            <string>公会无限地城|公会荣誉战</string>
            </property>
           </widget>
          </item>
@@ -1579,7 +1574,7 @@
          <rect>
           <x>510</x>
           <y>10</y>
-          <width>381</width>
+          <width>511</width>
           <height>161</height>
          </rect>
         </property>
@@ -1891,10 +1886,10 @@
        <widget class="QPushButton" name="save_setting_btn_2">
         <property name="geometry">
          <rect>
-          <x>810</x>
-          <y>380</y>
-          <width>75</width>
-          <height>23</height>
+          <x>924</x>
+          <y>362</y>
+          <width>91</width>
+          <height>31</height>
          </rect>
         </property>
         <property name="text">
@@ -1905,7 +1900,7 @@
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>220</y>
+          <y>230</y>
           <width>401</width>
           <height>21</height>
          </rect>
@@ -1944,7 +1939,7 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>980</x>
+     <x>1050</x>
      <y>10</y>
      <width>271</width>
      <height>61</height>
@@ -1973,7 +1968,7 @@
   <widget class="QWidget" name="verticalLayoutWidget_4">
    <property name="geometry">
     <rect>
-     <x>980</x>
+     <x>1050</x>
      <y>70</y>
      <width>271</width>
      <height>251</height>
@@ -2018,7 +2013,7 @@
   <widget class="QTextEdit" name="console_text">
    <property name="geometry">
     <rect>
-     <x>980</x>
+     <x>1050</x>
      <y>450</y>
      <width>271</width>
      <height>241</height>
@@ -2031,8 +2026,8 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>1120</x>
-     <y>320</y>
+     <x>1190</x>
+     <y>330</y>
      <width>131</width>
      <height>101</height>
     </rect>
@@ -2064,8 +2059,8 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>980</x>
-     <y>320</y>
+     <x>1050</x>
+     <y>330</y>
      <width>131</width>
      <height>101</height>
     </rect>
@@ -2099,7 +2094,7 @@
     <rect>
      <x>10</x>
      <y>450</y>
-     <width>961</width>
+     <width>1031</width>
      <height>241</height>
     </rect>
    </property>
@@ -2134,6 +2129,20 @@
     <set>Qt::LinksAccessibleByMouse</set>
    </property>
   </widget>
+  <widget class="QCheckBox" name="is_change_role_box">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>500</y>
+     <width>449</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>自动切换角色（用于自动任务、自动每日最大支持6角色）</string>
+   </property>
+  </widget>
+  <zorder>is_change_role_box</zorder>
   <zorder>console_text</zorder>
   <zorder>layoutWidget</zorder>
   <zorder>verticalLayoutWidget</zorder>

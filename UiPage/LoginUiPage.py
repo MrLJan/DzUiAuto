@@ -62,6 +62,8 @@ class LoginUiPageG(BasePageG):
             self.sn.log_tab.emit(self.mnq_name, r"检查到在游戏中")
             # if kwargs['角色信息']['等级'] == 0:
             #     select_queue.put_queue('CheckRole')
+            if self.crop_image_find(ImgEnumG.TIP, False):
+                self.air_touch(1239, 34, touch_wait=2)
             if self.get_rgb(RgbEnumG.FUHUO_BTN):
                 if self.crop_image_find(ImgEnumG.CZ_FUHUO):
                     self.sn.log_tab.emit(self.mnq_name, r"检查到死亡")
@@ -147,6 +149,8 @@ class LoginUiPageG(BasePageG):
                     if self.crop_image_find(ImgEnumG.MR_BAT_EXIT, touch_wait=3):
                         self.ocr_find(ImgEnumG.MR_YDZXD, True)
                         self.ocr_find([(810, 519, 872, 548), '结'], True)
+                    if self.crop_image_find(ImgEnumG.TIP,False):
+                        self.air_touch(1239,34,touch_wait=2)
                     self.get_rgb(RgbEnumG.TC_1, True)
                     break
                 elif self.air_loop_find(ImgEnumG.GAME_ICON, False):

@@ -172,6 +172,7 @@ class switch_case:
                        self.select.to_BuyY, self.select.to_BagSell, self.select.to_UseSkill, self.select.to_UsePet,
                        self.select.to_UpEquip, self.select.to_StrongEquip],
             'Check': [self.select.check_ingame, self.select.to_Check, self.select.to_InGame],
+            'AutoChoose':[self.select.checkroleinfo, self.select.to_CheckRole, self.select.to_Check],
             'Login': [self.select.login_game, self.select.to_Login, self.select.to_Check],
             'FuHuo': [self.select.fuhuo, self.select.to_FuHuo, self.select.to_Check],
             'BuyY': [self.select.buyyao, self.select.to_BuyY, self.select.to_Check],
@@ -210,6 +211,8 @@ class switch_case:
                 self.exec_queue.put_queue('Nothing')
                 self.select_queue.put_queue('AutoHDboss')
                 self.select_queue.put_queue(BatEnumG.TASK_ID[task_name]['state'])
+            elif _id == '99':
+                self.select_queue.put_queue('CheckRole')
             else:
                 self.exec_queue.put_queue('Nothing')
                 self.select_queue.put_queue(BatEnumG.TASK_ID[task_name]['state'])
@@ -241,6 +244,7 @@ class switch_case:
         data = {
             '设备名称': self.mnq_name,
             '任务id': self.taskid,
+            '托管模式': True if self.taskid == '99' else False,
             '地图名': BatEnumG.MAP_OCR[self.mapname][0][-1],
             '任务结束关闭游戏': True if LoadConfig.getconf('全局配置', '任务结束关闭游戏') == '1' else False,
             '角色信息': {
@@ -253,6 +257,7 @@ class switch_case:
                 '宠物': LoadConfig.getconf(self.mnq_name, '宠物', ini_name=self.mnq_name),
                 '60级': LoadConfig.getconf(self.mnq_name, '60级', ini_name=self.mnq_name),
                 '90级': LoadConfig.getconf(self.mnq_name, '90级', ini_name=self.mnq_name),
+                '100级':LoadConfig.getconf(self.mnq_name, '100级', ini_name=self.mnq_name),
             },
             '状态队列': {
                 '执行器': self.exec_queue,
@@ -370,7 +375,7 @@ class switch_case:
     def get_mr_task():
         task_list = []
         task_name = ['武陵', '金字塔', '菁英地城', '每日地城', '进化系统', '次元入侵', '汤宝宝',
-                     '迷你地城', '怪物狩猎团', '星光塔', '怪物公园']
+                     '迷你地城', '星光塔', '怪物公园']
         for i in task_name:
 
             r = LoadConfig.getconf("全局配置", i)
@@ -384,8 +389,8 @@ class switch_case:
         try:
             # if self.taskid in ['3', '4']:
             #     self.get_time_to_dotask()  # 计算是否有定时任务需要进行
-                # self.calculation_gold()
-                # self.check_roleinfo()
+            # self.calculation_gold()
+            # self.check_roleinfo()
             select_state = self.select.state
             if select_state != "InGame":
                 self.select_machine_do()
@@ -461,7 +466,6 @@ class switch_case:
             meiri_time_m = '0' + meiri_time_m
         meiri_time = f" {meiri_time_h}:{meiri_time_m}:00"  # 设定时间
         return meiri_time
-
 
     def calculation_gold(self):
         if time.time() - self._c_time > GlobalEnumG.CheckRoleTime:

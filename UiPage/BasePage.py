@@ -4,9 +4,10 @@ import time
 from airtest.core.android import Android
 from airtest.core.android.adb import ADB
 
-from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG
+from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG, BatEnumG
 from Utils.Devicesconnect import DevicesConnect
 from Utils.ExceptionTools import NotInGameErr, FuHuoRoleErr
+from Utils.LoadConfig import LoadConfig
 from Utils.OpencvG import OpenCvTools, AirImgTools, CnOcrTool
 
 
@@ -80,6 +81,7 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
         while True:
             if time.time() - w_time > GlobalEnumG.SelectCtrTimeOut:
                 self.stop_game(self.serialno)
+                w_time=time.time()
             elif self.crop_image_find(ImgEnumG.GAME_ICON, False):
                 raise NotInGameErr
             elif self.get_rgb(RgbEnumG.EXIT_FOU, True, touch_wait=GlobalEnumG.ExitBtnTime) or self.get_rgb(RgbEnumG.CLOSE_GAME,True,touch_wait=GlobalEnumG.ExitBtnTime):  # 退出游戏-否
@@ -209,9 +211,36 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
                 self.check_close()
         return False
 
+    def get_mapdata(self, **kwargs):
+        star = kwargs['角色信息']['星力']
+        XT_MAP={
+            147:'崎岖的峡谷',
+            144:'灰烬之风高原',
+            142: '武器库星图',
+            136: '变形的森林',
+            130: '偏僻泥沼',
+            120: '忘却之路4',
+            115: '时间漩涡',
+            113: '机械室',
+            110: '天空露台2',
+            105: '奥斯塔入口',
+            90: '爱奥斯塔入口',
+            80: '龙蛋',
+            95: '冰冷死亡战场',
+            45: '西边森林',
+            40: '研究所102',
+        }
+        for _s in XT_MAP.keys():
+            if int(star)>_s:
+                return self.change_mapdata('3',XT_MAP[_s],**kwargs)
 
-if __name__ == '__main__':
-    DevicesConnect('emulator-5554').connect_device()
-    android = Android()
-    r = android.list_app(third_only=True)
-    print(r, GlobalEnumG.GamePackgeName)
+    def change_mapdata(self, xt_yt, map_name, **kwargs):
+        kwargs['任务id'] = xt_yt
+        auto_choose=kwargs['托管模式']
+        kwargs['战斗数据']['地图数据'] = BatEnumG.MAP_DATA[xt_yt][map_name],
+        kwargs['战斗数据']['地图识别'] = BatEnumG.MAP_OCR[map_name]
+        kwargs['地图名'] = BatEnumG.MAP_OCR[map_name][0][-1]
+        self.sn.table_value.emit(self.mnq_name, 2, map_name)
+        if not auto_choose:
+            LoadConfig.writeconf(self.mnq_name, '最近任务', map_name, ini_name=self.mnq_name)
+

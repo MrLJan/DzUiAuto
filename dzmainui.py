@@ -11,9 +11,10 @@ from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem, QVBoxLa
     QTreeWidgetItem, QFileDialog
 from PyQt5.QtCore import Qt, QTimer, QRegExp
 from airtest.core.android.touch_methods.base_touch import DownEvent, SleepEvent, UpEvent
+from airtest.core.error import AdbError
 from cnocr import CnOcr
 from cv2 import cv2
-
+from qt_material import apply_stylesheet
 from DzTest.DzModeMachine import switch_case, StateExecute, StateMachine, StateSelect, execute_transition, \
     select_transition
 from Utils.ExceptionTools import RestartTask
@@ -28,11 +29,11 @@ from Enum.ResEnum import GlobalEnumG
 from Utils.Devicesconnect import DevicesConnect
 
 
-# @catch_ex
+@catch_ex
 class DzUi:
     def __init__(self):
         self.ui_main = uic.loadUi(OT.abspath('/QtUI/dzmain.ui'))
-        self.ui_main.setWindowTitle(f"岛主-{GlobalEnumG.Ver}_自助提卡网：www.huoniu.buzz")
+        self.ui_main.setWindowTitle(f"岛主-当前版本{GlobalEnumG.Ver}")
         self.ui_main.setWindowIcon(QtGui.QIcon(OT.abspath("/Res/dz_icon.ico")))
         # 禁止窗口拉伸
         self.ui_main.setFixedSize(self.ui_main.width(), self.ui_main.height())
@@ -130,7 +131,6 @@ class DzUi:
         self.set_check_box_text(self.ui_main.gw_park_box, "全局配置", "怪物公园")
         self.set_check_box_text(self.ui_main.meiri_box, "全局配置", "每日地城")
         self.set_check_box_text(self.ui_main.ciyuan_box, "全局配置", "次元入侵")
-        self.set_check_box_text(self.ui_main.guaiwu_box, "全局配置", "怪物狩猎团")
         self.set_check_box_text(self.ui_main.tangbaobao_box, "全局配置", "汤宝宝")
         self.set_check_box_text(self.ui_main.mini_dc_box, "全局配置", "迷你地城")
         self.set_check_box_text(self.ui_main.qh_youhui_box, "全局配置", "强化优惠卷")
@@ -162,18 +162,18 @@ class DzUi:
         # self.ui_main.windows_pid.doubleClicked.connect(self.windows_click)
         self.ui_main.windows_pid.itemClicked.connect(self.item_choose)
         self.ui_main.windows_pid.setColumnCount(12)  # 设置列数
-        self.ui_main.windows_pid.setColumnWidth(0, 40)
-        self.ui_main.windows_pid.setColumnWidth(1, 95)
-        self.ui_main.windows_pid.setColumnWidth(2, 70)
-        self.ui_main.windows_pid.setColumnWidth(3, 60)
-        self.ui_main.windows_pid.setColumnWidth(4, 60)
-        self.ui_main.windows_pid.setColumnWidth(5, 90)
+        self.ui_main.windows_pid.setColumnWidth(0, 80)
+        self.ui_main.windows_pid.setColumnWidth(1, 100)
+        self.ui_main.windows_pid.setColumnWidth(2, 100)
+        self.ui_main.windows_pid.setColumnWidth(3, 80)
+        self.ui_main.windows_pid.setColumnWidth(4, 80)
+        self.ui_main.windows_pid.setColumnWidth(5, 100)
         self.ui_main.windows_pid.setColumnWidth(6, 75)
-        self.ui_main.windows_pid.setColumnWidth(7, 75)
+        self.ui_main.windows_pid.setColumnWidth(7, 90)
         self.ui_main.windows_pid.setColumnWidth(8, 90)
-        self.ui_main.windows_pid.setColumnWidth(9, 100)
-        self.ui_main.windows_pid.setColumnWidth(10, 75)
-        self.ui_main.windows_pid.setColumnWidth(11, 90)
+        self.ui_main.windows_pid.setColumnWidth(9, 160)
+        self.ui_main.windows_pid.setColumnWidth(10, 160)
+        self.ui_main.windows_pid.setColumnWidth(11, 100)
         self.ui_main.windows_pid.setShowGrid(False)
 
         # 重定向print输出信号
@@ -359,10 +359,11 @@ class DzUi:
         self.set_label_text(label_obj, data_text)
 
     def set_link_label(self):
-        self.ui_main.label_21.setText("<a style='color: red; text-decoration: none' href = https://www.huoniu.buzz>岛主24小时自助提卡网址,点击跳转")
+        self.ui_main.label_21.setText(
+            "<a style='color: red; text-decoration: none' href = http://www.huoniu.buzz>岛主24小时自助提卡网址,点击跳转")
         self.ui_main.label_21.setAlignment(Qt.AlignCenter)
-        # self.set_label_text(self.ui_main.label_21,"<A href='1'><font color=red><b>https://www.huoniu.buzz</b></font></style><A href='1'>" )
         self.ui_main.label_21.setOpenExternalLinks(True)
+
     @staticmethod
     def set_combobox_text(label_obj, data_section, data_name):
         data_text = LoadConfig.getconf(data_section, data_name)
@@ -477,7 +478,6 @@ class DzUi:
         meiri_task = '1' if self.ui_main.meiri_box.isChecked() else '0'
         jinghua_task = '1' if self.ui_main.jinghua_box.isChecked() else '0'
         ciyuan_task = '1' if self.ui_main.ciyuan_box.isChecked() else '0'
-        guaiwu_task = '1' if self.ui_main.guaiwu_box.isChecked() else '0'
         startower_task = '1' if self.ui_main.startower_box.isChecked() else '0'
         tangbaobao_task = '1' if self.ui_main.tangbaobao_box.isChecked() else '0'
         mini_dc_task = '1' if self.ui_main.mini_dc_box.isChecked() else '0'
@@ -544,7 +544,6 @@ class DzUi:
         LoadConfig.writeconf("全局配置", "菁英地城", jingying_task)
         LoadConfig.writeconf("全局配置", "进化系统", jinghua_task)
         LoadConfig.writeconf("全局配置", "次元入侵", ciyuan_task)
-        LoadConfig.writeconf("全局配置", "怪物狩猎团", guaiwu_task)
         LoadConfig.writeconf("全局配置", "汤宝宝", tangbaobao_task)
         LoadConfig.writeconf("全局配置", "星光塔", startower_task)
         LoadConfig.writeconf("全局配置", "怪物公园", gw_park_task)
@@ -590,8 +589,8 @@ class DzUi:
         tree_obj.setColumnWidth(1, 90)
         tree_obj.setHeaderLabels(['任务', '备注'])
         root_item = QTreeWidgetItem(tree_obj)
-        root_item.setText(0, '登录游戏')
-        root_item.setText(1, '登录游戏,无其他操作')
+        root_item.setText(0, '一键托管')
+        root_item.setText(1, '自动任务+星图+强化')
         # child31 = QTreeWidgetItem(tree_obj)
         # child31.setText(0, '自定义一')
         # child31.setText(1, '自定义任务顺序')
@@ -945,11 +944,11 @@ class DzUi:
                 mnq_name = self.ui_main.windows_pid.item(row_num, 1).text()
                 mnq_thread_list = self.mnq_thread_tid[mnq_name]
                 _time = time.time()
-                login_time = time.strftime('%m-%d %H:%M:%S',time.localtime(_time))
+                login_time = time.strftime('%m-%d %H:%M:%S', time.localtime(_time))
                 LoadConfig.writeconf(mnq_name, '最近登录时间', str(_time), ini_name=mnq_name)
                 LoadConfig.writeconf(mnq_name, '最近任务', task_name, ini_name=mnq_name)
-                self.sn.table_value.emit(mnq_name, 9, login_time)  # 最近登录时间
-                self.sn.table_value.emit(mnq_name, 10, '0')  # 闪退次数
+                self.sn.table_value.emit(mnq_name, 10, login_time)  # 最近登录时间
+                self.sn.table_value.emit(mnq_name, 11, '0')  # 闪退次数
                 self.sn.log_tab.emit(mnq_name, '------启动任务------')
                 taskdic = self.task_dic(devinfo, mnq_name, task_name, mnq_thread_list)
                 StateMachine(taskdic['执行器'], GlobalEnumG.ExecuteStates, execute_transition, "Wait")
@@ -957,7 +956,7 @@ class DzUi:
                 try:
                     check_mnq_thread(f"{mnq_name}_{task_name}", mnq_thread_list,
                                      switch_case(self.sn, **taskdic).do_case, thread_while=True)
-                except (ConnectionResetError, RestartTask,Exception,ConnectionAbortedError):
+                except (ConnectionResetError, RestartTask, AdbError, ConnectionAbortedError):
                     if self.ocr_lock.locked():
                         self.ocr_lock.release()
                     ThreadTools.stop_thread_list(mnq_thread_list)
@@ -1004,7 +1003,7 @@ class DzUi:
                 UpEvent(9)]
             try:
                 dev.touch_proxy.perform(multitouch_event)
-            except (NotImplementedError,ConnectionResetError,ConnectionAbortedError):
+            except (NotImplementedError, ConnectionResetError, ConnectionAbortedError):
                 pass
             if self.ocr_lock.locked():
                 self.ocr_lock.release()
@@ -1101,7 +1100,7 @@ class DzUi:
             # 存储模拟器行号,序号
             self.mnq_rownum_dic[pinfo_list[i]] = {'rownum': i,
                                                   'index': index_list[i]}
-            table_object.setCellWidget(i, 11, btn_widget)  # 在单元格中加入启动、停止按钮
+            table_object.setCellWidget(i, 9, btn_widget)  # 在单元格中加入启动、停止按钮
             table_object.setCellWidget(i, 0, self.index_check_box(index_list[i]))  # 序号
             table_object.setItem(i, 1, self.set_tableitem_center(pinfo_list[i]))  # 窗口标题
             table_object.setItem(i, 2, self.set_tableitem_center(
@@ -1118,9 +1117,10 @@ class DzUi:
                                  self.set_tableitem_center(
                                      LoadConfig.getconf(pinfo_list[i], '产金量', ini_name=pinfo_list[i])))  # 产金量
             table_object.setItem(i, 8, self.set_tableitem_center(''))  # 状态
-            _time=LoadConfig.getconf(pinfo_list[i], '最近登录时间', ini_name=pinfo_list[i])
-            table_object.setItem(i, 9,self.set_tableitem_center(time.strftime('%m-%d %H:%M:%S',time.localtime(float(_time)))))  # 最近登录时间
-            table_object.setItem(i, 10, self.set_tableitem_center('0'))  # 闪退次数
+            _time = LoadConfig.getconf(pinfo_list[i], '最近登录时间', ini_name=pinfo_list[i])
+            table_object.setItem(i, 10, self.set_tableitem_center(
+                time.strftime('%m-%d %H:%M:%S', time.localtime(float(_time)))))  # 最近登录时间
+            table_object.setItem(i, 11, self.set_tableitem_center('0'))  # 闪退次数
 
             if pinfo_list[i] in self.mnq_thread_tid.keys():
                 if len(self.mnq_thread_tid[pinfo_list[i]]) != 0:
@@ -1197,6 +1197,16 @@ class DzUi:
 def main():
     app = QApplication(sys.argv)
     dz = DzUi()
+    extra = {
+        # Density Scale
+        'density_scale': '-1',
+        # Font
+        'font_family': 'monoespace',
+        'font_size': '13px',
+        'line_height': '13px',
+    }
+    # apply_stylesheet(app, 'default', invert_secondary=False, extra=extra)
+    apply_stylesheet(app, theme='dark_red.xml',extra=extra)
     dz.ui_main.show()
     app.exec_()
 

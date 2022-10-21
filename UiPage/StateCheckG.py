@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 
-from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG
+from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG, BatEnumG
 from UiPage.BasePage import BasePageG
 from Utils.LoadConfig import LoadConfig
 
@@ -72,6 +72,7 @@ class StateCheckG(BasePageG):
     def check_roleinfo(self, **kwargs):
         s_time = time.time()
         select_queue = kwargs['状态队列']['选择器']
+        auto_choose = kwargs['托管模式']
         _C_OVER = False  # 检查是否完成
         RED_GOLD = 0  # 红币
         GOLD = 0  # 金币
@@ -93,9 +94,12 @@ class StateCheckG(BasePageG):
                     self.sn.table_value.emit(self.mnq_name, 5, f"{BAT_NUM}")
                     self.sn.table_value.emit(self.mnq_name, 6, f"{GOLD}")
                     self.sn.table_value.emit(self.mnq_name, 7, f"{round(_T_GOLD / 10000, 1)}万")
-                    LoadConfig.writeconf(self.mnq_name, '产金量', str(_T_GOLD)+'万', ini_name=self.mnq_name)
-                    self.sn.log_tab.emit(self.mnq_name, f"等级：{LEVEL}_星力{STAR}_战力{BAT_NUM}_金币{GOLD}_红币{RED_GOLD}_产金{_T_GOLD}")
+                    LoadConfig.writeconf(self.mnq_name, '产金量', str(_T_GOLD) + '万', ini_name=self.mnq_name)
+                    self.sn.log_tab.emit(self.mnq_name,
+                                         f"等级：{LEVEL}_星力{STAR}_战力{BAT_NUM}_金币{GOLD}_红币{RED_GOLD}_产金{_T_GOLD}")
                     select_queue.task_over('CheckRole')
+                    if auto_choose:
+                        self.auto_choose_task(LEVEL, STAR, RED_GOLD, select_queue, **kwargs)
                     return True
                 self.air_touch((1170, 39), touch_wait=3)
             elif self.get_rgb(RgbEnumG.BAG_GOLD_QR):
@@ -124,3 +128,19 @@ class StateCheckG(BasePageG):
                         self.crop_image_find(ImgEnumG.BAG_GOLD, touch_wait=2)
             else:
                 self.check_close()
+
+    def auto_choose_task(self, level, star, red_gold, select_queue, **kwargs):
+        exec_queue = kwargs['状态队列']['执行器']
+        _L4_FLAG = False if kwargs['角色信息']['100级'] == '0' else True
+        if int(star) >= 40:
+            # self.change_mapdata('3', '研究所102', **kwargs)
+            exec_queue.put_queue('AutoBat')
+        else:
+            exec_queue.put_queue('AutoTask')
+        if int(level) > 100 and not _L4_FLAG:
+            select_queue.put_queue('UseSkill')
+            select_queue.put_queue('GetLevelReard')
+        if int(red_gold) > 10000000:
+            select_queue.put_queue('CheckRole')
+            select_queue.put_queue('UpEquip')
+            select_queue.put_queue('StrongEquip')

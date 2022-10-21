@@ -10,7 +10,7 @@ from Utils.OtherTools import OT
 class GlobalEnumG:
     if not os.path.exists(OT.abspath(f"/Res/配置文件.ini")):
         LoadConfig.init_config()
-    Ver = '2.09'
+    Ver = '2.10'
     TestLog = True if LoadConfig.getconf('全局配置', '日志') == '1' else False
     GamePackgeName = r'com.nexon.maplem.global'
     WaitTime = 1
@@ -19,7 +19,7 @@ class GlobalEnumG:
     TouchDurationTime = 1  # 延时点击
     LoginGameTimeOut = 600  # 登录超时时长
     UiCheckTimeOut = 900  # 界面操作超时时长
-    SelectCtrTimeOut = 150  # 操作超时时长
+    SelectCtrTimeOut = 300  # 操作超时时长
     TouchWaitTime = 2  # 点击后等待时长
     TaskWaitTime = 2  # 任务等待时长
     BackWaitTime = 2  # 按back后等待时长
@@ -58,6 +58,7 @@ class GlobalEnumG:
         'Nothing': {'name': "无任务", 'id': 2},
         'Wait': {'name': "等待任务", 'id': 2},
         'Login': {'name': "登录游戏", 'id': 2},
+        'AutoChoose': {'name': "一键托管", 'id': 99},
         'Check': {'name': "检查界面", 'id': -1},
         'BuyY': {'name': "买药", 'id': 4},
         'FuHuo': {'name': "复活", 'id': 3},
@@ -101,13 +102,15 @@ class GlobalEnumG:
                     'AutoMR',
                     'CheckRole',
                     'GetLevelReard',
-                    'CheckGold']
+                    'CheckGold',
+                    'AutoChoose']
 
 
 class ImgEnumG:
     """图片数据"""
     TEST = Template(OT.imgpath('21'))
     # UI_CLOSE = [(571, 39, 711, 76), Template(OT.imgpath('关闭界面'))]
+    TIP = [(271, 47, 1018, 182), Template(OT.imgpath('引导提示'))]
     UI_CLOSE = [(1060, 24, 1149, 97), Template(OT.imgpath('弹窗'))]
     UI_QR = [(0, 0, 1280, 720), Template(OT.imgpath('确认'))]
     UI_QBLQ = [(0, 0, 1280, 720), Template(OT.imgpath('全部领取'))]
@@ -421,12 +424,12 @@ class ImgEnumG:
     SKIP_NEW = [(2, 72, 491, 212), Template(OT.imgpath('新内容'))]
     JN_TEACH = [(790, 569, 981, 717), Template(OT.imgpath('教学'))]
 
-    GX_XZ_ING=[(0,0,1280,720),Template(OT.imgpath('数据更新'))]
+    GX_XZ_ING = [(0, 0, 1280, 720), Template(OT.imgpath('数据更新'))]
 
 
 class BatEnumG:
     TASK_ID = {
-        '登录游戏': {'id': '0', 'state': 'Login'},
+        '一键托管': {'id': '99', 'state': 'AutoChoose'},
         '自动任务': {'id': '1', 'state': 'AutoTask'},
         '自动每日': {'id': '2', 'state': 'AutoMR'},
         '混Boss图': {'id': '5', 'state': 'AutoBoss'},
@@ -601,7 +604,7 @@ class BatEnumG:
 
 class RgbEnumG:
     EXIT_FOU = [391, 532, '4C87AF']  # 退出游戏-否
-    CLOSE_GAME=[433, 543,'4D87AF']#关闭游戏-否
+    CLOSE_GAME = [433, 543, '4D87AF']  # 关闭游戏-否
     FUHUO_BTN = [293, 522, '4C87AF']  # 复活按钮
     BG_PINDAO = [1083, 55, 'EE7047']  # 地图主界面-变更频道
     MAP_QWPD = [529, 635, 'EE7047']  # 地图-前往频道
@@ -647,6 +650,8 @@ class RgbEnumG:
 
     CYRQ_END = [376, 517, '4C87AF']
     CYRQ_JR = [1055, 656, 'EE7047']
+    CYQR_JR_QR = [346, 272, 'E9E9E9']
+    CYQR_JR_QR1 = [682, 549, 'EE7047']
     CYRQ_JR_F = [1055, 656, 'C3C3C3']
 
     MNDC_XZ = [54, 138, '2B3747']
@@ -697,7 +702,7 @@ class RgbEnumG:
     TEAM_ZDJR_QR = [1126, 162, '617B96']  # 自动加入-确认
 
     TEAM_CLDW_M = [53, 671, 'F2F2F2']  # 创立队伍界面
-    TEAM_CLQR=[536,642,'EE7047']
+    TEAM_CLQR = [536, 642, 'EE7047']
     TEAM_MMDW = [102, 521, '3B759B']  # 密码队伍选项
     TEAM_QRMM = [524, 609, 'EE7047']  # 确认密码
 
@@ -760,7 +765,7 @@ class RgbEnumG:
     SKIP_NEW1 = [622, 213, 'FFE']
     FEVER_BUFF = [582, 191, 'F2F2F2']
 
-    PET_END=[576,314,'404A54']#宠物到期 908，97
+    PET_END = [576, 314, '404A54']  # 宠物到期 908，97
     PET_M = [162, 32, '4C87AF']
     PET_NULL = [487, 188, '636D79']
     PET_JN = [612, 133, 'F2F2F2']
@@ -787,10 +792,10 @@ class RgbEnumG:
     TJP_SJ_BTN_F = [579, 646, 'C3C3C3']
     TJP_SJXZ_BTN = [1125, 643, 'EE7047']
     TJP_SJXZ_BTN_F = [1132, 638, 'C3C3C3']
-
+    TJP_SJ_XZ = [697, 639, 'EE7047']  # 自动选择确认
     HD_M = [286, 41, '415067']
     HD_CZZY = [240, 280, 'FF8D4F']  # 成长支援
-    TC_1=[1172,269,'617B94']
+    TC_1 = [1172, 269, '617B94']
 
-    GX_XZ_BACK=[523, 188,'FF7C52']#更新下载完成
-    GX_XZ=[536,528,'EB7047']#有下载
+    GX_XZ_BACK = [523, 188, 'FF7C52']  # 更新下载完成
+    GX_XZ = [536, 528, 'EB7047']  # 有下载

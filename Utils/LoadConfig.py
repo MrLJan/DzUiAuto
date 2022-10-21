@@ -47,7 +47,6 @@ class LoadConfig:
         LoadConfig.writeconf("全局配置", "星光塔", '0')
         LoadConfig.writeconf("全局配置", "进化系统", '0')
         LoadConfig.writeconf("全局配置", "次元入侵", '0')
-        LoadConfig.writeconf("全局配置", "怪物狩猎团", '1')
         LoadConfig.writeconf("全局配置", "汤宝宝", '1')
         LoadConfig.writeconf("全局配置", "怪物公园", '0')
         LoadConfig.writeconf("全局配置", "迷你地城", '0')

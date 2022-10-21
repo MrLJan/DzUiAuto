@@ -427,7 +427,7 @@ class CnOcrTool:
 if __name__ == '__main__':
     # img_fp = r'D:\DzAutoUi\Res\img\21.bmp'
     # res, dev = DevicesConnect('emulator-5554').connect_device()
-    res2, dev2 = DevicesConnect('127.0.0.1:5583').connect_device()
+    res2, dev2 = DevicesConnect('127.0.0.1:5555').connect_device()
     # print(res2, dev2)
     # cv2.setNumThreads(1)
     # cv2.ocl.setUseOpenCL(False)
@@ -455,7 +455,8 @@ if __name__ == '__main__':
     #     t1=time.time()
     #     r=a.crop_image_find(ImgEnumG.INGAME_FLAG2,False)
     #     print(r,time.time()-t1)
-    r = o.rgb(536,642)
+    r = o.rgb(579, 646)
+    # r=a.crop_image_find(ImgEnumG.ZB_TS, touch_wait=2)
     print(r)
     # r=a.air_loop_find(ImgEnumG.ZB_TS,False)
     # r=c.get_ocrres([33,1,86,29],t_log=True)

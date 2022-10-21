@@ -19,29 +19,20 @@ class UpRoleG(BasePageG):
     def upequip(self, **kwargs):
         s_time = time.time()
         select_queue = kwargs['状态队列']['选择器']
+        _SX = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):  # 游戏界面
                 self.crop_image_find(ImgEnumG.MR_MENU)
             elif self.get_rgb(RgbEnumG.TJP_SJ_M):  # 进入铁匠铺
                 if self.get_rgb(RgbEnumG.TJP_SJ_BTN_F, True):  # 强化按钮
+                    if _SX:
+                        self.back(self.serialno)
+                        self.back(self.serialno)
+                        self.sn.log_tab.emit(self.mnq_name, r"无升级材料或金币不足,升级结束")
+                        select_queue.task_over('UpEquip')
+                        return 1
                     # self.crop_image_find(ImgEnumG.EQ_ZDXZ)  # 自动选择
-                    if self.get_rgb(RgbEnumG.TJP_SJXZ_BTN_F):
-                        if self.ocr_find(ImgEnumG.EQ_ZDXZ_SD_OCR):
-                            self.get_rgb([375, 557, 'C2C5CA'], True)
-                            self.get_rgb([739, 296, 'AEB8C2'], True)
-                            self.get_rgb([478, 344, 'AEB8C2'], True)
-                            self.get_rgb([572, 345, 'AEB8C2'], True)
-                            if self.crop_image_find(ImgEnumG.UI_QR):
-                                if not self.crop_image_find(ImgEnumG.EQ_UP):
-                                    self.sn.log_tab.emit(self.mnq_name, r"无升级材料或金币不足,升级结束")
-                                    self.crop_image_find(ImgEnumG.UI_CLOSE)
-                                    self.crop_image_find(ImgEnumG.UI_CLOSE)
-                                    select_queue.task_over('upequip')
-                                    return 1
-                                self.crop_image_find(ImgEnumG.EQ_UP_QR, timeout=20)
-                        else:
-                            self.air_swipe((912, 507), (912, 303))
-                    elif self.crop_image_find(ImgEnumG.EQ_WZB):  # 装备槽
+                    if self.crop_image_find(ImgEnumG.EQ_WZB, False):  # 装备槽
                         zb_list = self.get_all_text(ImgEnumG.EQ_ZBZ_OCR)
                         if len(zb_list) == 0:
                             self.sn.log_tab.emit(self.mnq_name, r"无可升级装备")
@@ -50,14 +41,36 @@ class UpRoleG(BasePageG):
                         else:
                             self.sn.log_tab.emit(self.mnq_name, r"选择装备")
                             self.air_touch(zb_list[0])
+                    elif self.get_rgb(RgbEnumG.TJP_SJXZ_BTN, True):
+                        pass
                 else:
-                    self.get_rgb(RgbEnumG.TJP_SJ_BTN,True)
-            elif self.get_rgb(RgbEnumG.TJP_SJ_BTN,True):
-                pass
+                    self.get_rgb(RgbEnumG.TJP_SJ_BTN, True)
+            elif self.get_rgb(RgbEnumG.TJP_SJ_XZ):
+                if _SX:
+                    self.get_rgb(RgbEnumG.TJP_SJ_XZ, True)
+                elif self.ocr_find(ImgEnumG.EQ_ZDXZ_SD_OCR):
+                    self.get_rgb([375, 557, 'C2C5CA'], True)
+                    self.get_rgb([739, 296, 'AEB8C2'], True)
+                    self.get_rgb([478, 344, 'AEB8C2'], True)
+                    self.get_rgb([572, 345, 'AEB8C2'], True)
+                    self.get_rgb(RgbEnumG.TJP_SJ_XZ, True)
+                    _SX = True
+                else:
+                    self.air_swipe((912, 507), (912, 303), swipe_wait=2)
+            elif self.get_rgb(RgbEnumG.TJP_SJ_BTN, True, touch_wait=5):
+                if not self.crop_image_find(ImgEnumG.EQ_UP):
+                    self.sn.log_tab.emit(self.mnq_name, r"无升级材料或金币不足,升级结束")
+                    self.back(self.serialno)
+                    self.back(self.serialno)
+                    select_queue.task_over('UpEquip')
+                    return 1
+                self.crop_image_find(ImgEnumG.EQ_UP_QR, timeout=2)
             elif self.ocr_find(ImgEnumG.EQ_UP_OCR):
-                self.air_touch((84, 268))
+                self.air_touch((84, 268), touch_wait=5)
             elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
                 self.ocr_find(ImgEnumG.EQ_TJP_OCR, True)
+            elif self.get_rgb(RgbEnumG.TJP_SJ_BTN, True, touch_wait=5):
+                pass
             else:
                 self.check_close()
         return 0
@@ -155,6 +168,8 @@ class UpRoleG(BasePageG):
                     select_queue.task_over('UseSkill')
                     if 90 > kwargs['角色信息']['等级'] >= 60:
                         LoadConfig.writeconf(self.mnq_name, '60级', '1', ini_name=self.mnq_name)
+                    elif kwargs['角色信息']['等级'] >= 100:
+                        LoadConfig.writeconf(self.mnq_name, '100级', '1', ini_name=self.mnq_name)
                     elif kwargs['角色信息']['等级'] >= 90:
                         LoadConfig.writeconf(self.mnq_name, '90级', '1', ini_name=self.mnq_name)
                     return -1
