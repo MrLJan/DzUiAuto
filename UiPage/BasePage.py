@@ -231,7 +231,7 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
             40: '研究所102',
         }
         for _s in XT_MAP.keys():
-            if int(star)>_s:
+            if int(star)>=_s:
                 return self.change_mapdata('3',XT_MAP[_s],**kwargs)
 
     def change_mapdata(self, xt_yt, map_name, **kwargs):

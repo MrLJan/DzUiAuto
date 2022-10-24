@@ -717,6 +717,7 @@ class DailyTaskAutoG(BasePageG):
 
     def boss_task(self, **kwargs):
         s_time = time.time()
+        _LEVEL = int(kwargs['角色信息']['等级'])
         _YM = True if kwargs['王图设置']['炎魔'] == '1' else False  # 是否要打
         _PKJ = True if kwargs['王图设置']['皮卡啾'] == '1' else False
         _NH = True if kwargs['王图设置']['女皇'] == '1' else False
@@ -738,6 +739,9 @@ class DailyTaskAutoG(BasePageG):
         select_queue = kwargs['状态队列']['选择器']
         self.sn.log_tab.emit(self.mnq_name, r"boss远征")
         self.sn.table_value.emit(self.mnq_name, 8, r"boss远征")
+        if _LEVEL < 70:
+            self.sn.log_tab.emit(self.mnq_name, r"等级低于70级无法混boss")
+            return True
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.crop_image_find(ImgEnumG.MR_BAT_EXIT, False, touch_wait=3):
                 if self.ocr_find(ImgEnumG.BOSS_DJ):
@@ -787,14 +791,14 @@ class DailyTaskAutoG(BasePageG):
                     self.time_sleep(15)
                     _WAIT_TIMES += 1
                     if _WAIT_TIMES > 4:
-                        self.air_touch(434, 256)
+                        self.air_touch((434, 256))
                         if self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):
                             _WAIT_TEAM = False
                 else:
                     if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                         if _WAIT_TEAM:
                             if _WAIT_TEAM_TIMES > 3:
-                                self.air_touch(434, 256)
+                                self.air_touch((434, 256))
                                 if self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):
                                     _WAIT_TEAM = False
                             self.time_sleep(10)
@@ -827,7 +831,7 @@ class DailyTaskAutoG(BasePageG):
                             return True
                         elif _YM and not _YM_OVER:
                             if self.crop_image_find(ImgEnumG.YM):
-                                if _YM_KN:
+                                if _YM_KN and _LEVEL >= 100:
                                     self.get_rgb(RgbEnumG.YZD_KN, True)  # 困难
                                 else:
                                     self.get_rgb(RgbEnumG.YZD_PT, True)
@@ -836,7 +840,9 @@ class DailyTaskAutoG(BasePageG):
                                 _YM_OVER = True
                         elif _PKJ and not _PKJ_OVER:
                             if self.crop_image_find(ImgEnumG.PKJ):
-                                if _PKJ_KN:
+                                if _LEVEL<100:
+                                    _PKJ_OVER = True
+                                elif _PKJ_KN and _LEVEL >= 120:
                                     self.get_rgb(RgbEnumG.YZD_KN, True)  # 困难
                                 else:
                                     self.get_rgb(RgbEnumG.YZD_PT, True)
@@ -845,7 +851,9 @@ class DailyTaskAutoG(BasePageG):
                                 _PKJ_OVER = True
                         elif _NH and not _NH_OVER:
                             if self.crop_image_find(ImgEnumG.NH):
-                                if _NH_KN:
+                                if _LEVEL<100:
+                                    _NH_OVER = True
+                                elif _NH_KN and _LEVEL >= 120:
                                     self.get_rgb(RgbEnumG.YZD_KN, True)  # 困难
                                 else:
                                     self.get_rgb(RgbEnumG.YZD_PT, True)
@@ -853,10 +861,18 @@ class DailyTaskAutoG(BasePageG):
                             elif self.ocr_find(ImgEnumG.NH_OVER):
                                 _NH_OVER = True
                         if _YM_ING or _PKJ_ING or _NH_ING:
-                            if self.get_rgb(RgbEnumG.YZD_JR, True):
+                            if _WAIT_TEAM:
+                                if _YM_ING:
+                                    _YM_OVER = True
+                                if _PKJ_ING:
+                                    _PKJ_OVER = True
+                                if _NH_ING:
+                                    _NH_OVER = True
+                            elif self.get_rgb(RgbEnumG.YZD_JR, True):
                                 _WAIT_TEAM = True
                     else:
                         self.check_close()
+        select_queue.task_over('AutoBoss')
         raise ControlTimeOut(r"boss远征-超时失败")
 
     def hdboss_task(self, **kwargs):
@@ -923,6 +939,7 @@ class DailyTaskAutoG(BasePageG):
                         return True
                     else:
                         self.check_close()
+        select_queue.task_over('AutoHDboss')
         raise ControlTimeOut(r"混沌炎魔-超时失败")
 
     def gonghui_task(self):

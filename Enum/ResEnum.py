@@ -10,7 +10,7 @@ from Utils.OtherTools import OT
 class GlobalEnumG:
     if not os.path.exists(OT.abspath(f"/Res/配置文件.ini")):
         LoadConfig.init_config()
-    Ver = '2.10'
+    Ver = '2.11'
     TestLog = True if LoadConfig.getconf('全局配置', '日志') == '1' else False
     GamePackgeName = r'com.nexon.maplem.global'
     WaitTime = 1
@@ -133,7 +133,7 @@ class ImgEnumG:
     LOGIN_FLAG = [(973, 485, 1278, 715), Template(OT.imgpath('游戏登陆标志'))]
     LOGIN_FLAG1 = [(0, 0, 1280, 720), Template(OT.imgpath('登录区域'))]  # 20,665,56,701
     START_GAME = [(916, 572, 1234, 660), Template(OT.imgpath('游戏开始'))]  # 963,481,1278,688
-    INGAME_FLAG = [(1143, 546, 1276, 692), Template(OT.imgpath('验证登录标记'))]  # 734,9,1253,64
+    INGAME_FLAG = [(877, 307, 969, 396), Template(OT.imgpath('验证登录标记2'))]  # 734,9,1253,64
     INGAME_FLAG2 = [(877, 307, 969, 396), Template(OT.imgpath('验证登录标记2'))]
     LOGIN_TIPS = [(1240, 14, 1264, 61), Template(OT.imgpath('登录弹窗'))]
     # 任务相关

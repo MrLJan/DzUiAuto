@@ -21,7 +21,7 @@ class UpRoleG(BasePageG):
         select_queue = kwargs['状态队列']['选择器']
         _SX = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):  # 游戏界面
+            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):  # 游戏界面
                 self.crop_image_find(ImgEnumG.MR_MENU)
             elif self.get_rgb(RgbEnumG.TJP_SJ_M):  # 进入铁匠铺
                 if self.get_rgb(RgbEnumG.TJP_SJ_BTN_F, True):  # 强化按钮
@@ -155,7 +155,7 @@ class UpRoleG(BasePageG):
         _ZB_FLAG = 0
         _ZB_JN_NUM = 0
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):  # 游戏界面
+            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):  # 游戏界面
                 self.crop_image_find(ImgEnumG.MR_MENU)
             elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
                 self.ocr_find(ImgEnumG.MENU_JN, True)
@@ -211,7 +211,7 @@ class UpRoleG(BasePageG):
         _PET_TYPE = None  # 确定宠物种类
         _PET_POS = ImgEnumG.PET_POS  # 宠物侧边栏是否被选中
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):  # 游戏界面
+            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):  # 游戏界面
                 self.crop_image_find(ImgEnumG.MR_MENU)
             elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
                 self.ocr_find(ImgEnumG.MENU_CW, True)  # 宠物

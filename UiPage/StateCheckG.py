@@ -141,6 +141,6 @@ class StateCheckG(BasePageG):
             select_queue.put_queue('UseSkill')
             select_queue.put_queue('GetLevelReard')
         if int(red_gold) > 10000000:
-            select_queue.put_queue('CheckRole')
+            # select_queue.put_queue('CheckRole')
             select_queue.put_queue('UpEquip')
             select_queue.put_queue('StrongEquip')

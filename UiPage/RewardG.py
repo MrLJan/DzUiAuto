@@ -135,7 +135,7 @@ class RewardG(BasePageG):
         self.sn.log_tab.emit(self.mnq_name, f"领取课题奖励")
         _C_OVER = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
+            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 self.crop_image_find(ImgEnumG.MR_MENU)
             elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
                 self.ocr_find(ImgEnumG.KT_MENU, True)

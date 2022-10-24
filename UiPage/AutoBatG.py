@@ -265,7 +265,6 @@ class AutoBatG(BasePageG):
         bat_sleep_mode = kwargs['挂机设置']['休息方式']
         min_x=map_data[-1][-1]
         dingshi = True if kwargs['每日任务']['定时任务'] == '1' else False
-
         _r = random.randint(30, 60)
         _use = time.time()
         _s_time = time.time()

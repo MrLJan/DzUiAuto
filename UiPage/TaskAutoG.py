@@ -100,9 +100,6 @@ class TaskAutoG(BasePageG):
                         t_time = time.time()
                         self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
                                         **kwargs)
-                    if not self.ocr_find(ImgEnumG.TASK_OCR):
-                        if not self.air_loop_find(ImgEnumG.TASK_POINT):
-                            self.air_loop_find(ImgEnumG.TASK_TAB)
                 # elif not self.ocr_find(ImgEnumG.TASK_OCR):
                 elif self.crop_image_find(ImgEnumG.AUTO_BAT, False) or self.get_rgb([427, 653, 'D3D3']) or self.get_rgb(
                         [427, 653, '7A7']):  # self.crop_image_find(ImgEnumG.AUTO_BAT1):
@@ -116,6 +113,9 @@ class TaskAutoG(BasePageG):
                                 self.air_loop_find(ImgEnumG.TASK_TAB)
                         self.time_sleep(GlobalEnumG.TaskWaitTime)
                 else:
+                    if not self.ocr_find(ImgEnumG.TASK_OCR):
+                        if not self.air_loop_find(ImgEnumG.TASK_POINT):
+                            self.air_loop_find(ImgEnumG.TASK_TAB)
                     if use_stone:
                         r = random.randint(0, 2)
                         if r != 0:
@@ -135,14 +135,17 @@ class TaskAutoG(BasePageG):
             if self.crop_image_find(ImgEnumG.JN_TEACH, touch_wait=1):
                 self.skip_fever_buff()
             self.skip_new()
-        res = self.get_roleinfo([(33, 1, 86, 29), (42, 63, 151, 89)])
-        if res[0] > 150 or res[0] < 1:
-            res = self.check_rolelevel()
-        if res[0] == 0 and res[-1] == 0:
+        try:
+            res = self.get_roleinfo([(33, 1, 86, 29), (42, 63, 151, 89)])
+            if res[0] > 150 or res[0] < 1:
+                res = self.check_rolelevel()
+            if res[0] == 0 and res[-1] == 0:
+                return 0
+            if res[0] >= int(stop_task):
+                self.sn.log_tab.emit(self.mnq_name, r"超过任务停止等级")
+                return 1
+        except Exception:
             return 0
-        if res[0] >= int(stop_task):
-            self.sn.log_tab.emit(self.mnq_name, r"超过任务停止等级")
-            return 1
         kwargs['角色信息']['等级'] = res[0]
         kwargs['角色信息']['战力'] = res[-1]
         LoadConfig.writeconf(self.mnq_name, '等级', str(res[0]), ini_name=self.mnq_name)
