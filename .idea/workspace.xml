@@ -3,21 +3,17 @@
   <component name="ChangeListManager">
     <list default="true" id="218bbaa1-7ac1-41ff-a550-012b423f111d" name="Changes" comment="Changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DzTest/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/DzTest/test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Enum/ResEnum.py" beforeDir="false" afterPath="$PROJECT_DIR$/Enum/ResEnum.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/LDPlayer-10.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/LDPlayer-10.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/LDPlayer-13.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/LDPlayer-13.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/LDPlayer-14.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/LDPlayer-14.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Res/LDPlayer.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/LDPlayer.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/验证登录标记.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/验证登录标记.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/配置文件.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/配置文件.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/AutoBatG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/AutoBatG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/游戏icon.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/游戏icon.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/游戏开始.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/游戏开始.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/游戏登陆标志.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/游戏登陆标志.bmp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/BasePage.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/BasePage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/DailyTaskG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/DailyTaskG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/LoginUiPage.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/LoginUiPage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/RewardG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/RewardG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/StateCheckG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/StateCheckG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/TaskAutoG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/TaskAutoG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/UpRoleG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/UpRoleG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/Devicesconnect.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/Devicesconnect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/OpencvG.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/OpencvG.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -203,8 +199,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.test" />
         <item itemvalue="Python.OpencvG" />
+        <item itemvalue="Python.test" />
         <item itemvalue="Python.dzmainui" />
         <item itemvalue="Python.device" />
       </list>
@@ -284,11 +280,6 @@
           <url>file://$PROJECT_DIR$/venv/Lib/site-packages/airtest/core/android/adb.py</url>
           <line>549</line>
           <option name="timeStamp" value="916" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/DzTest/test.py</url>
-          <line>43</line>
-          <option name="timeStamp" value="1403" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

@@ -156,7 +156,7 @@ class LoginUiPageG(BasePageG):
                 elif self.air_loop_find(ImgEnumG.GAME_ICON, False):
                     self.sn.log_tab.emit(self.mnq_name, r"掉线")
                     raise NotInGameErr
-                elif self.crop_image_find(ImgEnumG.LOGIN_FLAG):
+                elif self.crop_image_find(ImgEnumG.LOGIN_FLAG) or self.crop_image_find(ImgEnumG.START_GAME):
                     self.sn.log_tab.emit(self.mnq_name, r"在游戏登录主界面")
                     break
                 elif self.get_rgb(RgbEnumG.FUHUO_BTN):

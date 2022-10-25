@@ -27,9 +27,9 @@ class TaskAutoG(BasePageG):
         s_time = time.time()
         t_time = time.time()
         level = LoadConfig.getconf(self.mnq_name, '等级', ini_name=self.mnq_name)
-        if int(level) == 0:
-            self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
-                            **kwargs)
+        # if int(level) == 0:
+        #     self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
+        #                     **kwargs)
         if int(level) >= int(stop_task):
             self.sn.log_tab.emit(self.mnq_name, r"超过任务停止等级")
             return 1
@@ -37,18 +37,16 @@ class TaskAutoG(BasePageG):
         _COLOR = self.rgb(447, 699)
         _COLOR_1 = 'FFFFFF'
         while True:
-            if time.time() - s_time > GlobalEnumG.SelectCtrTimeOut:
-                self.check_close()
-                s_time = time.time()
+            # if time.time() - s_time > GlobalEnumG.SelectCtrTimeOut:
+            #     self.check_close()
+            #     s_time = time.time()
             if not self.air_loop_find(ImgEnumG.INGAME_FLAG2, False):
                 if not self.get_rgb([1033, 414, 'EE7047'], True):  # 完成/接受
                     for i in range(2):
                         self.air_touch((1168, 495), touch_wait=0)
                         self.air_touch((1168, 495), touch_wait=0)
-                    if not self.get_rgb([367, 565, '4C87AF'], True):
+                    if self.get_rgb([367, 565, '4C87AF'], True):
                         pass
-                    elif not self.get_rgb([367, 565, 'EE7047'], True):
-                        self.air_touch((1168, 495), touch_wait=0)
                     elif self.get_rgb([361, 570, 'EE7047'], True):
                         pass
                     elif self.get_rgb([359, 636, 'EE7047'], True):
@@ -76,17 +74,19 @@ class TaskAutoG(BasePageG):
                     elif self.air_loop_find(ImgEnumG.UI_QBLQ):
                         pass
                     else:
-                        if not self.crop_image_find(ImgEnumG.TASK_ARROW):
-                            self.check_close()
-                        else:
-                            for i in range(3):
-                                self.crop_image_find(ImgEnumG.TASK_ARROW)
+                        if self.air_loop_find(ImgEnumG.GAME_ICON, False):
+                            raise NotInGameErr
+                        # if not self.crop_image_find(ImgEnumG.TASK_ARROW):
+                        #     self.check_close()
+                        # else:
+                        for i in range(3):
+                            self.crop_image_find(ImgEnumG.TASK_ARROW)
                 elif self.get_rgb([563, 634, 'EE7047'], True):
                     pass
                 else:
                     self.air_loop_find(ImgEnumG.UI_QR)
             else:
-                if self.crop_image_find(ImgEnumG.SKIP_NEW, touch_wait=1):
+                if self.get_rgb(RgbEnumG.SKIP_NEW, True):
                     self.skip_new()
                 elif self.get_rgb([394, 403, 'EE7047']):
                     self.air_touch((710, 204))
@@ -95,27 +95,32 @@ class TaskAutoG(BasePageG):
                 elif self.get_rgb([737, 395, '617B96'], True):  # 穿戴装备
                     for i in range(3):
                         self.get_rgb([737, 395, '617B96'], True)
-                if self.check_is_stop():
-                    if time.time() - t_time > GlobalEnumG.TaskCheckTime:
-                        t_time = time.time()
-                        self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
-                                        **kwargs)
+                elif self.get_rgb([711, 206, 'FEFFF5'], True):
+                    pass  # 提示装备技能
+                # if self.check_is_stop():
+                #     if time.time() - t_time > GlobalEnumG.TaskCheckTime:
+                #         t_time = time.time()
+                #         self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
+                #                         **kwargs)
+                #     elif not self.air_loop_find(ImgEnumG.TASK_POINT):
+                #         self.air_loop_find(ImgEnumG.TASK_TAB)
                 # elif not self.ocr_find(ImgEnumG.TASK_OCR):
-                elif self.crop_image_find(ImgEnumG.AUTO_BAT, False) or self.get_rgb([427, 653, 'D3D3']) or self.get_rgb(
-                        [427, 653, '7A7']):  # self.crop_image_find(ImgEnumG.AUTO_BAT1):
-                    self.get_rgb([711, 206, 'FEFFF5'], True)  # 提示装备技能
-                    if time.time() - t_time > GlobalEnumG.TaskCheckTime:
-                        t_time = time.time()
-                        self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG, **kwargs)
-                    else:
-                        if self.check_is_stop():
-                            if not self.air_loop_find(ImgEnumG.TASK_POINT):
-                                self.air_loop_find(ImgEnumG.TASK_TAB)
-                        self.time_sleep(GlobalEnumG.TaskWaitTime)
+                # elif self.crop_image_find(ImgEnumG.AUTO_BAT, False) or self.get_rgb([427, 653, '4D4D']) or self.get_rgb(
+                #         [427, 653, '7A7']):  # self.crop_image_find(ImgEnumG.AUTO_BAT1):
+                #     self.get_rgb([711, 206, 'FEFFF5'], True)  # 提示装备技能
+                #     if time.time() - t_time > GlobalEnumG.TaskCheckTime:
+                #         t_time = time.time()
+                #         self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG, **kwargs)
+                #     else:
+                #         if self.check_is_stop():
+                #             if not self.air_loop_find(ImgEnumG.TASK_POINT):
+                #                 self.air_loop_find(ImgEnumG.TASK_TAB)
+                #         self.time_sleep(GlobalEnumG.TaskWaitTime)
                 else:
-                    if not self.ocr_find(ImgEnumG.TASK_OCR):
+                    if 'AUTO' in self.get_ocrres((395, 647, 450, 663)):
                         if not self.air_loop_find(ImgEnumG.TASK_POINT):
                             self.air_loop_find(ImgEnumG.TASK_TAB)
+                    # self.check_close()
                     if use_stone:
                         r = random.randint(0, 2)
                         if r != 0:

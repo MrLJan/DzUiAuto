@@ -12,7 +12,7 @@ class GlobalEnumG:
         LoadConfig.init_config()
     Ver = '2.11'
     TestLog = True if LoadConfig.getconf('全局配置', '日志') == '1' else False
-    GamePackgeName = r'com.nexon.maplem.global'
+    GamePackgeName = r'com.nexon.maplem.japan'#r'com.nexon.maplem.global'
     WaitTime = 1
     ExitBtnTime = 2  # 点击退出游戏否按钮等待时长
     FindImgTimeOut = 20  # 查找图片等待超时时间

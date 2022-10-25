@@ -293,7 +293,7 @@ class CnOcrTool:
             img_fp = aircv.crop_image(self._img, (x1, y1, x2, y2))
             t1 = time.time()
             self.cn_ocr[-1].acquire()
-            out = self.cn_ocr[0].ocr(img_fp, resized_shape=(720, 1280), batch_size=1)
+            out = self.cn_ocr[0].ocr(img_fp)
             self.cn_ocr[-1].release()
             if len(out) == 0:
                 time.sleep(GlobalEnumG.WaitTime / 2)
@@ -427,7 +427,7 @@ class CnOcrTool:
 if __name__ == '__main__':
     # img_fp = r'D:\DzAutoUi\Res\img\21.bmp'
     # res, dev = DevicesConnect('emulator-5554').connect_device()
-    res2, dev2 = DevicesConnect('127.0.0.1:5555').connect_device()
+    res2, dev2 = DevicesConnect('127.0.0.1:5579').connect_device()
     # print(res2, dev2)
     # cv2.setNumThreads(1)
     # cv2.ocl.setUseOpenCL(False)
@@ -455,8 +455,10 @@ if __name__ == '__main__':
     #     t1=time.time()
     #     r=a.crop_image_find(ImgEnumG.INGAME_FLAG2,False)
     #     print(r,time.time()-t1)
-    r = o.rgb(579, 646)
-    # r=a.crop_image_find(ImgEnumG.ZB_TS, touch_wait=2)
+    r=c.get_ocrres([395, 647, 450, 663],t_log=False)
+    # r=o.rgb(1146,213)
+    # r = o.get_rgb([1146, 213,'415067'],t_log=False)
+    # r=a.crop_image_find(ImgEnumG.INGAME_FLAG2, touch_wait=2,t_log=False)
     print(r)
     # r=a.air_loop_find(ImgEnumG.ZB_TS,False)
     # r=c.get_ocrres([33,1,86,29],t_log=True)

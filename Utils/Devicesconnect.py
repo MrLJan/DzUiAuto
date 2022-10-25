@@ -12,6 +12,7 @@ class DevicesConnect:
             dev = Android(serialno=self.devname)
             # dev1 = connect_device(f"Android://127.0.0.1:5037/{self.devname}?cap_method=MINICAP")  #
             # ?cap_method=JAVACAP&&ori_method=ADBORI")
+
             print(f"{self.devname}_连接成功")
             return True, dev
         except DeviceConnectionError as e:
