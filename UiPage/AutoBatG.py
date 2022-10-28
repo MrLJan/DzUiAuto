@@ -263,17 +263,20 @@ class AutoBatG(BasePageG):
         use_time = int(kwargs['挂机设置']['挂机卡时长'])
         bat_sleep = kwargs['挂机设置']['随机休息']
         bat_sleep_mode = kwargs['挂机设置']['休息方式']
-        min_x=map_data[-1][-1]
+        min_x = map_data[-1][-1]
         dingshi = True if kwargs['每日任务']['定时任务'] == '1' else False
         _r = random.randint(30, 60)
         _use = time.time()
         _s_time = time.time()
         _c_time = time.time()
         i = 0
-        if self.ocr_find(ImgEnumG.HP_NULL_OCR, touch_wait=0):
-            return -1
-        elif self.ocr_find(ImgEnumG.MP_NULL_OCR, touch_wait=0) and use_mp:
-            return -1
+        _res_hp_mp = self.check_hp_mp()
+        if _res_hp_mp != '':
+            if use_mp:
+                if 'MP' in _res_hp_mp:
+                    return -1
+        # elif self.ocr_find(ImgEnumG.MP_NULL_OCR, touch_wait=0) and use_mp:
+        #     return -1
         elif self.ocr_find(ImgEnumG.BAG_FULL, touch_wait=0):
             return -1
         while True:

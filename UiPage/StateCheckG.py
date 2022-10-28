@@ -20,12 +20,12 @@ class StateCheckG(BasePageG):
         select_queue = kwargs['状态队列']['选择器']
         use_mp = kwargs['挂机设置']['无蓝窗口']
         if select_queue.queue.empty():
-            if not self.check_hp_mp(use_mp):
+            if not self.check_hpmp(use_mp):
                 select_queue.put_queue('BuyY')
             if self.ocr_find(ImgEnumG.BAG_FULL):
                 select_queue.put_queue('BagSell')
         else:
-            if not self.check_hp_mp(use_mp):
+            if not self.check_hpmp(use_mp):
                 select_queue.put_queue('BuyY')
             if self.ocr_find(ImgEnumG.BAG_FULL):
                 select_queue.put_queue('BagSell')
@@ -34,11 +34,15 @@ class StateCheckG(BasePageG):
             if select_queue.queue.empty():
                 return 1
 
-    def check_hp_mp(self, use_mp):
-        if self.ocr_find(ImgEnumG.HP_NULL_OCR):
+    def check_hpmp(self, use_mp):
+        _res_hpmp = self.check_hp_mp()
+        if _res_hpmp == '':
+            return True
+        elif 'HP' in _res_hpmp:
             return False
-        if use_mp and self.ocr_find(ImgEnumG.MP_NULL_OCR):
-            return False
+        elif use_mp:
+            if 'MP' in _res_hpmp:
+                return False
         return True
 
     def check_team(self):
@@ -106,9 +110,11 @@ class StateCheckG(BasePageG):
                 if _C_OVER:
                     self.get_rgb(RgbEnumG.BAG_GOLD_QR, True)
                 else:
-                    res = self.get_roleinfo([(694, 368, 927, 412), (398, 370, 630, 413)])
-                    GOLD = res[0]
-                    RED_GOLD = res[-1]
+                    # res = self.get_roleinfo([(694, 368, 927, 412), (398, 370, 630, 413)])
+                    # GOLD = res[0]
+                    # RED_GOLD = res[-1]
+                    GOLD = self.gold_num(1)
+                    RED_GOLD = self.gold_num(0)
                     LoadConfig.writeconf(self.mnq_name, '金币', str(GOLD), ini_name=self.mnq_name)
                     LoadConfig.writeconf(self.mnq_name, '红币', str(RED_GOLD), ini_name=self.mnq_name)
                     _C_OVER = True

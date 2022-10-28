@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 import time
 
+import numpy
 from airtest.aircv import aircv
 from airtest.core.android.touch_methods.base_touch import DownEvent, SleepEvent, UpEvent
 from cnocr import CnOcr
-from Enum.ResEnum import GlobalEnumG, ImgEnumG
+from cv2 import cv2
+
+from Enum.ResEnum import GlobalEnumG, ImgEnumG, OpenCvEnumG
 from Utils.Devicesconnect import DevicesConnect
+from Utils.OtherTools import OT
 from Utils.ThreadTools import ThreadTools
 
 
@@ -92,6 +96,420 @@ class OpenCvTools:
                 color = self.get_rgb(x, y)
                 if color == f_color:
                     return x, y
+        return False
+
+    def find_xt_num(self, find_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog):
+        self._img = self.dev.snapshot()
+        self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
+        # _crop_img = self._img[y:y1, x:x1]
+        _crop_img = self._img[150:609, 1091:1156]
+        pos_list = []
+        all_list = []
+        pos_y = None  # 判定识别文字是否同一行
+        s_index = 0  # 切片起始位置
+        ret1, img1 = cv2.threshold(_crop_img.copy(), 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)  # 转换为二值图像, thresh=63
+        res_cont = cv2.findContours(img1, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
+        for _i in range(len(res_cont)):
+            x, y, w1, h1 = cv2.boundingRect(res_cont[_i])
+            if pos_y is None:
+                pos_y = y
+            ar = w1 / float(h1)
+            print(ar, x, y, w1, h1)
+            if 0.8 > ar > 0.5:  # 剔除异常点
+                pos_list.append((x, y, w1, h1))
+        pos_list.reverse()
+        for _ in range(len(pos_list)):
+            if pos_y == pos_list[_][1]:
+                if _ == len(pos_list) - 1:
+                    all_list.append(pos_list[s_index:])
+                else:
+                    pass
+            else:
+                e_index = _
+                all_list.append(pos_list[s_index:e_index])
+                s_index = _
+                pos_y = pos_list[_][1]
+        # 分别识别每行数字
+        if len(all_list) > 0:
+            _res_pos = []  # 存储返回结果
+            _str = ''  # 拼接识别结果
+            _x = 0  # 存储计算每行数字的坐标
+            _y = 0
+            for _ in range(len(all_list)):
+                if len(all_list[_]) > 0:
+                    for _t in all_list[_]:
+                        _con = 0.8
+                        for _p in OpenCvEnumG.STAR_NUM.keys():  # 匹配每个数字块的单个数字
+                            res = cv2.matchTemplate(
+                                cv2.resize(img1[_t[1]:_t[1] + _t[-1], _t[0]:_t[0] + _t[2]], (72, 128)),
+                                numpy.load(_p), method=cv2.TM_CCOEFF_NORMED)
+                            if numpy.any(res > _con):
+                                _str = _str + OpenCvEnumG.STAR_NUM[_p]
+                                _x = _t[0]
+                                _y = _t[1]
+                                _con = 100
+                    if find_info == _str:
+                        if clicked:
+                            self.dev.touch((_x + 1091, _y + 150))
+                        if t_log:
+                            self.sn.log_tab.emit(self.mnq_name, f'T_{_str}_xy{_x + 1091}_{_y + 150}')
+                        if touch_wait > 0:
+                            time.sleep(touch_wait)
+                        return True
+                    _res_pos.append((_str, (_x + 1091, _y + 150)))
+                    _str = ''
+            if t_log:
+                self.sn.log_tab.emit(self.mnq_name, f'F_{find_info}_没找到_all{_res_pos}')
+        if t_log:
+            self.sn.log_tab.emit(self.mnq_name, f'F_{find_info}_没找到')
+        return False, []
+
+    def find_pd_num(self, find_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog):
+        self._img = self.dev.snapshot()
+        self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
+        # _crop_img = self._img[y:y1, x:x1]
+        _crop_img = self._img[157:581, 239:1049]
+        _img1 = cv2.threshold(_crop_img.copy(), 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+        res_cont = cv2.findContours(_img1, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
+        ori_list = []
+        for cnt in res_cont:  # 筛选数字大轮廓
+            x, y, w1, h1 = cv2.boundingRect(cnt)
+            ar = w1 / float(h1)
+            if ar < 0.8 and h1 > 15:
+                ori_list.append([x, y, w1, h1])
+        ori_list.reverse()  # 调整顺序
+        all_list = []  # 存储分块
+        _pos_x = None  # 判定是否同一块
+        s_index = 0  # 切片索引
+        for _ in range(len(ori_list)):
+            if _pos_x is None:
+                _pos_x = ori_list[_][0]
+            if abs(_pos_x - ori_list[_][0]) <= 100:
+                if _ == len(ori_list) - 1:
+                    all_list.append(ori_list[s_index:])
+                else:
+                    pass
+            else:
+                e_index = _
+                all_list.append(ori_list[s_index:e_index])
+                s_index = _
+                _pos_x = ori_list[_][0]
+        _pd_num = ''
+        _res_pos = []  # 存储所有结果
+        _x = 0  # 存储计算每行数字的坐标
+        _y = 0
+        for _row in range(len(all_list)):
+            for _t in all_list[_row]:
+                _con = 0.8
+                for _p in OpenCvEnumG.GOLD_NUM.keys():
+                    _re = cv2.matchTemplate(
+                        cv2.resize(_img1[_t[1]:_t[1] + _t[-1], _t[0]:_t[0] + _t[2]], (72, 128)),
+                        numpy.load(OpenCvEnumG.GOLD_NUM[_p]), method=cv2.TM_CCOEFF_NORMED)
+                    if numpy.any(_re > 0.8):
+                        _pd_num = _pd_num + _p
+                        _x = _t[0]  # 存储计算每行数字的坐标
+                        _y = _t[1]
+            if _pd_num == find_info:
+                if clicked:
+                    self.dev.touch((_x + 239, _y + 157))
+                if touch_wait > 0:
+                    time.sleep(touch_wait)
+                if t_log:
+                    self.sn.log_tab(self.mnq_name, f"T_{find_info}_xy{(_x + 239, _y + 157)}")
+                return True
+            _res_pos.append((_pd_num, (_x + 239, _y + 157)))
+            _pd_num = ''
+        print(_res_pos)
+        return False
+
+    def check_ui(self, ui_info):
+        x, y, x1, y1, ui_name = ui_info
+        self._img = self.dev.snapshot()
+        self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
+        _crop_img = self._img[y:y1, x:x1]
+        _crop_img = cv2.resize(_crop_img, (128, 72))
+        img1 = cv2.threshold(_crop_img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+        # sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 15))
+        # img_closed = cv2.morphologyEx(img1, cv2.MORPH_CLOSE, sqKernel)
+        # for _t in OpenCvEnumG.TEMP.keys():
+        _cmp_ui = OpenCvEnumG.TEMP[ui_name]
+        res = cv2.matchTemplate(
+            img1,
+            _cmp_ui, method=cv2.TM_CCOEFF_NORMED)
+        if numpy.any(res > 0.9):
+            print(f"res:{ui_name}_")
+            return True
+        return False
+
+    def find_mr_task(self, find_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog):
+        self._img = self.dev.snapshot()
+        self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
+        # _crop_img = self._img[y:y1, x:x1]
+        _crop_img = self._img[158:580, 38:1268]
+        sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (25, 25))
+        _img1 = cv2.threshold(_crop_img.copy(), 250, 255, cv2.THRESH_TOZERO)[1]  # 转换为二值图像, thresh=63
+        _img2 = cv2.morphologyEx(_img1, cv2.MORPH_CLOSE, sqKernel)
+        res_cont, hierarchy = cv2.findContours(_img2, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        ori_list = []
+        for cnt in res_cont:
+            x, y, w1, h1 = cv2.boundingRect(cnt)
+            ar = w1 / float(h1)
+            if ar > 1.5 and h1 > 20:
+                ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
+        for _num in range(len(ori_list)):
+            for _t in OpenCvEnumG.TEMP.keys():
+                _re = cv2.matchTemplate(
+                    cv2.resize(ori_list[_num][0], (72, 128)),
+                    numpy.load(OpenCvEnumG.TEMP[_t]), method=cv2.TM_CCOEFF_NORMED)
+                if numpy.any(_re > 0.7):
+                    if _t == find_info:
+                        if clicked:
+                            self.dev.touch((ori_list[_num][-1][0] + 38, ori_list[_num][-1][-1] + 158))
+                        if t_log:
+                            self.sn.log_tab.emit(self.mnq_name,
+                                                 f'T_{_t}_xy{ori_list[_num][-1][0] + 38}_{ori_list[_num][-1][-1] + 158}')
+                        if touch_wait > 0:
+                            time.sleep(touch_wait)
+                        return True
+        return False
+
+    def enum_find(self, find_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog):
+        self._img = self.dev.snapshot()
+        self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
+        # _crop_img = self._img[y:y1, x:x1]
+        _crop_img = self._img[62:632, 800:1263]
+        sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (8, 8))
+        _img1 = cv2.threshold(_crop_img.copy(), 245, 255, cv2.THRESH_TOZERO)[1]  # 转换为二值图像, thresh=63
+        _img2 = cv2.morphologyEx(_img1, cv2.MORPH_CLOSE, sqKernel)
+        res_cont, hierarchy = cv2.findContours(_img2, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        ori_list = []
+        for cnt in res_cont:
+            x, y, w1, h1 = cv2.boundingRect(cnt)
+            ar = w1 / float(h1)
+            if 5 > ar > 2 and h1 < 20:
+                ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
+        _cmp_img = OpenCvEnumG.MENU[find_info]
+        for _num in range(len(ori_list)):
+            # for _t in OpenCvEnumG.MENU.keys():
+            _re = cv2.matchTemplate(
+                cv2.resize(ori_list[_num][0], (72, 128)),
+                numpy.load(_cmp_img), method=cv2.TM_CCOEFF_NORMED)
+            if numpy.any(_re > 0.7):
+                # if _t == find_info:
+                if clicked:
+                    self.dev.touch((ori_list[_num][-1][0] + 800, ori_list[_num][-1][-1] + 62))
+                if t_log:
+                    self.sn.log_tab.emit(self.mnq_name,
+                                         f'T_{find_info}_xy{ori_list[_num][-1][0] + 800}_{ori_list[_num][-1][-1] + 62}')
+                if touch_wait > 0:
+                    time.sleep(touch_wait)
+                return True
+        return False
+
+    def check_num(self, num_type, t_log=GlobalEnumG.TestLog):
+        """检查战力-等级"""
+        self._img = self.dev.snapshot()
+        self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
+        # _crop_img = self._img[y:y1, x:x1]
+        if num_type == 1:
+            # 战力
+            _crop_img = self._img[64:91, 18:143]
+        else:
+            # 等级
+            _crop_img = self._img[6:29, 33:98]
+        _img1 = cv2.threshold(_crop_img.copy(), 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]  # 转换为二值图像, thresh=63
+        res_cont, hierarchy = cv2.findContours(_img1, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        ori_list = []
+        for cnt in res_cont:
+            x, y, w1, h1 = cv2.boundingRect(cnt)
+            ar = w1 / float(h1)
+            if ar > 0.5 and h1 > 10:
+                # print(ar, x, y, w1, h1)
+                ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
+        ori_list.reverse()
+        _str_num = ''
+        for row in range(len(ori_list)):
+            for _t in OpenCvEnumG.BATNUM.keys():
+                _re = cv2.matchTemplate(
+                    cv2.resize(ori_list[row][0], (72, 128)),
+                    numpy.load(OpenCvEnumG.BATNUM[_t]), method=cv2.TM_CCOEFF_NORMED)
+                print(f're{_re}_{row}')
+                if numpy.any(_re > 0.75):
+                    _str_num = _str_num + _t
+        if t_log:
+            self.sn.log_tab.emit(self.mnq_name, f"{_str_num}")
+        return _str_num
+
+    def gold_num(self, num_type):
+        self._img = self.dev.snapshot()
+        self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
+        # _crop_img = self._img[y:y1, x:x1]
+        if num_type == 1:
+            # 金币
+            _crop_img = self._img[371:409, 690:907]
+        else:
+            # 红币
+            _crop_img = self._img[372:408, 401:631]
+        _img1 = cv2.threshold(_crop_img.copy(), 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]  # 转换为二值图像, thresh=63
+        res_cont, hierarchy = cv2.findContours(_img1, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        ori_list = []
+        for cnt in res_cont:
+            x, y, w1, h1 = cv2.boundingRect(cnt)
+            ar = w1 / float(h1)
+            if 20 > h1 > 10:
+                ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
+        ori_list.reverse()
+        _gold_num = ''
+        for row in range(len(ori_list)):
+            for _t in OpenCvEnumG.GOLD_NUM.keys():
+                _re = cv2.matchTemplate(
+                    cv2.resize(ori_list[row][0], (72, 128)),
+                    numpy.load(OpenCvEnumG.GOLD_NUM[_t]), method=cv2.TM_CCOEFF_NORMED)
+                if numpy.any(_re > 0.8):
+                    _gold_num = _gold_num + _t
+        return _gold_num
+
+    def check_hp_mp(self):
+        self._img = self.dev.snapshot()
+        self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
+        # _crop_img = self._img[y:y1, x:x1]
+        _crop_img = self._img[365:389, 1127:1262]
+        sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+        _img1 = cv2.threshold(_crop_img.copy(), 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]  # 转换为二值图像, thresh=63
+        img_closed = cv2.morphologyEx(_img1, cv2.MORPH_CLOSE, sqKernel)
+        res_cont, hierarchy = cv2.findContours(img_closed, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        ori_list = []
+        for cnt in res_cont:
+            x, y, w1, h1 = cv2.boundingRect(cnt)
+            ar = w1 / float(h1)
+            if ar > 1.5 and w1 > 15:
+                ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
+        ori_list.reverse()
+        return self._match_res(ori_list, OpenCvEnumG.HP_MP)
+
+    def check_ys_num(self):
+        """检查药水购买数量"""
+        self._img = self.dev.snapshot()
+        self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
+        # _crop_img = self._img[y:y1, x:x1]
+        _crop_img = self._img[624:667, 717:823]
+        _img1 = cv2.threshold(_crop_img.copy(), 140, 255, cv2.THRESH_BINARY_INV)[1]  # 转换为二值图像, thresh=63
+        res_cont = cv2.findContours(_img1, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
+        ori_list = []
+        for cnt in res_cont:
+            x, y, w1, h1 = cv2.boundingRect(cnt)
+            ar = w1 / float(h1)
+            if 0.8 > ar > 0.4 and h1 > 15:
+                ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
+        ori_list.reverse()
+        return self._match_res(ori_list, OpenCvEnumG.YS_NUM)
+
+    def check_map(self, map_name):
+        self._img = self.dev.snapshot()
+        self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
+        # _crop_img = self._img[y:y1, x:x1]
+        _crop_img = self._img[624:667, 717:823]
+        sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+        _img1 = cv2.threshold(_crop_img.copy(), 125, 255, cv2.THRESH_BINARY_INV)[1]  # 转换为二值图像, thresh=63
+        _img2 = cv2.morphologyEx(_img1, cv2.MORPH_GRADIENT, sqKernel)
+        res_cont = cv2.findContours(_img2, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
+        ori_list = []
+        for cnt in res_cont:
+            x, y, w1, h1 = cv2.boundingRect(cnt)
+            ar = w1 / float(h1)
+            if ar > 1 and h1 > 15:
+                ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
+        ori_list.reverse()
+        return self._match_res(ori_list, OpenCvEnumG.HP_MP)
+
+    def check_xt_map(self, map_name):
+        self._img = self.dev.snapshot()
+        self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
+        # _crop_img = self._img[y:y1, x:x1]
+        _cmp_res = OpenCvEnumG.XT_MAP_EX[map_name]
+        _crop_img = self._img[97:145, 910:1279]
+        sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (20, 20))
+        _img1 = cv2.threshold(_crop_img.copy(), 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[
+            1]  # 转换为二值图像, thresh=63
+        _img2 = cv2.morphologyEx(_img1, cv2.MORPH_CLOSE, sqKernel)
+        res_cont = cv2.findContours(_img2, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
+        ori_list = []
+        for cnt in res_cont:
+            x, y, w1, h1 = cv2.boundingRect(cnt)
+            ar = w1 / float(h1)
+            if ar > 5 and h1 > 15:
+                ori_list.append([_img2[y:y + h1, x:x + w1], (x, y)])
+        ori_list.reverse()
+        return self._match_text(ori_list, _cmp_res)
+
+    def check_map_ex(self, map_name):
+        self._img = self.dev.snapshot()
+        self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
+        # _crop_img = self._img[y:y1, x:x1]
+        _cmp_res = OpenCvEnumG.XT_MAP_EX[map_name]
+        _crop_img = self._img[91:118, 19:202]
+        sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 10))
+        _img1 = cv2.threshold(_crop_img.copy(), 240, 255, cv2.THRESH_BINARY)[
+            1]  # 转换为二值图像
+        _img2 = cv2.morphologyEx(_img1, cv2.MORPH_CLOSE, sqKernel)
+        res_cont = cv2.findContours(_img2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
+        ori_list = []
+        for cnt in res_cont:
+            x, y, w1, h1 = cv2.boundingRect(cnt)
+            ar = w1 / float(h1)
+            if ar > 3 and w1 > 50:
+                ori_list.append([_img2[y:y + h1, x:x + w1], (x, y)])
+        ori_list.reverse()
+        return self._match_text(ori_list, _cmp_res)
+
+    def back_ksdy(self):
+        self._img = self.dev.snapshot()
+        self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
+        # _crop_img = self._img[y:y1, x:x1]
+        _crop_img = self._img[167:688, 251:1035]
+        sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 10))
+        _img1 = cv2.threshold(_crop_img.copy(), 0, 255, cv2.THRESH_BINARY|cv2.THRESH_OTSU)[
+            1]  # 转换为二值图像
+        _img2 = cv2.morphologyEx(_img1, cv2.MORPH_CLOSE, sqKernel)
+        res_cont = cv2.findContours(_img2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
+        ori_list = []
+        for cnt in res_cont:
+            x, y, w1, h1 = cv2.boundingRect(cnt)
+            ar = w1 / float(h1)
+            if 10 > ar > 5 and w1 > 80:
+                print(ar, x, y, w1, h1)
+                ori_list.append([_img2[y:y + h1, x:x + w1], (x, y)])
+        for _row in range(len(ori_list)):
+            _re = cv2.matchTemplate(
+                cv2.resize(ori_list[_row][0], (72, 128)),
+                numpy.load(OT.npypath('back_ksdy')), method=cv2.TM_CCOEFF_NORMED)
+            print(_re)
+            if numpy.any(_re > 0.9):
+                self.dev.touch((ori_list[_row][1][0]+251,ori_list[_row][1][-1]+167))
+                return True
+        return False
+    @staticmethod
+    def _match_res(ori_list, enum_res):
+        """匹配数字"""
+        _bat_num = ''
+        for row in range(len(ori_list)):
+            for _t in enum_res.keys():
+                _re = cv2.matchTemplate(
+                    cv2.resize(ori_list[row][0], (72, 128)),
+                    numpy.load(enum_res[_t]), method=cv2.TM_CCOEFF_NORMED)
+                if numpy.any(_re > 0.9):
+                    _bat_num = _bat_num + _t
+        return _bat_num
+
+    @staticmethod
+    def _match_text(ori_list, cmp_res):
+        for _row in range(len(ori_list)):
+            _re = cv2.matchTemplate(
+                cv2.resize(ori_list[_row][0], (72, 128)),
+                numpy.load(cmp_res), method=cv2.TM_CCOEFF_NORMED)
+            if numpy.any(_re > 0.89):
+                return True
+            print(_re)
         return False
 
 
@@ -253,7 +671,7 @@ class AirImgTools:
             DownEvent(a_pos, 2),
             SleepEvent(0.1),
             DownEvent(up_pos, 1),
-            UpEvent(2), SleepEvent(k_time), UpEvent(0),UpEvent(1)
+            UpEvent(2), SleepEvent(k_time), UpEvent(0), UpEvent(1)
         ]
         self.dev.touch_proxy.perform(multitouch_event)
 
@@ -398,36 +816,11 @@ class CnOcrTool:
             return ntext_list
         return ntext_list
 
-    def get_all_ocr(self, area, t_log=False):
-        self._img = self.dev.snapshot()
-        res_list = []
-        if self._img is not None:
-            x1, y1, x2, y2 = area
-            img_fp = aircv.crop_image(self._img, area)
-            self.cn_ocr[-1].acquire()
-            out = self.cn_ocr[0].ocr(img_fp)
-            self.cn_ocr[-1].release()
-            if len(out) == 0:
-                time.sleep(GlobalEnumG.WaitTime / 2)
-                if t_log:
-                    self.sn.log_tab.emit(self.mnq_name, f"F_get_all_ocr:{area}")
-                return False
-            for i in range(len(out)):
-                ntext = out[i]['text']
-                npar = out[i]['position']
-                ls = npar.tolist()
-                lx = int((ls[-2][0] + ls[0][0]) / 2)
-                ly = int((ls[-2][-1] + ls[0][-1]) / 2)
-                if ntext != '':
-                    res_list.append((ntext, (lx + x1, ly + y1)))
-        time.sleep(GlobalEnumG.WaitTime)
-        return res_list
-
 
 if __name__ == '__main__':
     # img_fp = r'D:\DzAutoUi\Res\img\21.bmp'
     # res, dev = DevicesConnect('emulator-5554').connect_device()
-    res2, dev2 = DevicesConnect('127.0.0.1:5579').connect_device()
+    res2, dev2 = DevicesConnect('127.0.0.1:5555').connect_device()
     # print(res2, dev2)
     # cv2.setNumThreads(1)
     # cv2.ocl.setUseOpenCL(False)
@@ -455,11 +848,22 @@ if __name__ == '__main__':
     #     t1=time.time()
     #     r=a.crop_image_find(ImgEnumG.INGAME_FLAG2,False)
     #     print(r,time.time()-t1)
-    r=c.get_ocrres([395, 647, 450, 663],t_log=False)
+    # ui_list = [92, 16, 241, 63, 'xl']
+    # r = o.check_ui(ui_list)
+    t1 = time.time()
+    # r=o.enum_find('ksnr',True,touch_wait=0)
+    # while True:
+    r = o.check_num(2)
+    # if not r:
+    print(r)
+    # r=o.find_xt_num('55',True)
+    # r = o.find_mr_task('wl', True, touch_wait=0)
+    print(time.time() - t1)
+    # r=c.get_ocrres([395, 647, 450, 663],t_log=False)
     # r=o.rgb(1146,213)
     # r = o.get_rgb([1146, 213,'415067'],t_log=False)
     # r=a.crop_image_find(ImgEnumG.INGAME_FLAG2, touch_wait=2,t_log=False)
-    print(r)
+
     # r=a.air_loop_find(ImgEnumG.ZB_TS,False)
     # r=c.get_ocrres([33,1,86,29],t_log=True)
     # print(r)

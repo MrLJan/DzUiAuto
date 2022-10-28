@@ -89,10 +89,16 @@ class UpRoleG(BasePageG):
         _NUM_MP = kwargs['商店设置']['MP数量']  # 购买数量
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
-                if self.ocr_find(ImgEnumG.HP_NULL_OCR):
+                # if self.ocr_find(ImgEnumG.HP_NULL_OCR):
+                #     _HP = True
+                # if _USE_MP and self.ocr_find(ImgEnumG.MP_NULL_OCR):
+                #     _MP = True
+                _res = self.check_hp_mp()
+                if 'HP' in _res:
                     _HP = True
-                if _USE_MP and self.ocr_find(ImgEnumG.MP_NULL_OCR):
-                    _MP = True
+                if _USE_MP:
+                    if 'MP' in _res:
+                        _MP = True
                 if _HP:
                     self.air_touch((1148, 364), duration=2)
                     _YS_TYPE = 1
@@ -119,13 +125,17 @@ class UpRoleG(BasePageG):
             elif self.get_rgb(RgbEnumG.YS_XQ):
                 self.air_touch((940, 638), duration=2)
                 if _YS_TYPE == 1:
-                    if self.ocr_find([(733, 631, 810, 658), _NUM_HP]):
+                    # if self.ocr_find([(733, 631, 810, 658), _NUM_HP]):
+                    _res_num = self.check_ys_num()
+                    if str(_NUM_HP) == _res_num:
                         self.get_rgb(RgbEnumG.YS_XQ, True)
                     else:
                         for _N in _NUM_HP:
                             self.air_touch(ImgEnumG.YS_NUM[_N], touch_wait=1)
                 else:
-                    if self.ocr_find([(733, 631, 810, 658), _NUM_MP]):
+                    # if self.ocr_find([(733, 631, 810, 658), _NUM_MP]):
+                    _res_num = self.check_ys_num()
+                    if str(_NUM_MP)==_res_num:
                         self.get_rgb(RgbEnumG.YS_XQ, True)
                     else:
                         for _N in _NUM_MP:
@@ -158,7 +168,8 @@ class UpRoleG(BasePageG):
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):  # 游戏界面
                 self.crop_image_find(ImgEnumG.MR_MENU)
             elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
-                self.ocr_find(ImgEnumG.MENU_JN, True)
+                # self.ocr_find(ImgEnumG.MENU_JN, True)
+                self.enum_find('skill',True)
             elif self.get_rgb(RgbEnumG.SKILL_M):
                 if self.get_rgb([491, 396, '4C87AF'], True):
                     self.get_rgb([723, 532, 'EE7047'], True)
@@ -214,7 +225,8 @@ class UpRoleG(BasePageG):
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):  # 游戏界面
                 self.crop_image_find(ImgEnumG.MR_MENU)
             elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
-                self.ocr_find(ImgEnumG.MENU_CW, True)  # 宠物
+                # self.ocr_find(ImgEnumG.MENU_CW, True)  # 宠物
+                self.enum_find('pet',True)
             elif self.get_rgb(RgbEnumG.ZB_XQ):  # 宠物装备-详情
                 if self.get_rgb([1143, 622, 'EB7245'], True):
                     if _PET_FLAG == 1:
@@ -352,7 +364,8 @@ class UpRoleG(BasePageG):
                 if self.ocr_find(ImgEnumG.EQ_QH_OCR, True):
                     self.air_touch((208, 259), touch_wait=2)
                 else:
-                    self.ocr_find(ImgEnumG.EQ_TJP_OCR, True)  # 铁匠铺
+                    self.enum_find('tjp',True)
+                    # self.ocr_find(ImgEnumG.EQ_TJP_OCR, True)  # 铁匠铺
             else:
                 if _WITE > 10:
                     self.check_close()

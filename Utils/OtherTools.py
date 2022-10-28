@@ -27,6 +27,8 @@ edittext_der.setLevel(logging.DEBUG)
 #
 logger1 = logging.getLogger("airtest")  # 捕获airtest输出的log
 logger1.setLevel(logging.ERROR)
+
+
 # logger1.addHandler(handlerTotxt)
 
 
@@ -51,9 +53,25 @@ class OtherTools:
 
     def imgpath(self, imgname):
         try:
-            res_path= path + r'/res/img/' + imgname + '.bmp'
+            res_path = path + r'/res/img/' + imgname + '.bmp'
         except BaseException:
-            res_path=path + r'/res/img/' + imgname + '.bmp'
+            res_path = path + r'/res/img/' + imgname + '.bmp'
+        return res_path
+
+    @staticmethod
+    def npypath(npyname):
+        try:
+            res_path = path + r'/res/Npy/' + npyname + '.npy'
+        except BaseException:
+            res_path = path + r'/res/Npy/' + npyname + '.npy'
+        return res_path
+
+    @staticmethod
+    def mapnpy(npyname):
+        try:
+            res_path = path + r'/res/Npy/map/' + npyname + '.npy'
+        except BaseException:
+            res_path = path + r'/res/Npy/map/' + npyname + '.npy'
         return res_path
 
 

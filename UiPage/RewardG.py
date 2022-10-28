@@ -138,7 +138,8 @@ class RewardG(BasePageG):
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 self.crop_image_find(ImgEnumG.MR_MENU)
             elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
-                self.ocr_find(ImgEnumG.KT_MENU, True)
+                # self.ocr_find(ImgEnumG.KT_MENU, True)
+                self.enum_find('kt',True)
             elif self.get_rgb(RgbEnumG.KT_M):
                 if _C_OVER:
                     self.back(self.serialno)
@@ -185,7 +186,8 @@ class RewardG(BasePageG):
             if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
                 self.crop_image_find(ImgEnumG.MR_MENU)
             elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
-                self.ocr_find(ImgEnumG.HD_MENU, True)
+                # self.ocr_find(ImgEnumG.HD_MENU, True)
+                self.enum_find('hd',True)
             elif self.get_rgb(RgbEnumG.HD_M):
                 if self.ocr_find(ImgEnumG.HD_DR_OCR, True):
                     if not self.get_rgb(RgbEnumG.RE_LQJL, True):  # 领取奖励:
@@ -378,9 +380,11 @@ class RewardG(BasePageG):
                 if _C_OVER:
                     self.get_rgb(RgbEnumG.BAG_GOLD_QR, True)
                 else:
-                    _res = self.get_roleinfo([(694, 368, 927, 412), (398, 370, 630, 413)])
-                    GOLD = _res[0]
-                    RED_COIN = _res[-1]
+                    # _res = self.get_roleinfo([(694, 368, 927, 412), (398, 370, 630, 413)])
+                    # GOLD = _res[0]
+                    # RED_COIN = _res[-1]
+                    GOLD=self.gold_num(1)
+                    RED_COIN=self.gold_num(0)
                     _T_GOLD = GOLD - int(_GOLD_NUM)
                     self.sn.table_value.emit(self.mnq_name, 6, f"{GOLD}")
                     self.sn.table_value.emit(self.mnq_name, 7, f"{round(_T_GOLD / 10000, 2)}万")

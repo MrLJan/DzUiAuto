@@ -141,7 +141,8 @@ class TaskAutoG(BasePageG):
                 self.skip_fever_buff()
             self.skip_new()
         try:
-            res = self.get_roleinfo([(33, 1, 86, 29), (42, 63, 151, 89)])
+            # res = self.get_roleinfo([(33, 1, 86, 29), (42, 63, 151, 89)])
+            res=self.check_num(0)
             if res[0] > 150 or res[0] < 1:
                 res = self.check_rolelevel()
             if res[0] == 0 and res[-1] == 0:

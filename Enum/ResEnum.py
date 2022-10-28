@@ -2,6 +2,7 @@
 import os
 
 from airtest.core.cv import Template
+from cv2 import cv2
 
 from Utils.LoadConfig import LoadConfig
 from Utils.OtherTools import OT
@@ -799,3 +800,116 @@ class RgbEnumG:
 
     GX_XZ_BACK = [523, 188, 'FF7C52']  # 更新下载完成
     GX_XZ = [536, 528, 'EB7047']  # 有下载
+
+
+class OpenCvEnumG:
+    TEMP={
+        # "xl": OT.npypath('xl'),
+        "wl": OT.npypath('wl'),
+        "mn": OT.npypath('mn'),
+        "jh": OT.npypath('jh'),
+        "mr": OT.npypath('mr'),
+        "gh": OT.npypath('gh'),
+        "jzt": OT.npypath('jzt'),
+        "tbb": OT.npypath('tbb'),
+        "yzd": OT.npypath('yzd'),
+        "hdyzd": OT.npypath('hdyzd'),
+        "xgt": OT.npypath('xgt'),
+        "jy": OT.npypath('jy'),
+        "cyrq": OT.npypath('cyrq'),
+        "gwgy": OT.npypath('gwgy'),
+
+    }
+    STAR_NUM={
+        OT.npypath('p0'): '0',
+        OT.npypath('p1'): '1',
+        OT.npypath('p2'): '2',
+        OT.npypath('p3'): '3',
+        OT.npypath('p4'): '4',
+        OT.npypath('p5'): '5',
+        OT.npypath('p6'): '6',
+        OT.npypath('p7'): '7',
+        OT.npypath('p8'): '8',
+        OT.npypath('p9'): '9',
+    }
+    YS_NUM = {
+        '0': OT.npypath('y0'),
+        '1': OT.npypath('y1'),
+        '2': OT.npypath('y2'),
+        '3': OT.npypath('y3'),
+        '4': OT.npypath('y4'),
+        '5': OT.npypath('y5'),
+        '6': OT.npypath('y6'),
+        '7': OT.npypath('y7'),
+        '8': OT.npypath('y8'),
+        '9': OT.npypath('y9'),
+    }
+    MENU={
+        'hd':OT.npypath('hd'),
+        'ksnr': OT.npypath('ksnr'),
+        'kt': OT.npypath('kt'),
+        'pet': OT.npypath('pet'),
+        'skill': OT.npypath('skill'),
+        'tjp': OT.npypath('tjp'),
+        'zb': OT.npypath('zb'),
+    }
+    BATNUM={
+        '0': OT.npypath('z0'),
+        '1': OT.npypath('z1'),
+        '2': OT.npypath('z2'),
+        '3': OT.npypath('z3'),
+        '4': OT.npypath('z4'),
+        '5': OT.npypath('z5'),
+        '6': OT.npypath('z6'),
+        '7': OT.npypath('z7'),
+        '8': OT.npypath('z8'),
+        '9': OT.npypath('z9'),
+    }
+    GOLD_NUM={
+        '0': OT.npypath('g0'),
+        '1': OT.npypath('g1'),
+        '2': OT.npypath('g2'),
+        '3': OT.npypath('g3'),
+        '4': OT.npypath('g4'),
+        '5': OT.npypath('g5'),
+        '6': OT.npypath('g6'),
+        '7': OT.npypath('g7'),
+        '8': OT.npypath('g8'),
+        '9': OT.npypath('g9'),
+    }
+    HP_MP={
+        'HP':OT.npypath('hp'),
+        'MP': OT.npypath('mp'),
+    }
+    XT_MAP={
+        '40': OT.mapnpy('xt_40'),
+        '45': OT.mapnpy('xt_45'),
+        '65': OT.mapnpy('xt_65'),
+        '80': OT.mapnpy('xt_80'),
+        '90': OT.mapnpy('xt_90'),
+        '105': OT.mapnpy('xt_105'),
+        '113': OT.mapnpy('xt_113'),
+        '115': OT.mapnpy('xt_115'),
+        '120': OT.mapnpy('xt_120'),
+        '130':OT.mapnpy('xt_130'),
+        '136': OT.mapnpy('xt_136'),
+        '142': OT.mapnpy('xt_142'),
+        '144': OT.mapnpy('xt_144'),
+        '147': OT.mapnpy('xt_147'),
+    }
+    XT_MAP_EX = {
+        '40': OT.mapnpy('xt_40_e'),
+        '45': OT.mapnpy('xt_45_e'),
+        '65': OT.mapnpy('xt_65_e'),
+        '80': OT.mapnpy('xt_80_e'),
+        '90': OT.mapnpy('xt_90_e'),
+        '105': OT.mapnpy('xt_105_e'),
+        '113': OT.mapnpy('xt_113_e'),
+        '115': OT.mapnpy('xt_115_e'),
+        '120': OT.mapnpy('xt_120_e'),
+        '130': OT.mapnpy('xt_130_e'),
+        '136': OT.mapnpy('xt_136_e'),
+        '142': OT.mapnpy('xt_142_e'),
+        '144': OT.mapnpy('xt_144_e'),
+        '147': OT.mapnpy('xt_147_e'),
+    }

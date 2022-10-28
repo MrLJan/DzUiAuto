@@ -197,10 +197,17 @@ class LoginUiPageG(BasePageG):
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.air_loop_find(ImgEnumG.INGAME_FLAG2, False):
                 # if self.ocr_find(ImgEnumG.BAG_FULL):
-                if self.ocr_find(ImgEnumG.HP_NULL_OCR):
-                    select_queue.put_queue('BuyY')
-                elif use_mp and self.ocr_find(ImgEnumG.MP_NULL_OCR):
-                    select_queue.put_queue('BuyY')
+                # if self.ocr_find(ImgEnumG.HP_NULL_OCR):
+                #     select_queue.put_queue('BuyY')
+                # elif use_mp and self.ocr_find(ImgEnumG.MP_NULL_OCR):
+                #     select_queue.put_queue('BuyY')
+                _res_hpmp = self.check_hp_mp()
+                if _res_hpmp!='':
+                    if 'hp' in _res_hpmp:
+                        select_queue.put_queue('BuyY')
+                    elif use_mp:
+                        if 'mp' in _res_hpmp:
+                            select_queue.put_queue('BuyY')
                 elif self.crop_image_find(ImgEnumG.BAG_MAX_IMG, False):
                     select_queue.put_queue('BagSell')
                 select_queue.task_over('FuHuo')
