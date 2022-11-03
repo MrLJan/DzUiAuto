@@ -7,14 +7,13 @@ from UiPage.BasePage import BasePageG
 
 
 class AutoBatG(BasePageG):
-    def __init__(self, devinfo, mnq_name, sn, ocr):
+    def __init__(self, devinfo, mnq_name, sn):
         super(AutoBatG, self).__init__()
         self.dev = devinfo[0]
         self.serialno = devinfo[-1]
         self.sn = sn
         self.mnq_name = mnq_name
         self.move_spend = 0
-        self.cn_ocr = ocr
 
     def _get_move_xy(self):
         res = self.crop_image_find(ImgEnumG.PERSON_POS, clicked=False, get_pos=True)
@@ -77,7 +76,6 @@ class AutoBatG(BasePageG):
     def find_jump_louti(self, louti_x, saodi_mode):
         """到达楼梯点后跳跃"""
         res, x, y = self._get_move_xy()
-        res2, x2, y2 = True, 0, 0
         for i in range(10):
             if i == 4:
                 # print(f"reset_spend{i}")
@@ -168,7 +166,7 @@ class AutoBatG(BasePageG):
                 else:
                     self.move_turn('right', abs(now_x - louti_x) / self.move_spend)
             res2, x2, y2 = self._get_move_xy()
-            if y2 != louti_y:
+            if y2 != louti_y or y2==135:
                 if not wait_queue.queue.empty():
                     r = random.randint(10, 30)
                     self.sn.log_tab.emit(self.mnq_name, f"爬绳子在线休息{r}秒")
@@ -272,12 +270,15 @@ class AutoBatG(BasePageG):
         i = 0
         _res_hp_mp = self.check_hp_mp()
         if _res_hp_mp != '':
+            if 'HP' in _res_hp_mp:
+                return -1
             if use_mp:
                 if 'MP' in _res_hp_mp:
                     return -1
         # elif self.ocr_find(ImgEnumG.MP_NULL_OCR, touch_wait=0) and use_mp:
         #     return -1
-        elif self.ocr_find(ImgEnumG.BAG_FULL, touch_wait=0):
+        # elif self.ocr_find(ImgEnumG.BAG_FULL, touch_wait=0):
+        elif self.crop_image_find(ImgEnumG.BAG_MAX_IMG,False):
             return -1
         while True:
             if dingshi:
@@ -291,7 +292,7 @@ class AutoBatG(BasePageG):
                         self.sn.log_tab.emit(self.mnq_name, f"在线休息{_t}秒")
                         self.time_sleep(_t)
                     else:
-                        self.stop_game(self.serialno)
+                        self.stop_game()
                         self.sn.log_tab.emit(self.mnq_name, f"离线休息{_t * 30}秒")
                         self.time_sleep(_t * 30)
             if use_autobat:
@@ -305,16 +306,23 @@ class AutoBatG(BasePageG):
                 select_queue.put_queue("CheckRole")
                 return 0
             if i % 5 == 0:
-                if not self.crop_image_find(ImgEnumG.INGAME_FLAG2, False, touch_wait=0):
+                if not self.find_info('ingame_flag2'):
                     return -1
                 else:
-                    # self.get_rgb(836, 391, '607B96', True)
+                    _res_hp_mp = self.check_hp_mp()
+                    if _res_hp_mp != '':
+                        if 'HP' in _res_hp_mp:
+                            return -1
+                        if use_mp:
+                            if 'MP' in _res_hp_mp:
+                                return -1
                     if self.get_rgb([736, 394, '617B96']):
                         self.air_touch((845, 390))
                     if not self.crop_image_find(ImgEnumG.AUTO_BAT, False, touch_wait=0):
                         self.air_touch((423, 655), touch_wait=2)  # 点击确认战斗结果
                     else:
-                        self.crop_image_find(ImgEnumG.XC_IMG)
+                        # self.crop_image_find(ImgEnumG.XC_IMG)
+                        self.find_info('bat_xc',True)
                     if self.air_loop_find(ImgEnumG.RES_EXIT_TEAM, False, touch_wait=0):
                         if not self.use_auto(10, **kwargs):
                             return -1
@@ -419,7 +427,7 @@ class AutoBatG(BasePageG):
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
             if self.get_rgb(RgbEnumG.BAT_AUTO_M):
                 if not self.get_rgb(RgbEnumG.AUTO_TIME):
-                    now_time = self.get_num((385, 352, 441, 388))  # 剩余时间
+                    now_time = self.check_time_num()  # 剩余时间
                     if int(now_time) > 1:
                         if self.get_rgb(RgbEnumG.BAT_AUTO_QR, True):
                             _AUTO_START = True
@@ -442,14 +450,14 @@ class AutoBatG(BasePageG):
                         _AUTO_START = True
             elif self.get_rgb(RgbEnumG.BAT_JG, True):
                 _AUTO_OVER = True
-            elif self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            elif self.find_info('ingame_flag2'):
                 if _AUTO_OVER or _NO_TIMECARD:
                     self.get_rgb(RgbEnumG.BAT_JG, True)
                     return True
                 if not self.crop_image_find(ImgEnumG.AUTO_BAT, True):
                     if _AUTO_START:
                         if _EXIT_GAME:
-                            self.stop_game(self.serialno)
+                            self.stop_game()
                             self.time_sleep(_EXIT_TIME * 60)
                         else:
                             self.time_sleep(AUTO_TIME)

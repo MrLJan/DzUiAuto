@@ -2,19 +2,18 @@
 import random
 import time
 
-from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG
+from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG, BatEnumG
 from UiPage.BasePage import BasePageG
 from Utils.ExceptionTools import FuHuoRoleErr, BuyYErr
 
 
 class TeamStateG(BasePageG):
-    def __init__(self, devinfo, mnq_name, sn, ocr):
+    def __init__(self, devinfo, mnq_name, sn):
         super(TeamStateG, self).__init__()
         self.dev = devinfo[0]
         self.serialno = devinfo[-1]
         self.sn = sn
         self.mnq_name = mnq_name
-        self.cn_ocr = ocr
         self.ksnr_pos = (0, 0)
 
     def check_team_state(self, **kwargs):
@@ -22,7 +21,7 @@ class TeamStateG(BasePageG):
         use_mp = kwargs['挂机设置']['无蓝窗口']
         task_id = kwargs['任务id']
         gold = kwargs['角色信息']['金币']
-        if gold < 1:
+        if int(gold) < 1:
             select_queue.put_queue('CheckRole')
         self.sn.log_tab.emit(self.mnq_name, r"检查队伍状态")
         self.sn.table_value.emit(self.mnq_name, 8, r"检查队伍状态")
@@ -65,13 +64,14 @@ class TeamStateG(BasePageG):
         _TEAM = False
         self.sn.log_tab.emit(self.mnq_name, r"检查星图状态")
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
                 if _MAP and _TEAM:
                     select_queue.task_over('CheckXT')
                     return -1
                 if not _MAP:
                     res_map, res_pd = self.check_map_pd(**kwargs)
                     if not res_map:
+                        self.sn.log_tab.emit(self.mnq_name, r"当前地图不正确")
                         if self.choose_xt_map(map_data):
                             _MAP = True
                         else:
@@ -79,6 +79,7 @@ class TeamStateG(BasePageG):
                     else:
                         _MAP = True
                 if not _TEAM:
+                    self.sn.log_tab.emit(self.mnq_name, r"当前没有队伍")
                     if self.choose_xt_team(**kwargs):
                         _TEAM = True
                     else:
@@ -98,9 +99,9 @@ class TeamStateG(BasePageG):
         _TEAM = False
         self.sn.log_tab.emit(self.mnq_name, r"检查野图状态")
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
-                if self.ocr_find(ImgEnumG.TKDK_OCR):
-                    self.move_shenmi()
+            if self.find_info('ingame_flag2'):
+                # if self.ocr_find(ImgEnumG.TKDK_OCR):
+                #     self.move_shenmi()
                 if _MAP and _TEAM and _PD:
                     select_queue.task_over('CheckYT')
                     return -1
@@ -110,18 +111,20 @@ class TeamStateG(BasePageG):
                 if not _MAP or not _PD:
                     res_map, res_pd = self.check_map_pd(**kwargs)
                     if not res_map:
+                        self.sn.log_tab.emit(self.mnq_name, r"当前地图不正确")
                         if self.choose_yt_map(map_data):
                             _MAP = True
                     else:
                         _MAP = True
                     if not res_pd:
+                        self.sn.log_tab.emit(self.mnq_name, r"当前频道不正确")
                         if self.choose_pindao(**kwargs):
                             _PD = True
                     else:
                         _PD = True
                 else:
                     for i in range(2):
-                        if self.ocr_find([(19, 345, 44, 361), '6']) and self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
+                        if self.in_team() and self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
                             team_queue.put_queue(kwargs['设备名称'])
                             _TEAM = True
                         else:
@@ -154,48 +157,51 @@ class TeamStateG(BasePageG):
 
     def check_map_pd(self, **kwargs):
         s_time = time.time()
+        _EX_FLAG = False  # 外部检查地图
         _MAP = False  # 是否在正确地图
         _PD = False  # 是否在正确频道
         _FLAG = False  # 检查是否完成
+        _MAP_NAME = BatEnumG.MAP_OCR[kwargs['地图名']][-1]
+        _ID = kwargs['任务id']
         self.sn.log_tab.emit(self.mnq_name, r"检查地图、频道")
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut / 2:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
+                if not _EX_FLAG and _ID == '3':
+                    if self.check_map_ex(_MAP_NAME, _ID) and self.find_info('xt_flag'):
+                        _MAP = True
+                        _FLAG = True
+                        return _MAP, _PD
+                    _EX_FLAG = True
                 if _FLAG:
-                    if self.crop_image_find(ImgEnumG.XT_FLAG, False) and kwargs['任务id'] == '4':
+                    if self.find_info('xt_flag') and _ID == '4':
                         _MAP = False
-                    if kwargs['任务id'] in ['3', '99']:
-                        if not self.crop_image_find(ImgEnumG.XT_FLAG, False):
+                    if _ID in ['3', '99']:
+                        if not self.find_info('xt_flag'):
                             _MAP = False
                     return _MAP, _PD
                 self.air_touch((99, 99), touch_wait=3)
             elif self.get_rgb(RgbEnumG.BG_PINDAO):
                 if _FLAG:
-                    self.back(self.serialno)
+                    self.back()
                 else:
                     if not self.get_rgb(RgbEnumG.MAP_SJYD):
                         if self.get_rgb(RgbEnumG.BG_PINDAO):  # 打开界面不正确
-                            self.back(self.serialno)
+                            self.back()
                     else:
                         if kwargs['任务id'] == '3':
                             _PD = True
-                            map_name = self.get_ocrres((932, 105, 1236, 141))
-                            xt_num_now = ''.join(filter(lambda x: x.isdigit(), map_name))
-                            xt_name = kwargs['地图名']
-                            xt_num = kwargs['战斗数据']['地图识别'][-1]
-                            if str(xt_num) in str(xt_num_now) and xt_name in map_name:
+                            if self.check_xt_map(_MAP_NAME):
                                 _MAP = True
                             _FLAG = True
                         else:
-                            pd_num_now = self.get_num((874, 23, 1068, 63))
-                            map_name = self.get_ocrres((932, 105, 1236, 141))
-                            yt_name = kwargs['地图名']
+                            pd_num_now = self.check_num(3)
                             pd_num = kwargs['野图设置']['队伍频道']
-                            if str(pd_num_now) in str(pd_num):
+                            if pd_num_now in str(pd_num):
                                 _PD = True
-
-                            if yt_name in map_name:
+                            if self.check_map(_MAP_NAME):
                                 _MAP = True
-                            _FLAG = True
+                            return _MAP, _PD
+                            # _FLAG = True
             else:
                 self.check_close()
         return _MAP, _PD
@@ -207,20 +213,20 @@ class TeamStateG(BasePageG):
         _SWIPE_TIMES = 0
         self.sn.log_tab.emit(self.mnq_name, r"选择星图地图")
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
                 if _M_OVER:
                     return True
-                self.crop_image_find(ImgEnumG.MR_MENU)
-            elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
-                # if self.ksnr_pos[0] == 0:
-                #     pos = self.ocr_find(ImgEnumG.MR_MENU_KSNR, True, get_pos=True)
-                #     self.ksnr_pos = tuple(pos)
-                # else:
-                #     self.air_touch(self.ksnr_pos)
-                self.enum_find('ksnr',True)
-            elif self.get_rgb(RgbEnumG.KSDY):
-                # if not self.ocr_find([ImgEnumG.MR_AREA, '星力'], True):  # 星力战场
-                if not self.find_mr_task('xl',True):
+                if self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
+                    pos = self.crop_image_find(ImgEnumG.EXIT_TEAM, False, get_pos=True)
+                    if pos[-1] < 420:
+                        self.air_touch((pos[1], pos[-1]), touch_wait=1)  # 人数低于3人退队伍
+                        if self.get_rgb(RgbEnumG.EXIT_TEAM, True):
+                            self.sn.log_tab.emit(self.mnq_name, r"退出已有队伍")
+                self.find_info('ui_enum', True)
+            elif self.find_info('ui_set'):  # 菜单界面
+                self.enum_find('ksnr', True)
+            elif self.get_rgb(RgbEnumG.KSDY):  # 星力战场
+                if not self.find_mr_task('xl', True):
                     if _SWIPE_TIMES < 3:
                         self.air_swipe((925, 432), (400, 432), swipe_wait=1)
                     else:
@@ -229,38 +235,36 @@ class TeamStateG(BasePageG):
                         self.air_swipe((400, 432), (925, 432), swipe_wait=1)
                     _SWIPE_TIMES += 1
             elif self.get_rgb(RgbEnumG.XLZC_YDQR, True):
-                self.back(self.serialno)
+                self.back()
                 while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-                    if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+                    if self.find_info('ingame_flag2'):
                         self.get_rgb(RgbEnumG.XLZC_YDOK, True)  # 移动完成 确认
-                        if self.crop_image_find(ImgEnumG.XT_FLAG, False):
-                            # if self.ocr_find(map_data[0]):
-                            #     return True
-                            if self.find_xt_num(map_data[0], True):
+                        if self.find_info('xt_flag'):
+                            if self.find_xt_num(map_data[0], True)[0]:
                                 return True
                         return False
                     else:
                         self.check_close()
                 return False
             elif self.get_rgb(RgbEnumG.XLZC):
-                # elif self.mulcolor_check(ColorEnumG.XLZC_MAIN):
                 if self.get_rgb(RgbEnumG.XLZC_YD, True):
                     pass
                 else:
-                    # if self.ocr_find([(1104, 164, 1158, 583), str(map_data[-1])], True):
-                    if self.find_xt_num(str(map_data[-1]),True):
+                    _res, _pos = self.find_xt_num(str(map_data[0]), True)
+                    if _res:
                         self.get_rgb(RgbEnumG.XLZC_YD, True)
                         _M_OVER = True
                     else:
-                        if _times > 5:
+                        for _i in _pos:
+                            if '194' == _i[0]:
+                                _times = 0
+                            elif '10' == _i[0]:
+                                _times = 7
+                        if _times > 6:
                             self.air_swipe((1092, 528), (1092, 298), swipe_wait=1)  # 下滑
                         else:
-                            # if self.ocr_find([(1104, 164, 1158, 583), '10']):
-                            if self.find_xt_num('10', True):
-                                _times = 5
-                            else:
-                                self.air_swipe((1092, 298), (1092, 528), swipe_wait=1)  # 上滑
-                                _times += 1
+                            self.air_swipe((1092, 298), (1092, 528), swipe_wait=1)  # 上滑
+                        _times += 1
             else:
                 self.check_close()
         return False
@@ -270,74 +274,73 @@ class TeamStateG(BasePageG):
         MOVE_FLAG = False  # 瞬间移动失败
         MOVE_FLAG2 = False  # 寻路
         _USE_MOVE = False  # 石头足够使用石头
+        _C_FLAG = False  # 大地图选择
         WAIT_XL_TIMES = 0
         self.sn.log_tab.emit(self.mnq_name, r"选择野图地图")
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
-                if self.ocr_find(ImgEnumG.MAP_MOVE_END):  # 移动完成
-                    self.air_loop_find(ImgEnumG.UI_QR)
+            if self.find_info('ingame_flag2'):  # 移动完成
+                self.get_rgb(RgbEnumG.QR,True)
                 if MOVE_FLAG:
-                    if self.ocr_find(map_data[0]):  # 检查地图名
+                    if self.check_map_ex(map_data[-1], 1):  # 检查地图名
                         return True
                     self.choose_xt_map(map_data)
                     MOVE_FLAG = False
                 elif MOVE_FLAG2:
-                    if self.ocr_find(ImgEnumG.MAP_XL_OCR):
+                    if WAIT_XL_TIMES > 10:
+                        MOVE_FLAG2 = False
+                        _USE_MOVE = False
+                    if self.find_info('xl_lkyd'):
                         self.time_sleep(5)
                         WAIT_XL_TIMES += 1
                     else:
-                        if self.ocr_find(map_data[0]):
+                        if self.check_map_ex(map_data[-1], 1):
                             return True
-                        if WAIT_XL_TIMES > 10:
-                            MOVE_FLAG2 = False
+                        else:
+                            WAIT_XL_TIMES += 1
+                            self.time_sleep(10)
                 else:
-                    self.air_touch((99, 99))
-            # elif self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
-            #     self.air_loop_find(ImgEnumG.UI_QR)
+                    self.air_touch((99, 99), touch_wait=3)
             elif self.get_rgb(RgbEnumG.MAP_XLQR, True):
                 pass
             elif self.get_rgb(RgbEnumG.MAP_ERR, True):
-                # self.get_rgb(713, 524, 'EE7047', True)
-                # self.get_rgb(713, 524, '4C87AF', True)
                 MOVE_FLAG = True  # 无法瞬间移动,该从星图出发
-            # elif self.ocr_find(ImgEnumG.MAP_MOVE_NOW):
-            #     if self.get_rgb(853, 520, 'EE7046', True):
-            #         _USE_MOVE = True
             elif self.get_rgb(RgbEnumG.BG_PINDAO):
                 if _USE_MOVE:
-                    MOVE_FLAG = True
+                    MOVE_FLAG2 = True
                 if MOVE_FLAG:
-                    self.back(self.serialno)
+                    self.back()
                 else:
-                    if not self.ocr_find([(1003, 97, 1160, 142), map_data[2]]):
-                        if self.ocr_find([(15, 88, 145, 705), map_data[1]], True):
-                            if map_data[1] == '斯湖':
-                                self.air_touch((718, 248), duration=2)
-                                self.air_touch((248, 480), duration=2)
-                            elif map_data[1] == '未来':
-                                if map_data[2] == '武器':
-                                    self.air_touch((488, 479), duration=2)
-                                    self.air_touch((378, 594), duration=2)
-                                else:
-                                    self.air_touch((707, 218), duration=2)
-                                    self.air_touch((807, 469), duration=2)
-                            elif map_data[1] == '神殿':
-                                self.air_touch((553, 220), duration=2)
-                                self.air_touch((538, 433), duration=2)
-                            elif map_data[1] == '森林':
-                                self.air_touch((628, 644), duration=2)
-                                self.air_touch((386, 181), duration=2)
-                            elif map_data[1] == '艾':
-                                self.air_touch((656, 411), duration=2)
-                                self.air_touch((424, 195), duration=2)
-                        else:
-                            self.air_swipe((81, 470), (81, 251))
+                    if not _C_FLAG:
+                        if not self.check_map(map_data[-1]):
+                            if self.map_yt(map_data[1]):
+                                if map_data[1] == 'ldsh':
+                                    self.air_touch((718, 248), touch_wait=2)
+                                    self.air_touch((248, 480), touch_wait=2)
+                                elif map_data[1] == 'wlzm':
+                                    if map_data[-1] == 'wqk':
+                                        self.air_touch((488, 479), touch_wait=2)
+                                        self.air_touch((378, 594), touch_wait=2)
+                                    else:
+                                        self.air_touch((707, 218), touch_wait=2)
+                                        self.air_touch((807, 469), touch_wait=2)
+                                elif map_data[1] == 'sjsd':
+                                    self.air_touch((553, 220), touch_wait=2)
+                                    self.air_touch((538, 433), touch_wait=2)
+                                elif map_data[1] == 'mnesl':
+                                    self.air_touch((628, 644), touch_wait=2)
+                                    self.air_touch((386, 181), touch_wait=2)
+                                elif map_data[1] == 'alsl':
+                                    self.air_touch((656, 411), touch_wait=2)
+                                    self.air_touch((424, 195), touch_wait=2)
+                                if self.get_rgb(RgbEnumG.MAP_SJYD):
+                                    _C_FLAG = True
+                            else:
+                                self.air_swipe((81, 470), (81, 251))
                     else:
-                        if not self.get_rgb(RgbEnumG.MAP_XL, True):
-                            if self.get_rgb(RgbEnumG.MAP_SJYD, True):
-                                MOVE_FLAG2 = True  # 寻路移动开始
-                        else:
-                            _USE_MOVE = True
+                        if self.get_rgb(RgbEnumG.MAP_XL, True):
+                            _USE_MOVE = True  # 寻路移动开始
+                        elif self.get_rgb(RgbEnumG.MAP_SJYD, True):
+                            MOVE_FLAG = True  # 瞬间移动
 
             else:
                 self.check_close()
@@ -354,7 +357,7 @@ class TeamStateG(BasePageG):
                 pos = self.crop_image_find(ImgEnumG.EXIT_TEAM, False, get_pos=True)
                 if _IS_EXIT:
                     if pos[-1] < 270:
-                        self.air_touch((pos[1], pos[-1]))  # 人数低于3人退队伍
+                        self.air_touch((pos[1], pos[-1]),touch_wait=1)  # 人数低于3人退队伍
                         if self.get_rgb(RgbEnumG.EXIT_TEAM, True):
                             self.sn.log_tab.emit(self.mnq_name, r"人数少于3人,退组重组")
                         C_PINDAO = True
@@ -363,7 +366,8 @@ class TeamStateG(BasePageG):
                 else:
                     if pos[0]:
                         return True
-            elif self.ocr_find(ImgEnumG.TEAM_ZDJR_OCR):
+            # elif self.ocr_find(ImgEnumG.TEAM_ZDJR_OCR):
+            elif self.find_info('team_zdjr'):
                 if WAIT_TIMES > 2:
                     self.sn.log_tab.emit(self.mnq_name, f"已等待{(WAIT_TIMES + 1) * 10}秒,切换频道重新组队")
                     self.air_touch((147, 350), touch_wait=GlobalEnumG.TouchWaitTime)
@@ -372,7 +376,7 @@ class TeamStateG(BasePageG):
                     self.get_rgb(RgbEnumG.TEAM_ZDJR_QR, True)
                     self.time_sleep(10)
                     WAIT_TIMES += 1
-            elif self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            elif self.find_info('ingame_flag2'):
                 if C_PINDAO:
                     if self.change_pindao(**kwargs):
                         WAIT_TIMES = 0
@@ -392,7 +396,7 @@ class TeamStateG(BasePageG):
         _FLAG = False
         self.sn.log_tab.emit(self.mnq_name, r"变更频道")
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
                 if _FLAG:
                     return True
                 self.air_touch((99, 99), touch_wait=4)
@@ -425,32 +429,26 @@ class TeamStateG(BasePageG):
         _HD_TIMES = 0
         self.sn.log_tab.emit(self.mnq_name, f"选择频道{_FIND_PD}")
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
                 if _FLAG:
                     return True
                 self.air_touch((99, 99), touch_wait=4)
             elif self.get_rgb(RgbEnumG.MAP_QWPD):
                 if not _FIND:
-                    # pindao_list = self.get_all_ocr((228, 153, 1048, 589))  # 频道坐标
-                    # for _pos in pindao_list:
-                    #     _pd = ''.join(filter(lambda x: x.isdigit(), _pos[0]))
-                    #     if _pd == _FIND_PD:
-                    #         _PD_POS = _pos[1]
-                    #         _FIND = True
-                    # if _FIND:
-                    #     self.air_touch(_PD_POS, duration=1)
-                    #     if self.get_rgb(RgbEnumG.MAP_QWPD, True):
-                    #         _FLAG = True
                     if self.find_pd_num(_FIND_PD, True):
+                        self.sn.log_tab.emit(self.mnq_name, f"找到频道_{_FIND_PD}")
                         _FIND = True
                         if self.get_rgb(RgbEnumG.MAP_QWPD, True):
                             _FLAG = True
                     else:
-                        if _HD_TIMES > 30:
+                        self.sn.log_tab.emit(self.mnq_name, f"查找频道_{_FIND_PD}")
+                        if _HD_TIMES > 25:
+                            self.sn.log_tab.emit(self.mnq_name, f"查找失败,启动备用频道_{_FIND_PD_F}")
                             _FIND_PD = _FIND_PD_F
                             _HD_TIMES = 0
                         if _HD_TIMES > 10:
                             self.air_swipe((639, 316), (639, 510))
+                            _HD_TIMES += 1
                         else:
                             self.air_swipe((639, 510), (639, 316))
                             _HD_TIMES += 1
@@ -471,12 +469,12 @@ class TeamStateG(BasePageG):
         _C_FLAG = False  # 组队成功标记
         self.sn.log_tab.emit(self.mnq_name, r"创建队伍")
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
                 if _C_FLAG:
                     if self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
                         return True
                     else:
-                        if not self.ocr_find([(19, 345, 44, 361), '6']):
+                        if not self.in_team():
                             self.crop_image_find(ImgEnumG.TEAM_TAB)
                 else:
                     if not self.crop_image_find(ImgEnumG.TEAM_CLDW):
@@ -495,12 +493,12 @@ class TeamStateG(BasePageG):
                         self.air_touch(GlobalEnumG.PWD_POS[pwd], duration=1)
                     _PUT_PWD = True
                 else:
-                    put_res = self.get_ocrres((597, 212, 681, 246))
+                    put_res = self.check_put_num(1)
                     if put_res == team_pwd:
                         if self.air_touch((524, 609), touch_wait=2):
                             _C_FLAG = True
                     else:
-                        self.back(self.serialno)
+                        self.back()
                         _PUT_PWD = False
             else:
                 self.check_close()
@@ -514,32 +512,33 @@ class TeamStateG(BasePageG):
         _C_FLAG = False
         self.sn.log_tab.emit(self.mnq_name, r"加入队伍")
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
                 if self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
                     return True
                 if not self.crop_image_find(ImgEnumG.TEAM_XZDW):
                     self.crop_image_find(ImgEnumG.TEAM_TAB)
             elif self.get_rgb(RgbEnumG.TEAM_QRMM):
                 if _C_FLAG:
-                    self.back(self.serialno)
+                    self.back()
                 else:
                     if not _PUT_PWD:
                         for pwd in team_pwd:
                             self.air_touch(GlobalEnumG.PWD_POS[pwd], duration=1)
                         _PUT_PWD = True
                     else:
-                        put_res = self.get_ocrres((597, 212, 681, 246))
+                        put_res = self.check_put_num(1)
                         if put_res == team_pwd:
                             if self.get_rgb(RgbEnumG.TEAM_QRMM, True):
                                 _C_FLAG = True
                         else:
-                            self.back(self.serialno)
+                            self.back()
                             _PUT_PWD = False
             elif self.get_rgb(RgbEnumG.BG_PINDAO):
                 if _C_FLAG:
-                    self.back(self.serialno)
-                if self.ocr_find(ImgEnumG.JION_TEAM_OCR):
-                    self.back(self.serialno)
+                    self.back()
+                # if self.ocr_find(ImgEnumG.JION_TEAM_OCR):
+                if self.find_info('team_null'):
+                    self.back()
                     return False  # 无队伍需要创建
                 if len(_POS_LIST) == 0:
                     team_pos = self.find_all_pos(ImgEnumG.PWD_TEAM)

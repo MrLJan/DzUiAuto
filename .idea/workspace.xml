@@ -2,22 +2,102 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="218bbaa1-7ac1-41ff-a550-012b423f111d" name="Changes" comment="Changes">
-      <change afterPath="$PROJECT_DIR$/DzTest/t2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DzTest/t3.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirements" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DzTest/DzModeMachine.py" beforeDir="false" afterPath="$PROJECT_DIR$/DzTest/DzModeMachine.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DzTest/t2.py" beforeDir="false" afterPath="$PROJECT_DIR$/DzTest/t2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DzTest/t3.py" beforeDir="false" afterPath="$PROJECT_DIR$/DzTest/t3.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DzTest/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/DzTest/test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Enum/ResEnum.py" beforeDir="false" afterPath="$PROJECT_DIR$/Enum/ResEnum.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ocr/2.2/densenet_lite_136-fc/cnocr-v2.2-densenet_lite_136-fc-epoch=039-complete_match_epoch=0.8597-model.ckpt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/LDPlayer-14.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/LDPlayer-14.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/LDPlayer.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/LDPlayer.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/gh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/gwgy.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/hdyzd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/jh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/jy.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/jzt.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mn.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/yzd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/gh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/gwgy.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/hdyzd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/jh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/jy.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/jzt.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_105_e.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/map/xt_105_e.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_110_e.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/map/xt_110_e.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_113_e.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/map/xt_113_e.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_115_e.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/map/xt_115_e.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_120.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/map/xt_120.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_120_e.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/map/xt_120_e.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_130_e.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/map/xt_130_e.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_136_e.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/map/xt_136_e.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_142_e.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/map/xt_142_e.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_144_e.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/map/xt_144_e.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_147_e.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/map/xt_147_e.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_40_e.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/map/xt_40_e.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_45_e.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/map/xt_45_e.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_65_e.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/map/xt_65_e.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_80_e.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/map/xt_80_e.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_90_e.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/map/xt_90_e.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mn.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/yzd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/MAX.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/任务点.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/任务界面.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/任务箭头.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/入场.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/全部领取.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/全部领取2.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/凝聚力量的结晶石.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/出售1.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/分解.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/否.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/强化.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/强化2.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/提示.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/无邮件.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/星图标记.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/是.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/活动签到.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/游戏icon.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/游戏icon.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/游戏开始.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/游戏登陆标志.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/游戏登陆标志.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/登录区域.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/立刻移动.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/筛选.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/签到奖励.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/自动加入.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/自动加入确认.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/自动选择.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/菜单.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/课题全部领取2.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/课题全部领取3.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/贩售.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/贩售确认.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/贩售确认1.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/购买.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/频道变更.bmp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Res/配置文件.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/配置文件.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/AutoBatG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/AutoBatG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/BasePage.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/BasePage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/DailyTaskG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/DailyTaskG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/LoginUiPage.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/LoginUiPage.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/RewardG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/RewardG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/StateCheckG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/StateCheckG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/TaskAutoG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/TaskAutoG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/TeamStateG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/TeamStateG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/UpRoleG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/UpRoleG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/AdbUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/AdbUtils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/Devicesconnect.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/Devicesconnect.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utils/OpencvG.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/OpencvG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utils/OtherTools.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/OtherTools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dzmainui.py" beforeDir="false" afterPath="$PROJECT_DIR$/dzmainui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,7 +155,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../KodAuto" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="terminal" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -87,7 +167,7 @@
       <recent name="D:\DzAutoUi\Enum" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.OpencvG">
+  <component name="RunManager" selected="Python.main">
     <configuration name="OpencvG" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="DzUiAuto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -202,11 +282,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.OpencvG" />
         <item itemvalue="Python.t2" />
-        <item itemvalue="Python.t3" />
-        <item itemvalue="Python.main" />
         <item itemvalue="Python.test" />
+        <item itemvalue="Python.t3" />
       </list>
     </recent_temporary>
   </component>
@@ -286,44 +366,44 @@
           <option name="timeStamp" value="916" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Utils/OpencvG.py</url>
-          <line>238</line>
-          <option name="timeStamp" value="1429" />
+          <url>file://$PROJECT_DIR$/venv/Lib/site-packages/airtest/core/android/adb.py</url>
+          <line>358</line>
+          <option name="timeStamp" value="1562" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Utils/OpencvG.py</url>
-          <line>235</line>
-          <option name="timeStamp" value="1430" />
+          <url>file://$PROJECT_DIR$/venv/Lib/site-packages/airtest/core/android/adb.py</url>
+          <line>359</line>
+          <option name="timeStamp" value="1563" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/DzTest/t2.py</url>
-          <line>55</line>
-          <option name="timeStamp" value="1460" />
+          <url>file://$PROJECT_DIR$/venv/Lib/site-packages/airtest/core/android/adb.py</url>
+          <line>360</line>
+          <option name="timeStamp" value="1564" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Utils/OpencvG.py</url>
-          <line>507</line>
-          <option name="timeStamp" value="1461" />
+          <url>file://$PROJECT_DIR$/venv/Lib/site-packages/airtest/core/android/adb.py</url>
+          <line>361</line>
+          <option name="timeStamp" value="1565" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Utils/OpencvG.py</url>
-          <line>506</line>
-          <option name="timeStamp" value="1462" />
+          <url>file://$PROJECT_DIR$/UiPage/DailyTaskG.py</url>
+          <line>491</line>
+          <option name="timeStamp" value="1731" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Utils/OpencvG.py</url>
-          <line>505</line>
-          <option name="timeStamp" value="1463" />
+          <url>file://$PROJECT_DIR$/UiPage/DailyTaskG.py</url>
+          <line>539</line>
+          <option name="timeStamp" value="1736" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Utils/OpencvG.py</url>
-          <line>508</line>
-          <option name="timeStamp" value="1464" />
+          <url>file://$PROJECT_DIR$/UiPage/DailyTaskG.py</url>
+          <line>540</line>
+          <option name="timeStamp" value="1737" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Utils/OpencvG.py</url>
-          <line>509</line>
-          <option name="timeStamp" value="1466" />
+          <url>file://$PROJECT_DIR$/UiPage/DailyTaskG.py</url>
+          <line>541</line>
+          <option name="timeStamp" value="1738" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

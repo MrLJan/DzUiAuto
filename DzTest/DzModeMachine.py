@@ -15,101 +15,100 @@ from UiPage.TeamStateG import TeamStateG
 from UiPage.UpRoleG import UpRoleG
 from Utils.ExceptionTools import MrTaskErr, ControlTimeOut, BuyYErr, NotInGameErr, RestartTask, FuHuoRoleErr
 from Utils.LoadConfig import LoadConfig
+from Utils.OtherTools import catch_ex
 
 
 class StateExecute(object):
     """状态执行器"""
 
-    def __init__(self, devinfo, mnq_name, sn, ocr):
+    def __init__(self, devinfo, mnq_name, sn):
         self.devinfo = devinfo
         self.sn = sn
         self.mnq_name = mnq_name
-        self.cn_ocr = ocr
 
     def autotask(self, **kwargs):
-        return TaskAutoG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).start_autotask(**kwargs)
+        return TaskAutoG(self.devinfo, self.mnq_name, self.sn).start_autotask(**kwargs)
 
     def autobat(self, **kwargs):
-        return AutoBatG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).keyboard_bat(**kwargs)
+        return AutoBatG(self.devinfo, self.mnq_name, self.sn).keyboard_bat(**kwargs)
 
     def checkstate(self, **kwargs):
-        return TeamStateG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).check_team_state(**kwargs)
+        return TeamStateG(self.devinfo, self.mnq_name, self.sn).check_team_state(**kwargs)
 
 
 class StateSelect(object):
     """状态选择器"""
 
-    def __init__(self, devinfo, mnq_name, sn, ocr):
+    def __init__(self, devinfo, mnq_name, sn):
         self.devinfo = devinfo
         self.sn = sn
         self.mnq_name = mnq_name
-        self.cn_ocr = ocr
 
     def login_game(self, **kwargs):
-        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).start_login(**kwargs)
+        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn).start_login(**kwargs)
 
     def closegame(self):
-        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).close_game()
+        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn).close_game()
 
     def check_ingame(self, **kwargs):
-        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).check_ingame(**kwargs)
+        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn).check_ingame(**kwargs)
 
     def fuhuo(self, **kwargs):
-        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).fuhuo_check(**kwargs)
+        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn).fuhuo_check(**kwargs)
 
     def checkroleinfo(self, **kwargs):
-        return StateCheckG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).check_roleinfo(**kwargs)
+        return StateCheckG(self.devinfo, self.mnq_name, self.sn).check_roleinfo(**kwargs)
 
     def getlevelreard(self, **kwargs):
-        return RewardG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).level_reward(**kwargs)
+        return RewardG(self.devinfo, self.mnq_name, self.sn).level_reward(**kwargs)
 
     def calculationgold(self, **kwargs):
-        return RewardG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).calculationgold(**kwargs)
+        return RewardG(self.devinfo, self.mnq_name, self.sn).calculationgold(**kwargs)
 
     def autoboss(self, **kwargs):
-        return DailyTaskAutoG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).boss_task(**kwargs)
+        return DailyTaskAutoG(self.devinfo, self.mnq_name, self.sn).boss_task(**kwargs)
 
     def hdboss(self, **kwargs):
-        return DailyTaskAutoG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).hdboss_task(**kwargs)
+        return DailyTaskAutoG(self.devinfo, self.mnq_name, self.sn).hdboss_task(**kwargs)
 
     def automr(self, **kwargs):
-        return DailyTaskAutoG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).dailytask_start(**kwargs)
+        return DailyTaskAutoG(self.devinfo, self.mnq_name, self.sn).dailytask_start(**kwargs)
 
     def buyyao(self, **kwargs):
-        return UpRoleG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).buyyao(**kwargs)
+        return UpRoleG(self.devinfo, self.mnq_name, self.sn).buyyao(**kwargs)
 
     def bagsell(self, **kwargs):
-        return RewardG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).bagsell(**kwargs)
+        return RewardG(self.devinfo, self.mnq_name, self.sn).bagsell(**kwargs)
 
     def bagclear(self, **kwargs):
-        return RewardG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).bag_clear(**kwargs)
+        return RewardG(self.devinfo, self.mnq_name, self.sn).bag_clear(**kwargs)
 
     def useskill(self, **kwargs):
-        return UpRoleG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).useskill(**kwargs)
+        return UpRoleG(self.devinfo, self.mnq_name, self.sn).useskill(**kwargs)
 
     def usepet(self, **kwargs):
-        return UpRoleG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).usepet(**kwargs)
+        return UpRoleG(self.devinfo, self.mnq_name, self.sn).usepet(**kwargs)
 
     def upequip(self, **kwargs):
-        return UpRoleG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).upequip(**kwargs)
+        return UpRoleG(self.devinfo, self.mnq_name, self.sn).upequip(**kwargs)
 
     def strongequip(self, **kwargs):
-        return UpRoleG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).strongequip(**kwargs)
+        return UpRoleG(self.devinfo, self.mnq_name, self.sn).strongequip(**kwargs)
 
     def getreward(self, **kwargs):
-        return RewardG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).get_reward(**kwargs)
+        return RewardG(self.devinfo, self.mnq_name, self.sn).get_reward(**kwargs)
 
     def checkxtteam(self, **kwargs):
-        return TeamStateG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).check_xt(**kwargs)
+        return TeamStateG(self.devinfo, self.mnq_name, self.sn).check_xt(**kwargs)
 
     def checkytteam(self, **kwargs):
-        return TeamStateG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).check_yt(**kwargs)
+        return TeamStateG(self.devinfo, self.mnq_name, self.sn).check_yt(**kwargs)
 
     def choose_task(self, **kwargs):
-        return StateCheckG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).choose_task(**kwargs)
+        return StateCheckG(self.devinfo, self.mnq_name, self.sn).choose_task(**kwargs)
 
     def back_ingame(self, **kwargs):
-        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn, self.cn_ocr).close_all(**kwargs)
+        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn).close_all(**kwargs)
 
 
 execute_transition = [
@@ -131,7 +130,7 @@ class StateMachine:
         self.machine = Machine(model, states=states, transitions=transitions, initial=init_state)
 
 
-# @catch_ex
+@catch_ex
 class switch_case:
     """状态判断"""
 
@@ -245,7 +244,7 @@ class switch_case:
             '设备名称': self.mnq_name,
             '任务id': self.taskid,
             '托管模式': True if self.taskid == '99' else False,
-            '地图名': BatEnumG.MAP_OCR[self.mapname][0][-1],
+            '地图名': self.mapname,
             '任务结束关闭游戏': True if LoadConfig.getconf('全局配置', '任务结束关闭游戏') == '1' else False,
             '角色信息': {
                 '等级': int(LoadConfig.getconf(self.mnq_name, '等级', ini_name=self.mnq_name)),
@@ -472,7 +471,3 @@ class switch_case:
             self.select_queue.put_queue("CheckGold")
             self._c_time = time.time()
 
-    def check_roleinfo(self):
-        if time.time() - self._r_time > GlobalEnumG.CheckRoleTime:
-            self.select_queue.put_queue("CheckRole")
-            self._r_time = time.time()

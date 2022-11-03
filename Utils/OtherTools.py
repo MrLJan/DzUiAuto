@@ -38,7 +38,7 @@ def catch_ex(func):
         result = None
         try:
             result = func(*args, **kwargs)
-        except Exception as e:
+        except:
             pass
             # if GlobalEnumG.TestLog:
             #     print(e)

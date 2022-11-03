@@ -11,6 +11,9 @@ class PhoneDevives(ADB):
     def adb_init(self, serialno=None):
         return ADB(serialno=serialno, adb_path=OT.abspath('/Adb/adb.exe'))
 
+    def kill_adb(self):
+        return self.adb.kill_server()
+
     def get_devices(self):
         devices = self.adb.devices()
         devindex_list = []

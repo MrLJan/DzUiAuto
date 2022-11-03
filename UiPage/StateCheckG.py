@@ -7,13 +7,12 @@ from Utils.LoadConfig import LoadConfig
 
 
 class StateCheckG(BasePageG):
-    def __init__(self, devinfo, mnq_name, sn, ocr):
+    def __init__(self, devinfo, mnq_name, sn):
         super(StateCheckG, self).__init__()
         self.dev = devinfo[0]
         self.serialno = devinfo[-1]
         self.sn = sn
         self.mnq_name = mnq_name
-        self.cn_ocr = ocr
 
     def choose_task(self, **kwargs):
         exec_queue = kwargs['状态队列']['执行器']
@@ -22,12 +21,13 @@ class StateCheckG(BasePageG):
         if select_queue.queue.empty():
             if not self.check_hpmp(use_mp):
                 select_queue.put_queue('BuyY')
-            if self.ocr_find(ImgEnumG.BAG_FULL):
+            # if self.ocr_find(ImgEnumG.BAG_FULL):
+            if self.crop_image_find(ImgEnumG.BAG_MAX_IMG, False):
                 select_queue.put_queue('BagSell')
         else:
             if not self.check_hpmp(use_mp):
                 select_queue.put_queue('BuyY')
-            if self.ocr_find(ImgEnumG.BAG_FULL):
+            if self.crop_image_find(ImgEnumG.BAG_MAX_IMG, False):
                 select_queue.put_queue('BagSell')
             if self.check_team():
                 select_queue.put_queue('ChooseTeam')
@@ -48,7 +48,7 @@ class StateCheckG(BasePageG):
     def check_team(self):
         s_time = time.time()
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut / 2:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
                 self.crop_image_find(ImgEnumG.TEAM_TAB)
                 if self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
                     return True
@@ -61,14 +61,14 @@ class StateCheckG(BasePageG):
     def close_all(self):
         s_time = time.time()
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
                 self.sn.log_tab.emit(self.mnq_name, r"在游戏主界面")
                 return True
             elif self.crop_image_find(ImgEnumG.GAME_ICON, False):
                 self.sn.log_tab.emit(self.mnq_name, r"掉线")
                 return True
             elif self.air_loop_find(ImgEnumG.MR_BAT_EXIT):
-                self.ocr_find(ImgEnumG.MR_YDZXD, clicked=True)
+                self.back_ksdy()
             else:
                 self.check_close()
         return False
@@ -78,6 +78,7 @@ class StateCheckG(BasePageG):
         select_queue = kwargs['状态队列']['选择器']
         auto_choose = kwargs['托管模式']
         _C_OVER = False  # 检查是否完成
+        _C_LEVEL = False
         RED_GOLD = 0  # 红币
         GOLD = 0  # 金币
         _GOLD_NUM = LoadConfig.getconf(self.mnq_name, '金币', ini_name=self.mnq_name)
@@ -85,14 +86,21 @@ class StateCheckG(BasePageG):
         LEVEL = 0  # 等级
         STAR = 0  # 星力
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
+                if not _C_LEVEL:
+                    LEVEL = self.check_num(0)
+                    BAT_NUM = self.check_num(1)
+                    if LEVEL != '0':
+                        LoadConfig.writeconf(self.mnq_name, '等级', str(LEVEL), ini_name=self.mnq_name)
+                        LoadConfig.writeconf(self.mnq_name, '战力', str(BAT_NUM), ini_name=self.mnq_name)
+                        _C_LEVEL=True
                 if _C_OVER:
                     kwargs['角色信息']['等级'] = LEVEL
                     kwargs['角色信息']['星力'] = STAR
                     kwargs['角色信息']['战力'] = BAT_NUM
                     kwargs['角色信息']['金币'] = GOLD
                     kwargs['角色信息']['红币'] = RED_GOLD
-                    _T_GOLD = round((GOLD - int(_GOLD_NUM)) / 10000, 2)
+                    _T_GOLD = round((int(GOLD) - int(_GOLD_NUM)) / 10000, 2)
                     self.sn.table_value.emit(self.mnq_name, 3, f"{LEVEL}")
                     self.sn.table_value.emit(self.mnq_name, 4, f"{STAR}")
                     self.sn.table_value.emit(self.mnq_name, 5, f"{BAT_NUM}")
@@ -110,9 +118,6 @@ class StateCheckG(BasePageG):
                 if _C_OVER:
                     self.get_rgb(RgbEnumG.BAG_GOLD_QR, True)
                 else:
-                    # res = self.get_roleinfo([(694, 368, 927, 412), (398, 370, 630, 413)])
-                    # GOLD = res[0]
-                    # RED_GOLD = res[-1]
                     GOLD = self.gold_num(1)
                     RED_GOLD = self.gold_num(0)
                     LoadConfig.writeconf(self.mnq_name, '金币', str(GOLD), ini_name=self.mnq_name)
@@ -121,17 +126,11 @@ class StateCheckG(BasePageG):
             elif self.get_rgb(RgbEnumG.BAG_M):
                 self.time_sleep(1)
                 if _C_OVER:
-                    self.back(self.serialno)
+                    self.back()
                 else:
-                    _res = self.get_roleinfo([(225, 162, 326, 187), (253, 218, 307, 243), (315, 505, 469, 536)])
-                    LEVEL = _res[0]
-                    STAR = _res[1]
-                    BAT_NUM = _res[-1]
-                    if LEVEL > 0:
-                        LoadConfig.writeconf(self.mnq_name, '等级', str(LEVEL), ini_name=self.mnq_name)
-                        LoadConfig.writeconf(self.mnq_name, '星力', str(STAR), ini_name=self.mnq_name)
-                        LoadConfig.writeconf(self.mnq_name, '战力', str(BAT_NUM), ini_name=self.mnq_name)
-                        self.crop_image_find(ImgEnumG.BAG_GOLD, touch_wait=2)
+                    STAR = self.check_num(2)
+                    LoadConfig.writeconf(self.mnq_name, '星力', str(STAR), ini_name=self.mnq_name)
+                    self.crop_image_find(ImgEnumG.BAG_GOLD, touch_wait=2)
             else:
                 self.check_close()
 

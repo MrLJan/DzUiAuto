@@ -9,13 +9,12 @@ from Utils.LoadConfig import LoadConfig
 
 
 class RewardG(BasePageG):
-    def __init__(self, devinfo, mnq_name, sn, ocr):
+    def __init__(self, devinfo, mnq_name, sn):
         super(RewardG, self).__init__()
         self.dev = devinfo[0]
         self.serialno = devinfo[-1]
         self.sn = sn
         self.mnq_name = mnq_name
-        self.cn_ocr = ocr
 
     def get_reward(self, **kwargs):
         self.sn.table_value.emit(self.mnq_name, 8, r"领取奖励")
@@ -68,11 +67,11 @@ class RewardG(BasePageG):
         _WQ = False
         _FJ = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
                 if _WQ and _FJ:
-                    self.back(self.serialno)
+                    self.back()
                     return True
-                elif self.get_rgb([720, 395, '617'],True):
+                elif self.get_rgb([720, 395, '617'], True):
                     pass
                 else:
                     self.air_touch((1170, 39), touch_wait=1)
@@ -86,7 +85,7 @@ class RewardG(BasePageG):
                 pass
             elif self.get_rgb(RgbEnumG.BAG_M):
                 self.time_sleep(2)
-                if not self.air_loop_find(ImgEnumG.ZB_TS,touch_wait=2):
+                if not self.air_loop_find(ImgEnumG.ZB_TS, touch_wait=2):
                     if not _WQ:
                         self.air_touch((780, 127), touch_wait=2)
                         _WQ = True
@@ -94,7 +93,7 @@ class RewardG(BasePageG):
                         self.air_touch((868, 125), touch_wait=2)
                         _FJ = True
                     elif _WQ and _FJ:
-                        self.back(self.serialno)
+                        self.back()
             else:
                 self.check_close()
         raise ControlTimeOut(r'穿戴装备-异常超时')
@@ -105,11 +104,11 @@ class RewardG(BasePageG):
         _G = False  # 公共
         _O = False  # 个人
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
                 self.crop_image_find(ImgEnumG.MAIL_RQ)
             elif self.get_rgb(RgbEnumG.MAIL_M):
                 if _G and _O:
-                    self.back(self.serialno)
+                    self.back()
                     return True
                 self.air_loop_find(ImgEnumG.UI_QBLQ)
                 self.get_rgb(RgbEnumG.MAIL_LQ, True)
@@ -135,14 +134,14 @@ class RewardG(BasePageG):
         self.sn.log_tab.emit(self.mnq_name, f"领取课题奖励")
         _C_OVER = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
-                self.crop_image_find(ImgEnumG.MR_MENU)
-            elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
+            if self.find_info('ingame_flag2'):
+                self.find_info('ui_enum',True)
+            elif self.find_info('ui_set'):  # 菜单界面
                 # self.ocr_find(ImgEnumG.KT_MENU, True)
-                self.enum_find('kt',True)
+                self.enum_find('kt', True)
             elif self.get_rgb(RgbEnumG.KT_M):
                 if _C_OVER:
-                    self.back(self.serialno)
+                    self.back()
                     return True
                 if self.get_rgb(RgbEnumG.KT_MRRW):  # 每日任务
                     if self.get_rgb(RgbEnumG.KT_F, False):
@@ -175,56 +174,72 @@ class RewardG(BasePageG):
                 pass
             else:
                 self.check_close()
-        if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+        if self.find_info('ingame_flag2'):
             return True
         return False
 
     def get_hd_reward(self):
         s_time = time.time()
-        self.sn.log_tab.emit(self.mnq_name, f"领取登录奖励")
+        # self.sn.log_tab.emit(self.mnq_name, f"领取登录奖励")
+        _LOGIN = False
+        _IN_DLJL = False
+        _IN_XX = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
-                self.crop_image_find(ImgEnumG.MR_MENU)
-            elif self.crop_image_find(ImgEnumG.UI_SET, False):  # 菜单界面
+            if self.find_info('ingame_flag2'):
+                self.find_info('ui_enum',True)
+                self.time_sleep(GlobalEnumG.TouchWaitTime)
+            elif self.find_info('ui_set'):  # 菜单界面
                 # self.ocr_find(ImgEnumG.HD_MENU, True)
-                self.enum_find('hd',True)
+                self.enum_find('hd', True)
             elif self.get_rgb(RgbEnumG.HD_M):
-                if self.ocr_find(ImgEnumG.HD_DR_OCR, True):
+                self.time_sleep(GlobalEnumG.TouchWaitTime)
+                if not _LOGIN:
+                    if self.find_info('hd_dljl', True):
+                        _IN_DLJL = True
+                        self.time_sleep(GlobalEnumG.TouchWaitTime)
+                if _IN_DLJL:
                     if not self.get_rgb(RgbEnumG.RE_LQJL, True):  # 领取奖励:
-                        self.ocr_find(ImgEnumG.HD_XX_OCR, True)
-                        if not self.get_rgb(RgbEnumG.RE_LQJL1, True):  # 领取奖励
-                            self.back(self.serialno)
-                            self.back(self.serialno)
-                            break
+                        if self.find_info('hd_xxjl', True):
+                            _IN_XX = True
+                            _IN_DLJL = False
+                            _LOGIN = True
+                if _IN_XX:
+                    self.time_sleep(GlobalEnumG.TouchWaitTime)
+                    if not self.get_rgb(RgbEnumG.RE_LQJL1, True):  # 领取奖励
+                        self.back()
+                        self.back()
+                        break
                 else:
                     self.air_swipe((112, 621), (112, 256), swipe_wait=1)
-            elif self.air_loop_find(ImgEnumG.UI_QR):
+            elif self.qr_or_qx(1):
                 pass
             else:
+                self.time_sleep(GlobalEnumG.TouchWaitTime)
                 self.check_close()
-        if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+        if self.find_info('ingame_flag2'):
             return True
         return False
 
     def get_level_reward(self):
         s_time = time.time()
         self.sn.log_tab.emit(self.mnq_name, f"领取成长奖励")
-        _FIND_TIMES=0
+        _FIND_TIMES = 0
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
-                if _FIND_TIMES>3:
+            if self.find_info('ingame_flag2'):
+                if _FIND_TIMES > 3:
                     return True
-                if not self.crop_image_find(ImgEnumG.CZZY):
+                if not self.find_info('czjl',True):
                     self.air_touch((38, 149), touch_wait=1)
-                    _FIND_TIMES+=1
+                    _FIND_TIMES += 1
             elif self.get_rgb(RgbEnumG.HD_CZZY):
-                if self.get_rgb([1238, 655, 'ADADAD']) or self.get_rgb([1238,655,'AEAEAE']):
-                    self.back(self.serialno)
+                if self.get_rgb([1238, 655, 'ADADAD']) or self.get_rgb([1238, 655, 'AEAEAE']):
+                    self.back()
                     return True
                 else:
                     self.air_touch((1238, 655), touch_wait=2)
             elif self.get_rgb(RgbEnumG.HD_M):
-                if not self.ocr_find([(29, 88, 181, 700), '全部的'], True):
+                # if not self.ocr_find([(29, 88, 181, 700), '全部的'], True):
+                if not self.find_info('hd_czzy',True):
                     self.air_swipe((105, 598), (105, 391))
             else:
                 self.check_close()
@@ -240,7 +255,7 @@ class RewardG(BasePageG):
         _FJ = False  # 防具
         _WQ = False  # 武器
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
                 if _C_FLAG:
                     select_queue.task_over('BagClear')
                     return True
@@ -253,7 +268,7 @@ class RewardG(BasePageG):
                 if _BS and _SP and _FJ and _WQ:
                     _C_FLAG = True
                 if _C_FLAG:
-                    self.back(self.serialno)
+                    self.back()
                 else:
                     if not _BS:
                         self.get_rgb(RgbEnumG.BAG_BS, True)
@@ -305,23 +320,22 @@ class RewardG(BasePageG):
         _OVER = False
         _FJ_OVER = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
                 if _OVER:
                     select_queue.task_over('BagSell')
                     return True
                 self.air_touch((1170, 39), touch_wait=2)
             elif self.get_rgb(RgbEnumG.CSFJ_M):  # 出售界面
                 if _OVER and _FJ_OVER:
-                    self.back(self.serialno)
+                    self.back()
                 else:
                     if not _OVER:
                         if not self.get_rgb(RgbEnumG.CS_NULL):
                             if not _SX_FLAG:
                                 self.air_touch((68, 677), touch_wait=1)  # 打开筛选
-                                # self.crop_image_find(ImgEnumG.BAG_SX)
                             else:
                                 _OVER = True
-                                self.crop_image_find(ImgEnumG.MR_TIP_CLOSE)
+                                self.find_info('task_close', True)
                         else:
                             self.get_rgb(RgbEnumG.CS_QR, True)
                             if self.get_rgb(RgbEnumG.QR, True, touch_wait=2):
@@ -341,7 +355,7 @@ class RewardG(BasePageG):
                 _FJ_OVER = True
             elif self.get_rgb(RgbEnumG.BAG_M):
                 if _OVER and _FJ_OVER:
-                    self.back(self.serialno)
+                    self.back()
                 else:
                     if not _OVER:
                         self.get_rgb(RgbEnumG.CS, True)
@@ -359,9 +373,9 @@ class RewardG(BasePageG):
                 if self.get_rgb(RgbEnumG.FJ_TY, True):
                     _FJSX_FLAG = True
             else:
-                if time.time()-s_time>60:
+                if time.time() - s_time > 60:
                     self.check_close()
-                    s_time=time.time()
+                    s_time = time.time()
         raise ControlTimeOut(r'出售背包-异常超时')
 
     def calculationgold(self, **kwargs):
@@ -371,7 +385,7 @@ class RewardG(BasePageG):
         _T_GOLD = 0
         _C_OVER = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
                 if _C_OVER:
                     select_queue.task_over('CheckGold')
                     return True
@@ -383,8 +397,8 @@ class RewardG(BasePageG):
                     # _res = self.get_roleinfo([(694, 368, 927, 412), (398, 370, 630, 413)])
                     # GOLD = _res[0]
                     # RED_COIN = _res[-1]
-                    GOLD=self.gold_num(1)
-                    RED_COIN=self.gold_num(0)
+                    GOLD = self.gold_num(1)
+                    RED_COIN = self.gold_num(0)
                     _T_GOLD = GOLD - int(_GOLD_NUM)
                     self.sn.table_value.emit(self.mnq_name, 6, f"{GOLD}")
                     self.sn.table_value.emit(self.mnq_name, 7, f"{round(_T_GOLD / 10000, 2)}万")
@@ -394,7 +408,7 @@ class RewardG(BasePageG):
                     _C_OVER = True
             elif self.get_rgb(RgbEnumG.BAG_M):
                 if _C_OVER:
-                    self.back(self.serialno)
+                    self.back()
                 else:
                     r = self.get_roleinfo([(225, 162, 326, 187), (253, 218, 307, 243), (315, 505, 469, 536)])
                     LEVEL = r[0]

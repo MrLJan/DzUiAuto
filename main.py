@@ -4,14 +4,14 @@ import os
 import sys
 import time
 
-import torch
 from PyQt5 import QtGui, QtWidgets, uic
 from PyQt5.QtGui import QTextCursor, QRegExpValidator
 from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, \
     QTreeWidgetItem, QFileDialog
 from PyQt5.QtCore import Qt, QTimer, QRegExp
 from airtest.core.android.touch_methods.base_touch import DownEvent, SleepEvent, UpEvent
-from cnocr import CnOcr
+from airtest.core.error import AdbError
+
 from cv2 import cv2
 from qt_material import apply_stylesheet
 from DzTest.DzModeMachine import switch_case, StateExecute, StateMachine, StateSelect, execute_transition, \

@@ -7,58 +7,49 @@ from airtest.core.android.adb import ADB
 from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG, BatEnumG
 from Utils.ExceptionTools import NotInGameErr, FuHuoRoleErr
 from Utils.LoadConfig import LoadConfig
-from Utils.OpencvG import OpenCvTools, AirImgTools, CnOcrTool
+from Utils.OpencvG import OpenCvTools, AirImgTools
 
 
-class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
+class BasePageG(OpenCvTools, AirImgTools):
     def __init__(self):
         super(OpenCvTools, self).__init__()
         self.dev = None
         self.serialno = None
-        self.cn_ocr = None
         self.sn = None
         self.mnq_name = None
 
     def snap(self):
-        return ADB(self.serialno).snapshot()
+        return self.dev.snapshot()
 
     @staticmethod
     def time_sleep(sleep_time):
         time.sleep(sleep_time)
 
-    def start_game(self, serialno, wait_time=10):
+    def start_game(self, wait_time=10):
         """启动游戏"""
         self.sn.log_tab.emit(self.mnq_name, r"启动游戏")
-        ad = Android(serialno=serialno)
-        ad.start_app(GlobalEnumG.GamePackgeName)
+        self.dev.start_app(GlobalEnumG.GamePackgeName)
         time.sleep(wait_time)
 
-    @staticmethod
-    def key_event(serialno, key, wait_time=2):
-        ad = Android(serialno=serialno)
-        ad.keyevent(key)
+    def key_event(self, key, wait_time=2):
+        self.dev.keyevent(key)
         time.sleep(wait_time)
 
-    @staticmethod
-    def back(serialno, wait_time=GlobalEnumG.BackWaitTime):
-        ad = Android(serialno=serialno)
-        ad.keyevent('back')
+    def back(self, wait_time=GlobalEnumG.BackWaitTime):
+        self.dev.keyevent('back')
         time.sleep(wait_time)
 
-    def stop_game(self, serialno):
+    def stop_game(self):
         """关闭游戏"""
         self.sn.log_tab.emit(self.mnq_name, r"关闭游戏")
-        ad = Android(serialno=serialno)
-        ad.stop_app(GlobalEnumG.GamePackgeName)
+        self.dev.stop_app(GlobalEnumG.GamePackgeName)
 
-    @staticmethod
-    def close_other_app(serialno):
+    def close_other_app(self):
         """关闭除游戏客户端外其他应用"""
-        ad = Android(serialno=serialno)
-        app_list = ad.list_app()
+        app_list = self.dev.list_app()
         for al in app_list:
             if al != GlobalEnumG.GamePackgeName:
-                ad.stop_app(al)
+                self.dev.stop_app(al)
 
     # @staticmethod
     def check_mulpic(self, pic_list, clicked=True):
@@ -79,13 +70,13 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
         w_time = time.time()
         while True:
             if time.time() - w_time > GlobalEnumG.SelectCtrTimeOut:
-                self.stop_game(self.serialno)
+                self.stop_game()
                 w_time = time.time()
             elif self.crop_image_find(ImgEnumG.GAME_ICON, False):
                 raise NotInGameErr
             elif self.get_rgb(RgbEnumG.EXIT_FOU, True, touch_wait=GlobalEnumG.ExitBtnTime) or self.get_rgb(
                     RgbEnumG.CLOSE_GAME, True, touch_wait=GlobalEnumG.ExitBtnTime):  # 退出游戏-否
-                if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+                if self.find_info('ingame_flag2'):
                     return True
                 if self.crop_image_find(ImgEnumG.CZ_FUHUO):
                     raise FuHuoRoleErr
@@ -93,7 +84,12 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
                     raise NotInGameErr
             elif self.get_rgb(RgbEnumG.HD_BJBS, True):
                 pass
-
+            elif self.get_rgb(RgbEnumG.QR,True):
+                pass
+            elif self.back_ksdy():
+                pass
+            elif self.get_rgb(RgbEnumG.MNDC_JG_QR,True):
+                pass
             # if self.ocr_find(ImgEnumG.NET_ERR):  # 网络异常掉线
             #     _TIMES = 0
             #     for i in range(10):
@@ -104,14 +100,16 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
             #             _TIMES += 1
             #             self.time_sleep(10)
             else:
-                self.back(self.serialno)
+                self.back()
 
     def check_err(self):
         if self.air_loop_find(ImgEnumG.GAME_ICON, False):
             raise NotInGameErr
         if self.crop_image_find(ImgEnumG.CZ_FUHUO):
             raise FuHuoRoleErr
-        if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+        if self.find_info('ingame_flag2'):
+            return True
+        if self.find_info('game_login',True):
             return True
         self.get_rgb(RgbEnumG.BAT_JG, True)
         return False
@@ -125,39 +123,29 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
                 raise NotInGameErr
             if self.crop_image_find(ImgEnumG.CZ_FUHUO):
                 raise FuHuoRoleErr
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
                 return True
-            self.air_loop_find(ImgEnumG.MR_TIP_CLOSE)
             self.air_loop_find(ImgEnumG.UI_CLOSE)
-            self.air_loop_find(ImgEnumG.UI_LB)
+            self.find_info('task_close', True)
+            self.find_info('LB_close',True)
             self.air_loop_find(ImgEnumG.QD_1)
             self.air_loop_find(ImgEnumG.UI_QR)
             self.air_loop_find(ImgEnumG.LOGIN_TIPS)
             if i > 5:
-                while not self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
-                    self.crop_image_find(ImgEnumG.TASK_ARROW, timeout=0.5, touch_wait=0)
-                    self.ocr_find(ImgEnumG.SKIP_OCR, True)
+                while not self.find_info('ingame_flag2'):
+                    if self.find_info('task_arrow',True):
+                        pass
                     self.air_loop_find(ImgEnumG.TASK_OVER, timeout=0.5, touch_wait=0)
                     self.air_loop_find(ImgEnumG.TASK_START, timeout=0.5, touch_wait=0)
-                    self.crop_image_find(ImgEnumG.TASK_ARROW, timeout=0.5, touch_wait=0)
-                    self.crop_image_find(ImgEnumG.TASK_TAKE, touch_wait=0)
-                    self.crop_image_find(ImgEnumG.TASK_REWARD, touch_wait=0)
                     self.check_err()
-                    self.key_event(self.serialno, 'BACK')
+                    self.back()
         return False
 
-    def get_num(self, area):
-        """获取范围内的int"""
-        try:
-            res = self.get_ocrres(area)
-            num = ''.join(filter(lambda x: x.isdigit(), res))
-            return int(num)
-        except (ValueError, TypeError):
-            return 0
 
     def check_is_stop(self):
         _COLOR = self.rgb(450, 654)
-        if self.crop_image_find(ImgEnumG.MOVE_NOW, False):
+        # if self.crop_image_find(ImgEnumG.MOVE_NOW, False):
+        if self.find_info('xl_lkyd'):
             self.time_sleep(GlobalEnumG.TaskWaitTime)
         _COLOR_1 = self.rgb(450, 654)
         if _COLOR == _COLOR_1:
@@ -170,12 +158,12 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
     def skip_fever_buff(self):
         s_time = time.time()
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            if self.find_info('ingame_flag2'):
                 self.air_touch((857, 645))
             elif self.get_rgb(RgbEnumG.FEVER_BUFF):
                 return True
-            elif self.ocr_find(ImgEnumG.SKIP_OCR, True):
-                pass
+            # elif self.ocr_find(ImgEnumG.SKIP_OCR, True):
+            #     pass
             else:
                 self.check_close()
         return False
@@ -204,7 +192,7 @@ class BasePageG(OpenCvTools, AirImgTools, CnOcrTool):
                     self.get_rgb(RgbEnumG.SKIP_NEW, True)
                 else:
                     _C_TIMES += 1
-            elif self.crop_image_find(ImgEnumG.INGAME_FLAG2, False):
+            elif self.find_info('ingame_flag2'):
                 if not self.crop_image_find(ImgEnumG.SKIP_NEW, timeout=3):
                     return True
             else:

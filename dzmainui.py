@@ -4,7 +4,6 @@ import os
 import sys
 import time
 
-import torch
 from PyQt5 import QtGui, QtWidgets, uic
 from PyQt5.QtGui import QTextCursor, QRegExpValidator
 from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, \
@@ -12,7 +11,7 @@ from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem, QVBoxLa
 from PyQt5.QtCore import Qt, QTimer, QRegExp
 from airtest.core.android.touch_methods.base_touch import DownEvent, SleepEvent, UpEvent
 from airtest.core.error import AdbError
-from cnocr import CnOcr
+
 from cv2 import cv2
 from qt_material import apply_stylesheet
 from DzTest.DzModeMachine import switch_case, StateExecute, StateMachine, StateSelect, execute_transition, \
@@ -198,15 +197,8 @@ class DzUi:
         self.mnq_name_old_list = []  # 存储旧窗口名
         self.mnq_name_pop_list = []  # 存储需要删除的窗口
         self.mnq_name_flag = None
-        torch.set_num_threads(1)
         cv2.setNumThreads(1)
         cv2.ocl.setUseOpenCL(False)
-        torch.no_grad()
-        torch.set_grad_enabled(False)
-        self.cnocr = CnOcr(rec_model_name='densenet_lite_136-fc',  # db_shufflenet_v2_small
-                           det_model_name='db_shufflenet_v2_small')  # 'ch_PP-OCRv3_det')  # ch_PP-OCRv3繁体中文匹配模型
-        self.ocr_lock = ThreadTools.new_lock()
-        self.cn_ocr = [self.cnocr, self.ocr_lock]
         self.dev_obj_list = {}  # 初始化每个模拟器的连接对象名
         self.dev_list = {}  # 存储连接成功后的dev
         self.mnq_thread_tid = {}  # 存储每个模拟器的线程tid
@@ -668,7 +660,7 @@ class DzUi:
         child11.setText(0, '武器库')
         child11.setText(1, '44w战力')
         child33 = QTreeWidgetItem(child6)
-        child33.setText(0, '崎岖荒野')
+        child33.setText(0, '崎岖峡谷')
         child33.setText(1, '56w战力')
         child10 = QTreeWidgetItem(child6)
         child10.setText(0, '木菇菇林')
@@ -852,8 +844,6 @@ class DzUi:
                 dev.touch_proxy.perform(multitouch_event)
             except NotImplementedError:
                 pass
-            if self.ocr_lock.locked():
-                self.ocr_lock.release()
             ThreadTools.stop_thread_list(mnq_thread_list)  # 利用tid关闭线程
             mnq_thread_list.clear()
 
@@ -903,8 +893,6 @@ class DzUi:
                 mnq_name = MnqTools().use_index_find_name(mnq_index)
                 mnq_thread_list = self.mnq_thread_tid[mnq_name]
                 if len(mnq_thread_list) != 0:
-                    if self.ocr_lock.locked():
-                        self.ocr_lock.release()
                     ThreadTools.stop_thread_list(mnq_thread_list)  # 利用tid关闭线程
                     mnq_thread_list.clear()
                     self.sn.table_value.emit(mnq_name, 7, "")
@@ -957,13 +945,10 @@ class DzUi:
                     check_mnq_thread(f"{mnq_name}_{task_name}", mnq_thread_list,
                                      switch_case(self.sn, **taskdic).do_case, thread_while=True)
                 except (ConnectionResetError, RestartTask, AdbError, ConnectionAbortedError):
-                    if self.ocr_lock.locked():
-                        self.ocr_lock.release()
                     ThreadTools.stop_thread_list(mnq_thread_list)
                     mnq_thread_list.clear()
                     self._do_task_list(index_list)
-                # except Exception:
-                #     self.ocr_lock.clear()
+
 
     def restart_task(self, mnq_name, mnq_thread_list):
         """重启任务"""
@@ -1005,8 +990,6 @@ class DzUi:
                 dev.touch_proxy.perform(multitouch_event)
             except (NotImplementedError, ConnectionResetError, ConnectionAbortedError):
                 pass
-            if self.ocr_lock.locked():
-                self.ocr_lock.release()
             ThreadTools.stop_thread_list(mnq_thread_list)
             mnq_thread_list.clear()
 
@@ -1016,8 +999,8 @@ class DzUi:
         self._do_task_list(index_list)
 
     def task_dic(self, devinfo, mnq_name, task_name, mnq_thread_list):
-        execute = StateExecute(devinfo, mnq_name, self.sn, self.cn_ocr)
-        select = StateSelect(devinfo, mnq_name, self.sn, self.cn_ocr)
+        execute = StateExecute(devinfo, mnq_name, self.sn)
+        select = StateSelect(devinfo, mnq_name, self.sn)
         taskdic = {
             '执行器': execute,
             '选择器': select,
