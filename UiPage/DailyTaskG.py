@@ -491,11 +491,12 @@ class DailyTaskAutoG(BasePageG):
         self.sn.table_value.emit(self.mnq_name, 8, r"迷你地城")
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut * 2:
             if self.crop_image_find(ImgEnumG.MR_BAT_EXIT, False, touch_wait=3):
-                if self.get_rgb(RgbEnumG.MNDC_JG):
-                    pass
+                if self.back_ksdy():
+                    self.sn.log_tab.emit(self.mnq_name, r"迷你地城-战斗完成")
+                    return True
                 elif self.get_rgb(RgbEnumG.QR, True):
                     pass
-                elif self.back_ksdy():
+                elif self.get_rgb(RgbEnumG.MNDC_JG):
                     self.sn.log_tab.emit(self.mnq_name, r"迷你地城-战斗完成")
                     return True
                 elif self.get_rgb(RgbEnumG.BAT_JG, True):
@@ -510,8 +511,6 @@ class DailyTaskAutoG(BasePageG):
                 elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
                     pass
                 elif self.get_rgb(RgbEnumG.MNDC_JG_LK):
-                    # if self.ocr_find(ImgEnumG.MNDC_JG):
-                    #     self.get_rgb(RgbEnumG.MNDC_JG_LK, True)
                     self.sn.log_tab.emit(self.mnq_name, r"迷你地城-战斗完成")
                     return True
                 elif self.get_rgb(RgbEnumG.MNDC_JG_QR, True):

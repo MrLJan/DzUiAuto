@@ -175,7 +175,7 @@ class AutoBatG(BasePageG):
                     wait_queue.task_over(True)
                 else:
                     self.move_turn('up', 1.42)
-                    if louti_x in [1212, 1022, 1067]:  # 绳子长的补一下
+                    if louti_x in [1212, 1022, 1067,1198]:  # 绳子长的补一下
                         self.move_turn('up', 0.67)
                     if louti_x in [1036]:
                         self.move_turn('jump', 0.38)

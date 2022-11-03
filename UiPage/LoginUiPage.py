@@ -142,6 +142,7 @@ class LoginUiPageG(BasePageG):
         s_time = time.time()
         task_id = kwargs['任务id']
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
+            self.sn.log_tab.emit(self.mnq_name, r"检查界面")
             if self.get_rgb(RgbEnumG.EXIT_FOU, True) or self.get_rgb(RgbEnumG.CLOSE_GAME, True):  # 退出游戏-否
                 pass
             elif self.find_info('ingame_flag2'):

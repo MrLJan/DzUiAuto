@@ -112,7 +112,6 @@ class TaskAutoG(BasePageG):
                         if not self.find_info('task_point', True):
                             self.air_loop_find(ImgEnumG.TASK_TAB)
                     self.time_sleep(GlobalEnumG.TaskWaitTime)
-            self.time_sleep(2)
 
     def level_task(self, stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG, **kwargs):
         """到达等级后执行任务"""

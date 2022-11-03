@@ -2,7 +2,7 @@
 import random
 import time
 
-from airtest.core.error import DeviceConnectionError
+from airtest.core.error import DeviceConnectionError, AdbShellError, AdbError
 from transitions import Machine
 from Enum.ResEnum import GlobalEnumG, BatEnumG
 from UiPage.AutoBatG import AutoBatG
@@ -403,7 +403,7 @@ class switch_case:
                 else:
                     task = self.select_queue.get_task()  # 获取选择器任务
                     self.select_func[task][1]()  # 切换选择器状态
-        except (ConnectionResetError, DeviceConnectionError, ConnectionAbortedError):
+        except (ConnectionResetError, DeviceConnectionError, ConnectionAbortedError,AdbShellError,AdbError):
             self.sn.log_tab.emit(self.mnq_name, f"模拟器adb连接异常断开,尝试重连")
             self.sn.restart.emit(self.mnq_name, self.mnq_thread_list)
         except RestartTask:
