@@ -690,6 +690,7 @@ class DailyTaskAutoG(BasePageG):
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.crop_image_find(ImgEnumG.MR_BAT_EXIT, False, touch_wait=3):
                 self.qr_or_qx(1)
+                _WAIT_TEAM=False
                 self.air_touch(AirImgTools.turn_pos['left'], duration=1)
                 r = random.randint(0, 3)
                 if r > 1:
@@ -830,6 +831,7 @@ class DailyTaskAutoG(BasePageG):
                             elif self.get_rgb(RgbEnumG.YZD_JR, True):
                                 _WAIT_TEAM = True
                     else:
+                        self.time_sleep(GlobalEnumG.WaitTime)
                         self.check_close()
         select_queue.task_over('AutoBoss')
         raise ControlTimeOut(r"boss远征-超时失败")

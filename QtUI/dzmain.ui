@@ -1724,9 +1724,9 @@
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>270</y>
+          <y>260</y>
           <width>481</width>
-          <height>124</height>
+          <height>140</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1768,6 +1768,19 @@
            </property>
            <property name="text">
             <string>↑此选项不勾选,则刷图不会使用挂机卡（不想使用挂机卡则不勾选！）</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="jump_mode_box">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>方向键跳跃（要手动开启游戏设置中使用方向键跳跃）</string>
            </property>
           </widget>
          </item>
@@ -1828,13 +1841,6 @@
              </property>
             </widget>
            </item>
-           <item>
-            <widget class="QCheckBox" name="jump_mode_box">
-             <property name="text">
-              <string>方向键跳跃</string>
-             </property>
-            </widget>
-           </item>
           </layout>
          </item>
          <item>
@@ -1859,19 +1865,6 @@
               <string>离线</string>
              </property>
             </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_14">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </item>

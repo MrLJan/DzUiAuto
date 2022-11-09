@@ -659,6 +659,27 @@ class OpenCvTools:
         # _crop_img = self._img[y:y1, x:x1]
         return self._img[y:y1, x:x1]
 
+    def in_team(self):
+        """判定是否在组队中，1/6 ZZZ"""
+        _crop_img = self._get_crop_img(6, 344, 59, 384)
+        sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (8, 8))
+        _img1 = cv2.threshold(_crop_img.copy(), 240, 255, cv2.THRESH_BINARY)[1]
+        _img2 = cv2.morphologyEx(_img1, cv2.MORPH_GRADIENT, sqKernel)
+        res_cont = cv2.findContours(_img2, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
+        ori_list = []
+        for cnt in res_cont:
+            x, y, w1, h1 = cv2.boundingRect(cnt)
+            ar = w1 / float(h1)
+            if 5 > ar > 1 and w1 > 20 and h1 > 10:
+                ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
+        ori_list.reverse()
+        _cmp_img = OT.npypath('ZZZ')
+        if self._match_text(ori_list, _cmp_img):
+            return True
+        else:
+            _cmp_img = OT.npypath('EXP')
+        return self._match_text(ori_list, _cmp_img)
+
     def find_info(self, find_info, clicked=False, t_log=GlobalEnumG.TestLog):
         _data = OpenCvEnumG.FIND_INFO[find_info]
         _x, _y, _x1, _y1 = _data[0]
@@ -687,27 +708,6 @@ class OpenCvTools:
             self.sn.log_tab.emit(self.mnq_name, f"_res{_res}_{find_info}")
         time.sleep(1)  # 防止操作过快
         return _res
-
-    def in_team(self):
-        """判定是否在组队中，1/6 ZZZ"""
-        _crop_img = self._get_crop_img(6, 344, 59, 384)
-        sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (8, 8))
-        _img1 = cv2.threshold(_crop_img.copy(), 240, 255, cv2.THRESH_BINARY)[1]
-        _img2 = cv2.morphologyEx(_img1, cv2.MORPH_GRADIENT, sqKernel)
-        res_cont = cv2.findContours(_img2, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
-        ori_list = []
-        for cnt in res_cont:
-            x, y, w1, h1 = cv2.boundingRect(cnt)
-            ar = w1 / float(h1)
-            if 5 > ar > 1 and w1 > 20 and h1 > 10:
-                ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
-        ori_list.reverse()
-        _cmp_img = OT.npypath('ZZZ')
-        if self._match_text(ori_list, _cmp_img):
-            return True
-        else:
-            _cmp_img = OT.npypath('EXP')
-        return self._match_text(ori_list, _cmp_img)
 
     @staticmethod
     def _kernel(k_size):
@@ -971,7 +971,7 @@ class AirImgTools:
 
 if __name__ == '__main__':
     # img_fp = r'D:\DzAutoUi\Res\img\21.bmp'
-    # res, dev = DevicesConnect('emulator-5554').connect_device()
+    # res, dev = DevicesConnect('127.0.0.1:5555').connect_device()
     res2, dev2 = DevicesConnect('127.0.0.1:5555').connect_device()
     o = OpenCvTools()
     o.dev = dev2
@@ -1005,9 +1005,7 @@ if __name__ == '__main__':
     # r=o.gold_num(2)'
     # r=a.crop_image_find(ImgEnumG.PERSON_POS, clicked=False, get_pos=True,t_log=False)
     # r=o.check_num(2,t_log=False)
-    # r=o.check_xt_map('136')
-    for t in range(1,3):
-        print(t)
+    r=o.find_info('coin_enum',True,t_log=False)
     # r = a.air_all_find(ImgEnumG.PWD_TEAM,t_log=False)
     # r = o.check_num(1, t_log=False)
     # if not r:
@@ -1016,6 +1014,7 @@ if __name__ == '__main__':
     # r=o.find_xt_num('55',True)
     # r = o.find_mr_task('wl', True, touch_wait=0)
     print(time.time() - t1)
+    print(r)
     # r=c.get_ocrres([395, 647, 450, 663],t_log=False)
     # r=o.rgb(1146,213)
     # r = o.get_rgb([1146, 213,'415067'],t_log=False)

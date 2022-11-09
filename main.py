@@ -1,5 +1,4 @@
 # -*- coding:utf-8 -*-
-# cython:language_level=3
 import os
 import sys
 import time
@@ -10,13 +9,11 @@ from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem, QVBoxLa
     QTreeWidgetItem, QFileDialog
 from PyQt5.QtCore import Qt, QTimer, QRegExp
 from airtest.core.android.touch_methods.base_touch import DownEvent, SleepEvent, UpEvent
-from airtest.core.error import AdbError
 
 from cv2 import cv2
 from qt_material import apply_stylesheet
 from DzTest.DzModeMachine import switch_case, StateExecute, StateMachine, StateSelect, execute_transition, \
     select_transition
-from Utils.ExceptionTools import RestartTask
 from Utils.LoadConfig import LoadConfig
 from Utils.MnqTools import MnqTools
 from Utils.OtherTools import OT, catch_ex
@@ -26,6 +23,7 @@ from Utils.ThreadTools import ThreadTools, check_mnq_thread
 from Utils.AdbUtils import PhoneDevives
 from Enum.ResEnum import GlobalEnumG
 from Utils.Devicesconnect import DevicesConnect
+
 
 import dzmainui
 if __name__ == '__main__':

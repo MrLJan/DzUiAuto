@@ -10,13 +10,11 @@ from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem, QVBoxLa
     QTreeWidgetItem, QFileDialog
 from PyQt5.QtCore import Qt, QTimer, QRegExp
 from airtest.core.android.touch_methods.base_touch import DownEvent, SleepEvent, UpEvent
-from airtest.core.error import AdbError
 
 from cv2 import cv2
 from qt_material import apply_stylesheet
 from DzTest.DzModeMachine import switch_case, StateExecute, StateMachine, StateSelect, execute_transition, \
     select_transition
-from Utils.ExceptionTools import RestartTask
 from Utils.LoadConfig import LoadConfig
 from Utils.MnqTools import MnqTools
 from Utils.OtherTools import OT, catch_ex
@@ -140,7 +138,7 @@ class DzUi:
         self.set_check_box_text(self.ui_main.baohu_box, "全局配置", "保护卷轴")
         self.set_check_box_text(self.ui_main.auto_wait_box, "全局配置", "随机休息")
         self.set_check_box_text(self.ui_main.saodi_box, "全局配置", "扫地模式")
-        self.set_check_box_text(self.ui_main.jump_mode_box,"全局配置", "跳跃模式")
+        self.set_check_box_text(self.ui_main.jump_mode_box, "全局配置", "跳跃模式")
         self.set_check_box_text(self.ui_main.use_stone_box, "全局配置", "随机使用石头")
         self.set_combobox_text(self.ui_main.hp_box, "全局配置", "HP等级")
         self.set_combobox_text(self.ui_main.mp_box, "全局配置", "MP等级")
@@ -197,6 +195,7 @@ class DzUi:
         self.stop_btn_dic = {}  # 存储窗口关闭按钮
         self.btn_widget_dic = {}  # 存储窗口按钮布局
         self.mnq_rownum_dic = {}  # 存储窗口行号
+        self.mnq_adb_tcp_dic = {}  # 存储tcp端口
         self.mnq_name_old_list = []  # 存储旧窗口名
         self.mnq_name_pop_list = []  # 存储需要删除的窗口
         self.mnq_name_flag = None
@@ -849,7 +848,8 @@ class DzUi:
             ]
             try:
                 dev.touch_proxy.perform(multitouch_event)
-            except NotImplementedError:
+                dev.adb.disconnect()  # 断开tcp连接
+            except (NotImplementedError,TypeError):
                 pass
             ThreadTools.stop_thread_list(mnq_thread_list)  # 利用tid关闭线程
             mnq_thread_list.clear()
@@ -902,6 +902,8 @@ class DzUi:
                 if len(mnq_thread_list) != 0:
                     ThreadTools.stop_thread_list(mnq_thread_list)  # 利用tid关闭线程
                     mnq_thread_list.clear()
+                    dev = self.dev_list[mnq_name]
+                    dev.adb.disconnect()  # 断开tcp连接
                     self.sn.table_value.emit(mnq_name, 7, "")
                     self.stop_btn_dic[mnq_name].setEnabled(False)
                     self.start_btn_dic[mnq_name].setEnabled(True)
@@ -932,12 +934,12 @@ class DzUi:
             else:
                 devname = self.dev_obj_list[mnq_name][0]  # devname 设备名,mnq_name是标题名
                 try:
-                    res, dev = DevicesConnect(devname).connect_device()
+                    res, dev = DevicesConnect(devname,mnq_name,self.sn).connect_device()
                     self.dev_list[mnq_name] = dev  # dev是连接成功后的设备对象
                     devinfo = (dev, devname)
                 except:
                     res = False
-                    devinfo=[]
+                    devinfo = []
                 if not res:
                     self.get_messagebox("错误", f"模拟器序号[{mnq_index}]连接失败_检查adb")
                     self.start_btn_dic[mnq_name].setEnabled(True)
@@ -962,6 +964,8 @@ class DzUi:
                 except:
                     ThreadTools.stop_thread_list(mnq_thread_list)
                     mnq_thread_list.clear()
+                    dev_colse = self.dev_list[mnq_name]
+                    dev_colse.adb.disconnect()  # 断开tcp连接
                     self._do_task_list(index_list)
 
     def restart_task(self, mnq_name, mnq_thread_list):
@@ -1002,6 +1006,7 @@ class DzUi:
                 UpEvent(9)]
             try:
                 dev.touch_proxy.perform(multitouch_event)
+                dev.adb.disconnect()  # 断开tcp连接
             except (NotImplementedError, ConnectionResetError, ConnectionAbortedError, TypeError):
                 pass
             ThreadTools.stop_thread_list(mnq_thread_list)

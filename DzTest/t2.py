@@ -7,34 +7,29 @@ from Utils.OtherTools import OT
 
 dev = Android(serialno='127.0.0.1:5555')
 
-
 # img = cv2.imread(r"D:\xd\M\DZ\15.png", flags=0)  # 读取彩色图像(BGR)
 img = dev.snapshot(filename=r"D:\xd\M\DZ\15.png")
-x, y, x1, y1 =910, 97, 1279, 145
+x, y, x1, y1 = 1204, 89, 1260, 145
 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 # _crop_img = img[158:580, 38:1268]
 _crop_img = img[y:y1, x:x1]
 pos_list = []
 # _crop_img=cv2.resize(_crop_img,(128,72))
 # sqKernel1 = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 1))
-sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (20, 20))
-img1 = cv2.threshold(_crop_img.copy(), 130, 255, cv2.THRESH_BINARY_INV)[1]  # 转换为二值图像, thresh=63
+sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+img1 = cv2.threshold(_crop_img.copy(), 240, 255, cv2.THRESH_OTSU)[1]  # 转换为二值图像, thresh=63
 img1 = cv2.morphologyEx(img1, cv2.MORPH_CLOSE, sqKernel)
-res_cont = cv2.findContours(img1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
+res_cont = cv2.findContours(img1, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
 print(len(res_cont))
 ori_list = []
 for cnt in res_cont:
     x, y, w1, h1 = cv2.boundingRect(cnt)
     ar = w1 / float(h1)
-    # if ar >1 and h1>30:#UI
     print(ar, x, y, w1, h1)
-    if ar > 1 and w1 > 50:
+    if ar > 0.1 and w1 > 5:
         print(ar, x, y, w1, h1)
-        # if 0.7>ar > 0.5 and 20>h1>11:
-        # print(ar, x, y, w1, h1)
-        # ori_list.append([x, y, w1, h1])
         ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
-ori_list=sorted(ori_list,key=lambda x:x[-1][0])
+ori_list = sorted(ori_list, key=lambda x: x[-1][0])
 
 plt.figure(figsize=(10, 9))
 _bat_num = ''
@@ -48,7 +43,7 @@ for _row in range(len(ori_list)):
     plt.imshow(ori_list[_row][0])
     _re = cv2.matchTemplate(
         cv2.resize(ori_list[_row][0], (72, 128)),
-        numpy.load(OT.mapnpy('xt_136')), method=cv2.TM_CCOEFF_NORMED)
+        numpy.load(OT.npypath('task_close')), method=cv2.TM_CCOEFF_NORMED)
     print(_re)
     if numpy.any(_re > 0.9):
         _bat_num = _bat_num + 'bat_auto'
@@ -56,11 +51,11 @@ for _row in range(len(ori_list)):
         _res_pos.append((_bat_num, ori_list[_row][1]))
         _bat_num = ''
     _f = '999'
-    _on=1
+    _on = 1
     if _row == 0:
-        _f='xt_136'
+        _f = 'coin_enum'
     # elif _row==1:
-        # _f='mp'
+    # _f='mp'
     # elif _row==5:
     #     _f='mr_jy'
     # elif _row==6:
@@ -75,7 +70,7 @@ for _row in range(len(ori_list)):
     #     _f='jy'
     # elif row==10:
     #     _f='mr'
-    if _on==1:
+    if _on == 1:
         file_name = f"D:\\xd\\M\\DZ\\{_f}"
         numpy.save(file_name, cv2.resize(ori_list[_row][0], (72, 128)))
     # out_num(ori_list[row],row+1)

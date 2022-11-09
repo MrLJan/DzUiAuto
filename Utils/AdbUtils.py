@@ -59,7 +59,7 @@ class PhoneDevives(ADB):
         return result
 
     def disconnect(self):
-        return self.adb.remove_forward()
+        return self.adb.disconnect()
 
 
 PD = PhoneDevives()

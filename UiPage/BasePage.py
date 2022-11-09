@@ -1,9 +1,6 @@
 # -*- coding:utf-8 -*-
 import time
 
-from airtest.core.android import Android
-from airtest.core.android.adb import ADB
-
 from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG, BatEnumG
 from Utils.ExceptionTools import NotInGameErr, FuHuoRoleErr
 from Utils.LoadConfig import LoadConfig
@@ -36,6 +33,7 @@ class BasePageG(OpenCvTools, AirImgTools):
         time.sleep(wait_time)
 
     def back(self, wait_time=GlobalEnumG.BackWaitTime):
+        self.sn.log_tab.emit(self.mnq_name, r"返回back")
         self.dev.keyevent('back')
         time.sleep(wait_time)
 
@@ -89,6 +87,8 @@ class BasePageG(OpenCvTools, AirImgTools):
             elif self.back_ksdy():
                 pass
             elif self.get_rgb(RgbEnumG.MNDC_JG_QR, True):
+                pass
+            elif self.find_info('coin_enum',True):
                 pass
             elif self.find_info('LB_close', True):
                 pass

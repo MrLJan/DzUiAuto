@@ -132,6 +132,8 @@ class StateCheckG(BasePageG):
                     STAR = self.check_num(2)
                     LoadConfig.writeconf(self.mnq_name, '星力', str(STAR), ini_name=self.mnq_name)
                     self.crop_image_find(ImgEnumG.BAG_GOLD, touch_wait=2)
+            elif self.find_info('coin_enum',True):
+                pass
             else:
                 self.check_close()
 
