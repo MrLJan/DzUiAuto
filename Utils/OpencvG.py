@@ -230,7 +230,7 @@ class OpenCvTools:
             ar = w1 / float(h1)
             if 1 > ar > 0.9 and h1 > 13:
                 ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
-        ori_list = sorted(ori_list, key=lambda x: x[-1][0])
+        ori_list = sorted(ori_list, key=lambda _t: _t[-1][0])
         _res_pos = []
         for _row in range(len(ori_list)):
             _re = cv2.matchTemplate(
@@ -306,9 +306,11 @@ class OpenCvTools:
 
     def check_num(self, num_type, t_log=GlobalEnumG.TestLog):
         """检查战力-等级"""
+        _cnt_res = 0.8
         if num_type == 1:
             # 战力
             _crop_img = self._get_crop_img(18, 64, 143, 91)
+            _cnt_res = 0.69
         elif num_type == 2:
             # 星力
             _crop_img = self._get_crop_img(223, 215, 356, 247)
@@ -317,6 +319,7 @@ class OpenCvTools:
             _crop_img = self._get_crop_img(952, 20, 1070, 63)
         else:
             # 等级 0
+            _cnt_res = 0.69
             _crop_img = self._get_crop_img(19, 3, 111, 32)
         _img1 = cv2.threshold(_crop_img.copy(), 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]  # 转换为二值图像, thresh=63
         if num_type == 2:
@@ -335,7 +338,7 @@ class OpenCvTools:
                     # print(ar, x, y, w1, h1)
                     _sort_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
         # ori_list.reverse()
-        ori_list = sorted(_sort_list, key=lambda x: x[-1][0])  # 按照x大小 从小到大排序
+        ori_list = sorted(_sort_list, key=lambda _t: _t[-1][0])  # 按照x大小 从小到大排序
         _str_num = ''
         for row in range(len(ori_list)):
             for _t in range(10):
@@ -344,7 +347,7 @@ class OpenCvTools:
                     numpy.load(OT.npypath(f'z{_t}')), method=cv2.TM_CCOEFF_NORMED)
                 if t_log:
                     self.sn.log_tab.emit(self.mnq_name, f're{_re}_{row}')
-                if numpy.any(_re > 0.8):
+                if numpy.any(_re > _cnt_res):
                     _str_num = _str_num + str(_t)
         if t_log:
             self.sn.log_tab.emit(self.mnq_name, f"{_str_num}")
@@ -367,7 +370,7 @@ class OpenCvTools:
             # ar = w1 / float(h1)
             if 20 > h1 > 10:
                 ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
-        ori_list = sorted(ori_list, key=lambda x: x[-1][0])
+        ori_list = sorted(ori_list, key=lambda _t: _t[-1][0])
         _gold_num = ''
         for row in range(len(ori_list)):
             for _t in OpenCvEnumG.GOLD_NUM.keys():
@@ -397,7 +400,7 @@ class OpenCvTools:
             ar = w1 / float(h1)
             if 1 > ar > 0.1 and h1 > 10:
                 ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
-        ori_list = sorted(ori_list, key=lambda x: x[-1][0])
+        ori_list = sorted(ori_list, key=lambda _t: _t[-1][0])
         _time_num = ''
         for row in range(len(ori_list)):
             for _t in range(10):
@@ -415,7 +418,7 @@ class OpenCvTools:
         """检查药品是否为空"""
         _crop_img = self._get_crop_img(1127, 365, 1262, 389)
         sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
-        _img1 = cv2.threshold(_crop_img.copy(), 240, 255, cv2.THRESH_OTSU)[1]  # 转换为二值图像, thresh=63
+        _img1 = cv2.threshold(_crop_img.copy(), 240, 255, cv2.THRESH_BINARY)[1]  # 转换为二值图像, thresh=63
         img_closed = cv2.morphologyEx(_img1, cv2.MORPH_CLOSE, sqKernel)
         res_cont, hierarchy = cv2.findContours(img_closed, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
         ori_list = []
@@ -425,7 +428,7 @@ class OpenCvTools:
             if ar > 1.5 and w1 > 15:
                 ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
         ori_list.reverse()
-        return self._match_res(ori_list, OpenCvEnumG.HP_MP,cont_res=0.79)
+        return self._match_res(ori_list, OpenCvEnumG.HP_MP, cont_res=0.79)
 
     def check_put_num(self, type_id):
         """检查药水购买数量 或 组队密码输入数量"""
@@ -443,10 +446,10 @@ class OpenCvTools:
             ar = w1 / float(h1)
             if 0.8 > ar > 0.4 and h1 > 5:
                 ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
-        ori_list = sorted(ori_list, key=lambda x: x[-1][0])
+        ori_list = sorted(ori_list, key=lambda _t: _t[-1][0])
         return self._match_res(ori_list, OpenCvEnumG.YS_NUM, cont_res=0.69)
 
-    def check_map(self, map_name,t_log=GlobalEnumG.TestLog):
+    def check_map(self, map_name, t_log=GlobalEnumG.TestLog):
         """在主界面 检查地图名"""
         if t_log:
             self.sn.log_tab.emit(self.mnq_name, f"check_map_{map_name}")
@@ -466,7 +469,7 @@ class OpenCvTools:
         ori_list.reverse()
         return self._match_text(ori_list, _cmp_res, cont_res=0.7)
 
-    def map_yt(self, map_name,t_log=GlobalEnumG.TestLog):
+    def map_yt(self, map_name, t_log=GlobalEnumG.TestLog):
         """在地图界面，选择地图区域，例 时间神殿、未来之门"""
         _cmp_img = OT.mapnpy(f'map_{map_name}')
         _crop_img = self._get_crop_img(2, 76, 155, 716)
@@ -490,27 +493,29 @@ class OpenCvTools:
                 ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
         _res, _pos = self._match_text(ori_list, _cmp_img, clicked=True, cont_res=0.6)
         if _res:
+            if t_log:
+                self.sn.log_tab.emit(self.mnq_name, f"map_yt_{map_name}")
             self.dev.touch((_pos[0] + 2, _pos[-1] + 76), duration=0.1)
             time.sleep(1)
         return _res
 
-    def check_xt_map(self, map_name):
+    def check_xt_map(self, map_name, cont_res=0.69):
         """在地图界面检查 地图名"""
         _cmp_res = OT.mapnpy(f'xt_{map_name}')
         _crop_img = self._get_crop_img(910, 97, 1279, 145)
         sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (20, 20))
-        _img1 = cv2.threshold(_crop_img.copy(), 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[
+        _img1 = cv2.threshold(_crop_img.copy(), 130, 255, cv2.THRESH_BINARY_INV)[
             1]  # 转换为二值图像
         _img2 = cv2.morphologyEx(_img1, cv2.MORPH_CLOSE, sqKernel)
-        res_cont = cv2.findContours(_img2, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
+        res_cont = cv2.findContours(_img2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
         ori_list = []
         for cnt in res_cont:
             x, y, w1, h1 = cv2.boundingRect(cnt)
             ar = w1 / float(h1)
-            if ar > 5 and h1 > 15:
+            if ar > 1 and w1 > 50:
                 ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
         ori_list.reverse()
-        return self._match_text(ori_list, _cmp_res)
+        return self._match_text(ori_list, _cmp_res, cont_res=cont_res)
 
     def check_map_ex(self, map_name, type_id='3'):
         """检查主界面地图名"""
@@ -530,8 +535,7 @@ class OpenCvTools:
             ar = w1 / float(h1)
             if ar > 1 and w1 > 20:
                 ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
-        # ori_list.reverse()
-        return self._match_text(ori_list, _cmp_res)
+        return self._match_text(ori_list, _cmp_res, cont_res=0.69)
 
     def back_ksdy(self):
         """检查返回至快速单元"""
@@ -580,7 +584,7 @@ class OpenCvTools:
         return self._match_text(ori_list, _cmp_img, cont_res=0.7)
 
     def qr_or_qx(self, type_id=0):
-        self.sn.log_tab.emit(self.mnq_name, r"检查弹窗按钮")
+        # self.sn.log_tab.emit(self.mnq_name, r"检查弹窗按钮")
         if type_id == 0:
             _cmp_img = OT.npypath('ui_qx')  # 取消
         else:
@@ -601,6 +605,7 @@ class OpenCvTools:
                 cv2.resize(ori_list[_row][0], (72, 128)),
                 numpy.load(_cmp_img), method=cv2.TM_CCOEFF_NORMED)
             if numpy.any(_re > 0.7):
+                self.sn.log_tab.emit(self.mnq_name, r"点击弹窗按钮")
                 self.dev.touch((ori_list[_row][1][0] + 228,
                                 ori_list[_row][1][-1] + 73))
                 return True
@@ -750,7 +755,7 @@ class OpenCvTools:
             return cv2.findContours(cont_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
 
     @staticmethod
-    def _match_res(ori_list, enum_res, cont_res=0.9):
+    def _match_res(ori_list, enum_res, cont_res=0.9, t_log=GlobalEnumG.TestLog):
         """匹配数字"""
         _bat_num = ''
         for row in range(len(ori_list)):
@@ -758,18 +763,20 @@ class OpenCvTools:
                 _re = cv2.matchTemplate(
                     cv2.resize(ori_list[row][0], (72, 128)),
                     numpy.load(enum_res[_t]), method=cv2.TM_CCOEFF_NORMED)
-                # print(_re)
+                if t_log:
+                    print(_re)
                 if numpy.any(_re > cont_res):
                     _bat_num = _bat_num + _t
         return _bat_num
 
     @staticmethod
-    def _match_text(ori_list, cmp_res, clicked=False, cont_res=0.89):
+    def _match_text(ori_list, cmp_res, clicked=False, cont_res=0.79, t_log=GlobalEnumG.TestLog):
         for _row in range(len(ori_list)):
             _re = cv2.matchTemplate(
                 cv2.resize(ori_list[_row][0], (72, 128)),
                 numpy.load(cmp_res), method=cv2.TM_CCOEFF_NORMED)
-            # print(_re)
+            if t_log:
+                print(_re)
             if numpy.any(_re > cont_res):
                 if clicked:
                     return True, ori_list[_row][-1]
@@ -800,7 +807,7 @@ class AirImgTools:
     }
 
     # @staticmethod
-    def crop_image_find(self, area_temp, clicked=True, timeout=0.1, touch_wait=GlobalEnumG.TouchWaitTime,
+    def crop_image_find(self, area_temp, clicked=True, touch_wait=GlobalEnumG.TouchWaitTime,
                         get_pos=False, t_log=GlobalEnumG.TestLog):
         """区域找图"""
         self._img = self.dev.snapshot()
@@ -829,7 +836,7 @@ class AirImgTools:
             return False
         return False
 
-    def air_loop_find(self, temp, clicked=True, timeout=GlobalEnumG.FindImgTimeOut,
+    def air_loop_find(self, temp, clicked=True,
                       touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog):
         """
         循环查找图片并点击，超时返回
@@ -854,7 +861,19 @@ class AirImgTools:
             self.sn.log_tab.emit(self.mnq_name, f"f_air_loop_find:{temp}")
         return False
 
-    def air_touch(self, touch_xy, duration=0.2, touch_wait=0):
+    def air_all_find(self, temp, t_log=GlobalEnumG.TestLog):
+        img = temp[-1]
+        self._img = self.dev.snapshot()
+        _pos_list = []
+        if self._img is not None:
+            match_pos = img.match_all_in(self._img)
+            for _match in match_pos:
+                _pos_list.append(_match['result'])
+            if t_log:
+                self.sn.log_tab.emit(self.mnq_name, f"air_all_find:{temp}_{match_pos}")
+        return _pos_list
+
+    def air_touch(self, touch_xy, duration=0.2, touch_wait=1):
         self.dev.touch(touch_xy, duration=duration)
         if touch_wait > 0:
             time.sleep(touch_wait)
@@ -864,9 +883,12 @@ class AirImgTools:
         if swipe_wait > 0:
             time.sleep(swipe_wait)
 
-    def move_turn(self, turn, k_time):
-        _pos = self.turn_pos[turn]
-        self.air_touch(_pos, duration=k_time)
+    def move_turn(self, turn, k_time, jump_mode=False):
+        if jump_mode and 2>k_time > 1:
+            self.key_double_jump(turn, k_time)
+        else:
+            _pos = self.turn_pos[turn]
+            self.air_touch(_pos, duration=k_time)
 
     def mul_point_touch(self, turn, action, k_time=1, long_click=False):
         """多点长按，控制移动"""
@@ -939,6 +961,13 @@ class AirImgTools:
         ]
         self.dev.touch_proxy.perform(multitouch_event)
 
+    def key_double_jump(self, turn, k_time=3):
+        if turn == 'left':
+            _k_pos = (78, 453)
+        else:
+            _k_pos = (216, 453)
+        self.air_touch(_k_pos, duration=k_time)
+
 
 if __name__ == '__main__':
     # img_fp = r'D:\DzAutoUi\Res\img\21.bmp'
@@ -946,6 +975,8 @@ if __name__ == '__main__':
     res2, dev2 = DevicesConnect('127.0.0.1:5555').connect_device()
     o = OpenCvTools()
     o.dev = dev2
+    a = AirImgTools()
+    a.dev = dev2
     # r=o.mulcolor_check(ColorEnumG.LOGIN_MAIN)
     # while True:
     # a.double_jump_touch('right')
@@ -970,10 +1001,18 @@ if __name__ == '__main__':
     # r = o.check_xt_map('130')
     # r = o.ys_contrl('ys_ljqw')
     # r = o.check_xt_map('120')
-    r = o.check_boss_end(0)
+    # r = o.check_boss_end(0)
+    # r=o.gold_num(2)'
+    # r=a.crop_image_find(ImgEnumG.PERSON_POS, clicked=False, get_pos=True,t_log=False)
+    # r=o.check_num(2,t_log=False)
+    # r=o.check_xt_map('136')
+    for t in range(1,3):
+        print(t)
+    # r = a.air_all_find(ImgEnumG.PWD_TEAM,t_log=False)
+    # r = o.check_num(1, t_log=False)
     # if not r:
-    if r != '':
-        print(r, 1)
+    # if r != '':
+    #     print(r, 1)
     # r=o.find_xt_num('55',True)
     # r = o.find_mr_task('wl', True, touch_wait=0)
     print(time.time() - t1)

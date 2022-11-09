@@ -74,31 +74,24 @@ class BasePageG(OpenCvTools, AirImgTools):
                 w_time = time.time()
             elif self.crop_image_find(ImgEnumG.GAME_ICON, False):
                 raise NotInGameErr
-            elif self.get_rgb(RgbEnumG.EXIT_FOU, True, touch_wait=GlobalEnumG.ExitBtnTime) or self.get_rgb(
-                    RgbEnumG.CLOSE_GAME, True, touch_wait=GlobalEnumG.ExitBtnTime):  # 退出游戏-否
-                if self.find_info('ingame_flag2'):
-                    return True
-                if self.crop_image_find(ImgEnumG.CZ_FUHUO):
-                    raise FuHuoRoleErr
-                if self.crop_image_find(ImgEnumG.LOGIN_TIPS, False):
-                    raise NotInGameErr
+            # elif self.get_rgb(RgbEnumG.EXIT_FOU, True, touch_wait=GlobalEnumG.ExitBtnTime) or self.get_rgb(
+            #         RgbEnumG.CLOSE_GAME, True, touch_wait=GlobalEnumG.ExitBtnTime):  # 退出游戏-否
+            elif self.find_info('ingame_flag2'):
+                return True
+            elif self.crop_image_find(ImgEnumG.CZ_FUHUO):
+                raise FuHuoRoleErr
+            elif self.crop_image_find(ImgEnumG.LOGIN_TIPS, False):
+                raise NotInGameErr
             elif self.get_rgb(RgbEnumG.HD_BJBS, True):
                 pass
-            elif self.get_rgb(RgbEnumG.QR,True):
+            elif self.get_rgb(RgbEnumG.QR, True):
                 pass
             elif self.back_ksdy():
                 pass
-            elif self.get_rgb(RgbEnumG.MNDC_JG_QR,True):
+            elif self.get_rgb(RgbEnumG.MNDC_JG_QR, True):
                 pass
-            # if self.ocr_find(ImgEnumG.NET_ERR):  # 网络异常掉线
-            #     _TIMES = 0
-            #     for i in range(10):
-            #         if _TIMES > 5:
-            #             self.stop_game(self.serialno)
-            #             raise NotInGameErr
-            #         if self.ocr_find(ImgEnumG.NET_ERR):
-            #             _TIMES += 1
-            #             self.time_sleep(10)
+            elif self.find_info('LB_close', True):
+                pass
             else:
                 self.back()
 
@@ -109,7 +102,7 @@ class BasePageG(OpenCvTools, AirImgTools):
             raise FuHuoRoleErr
         if self.find_info('ingame_flag2'):
             return True
-        if self.find_info('game_login',True):
+        if self.find_info('game_login', True):
             return True
         self.get_rgb(RgbEnumG.BAT_JG, True)
         return False
@@ -127,20 +120,19 @@ class BasePageG(OpenCvTools, AirImgTools):
                 return True
             self.air_loop_find(ImgEnumG.UI_CLOSE)
             self.find_info('task_close', True)
-            self.find_info('LB_close',True)
+            self.find_info('LB_close', True)
             self.air_loop_find(ImgEnumG.QD_1)
             self.air_loop_find(ImgEnumG.UI_QR)
             self.air_loop_find(ImgEnumG.LOGIN_TIPS)
             if i > 5:
                 while not self.find_info('ingame_flag2'):
-                    if self.find_info('task_arrow',True):
+                    if self.find_info('task_arrow', True):
                         pass
-                    self.air_loop_find(ImgEnumG.TASK_OVER, timeout=0.5, touch_wait=0)
-                    self.air_loop_find(ImgEnumG.TASK_START, timeout=0.5, touch_wait=0)
+                    self.air_loop_find(ImgEnumG.TASK_OVER, touch_wait=0)
+                    self.air_loop_find(ImgEnumG.TASK_START, touch_wait=0)
                     self.check_err()
                     self.back()
         return False
-
 
     def check_is_stop(self):
         _COLOR = self.rgb(450, 654)
@@ -193,7 +185,7 @@ class BasePageG(OpenCvTools, AirImgTools):
                 else:
                     _C_TIMES += 1
             elif self.find_info('ingame_flag2'):
-                if not self.crop_image_find(ImgEnumG.SKIP_NEW, timeout=3):
+                if not self.crop_image_find(ImgEnumG.SKIP_NEW):
                     return True
             else:
                 self.check_close()
@@ -220,14 +212,16 @@ class BasePageG(OpenCvTools, AirImgTools):
         }
         for _s in XT_MAP.keys():
             if int(star) >= _s:
+                kwargs['地图名'] = XT_MAP[_s]
                 return self.change_mapdata('3', XT_MAP[_s], **kwargs)
 
     def change_mapdata(self, xt_yt, map_name, **kwargs):
         kwargs['任务id'] = xt_yt
         auto_choose = kwargs['托管模式']
-        kwargs['战斗数据']['地图数据'] = BatEnumG.MAP_DATA[xt_yt][map_name],
+        kwargs['地图名'] = map_name
+        kwargs['战斗数据']['地图数据'] = BatEnumG.MAP_DATA[xt_yt][map_name]
         kwargs['战斗数据']['地图识别'] = BatEnumG.MAP_OCR[map_name]
-        kwargs['地图名'] = BatEnumG.MAP_OCR[map_name][0][-1]
         self.sn.table_value.emit(self.mnq_name, 2, map_name)
         if not auto_choose:
             LoadConfig.writeconf(self.mnq_name, '最近任务', map_name, ini_name=self.mnq_name)
+        return kwargs

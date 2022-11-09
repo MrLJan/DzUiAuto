@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 
-from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG, BatEnumG
+from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
 from Utils.LoadConfig import LoadConfig
 
@@ -15,13 +15,11 @@ class StateCheckG(BasePageG):
         self.mnq_name = mnq_name
 
     def choose_task(self, **kwargs):
-        exec_queue = kwargs['状态队列']['执行器']
         select_queue = kwargs['状态队列']['选择器']
         use_mp = kwargs['挂机设置']['无蓝窗口']
         if select_queue.queue.empty():
             if not self.check_hpmp(use_mp):
                 select_queue.put_queue('BuyY')
-            # if self.ocr_find(ImgEnumG.BAG_FULL):
             if self.crop_image_find(ImgEnumG.BAG_MAX_IMG, False):
                 select_queue.put_queue('BagSell')
         else:
@@ -88,12 +86,13 @@ class StateCheckG(BasePageG):
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.find_info('ingame_flag2'):
                 if not _C_LEVEL:
+                    self.sn.log_tab.emit(self.mnq_name, r"检查等级、战力数")
                     LEVEL = self.check_num(0)
                     BAT_NUM = self.check_num(1)
                     if LEVEL != '0':
                         LoadConfig.writeconf(self.mnq_name, '等级', str(LEVEL), ini_name=self.mnq_name)
                         LoadConfig.writeconf(self.mnq_name, '战力', str(BAT_NUM), ini_name=self.mnq_name)
-                        _C_LEVEL=True
+                        _C_LEVEL = True
                 if _C_OVER:
                     kwargs['角色信息']['等级'] = LEVEL
                     kwargs['角色信息']['星力'] = STAR
@@ -105,7 +104,7 @@ class StateCheckG(BasePageG):
                     self.sn.table_value.emit(self.mnq_name, 4, f"{STAR}")
                     self.sn.table_value.emit(self.mnq_name, 5, f"{BAT_NUM}")
                     self.sn.table_value.emit(self.mnq_name, 6, f"{GOLD}")
-                    self.sn.table_value.emit(self.mnq_name, 7, f"{round(_T_GOLD / 10000, 1)}万")
+                    self.sn.table_value.emit(self.mnq_name, 7, f"{str(_T_GOLD)}万")
                     LoadConfig.writeconf(self.mnq_name, '产金量', str(_T_GOLD) + '万', ini_name=self.mnq_name)
                     self.sn.log_tab.emit(self.mnq_name,
                                          f"等级：{LEVEL}_星力{STAR}_战力{BAT_NUM}_金币{GOLD}_红币{RED_GOLD}_产金{_T_GOLD}")
@@ -118,6 +117,7 @@ class StateCheckG(BasePageG):
                 if _C_OVER:
                     self.get_rgb(RgbEnumG.BAG_GOLD_QR, True)
                 else:
+                    self.sn.log_tab.emit(self.mnq_name, r"检查金币、红币数量")
                     GOLD = self.gold_num(1)
                     RED_GOLD = self.gold_num(0)
                     LoadConfig.writeconf(self.mnq_name, '金币', str(GOLD), ini_name=self.mnq_name)
@@ -128,6 +128,7 @@ class StateCheckG(BasePageG):
                 if _C_OVER:
                     self.back()
                 else:
+                    self.sn.log_tab.emit(self.mnq_name, r"检查星力")
                     STAR = self.check_num(2)
                     LoadConfig.writeconf(self.mnq_name, '星力', str(STAR), ini_name=self.mnq_name)
                     self.crop_image_find(ImgEnumG.BAG_GOLD, touch_wait=2)
@@ -136,16 +137,23 @@ class StateCheckG(BasePageG):
 
     def auto_choose_task(self, level, star, red_gold, select_queue, **kwargs):
         exec_queue = kwargs['状态队列']['执行器']
+        red_coin = kwargs['强化设置']['托管红币']
+        if red_coin == '0':
+            red_coin = '1'
         _L4_FLAG = False if kwargs['角色信息']['100级'] == '0' else True
         if int(star) >= 40:
             # self.change_mapdata('3', '研究所102', **kwargs)
+            self.sn.log_tab.emit(self.mnq_name, r"选择星图混经验")
             exec_queue.put_queue('AutoBat')
         else:
+            self.sn.log_tab.emit(self.mnq_name, r"星力不足,继续做任务")
             exec_queue.put_queue('AutoTask')
         if int(level) > 100 and not _L4_FLAG:
+            self.sn.log_tab.emit(self.mnq_name, r"大于100级,且配置中未检查装备技能")
             select_queue.put_queue('UseSkill')
             select_queue.put_queue('GetLevelReard')
-        if int(red_gold) > 10000000:
+        if int(red_gold) > int(red_coin) * 10000000:
+            self.sn.log_tab.emit(self.mnq_name, f"红币数量大于【{red_coin}千万】,进行强化+升级装备")
             # select_queue.put_queue('CheckRole')
             select_queue.put_queue('UpEquip')
             select_queue.put_queue('StrongEquip')

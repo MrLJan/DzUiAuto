@@ -88,9 +88,11 @@ class RewardG(BasePageG):
                 if not self.air_loop_find(ImgEnumG.ZB_TS, touch_wait=2):
                     if not _WQ:
                         self.air_touch((780, 127), touch_wait=2)
+                        self.sn.log_tab.emit(self.mnq_name, f"穿戴装备-武器完成")
                         _WQ = True
                     elif not _FJ:
                         self.air_touch((868, 125), touch_wait=2)
+                        self.sn.log_tab.emit(self.mnq_name, f"穿戴装备-防具完成")
                         _FJ = True
                     elif _WQ and _FJ:
                         self.back()
@@ -141,27 +143,32 @@ class RewardG(BasePageG):
                 self.enum_find('kt', True)
             elif self.get_rgb(RgbEnumG.KT_M):
                 if _C_OVER:
+                    self.sn.log_tab.emit(self.mnq_name, f"领取课题奖励-完成")
                     self.back()
                     return True
                 if self.get_rgb(RgbEnumG.KT_MRRW):  # 每日任务
+                    self.sn.log_tab.emit(self.mnq_name, f"领取-每日任务奖励")
                     if self.get_rgb(RgbEnumG.KT_F, False):
                         self.air_touch((48, 207), touch_wait=1)
                     else:
                         self.air_touch((1119, 650), touch_wait=1)
                         # self.ocr_find(ImgEnumG.KT_MZRW_OCR, True)
                 elif self.get_rgb(RgbEnumG.KT_MZRW):  # 每周任务
+                    self.sn.log_tab.emit(self.mnq_name, f"领取-每周任务奖励")
                     if self.get_rgb(RgbEnumG.KT_F):
                         self.air_touch((169, 309))
                     else:
                         self.air_touch((1120, 652))
                         # self.ocr_find(ImgEnumG.KT_MRSL_OCR, True)
                 elif self.get_rgb(RgbEnumG.KT_MRSL):  # 每日狩猎
+                    self.sn.log_tab.emit(self.mnq_name, f"领取-每日狩猎奖励")
                     if self.get_rgb(RgbEnumG.KT_F):
                         self.air_touch((155, 490))
                     else:
                         self.air_touch((1109, 641))
                         # self.ocr_find(ImgEnumG.KT_CJ_OCR, True)
                 elif self.get_rgb(RgbEnumG.KT_CJ):  # 成就
+                    self.sn.log_tab.emit(self.mnq_name, f"领取-成就奖励")
                     if self.get_rgb(RgbEnumG.KT_F):
                         _C_OVER = True
                     else:
@@ -180,7 +187,7 @@ class RewardG(BasePageG):
 
     def get_hd_reward(self):
         s_time = time.time()
-        # self.sn.log_tab.emit(self.mnq_name, f"领取登录奖励")
+        self.sn.log_tab.emit(self.mnq_name, f"领取奖励")
         _LOGIN = False
         _IN_DLJL = False
         _IN_XX = False
@@ -195,11 +202,13 @@ class RewardG(BasePageG):
                 self.time_sleep(GlobalEnumG.TouchWaitTime)
                 if not _LOGIN:
                     if self.find_info('hd_dljl', True):
+                        self.sn.log_tab.emit(self.mnq_name, f"领取登录奖励")
                         _IN_DLJL = True
                         self.time_sleep(GlobalEnumG.TouchWaitTime)
                 if _IN_DLJL:
                     if not self.get_rgb(RgbEnumG.RE_LQJL, True):  # 领取奖励:
                         if self.find_info('hd_xxjl', True):
+                            self.sn.log_tab.emit(self.mnq_name, f"领取休息奖励")
                             _IN_XX = True
                             _IN_DLJL = False
                             _LOGIN = True
@@ -233,6 +242,7 @@ class RewardG(BasePageG):
                     _FIND_TIMES += 1
             elif self.get_rgb(RgbEnumG.HD_CZZY):
                 if self.get_rgb([1238, 655, 'ADADAD']) or self.get_rgb([1238, 655, 'AEAEAE']):
+                    self.sn.log_tab.emit(self.mnq_name, r"领取成长奖励-完成")
                     self.back()
                     return True
                 else:
@@ -345,10 +355,12 @@ class RewardG(BasePageG):
                             if not _FJSX_FLAG:
                                 self.air_touch((68, 677), touch_wait=1)
                             else:
+                                self.sn.log_tab.emit(self.mnq_name, r"分解完成")
                                 _FJ_OVER = True
                         else:
                             self.get_rgb(RgbEnumG.CS_QR, True)
                             if self.get_rgb(RgbEnumG.QR, True, touch_wait=2):
+                                self.sn.log_tab.emit(self.mnq_name, r"分解确认")
                                 _FJ_OVER = True
             elif self.get_rgb(RgbEnumG.FJ_END) and _FJSX_FLAG:
                 self.get_rgb(RgbEnumG.FJ_END, True, touch_wait=5)
@@ -366,16 +378,19 @@ class RewardG(BasePageG):
                 self.get_rgb(RgbEnumG.SX_SP2, True)  # 饰品
                 self.get_rgb(RgbEnumG.SX_SP3, True)  # 饰品
                 if self.get_rgb(RgbEnumG.BAG_SX_TY, True):
+                    self.sn.log_tab.emit(self.mnq_name, r"出售筛选设置-完成")
                     _SX_FLAG = True
             elif self.get_rgb(RgbEnumG.BAG_FJSX) and not _FJSX_FLAG:
                 self.get_rgb(RgbEnumG.FJ_SX, True)  # 史诗
                 self.get_rgb(RgbEnumG.FJ_SX2, True)  # 史诗
                 if self.get_rgb(RgbEnumG.FJ_TY, True):
+                    self.sn.log_tab.emit(self.mnq_name, r"分解筛选设置-完成")
                     _FJSX_FLAG = True
             else:
                 if time.time() - s_time > 60:
                     self.check_close()
                     s_time = time.time()
+                self.time_sleep(1)
         raise ControlTimeOut(r'出售背包-异常超时')
 
     def calculationgold(self, **kwargs):

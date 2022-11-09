@@ -89,6 +89,7 @@ class DzUi:
         self.ui_main.d4_pindao_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
         self.ui_main.d5_pindao_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
         self.ui_main.d6_pindao_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
+        self.ui_main.red_coin_edit.setValidator(QRegExpValidator(QRegExp("[0-9]{1,3}")))
         # 设置保存按钮
         self.ui_main.save_setting_btn.clicked.connect(self.save_setting)
         self.ui_main.save_setting_btn_2.clicked.connect(self.save_setting)
@@ -113,6 +114,7 @@ class DzUi:
         self.set_lineedit_text(self.ui_main.d4_pindao_edit, "野图配置", "4队频道")
         self.set_lineedit_text(self.ui_main.d5_pindao_edit, "野图配置", "5队频道")
         self.set_lineedit_text(self.ui_main.d6_pindao_edit, "野图配置", "6队频道")
+        self.set_lineedit_text(self.ui_main.red_coin_edit, '全局配置', '托管红币')
         self.set_zhiyebox_text(self.ui_main.zhiye_choose_box, "全局配置", "职业类型")
         self.set_check_box_text(self.ui_main.is_exitgame_box, "全局配置", "离线使用挂机卡")
         self.set_check_box_text(self.ui_main.is_exit_team_box, "全局配置", "人少退组")
@@ -138,6 +140,7 @@ class DzUi:
         self.set_check_box_text(self.ui_main.baohu_box, "全局配置", "保护卷轴")
         self.set_check_box_text(self.ui_main.auto_wait_box, "全局配置", "随机休息")
         self.set_check_box_text(self.ui_main.saodi_box, "全局配置", "扫地模式")
+        self.set_check_box_text(self.ui_main.jump_mode_box,"全局配置", "跳跃模式")
         self.set_check_box_text(self.ui_main.use_stone_box, "全局配置", "随机使用石头")
         self.set_combobox_text(self.ui_main.hp_box, "全局配置", "HP等级")
         self.set_combobox_text(self.ui_main.mp_box, "全局配置", "MP等级")
@@ -455,6 +458,7 @@ class DzUi:
         d4_pindao = self.ui_main.d4_pindao_edit.text()
         d5_pindao = self.ui_main.d5_pindao_edit.text()
         d6_pindao = self.ui_main.d6_pindao_edit.text()
+        red_coin = self.ui_main.red_coin_edit.text()
         mnq_index = self.ui_main.start_mnq_index_edit.text()
         zhiye = GlobalEnumG.ZhiYe
         team_pwd = self.ui_main.team_pwd_edit.text()
@@ -496,9 +500,11 @@ class DzUi:
         is_exitgame = '1' if self.ui_main.is_exitgame_box.isChecked() else '0'
         is_change_role = '1' if self.ui_main.is_change_role_box.isChecked() else '0'
         saodi_mode = '1' if self.ui_main.saodi_box.isChecked() else '0'
+        jump_mode = '1' if self.ui_main.jump_mode_box.isChecked() else '0'
 
         LoadConfig.writeconf("路径", "模拟器路径", ld_mnq_path)
         LoadConfig.writeconf("全局配置", "扫地模式", saodi_mode)
+        LoadConfig.writeconf("全局配置", "跳跃模式", jump_mode)
         LoadConfig.writeconf("全局配置", "HP等级", hp_levle)
         LoadConfig.writeconf("全局配置", "MP等级", mp_levle)
         LoadConfig.writeconf("全局配置", "hp数量", hp_num)
@@ -558,6 +564,7 @@ class DzUi:
         LoadConfig.writeconf("野图配置", "4队频道", d4_pindao)
         LoadConfig.writeconf("野图配置", "5队频道", d5_pindao)
         LoadConfig.writeconf("野图配置", "6队频道", d6_pindao)
+        LoadConfig.writeconf("全局配置", "托管红币", red_coin)
         self.get_messagebox("设置", "配置已更新")
 
     @staticmethod
@@ -909,6 +916,7 @@ class DzUi:
         """启动任务"""
         for mnq_index in index_list:
             mnq_name = MnqTools().use_index_find_name(mnq_index)
+            mnq_thread_list = self.mnq_thread_tid[mnq_name]
             try:
                 row_num = int(self.mnq_rownum_dic[mnq_name]['rownum'])
                 self.ui_main.windows_pid.cellWidget(row_num, 0).setChecked(False)
@@ -923,14 +931,21 @@ class DzUi:
                 return False
             else:
                 devname = self.dev_obj_list[mnq_name][0]  # devname 设备名,mnq_name是标题名
-                res, dev = DevicesConnect(devname).connect_device()
+                try:
+                    res, dev = DevicesConnect(devname).connect_device()
+                    self.dev_list[mnq_name] = dev  # dev是连接成功后的设备对象
+                    devinfo = (dev, devname)
+                except:
+                    res = False
+                    devinfo=[]
                 if not res:
-                    self.get_messagebox("错误", f"模拟器序号[{mnq_index}]连接失败{dev}_检查adb")
+                    self.get_messagebox("错误", f"模拟器序号[{mnq_index}]连接失败_检查adb")
+                    self.start_btn_dic[mnq_name].setEnabled(True)
+                    self.stop_btn_dic[mnq_name].setEnabled(False)
+                    mnq_thread_list.clear()
                     return False
-                self.dev_list[mnq_name] = dev  # dev是连接成功后的设备对象
-                devinfo = (dev, devname)
+                # self.dev_list[mnq_name] = dev  # dev是连接成功后的设备对象
                 mnq_name = self.ui_main.windows_pid.item(row_num, 1).text()
-                mnq_thread_list = self.mnq_thread_tid[mnq_name]
                 _time = time.time()
                 login_time = time.strftime('%m-%d %H:%M:%S', time.localtime(_time))
                 LoadConfig.writeconf(mnq_name, '最近登录时间', str(_time), ini_name=mnq_name)
@@ -944,11 +959,10 @@ class DzUi:
                 try:
                     check_mnq_thread(f"{mnq_name}_{task_name}", mnq_thread_list,
                                      switch_case(self.sn, **taskdic).do_case, thread_while=True)
-                except (ConnectionResetError, RestartTask, AdbError, ConnectionAbortedError):
+                except:
                     ThreadTools.stop_thread_list(mnq_thread_list)
                     mnq_thread_list.clear()
                     self._do_task_list(index_list)
-
 
     def restart_task(self, mnq_name, mnq_thread_list):
         """重启任务"""
@@ -988,7 +1002,7 @@ class DzUi:
                 UpEvent(9)]
             try:
                 dev.touch_proxy.perform(multitouch_event)
-            except (NotImplementedError, ConnectionResetError, ConnectionAbortedError):
+            except (NotImplementedError, ConnectionResetError, ConnectionAbortedError, TypeError):
                 pass
             ThreadTools.stop_thread_list(mnq_thread_list)
             mnq_thread_list.clear()
@@ -1189,7 +1203,7 @@ def main():
         'line_height': '13px',
     }
     # apply_stylesheet(app, 'default', invert_secondary=False, extra=extra)
-    apply_stylesheet(app, theme='dark_red.xml',extra=extra)
+    apply_stylesheet(app, theme='dark_red.xml', extra=extra)
     dz.ui_main.show()
     app.exec_()
 

@@ -4,6 +4,7 @@ import time
 
 from Enum.ResEnum import ImgEnumG, GlobalEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
+from Utils.ExceptionTools import FuHuoRoleErr
 
 
 class AutoBatG(BasePageG):
@@ -21,13 +22,11 @@ class AutoBatG(BasePageG):
             self.crop_image_find(ImgEnumG.S_MAP, touch_wait=1)
         return res
 
-    def find_map_move(self, map_data, map_x, map_y, wait_queue, louti_queue):
+    @staticmethod
+    def find_map_move(map_data, map_x, map_y, wait_queue, louti_queue):
         if map_y == map_data[0][-1] and not louti_queue.check_queue('1') and map_y != 135:
             louti_queue.queue.queue.clear()
             louti_queue.put_queue('1')
-        # if map_louti[-1] == 135 and map_y in [148, 156, 150]:
-        #     louti_queue.queue.queue.clear()
-        #     louti_queue.put_queue('1')
         if louti_queue.queue.empty() or louti_queue.check_queue('1'):
             if abs(map_y - map_data[0][-1]) <= 2:
                 if map_data[0][0] == 928:
@@ -73,16 +72,16 @@ class AutoBatG(BasePageG):
             return 0, 0
         return 0, 0
 
-    def find_jump_louti(self, louti_x, saodi_mode):
+    def find_jump_louti(self, louti_x, saodi_mode, j_mode):
         """到达楼梯点后跳跃"""
         res, x, y = self._get_move_xy()
-        for i in range(10):
-            if i == 4:
+        for i in range(5):
+            if i == 5:
                 # print(f"reset_spend{i}")
                 self.move_spend = 0
             res1, x1, y1 = self._get_move_xy()
             if x1 == 0:
-                self.move_turn('left', 1.2)
+                self.move_turn('left', 1.2, jump_mode=j_mode)
                 if y1 != y:
                     return False, x1
             else:
@@ -99,13 +98,15 @@ class AutoBatG(BasePageG):
                         self.time_sleep(1)
                     self.move_turn('jump', 0.32)
                     if louti_x in [1096]:
-                        self.double_jump('left')
+                        self.double_jump('left', jump_mode=j_mode)
                     return True, x1
                 if x1 - louti_x < 0:
+                    if i > 2:
+                        self.double_jump('right', jump_mode=j_mode)
                     # print(self.move_spend)
                     if self.move_spend == 0:
                         t = abs(x1 - louti_x) / 28
-                        self.move_turn('right', t)
+                        self.move_turn('right', t, jump_mode=j_mode)
                         res_1, x_1, y_1 = self._get_move_xy()
                         if res_1 == 1:
                             if res_1 == 1:
@@ -117,15 +118,17 @@ class AutoBatG(BasePageG):
                         t = abs(x1 - louti_x) / self.move_spend
                         if t > 5:
                             t = abs(x1 - louti_x) / 28
-                        self.move_turn('right', t)
+                        self.move_turn('right', t, jump_mode=j_mode)
                     if t > 0.7:
                         if saodi_mode == '0':
                             self.move_turn('attack', 0.23)
                 else:
                     # print(self.move_spend)
+                    if i > 2:
+                        self.double_jump('left', jump_mode=j_mode)
                     if self.move_spend == 0:
                         t = abs(x1 - louti_x) / 28
-                        self.move_turn('left', t)
+                        self.move_turn('left', t, jump_mode=j_mode)
                         res_2, x_2, y_2 = self._get_move_xy()
                         if res_2 == 1:
                             spend = abs(x1 - x_2) / t
@@ -134,39 +137,39 @@ class AutoBatG(BasePageG):
                                 self.move_spend = spend
                     else:
                         t = abs(x1 - louti_x) / self.move_spend
-                        self.move_turn('left', t)
+                        self.move_turn('left', t, jump_mode=j_mode)
                     if t > 0.5:
                         if saodi_mode == '0':
                             self.move_turn('attack', 0.23)
-                    if i > 8:
-                        _r = random.randint(0, 1)
-                        if _r == 0:
-                            self.double_jump('right')
-                        else:
-                            self.double_jump('left')
+                    # if i > 8:
+                    #     _r = random.randint(0, 1)
+                    #     if _r == 0:
+                    #         self.double_jump('right',jump_mode=j_mode)
+                    #     else:
+                    #         self.double_jump('left',jump_mode=jump_mode)
                 # res2, x2, y2 = self._get_move_xy()
 
         res1, x1, y1 = self._get_move_xy()
         return True, x1
 
-    def move_up_louti(self, louti_x, louti_y, louti_queue, turn_queue, wait_queue, saodi_mode):
+    def move_up_louti(self, louti_x, louti_y, wait_queue, saodi_mode, j_mode):
         """反复移动至楼梯点附近"""
         for i in range(3):
-            res, now_x = self.find_jump_louti(louti_x, saodi_mode)
+            res, now_x = self.find_jump_louti(louti_x, saodi_mode, j_mode)
             if not res:
                 return False
             if now_x - louti_x > 1:
                 if self.move_spend == 0:
-                    self.move_turn('left', abs(now_x - louti_x) / 30)
+                    self.move_turn('left', abs(now_x - louti_x) / 30, jump_mode=j_mode)
                 else:
-                    self.move_turn('left', abs(now_x - louti_x) / self.move_spend)
+                    self.move_turn('left', abs(now_x - louti_x) / self.move_spend, jump_mode=j_mode)
             elif now_x - louti_x < 0:
                 if self.move_spend == 0:
-                    self.move_turn('right', abs(now_x - louti_x) / 30)
+                    self.move_turn('right', abs(now_x - louti_x) / 30, jump_mode=j_mode)
                 else:
-                    self.move_turn('right', abs(now_x - louti_x) / self.move_spend)
+                    self.move_turn('right', abs(now_x - louti_x) / self.move_spend, jump_mode=j_mode)
             res2, x2, y2 = self._get_move_xy()
-            if y2 != louti_y or y2==135:
+            if y2 != louti_y or y2 == 135:
                 if not wait_queue.queue.empty():
                     r = random.randint(10, 30)
                     self.sn.log_tab.emit(self.mnq_name, f"爬绳子在线休息{r}秒")
@@ -175,7 +178,9 @@ class AutoBatG(BasePageG):
                     wait_queue.task_over(True)
                 else:
                     self.move_turn('up', 1.42)
-                    if louti_x in [1212, 1022, 1067,1198]:  # 绳子长的补一下
+                    if louti_x in [1212, 1022, 1067, 1198]:  # 绳子长的补一下
+                        self.move_turn('up', 0.67)
+                    if louti_x in [1022, 949]:
                         self.move_turn('up', 0.67)
                     if louti_x in [1036]:
                         self.move_turn('jump', 0.38)
@@ -186,70 +191,68 @@ class AutoBatG(BasePageG):
             # self.keypress_and_up(self.dm, "up", 1.84)
         return False
 
-    def keep_bat(self, turn, auto_time, saodi_mode):
+    def keep_bat(self, turn, auto_time, saodi_mode, j_mode):
         """长按技能职业，幻影"""
         r = random.randint(1, 20)
         if saodi_mode == '1':
-            self.move_turn(turn, auto_time * 1.5)
+            self.move_turn(turn, auto_time * 1.5, jump_mode=j_mode)
         else:
             if r > 1:
                 self.mul_point_touch(turn, 'attack', auto_time * 1.5, True)
             else:
                 self.mul_point_touch(turn, 'c', auto_time * 1.5, True)
 
-    def keep_bat_2(self, turn, auto_time, saodi_mode):
+    def keep_bat_2(self, turn, auto_time, saodi_mode, j_mode):
         r = random.randint(0, 1)
-        self.move_turn(turn, auto_time * 2)
+        self.move_turn(turn, auto_time * 2, jump_mode=j_mode)
         if saodi_mode == '0':
             if r == 0:
                 self.mul_point_touch(turn, 'attack', auto_time * 1.5)
             else:
                 self.mul_point_touch(turn, 'c', auto_time * 1.5)
 
-    def move_bat(self, move_to, key_time, zhiye_id, saodi_mode):
+    def move_bat(self, move_to, key_time, zhiye_id, saodi_mode, j_mode):
         if move_to == 'left':
             i = random.randint(1, 2)
         else:
             i = random.randint(3, 4)
         if i == 1:
             if zhiye_id == '1':
-                self.double_jump('left')
-                self.keep_bat_2('left', key_time, saodi_mode)
+                self.double_jump('left', jump_mode=j_mode)
+                self.keep_bat_2('left', key_time, saodi_mode, j_mode)
                 if saodi_mode == '0':
                     self.move_turn('f', 0.14)
                     self.move_turn('v', 0.32)
             else:
-                self.double_jump('left')
-                self.keep_bat('left', key_time, saodi_mode)
-
+                self.double_jump('left', jump_mode=j_mode)
+                self.keep_bat('left', key_time, saodi_mode, j_mode)
         elif i == 2:
             if zhiye_id == '1':
-                self.keep_bat_2('left', key_time, saodi_mode)
+                self.keep_bat_2('left', key_time, saodi_mode, j_mode)
             else:
-                self.keep_bat('left', key_time, saodi_mode)
+                self.keep_bat('left', key_time, saodi_mode, j_mode)
         elif i == 3:
             if zhiye_id == '1':
                 if saodi_mode == '0':
                     self.move_turn('c', 0.19)
                     self.move_turn('d', 0.34)
-                self.keep_bat_2('right', key_time, saodi_mode)
+                self.keep_bat_2('right', key_time, saodi_mode, j_mode)
             else:
-                self.keep_bat('right', key_time, saodi_mode)
+                self.keep_bat('right', key_time, saodi_mode, j_mode)
         elif i == 4:
             if zhiye_id == '1':
-                self.double_jump('right')
-                self.keep_bat_2('right', key_time, saodi_mode)
+                self.double_jump('right', jump_mode=j_mode)
+                self.keep_bat_2('right', key_time, saodi_mode, j_mode)
             else:
-                self.double_jump('right')
-                self.keep_bat('right', key_time, saodi_mode)
+                self.double_jump('right', jump_mode=j_mode)
+                self.keep_bat('right', key_time, saodi_mode, j_mode)
 
     def keyboard_bat(self, **kwargs):
         auto_choose = kwargs['托管模式']
         if auto_choose:
-            self.get_mapdata(**kwargs)
-            map_data = kwargs['战斗数据']['地图数据'][0]
-        else:
-            map_data = list(kwargs['战斗数据']['地图数据'])
+            kwargs = self.get_mapdata(**kwargs)
+        task_id = kwargs['任务id']
+        map_data = list(kwargs['战斗数据']['地图数据'])
         select_queue = kwargs['状态队列']['选择器']
         zhiye_id = kwargs['战斗数据']['职业类型']
         wait_queue = kwargs['战斗数据']['休息队列']
@@ -261,6 +264,8 @@ class AutoBatG(BasePageG):
         use_time = int(kwargs['挂机设置']['挂机卡时长'])
         bat_sleep = kwargs['挂机设置']['随机休息']
         bat_sleep_mode = kwargs['挂机设置']['休息方式']
+        j_mode = kwargs['挂机设置']['跳跃模式']
+        _IS_EXIT = False if kwargs['挂机设置']['人少退组'] == '0' else True
         min_x = map_data[-1][-1]
         dingshi = True if kwargs['每日任务']['定时任务'] == '1' else False
         _r = random.randint(30, 60)
@@ -275,11 +280,9 @@ class AutoBatG(BasePageG):
             if use_mp:
                 if 'MP' in _res_hp_mp:
                     return -1
-        # elif self.ocr_find(ImgEnumG.MP_NULL_OCR, touch_wait=0) and use_mp:
-        #     return -1
-        # elif self.ocr_find(ImgEnumG.BAG_FULL, touch_wait=0):
-        elif self.crop_image_find(ImgEnumG.BAG_MAX_IMG,False):
+        if self.crop_image_find(ImgEnumG.BAG_MAX_IMG, False):
             return -1
+        self.find_info('bat_xc', True)
         while True:
             if dingshi:
                 if self.get_time_to_dotask(**kwargs) == 0:
@@ -300,8 +303,9 @@ class AutoBatG(BasePageG):
                     _use = time.time()
                     self.use_auto(use_time, **kwargs)
             if self.get_rgb(RgbEnumG.FUHUO_BTN):
-                self.check_err()
-            if self.get_rgb(RgbEnumG.BAT_JG, True): pass
+                raise FuHuoRoleErr
+            if self.get_rgb(RgbEnumG.BAT_JG, True):
+                pass
             if time.time() - _c_time > GlobalEnumG.CheckRoleTime:
                 select_queue.put_queue("CheckRole")
                 return 0
@@ -320,16 +324,21 @@ class AutoBatG(BasePageG):
                         self.air_touch((845, 390))
                     if not self.crop_image_find(ImgEnumG.AUTO_BAT, False, touch_wait=0):
                         self.air_touch((423, 655), touch_wait=2)  # 点击确认战斗结果
-                    else:
-                        # self.crop_image_find(ImgEnumG.XC_IMG)
-                        self.find_info('bat_xc',True)
+                    # else:
+                    # self.crop_image_find(ImgEnumG.XC_IMG)
+                    # self.find_info('bat_xc',True)
                     if self.air_loop_find(ImgEnumG.RES_EXIT_TEAM, False, touch_wait=0):
                         if not self.use_auto(10, **kwargs):
                             return -1
                     elif not self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
                         return -1
-                    if self.crop_image_find(ImgEnumG.BAG_MAX_IMG, False):
-                        return -1
+                    if _IS_EXIT and task_id != '4':
+                        pos = self.crop_image_find(ImgEnumG.EXIT_TEAM, False, get_pos=True)
+                        if pos[-1] < 270:
+                            self.air_touch((pos[1], pos[-1]), touch_wait=1)  # 人数低于3人退队伍
+                            if self.get_rgb(RgbEnumG.EXIT_TEAM, True):
+                                self.sn.log_tab.emit(self.mnq_name, r"人数少于3人,退组重组")
+                            return -1
             if min_x > 871:
                 k_time = round(random.randint(5, 10) / 10, 2)
             else:
@@ -340,14 +349,14 @@ class AutoBatG(BasePageG):
             else:
                 turn, turn_y = self.find_map_move(map_data, map_x, map_y, wait_queue, louti_queue)
                 if turn != 0:
-                    if not self.move_up_louti(turn, turn_y, louti_queue, turn_queue, wait_queue, saodi_mode):
+                    if not self.move_up_louti(turn, turn_y, wait_queue, saodi_mode, False):
                         res4, map_x4, map_y4 = self._get_move_xy()
                         if map_x4 == map_x:
                             _i = random.randint(0, 1)
                             if _i == 0:
-                                self.move_turn('left', 0.32)
+                                self.move_turn('left', 0.32, jump_mode=j_mode)
                             else:
-                                self.move_turn('right', 0.32)
+                                self.move_turn('right', 0.32, jump_mode=j_mode)
                         res6, map_x6, map_y6 = self._get_move_xy()
                         if map_x4 == map_x6:
                             self.move_turn('up', 1.12)
@@ -378,7 +387,7 @@ class AutoBatG(BasePageG):
                         else:
                             move_to = 'right'
                             turn_queue.put_queue('right')
-                    self.move_bat(move_to, k_time, zhiye_id, saodi_mode)
+                    self.move_bat(move_to, k_time, zhiye_id, saodi_mode, j_mode)
                     res2, map_x2, map_y2 = self._get_move_xy()
                     if map_data[-1][-1] > 900:  # 随机下跳概率
                         r = random.randint(0, 1)
@@ -389,32 +398,39 @@ class AutoBatG(BasePageG):
                     if map_y2 < 135:
                         """右边触底"""
                         if zhiye_id == '1':
-                            self.move_bat(move_to, k_time, zhiye_id, saodi_mode)
+                            self.move_bat(move_to, k_time, zhiye_id, saodi_mode, j_mode)
                         if zhiye_id == '0':
-                            self.move_bat(move_to, k_time, zhiye_id, saodi_mode)
+                            self.move_bat(move_to, k_time, zhiye_id, saodi_mode, j_mode)
                         turn_queue.task_over('right')
                         turn_queue.put_queue('left')
+                    if map_data[-1][0] > map_x2 > map_data[-1][1]:
+                        self.double_jump('left', jump_mode=j_mode)
+                    elif map_data[-1][2] > map_x2 > map_data[-1][-1]:
+                        self.double_jump('right', jump_mode=j_mode)
                     if map_x2 == map_x3 and map_x2 not in range(1050, 1070):
                         """防止挂绳子上不动"""
-                        self.double_jump(move_to)
+                        self.double_jump(move_to, jump_mode=j_mode)
                         self.move_turn('up', k_time / 10)
                         res5, map_x5, map_y5 = self._get_move_xy()
                         if res5 == 1060:
-                            self.double_jump(move_to)
+                            self.double_jump(move_to, jump_mode=j_mode)
                         if map_y2 == map_y5:
-                            self.double_jump('left')
+                            self.double_jump('left', jump_mode=j_mode)
                             res6, map_x6, map_y6 = self._get_move_xy()
                             if map_x6 == map_x5:
-                                self.double_jump('right')
+                                self.double_jump('right', jump_mode=j_mode)
             i += 1
 
-    def double_jump(self, turn):
-        self.double_jump_touch(turn)
-        res, x, y = self._get_move_xy()
-        self.time_sleep(0.2)
-        res1, x1, y1 = self._get_move_xy()
-        if y == y1 or x == x1:
-            self.move_turn('up', 1.54)
+    def double_jump(self, turn, jump_mode=True):
+        if jump_mode:
+            self.double_jump_touch(turn)
+            res, x, y = self._get_move_xy()
+            self.time_sleep(0.2)
+            res1, x1, y1 = self._get_move_xy()
+            if y == y1 or x == x1:
+                self.move_turn('up', 1.54)
+        else:
+            self.key_double_jump(turn)
 
     def use_auto(self, auto_time, **kwargs):
         s_time = time.time()
@@ -427,11 +443,7 @@ class AutoBatG(BasePageG):
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
             if self.get_rgb(RgbEnumG.BAT_AUTO_M):
                 if not self.get_rgb(RgbEnumG.AUTO_TIME):
-                    now_time = self.check_time_num()  # 剩余时间
-                    if int(now_time) > 1:
-                        if self.get_rgb(RgbEnumG.BAT_AUTO_QR, True):
-                            _AUTO_START = True
-                    else:
+                    if _AUTO_START:
                         if _NO_TIMECARD:
                             self.air_loop_find(ImgEnumG.UI_CLOSE)
                         else:
@@ -445,6 +457,11 @@ class AutoBatG(BasePageG):
                                 pass
                             else:
                                 _NO_TIMECARD = True
+                    else:
+                        now_time = self.check_time_num()  # 剩余时间
+                        if int(now_time) > 1:
+                            if self.get_rgb(RgbEnumG.BAT_AUTO_QR, True):
+                                _AUTO_START = True
                 else:
                     if self.get_rgb(RgbEnumG.BAT_AUTO_QR, True):
                         _AUTO_START = True

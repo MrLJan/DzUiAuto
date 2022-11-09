@@ -35,7 +35,7 @@ class LoadConfig:
         LoadConfig.writeconf("全局配置", "皮卡啾难度", '1')
         LoadConfig.writeconf("全局配置", "女皇", '1')
         LoadConfig.writeconf("全局配置", "女皇难度", '0')
-        LoadConfig.writeconf("全局配置", "混沌炎魔",'0')
+        LoadConfig.writeconf("全局配置", "混沌炎魔", '0')
         LoadConfig.writeconf("全局配置", "定时任务", '1')
         LoadConfig.writeconf("全局配置", "固定每日时间", str('14:19'))
         LoadConfig.writeconf("全局配置", "职业类型", '1')
@@ -68,6 +68,8 @@ class LoadConfig:
         LoadConfig.writeconf("野图配置", "4队频道", '35')
         LoadConfig.writeconf("野图配置", "5队频道", '39')
         LoadConfig.writeconf("野图配置", "6队频道", '42')
+        LoadConfig.writeconf("全局配置", "托管红币", '1')
+        LoadConfig.writeconf("全局配置", "跳跃模式", '0')
 
     @staticmethod
     def readconf(ini_name='配置文件'):
@@ -120,3 +122,21 @@ class LoadConfig:
             else:
                 LoadConfig.writeconf(section, key, '0', ini_name=ini_name)
                 return '0'
+
+    @staticmethod
+    def adb_path():
+        _a = LoadConfig.getconf("路径", "模拟器路径")
+        _a = _a.split('/')
+        _a.pop(-1)
+        _a.append('adb.exe')
+        _path = ''
+        for _ in range(len(_a)):
+            if _ == len(_a) - 1:
+                _path = _path + _a[_]
+            else:
+                _path = _path + _a[_] + r'/'
+        return _path
+
+
+# ld_adb_path = LoadConfig.adb_path()
+

@@ -8,7 +8,8 @@ class PhoneDevives(ADB):
         super(PhoneDevives, self).__init__()
         self.adb = self.adb_init(serialno)
 
-    def adb_init(self, serialno=None):
+    @staticmethod
+    def adb_init(serialno=None):
         return ADB(serialno=serialno, adb_path=OT.abspath('/Adb/adb.exe'))
 
     def kill_adb(self):

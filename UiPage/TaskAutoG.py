@@ -4,7 +4,7 @@ import time
 
 from Enum.ResEnum import ImgEnumG, GlobalEnumG, BatEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
-from Utils.ExceptionTools import  NotInGameErr
+from Utils.ExceptionTools import NotInGameErr
 from Utils.LoadConfig import LoadConfig
 
 
@@ -31,9 +31,9 @@ class TaskAutoG(BasePageG):
         _COLOR = self.rgb(447, 699)
         _COLOR_1 = 'FFFFFF'
         while True:
-            # if time.time() - s_time > GlobalEnumG.SelectCtrTimeOut:
-            #     self.check_close()
-            #     s_time = time.time()
+            if time.time() - s_time > GlobalEnumG.SelectCtrTimeOut:
+                self.check_close()
+                s_time = time.time()
             if not self.find_info('ingame_flag2'):
                 if self.get_rgb([1033, 414, 'EE7047'], True):  # 完成/接受
                     pass
@@ -134,14 +134,14 @@ class TaskAutoG(BasePageG):
             LoadConfig.writeconf(self.mnq_name, '战力', _bat_res, ini_name=self.mnq_name)
             self.sn.table_value.emit(self.mnq_name, 3, f"{_res}")
             self.sn.table_value.emit(self.mnq_name, 5, f"{_bat_res}")
-            if kwargs['角色信息']['等级'] >= 30 and not _CW_FLAG:
+            if 100 >= kwargs['角色信息']['等级'] >= 30 and not _CW_FLAG:
                 select_queue.put_queue('UseSkill')
                 select_queue.put_queue('UsePet')
                 select_queue.put_queue('GetLevelReard')
                 # select_queue.put_queue('CheckRole')
                 _CW_FLAG = True
                 raise NotInGameErr
-            elif kwargs['角色信息']['等级'] >= 60 and not _L2_FLAG:
+            elif 100 >= kwargs['角色信息']['等级'] >= 60 and not _L2_FLAG:
                 r = random.randint(1, 3)
                 mrtask_queue.put_queue(str(r))  # 武林
                 select_queue.put_queue('AutoMR')
@@ -151,7 +151,7 @@ class TaskAutoG(BasePageG):
                 kwargs['角色信息']['60级'] = '1'
                 _L2_FLAG = True
                 raise NotInGameErr
-            elif kwargs['角色信息']['等级'] >= 90 and not _L3_FLAG:
+            elif 100 >=kwargs['角色信息']['等级'] >= 90 and not _L3_FLAG:
                 r = random.randint(1, 3)
                 # exec_queue = kwargs['状态队列']['执行器']
                 select_queue.put_queue('CheckRole')

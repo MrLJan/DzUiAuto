@@ -23,7 +23,7 @@ class DailyTaskAutoG(BasePageG):
         select_queue = kwargs['状态队列']['选择器']
         mrtask_queue = kwargs['每日任务']['每日任务队列']
         is_gonghui = kwargs['每日任务']['公会']
-        level = kwargs['角色信息']['等级']
+        level = int(kwargs['角色信息']['等级'])
         if len(task_list) == 0:
             select_queue.task_over('AutoMR')
             select_queue.put_queue('GetReward')
@@ -76,7 +76,7 @@ class DailyTaskAutoG(BasePageG):
     def back_mr_main(self):
         self.sn.log_tab.emit(self.mnq_name, r"返回")
         for i in range(5):
-            if self.crop_image_find(ImgEnumG.MR_BACK, timeout=1, touch_wait=3):
+            if self.crop_image_find(ImgEnumG.MR_BACK, touch_wait=3):
                 pass
             elif self.get_rgb(RgbEnumG.EXIT_FOU, True, touch_wait=GlobalEnumG.ExitBtnTime) or self.get_rgb(
                     RgbEnumG.CLOSE_GAME, True, touch_wait=GlobalEnumG.ExitBtnTime):  # 退出游戏-否
@@ -85,11 +85,13 @@ class DailyTaskAutoG(BasePageG):
                 # self.ocr_find(ImgEnumG.MR_YDZXD, True)
                 self.back_ksdy()
             elif self.get_rgb(RgbEnumG.KSDY):
+                self.sn.log_tab.emit(self.mnq_name, r"在快速内容界面")
                 return True
             elif self.back_ksdy():
                 pass
             elif self.find_info('ingame_flag2'):
-                pass
+                self.sn.log_tab.emit(self.mnq_name, r"在主界面")
+                return True
             elif self.air_loop_find(ImgEnumG.GAME_ICON, False):
                 raise NotInGameErr
             else:
@@ -616,6 +618,9 @@ class DailyTaskAutoG(BasePageG):
                         return True
                     _TIMES += 1
                 else:
+                    if self.get_rgb(RgbEnumG.FUHUO_BTN,True):
+                        self.sn.log_tab.emit(self.mnq_name, r"怪物公园-战斗死亡")
+                        return True
                     self.sn.log_tab.emit(self.mnq_name, r"怪物公园战斗中")
                     self.time_sleep(15)
             else:
@@ -703,26 +708,26 @@ class DailyTaskAutoG(BasePageG):
                 elif self.back_ksdy():
                     if _YM_ING:
                         if not _R_BAT:
+                            self.sn.log_tab.emit(self.mnq_name, r"boss远征-炎魔完成")
                             _YM_OVER = True
                         else:
-                            _YM_OVER=False
-                            _R_BAT = False
+                            _YM_OVER = False
                         _YM_ING = False
                         _BAT_TIMES = 0
                     elif _PKJ_ING:
                         if not _R_BAT:
+                            self.sn.log_tab.emit(self.mnq_name, r"boss远征-皮卡啾完成")
                             _PKJ_OVER = True
                         else:
                             _PKJ_OVER = False
-                            _R_BAT = False
                         _PKJ_ING = False
                         _BAT_TIMES = 0
                     elif _NH_ING:
                         if not _R_BAT:
+                            self.sn.log_tab.emit(self.mnq_name, r"boss远征-女皇完成")
                             _NH_OVER = True
                         else:
                             _NH_OVER = False
-                            _R_BAT = False
                         _NH_ING = False
                         _BAT_TIMES = 0
                     self.sn.log_tab.emit(self.mnq_name, r"boss远征-战斗完成")
@@ -744,10 +749,14 @@ class DailyTaskAutoG(BasePageG):
                         if _WAIT_TEAM:
                             if _WAIT_TEAM_TIMES > 3:
                                 self.air_touch((434, 256))
-                                if self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):
-                                    _WAIT_TEAM = False
-                            self.time_sleep(10)
-                            _WAIT_TEAM_TIMES += 1
+                                self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True)
+                                self.sn.log_tab.emit(self.mnq_name, r"boss远征-进入战斗超时")
+                                _WAIT_TEAM = False
+                                _WAIT_TEAM_TIMES = 0
+                            else:
+                                self.sn.log_tab.emit(self.mnq_name, r"boss远征-等待进入战斗")
+                                self.time_sleep(10)
+                                _WAIT_TEAM_TIMES += 1
                         else:
                             self.find_info('ui_enum', True)
                     elif self.find_info('ui_set'):  # 菜单界面
@@ -766,15 +775,17 @@ class DailyTaskAutoG(BasePageG):
                             self.sn.log_tab.emit(self.mnq_name, r"boss远征-未到开启时间")
                             select_queue.task_over('AutoBoss')
                             return True
-                        if _PKJ_OVER and _YM_OVER and _NH_OVER:
+                        if _PKJ_OVER and _YM_OVER and _NH_OVER and not _R_BAT:
                             self.sn.log_tab.emit(self.mnq_name, r"boss远征-战斗完成")
                             select_queue.task_over('AutoBoss')
                             return True
                         elif _YM and not _YM_OVER:
                             if self.crop_image_find(ImgEnumG.YM):
                                 if _YM_KN and _LEVEL >= 100:
+                                    self.sn.log_tab.emit(self.mnq_name, r"boss远征-炎魔困难")
                                     self.get_rgb(RgbEnumG.YZD_KN, True)  # 困难
                                 else:
+                                    self.sn.log_tab.emit(self.mnq_name, r"boss远征-炎魔普通")
                                     self.get_rgb(RgbEnumG.YZD_PT, True)
                                 _YM_ING = True
                             elif self.check_boss_end(0):
@@ -785,8 +796,10 @@ class DailyTaskAutoG(BasePageG):
                                 if _LEVEL < 100:
                                     _PKJ_OVER = True
                                 elif _PKJ_KN and _LEVEL >= 120:
+                                    self.sn.log_tab.emit(self.mnq_name, r"boss远征-皮卡啾困难")
                                     self.get_rgb(RgbEnumG.YZD_KN, True)  # 困难
                                 else:
+                                    self.sn.log_tab.emit(self.mnq_name, r"boss远征-皮卡啾普通")
                                     self.get_rgb(RgbEnumG.YZD_PT, True)
                                 _PKJ_ING = True
                             elif self.check_boss_end(1):
@@ -797,8 +810,10 @@ class DailyTaskAutoG(BasePageG):
                                 if _LEVEL < 100:
                                     _NH_OVER = True
                                 elif _NH_KN and _LEVEL >= 120:
+                                    self.sn.log_tab.emit(self.mnq_name, r"boss远征-女皇困难")
                                     self.get_rgb(RgbEnumG.YZD_KN, True)  # 困难
                                 else:
+                                    self.sn.log_tab.emit(self.mnq_name, r"boss远征-女皇普通")
                                     self.get_rgb(RgbEnumG.YZD_PT, True)
                                 _NH_ING = True
                             elif self.check_boss_end(2):
@@ -824,7 +839,7 @@ class DailyTaskAutoG(BasePageG):
         _JR_TIMES = 0
         _WAIT_TIMES = 0
         _SWIPE_TIMES = 0
-        _BAT_TIMES=0
+        _BAT_TIMES = 0
         _IS_HD = True if kwargs['王图设置']['混沌炎魔'] == '1' else False
         select_queue = kwargs['状态队列']['选择器']
         self.sn.log_tab.emit(self.mnq_name, r"混沌炎魔")
@@ -865,7 +880,7 @@ class DailyTaskAutoG(BasePageG):
                     _WAIT_TIMES += 1
                     if _WAIT_TIMES > 3:
                         self.get_rgb(RgbEnumG.TEAM_KS, True, touch_wait=3)  # 开始
-                        self.air_touch((433, 257), touch_wait=1)
+                        self.air_touch((434, 256), touch_wait=1)
                 else:
                     if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
                         self.find_info('ui_enum', True)
@@ -891,6 +906,8 @@ class DailyTaskAutoG(BasePageG):
                         self.sn.log_tab.emit(self.mnq_name, r"混沌炎魔-战斗完成")
                         select_queue.task_over('AutoHDboss')
                         return True
+                    elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):
+                        pass
                     else:
                         self.check_close()
         select_queue.task_over('AutoHDboss')
@@ -940,10 +957,12 @@ class DailyTaskAutoG(BasePageG):
                             self.sn.log_tab.emit(self.mnq_name, r"公会任务-战斗完成")
                             return True
                         if not _WXDC:
+                            self.sn.log_tab.emit(self.mnq_name, r"进入公会-无限地城")
                             self.find_info('gh_wxdc', True)
                             # self.ocr_find(ImgEnumG.GH_WXDC, True)
                         else:
                             if not _RYZ:
+                                self.sn.log_tab.emit(self.mnq_name, r"进入公会-荣誉战")
                                 self.find_info('gh_ryz', True)
                                 # self.ocr_find(ImgEnumG.GH_RYZ, True)
                     else:
@@ -969,10 +988,9 @@ class DailyTaskAutoG(BasePageG):
                     if _RYZ or _JR_TIMES > 3:
                         if _JR_TIMES > 3:
                             _RYZ = True
-                        self.get_rgb(RgbEnumG.GH_RYZ, True)
+                        self.crop_image_find(ImgEnumG.MR_BACK)
                     else:
                         if self.get_rgb(RgbEnumG.GH_RYZ_JR, True, touch_wait=2):
-                            _RYZ = True
                             _JR_TIMES += 1
                         elif self.get_rgb(RgbEnumG.GH_RYZ_JR_F):
                             _RYZ = True

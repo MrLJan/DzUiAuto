@@ -171,7 +171,7 @@ class switch_case:
                        self.select.to_BuyY, self.select.to_BagSell, self.select.to_UseSkill, self.select.to_UsePet,
                        self.select.to_UpEquip, self.select.to_StrongEquip],
             'Check': [self.select.check_ingame, self.select.to_Check, self.select.to_InGame],
-            'AutoChoose':[self.select.checkroleinfo, self.select.to_CheckRole, self.select.to_Check],
+            'AutoChoose': [self.select.checkroleinfo, self.select.to_CheckRole, self.select.to_Check],
             'Login': [self.select.login_game, self.select.to_Login, self.select.to_Check],
             'FuHuo': [self.select.fuhuo, self.select.to_FuHuo, self.select.to_Check],
             'BuyY': [self.select.buyyao, self.select.to_BuyY, self.select.to_Check],
@@ -256,7 +256,7 @@ class switch_case:
                 '宠物': LoadConfig.getconf(self.mnq_name, '宠物', ini_name=self.mnq_name),
                 '60级': LoadConfig.getconf(self.mnq_name, '60级', ini_name=self.mnq_name),
                 '90级': LoadConfig.getconf(self.mnq_name, '90级', ini_name=self.mnq_name),
-                '100级':LoadConfig.getconf(self.mnq_name, '100级', ini_name=self.mnq_name),
+                '100级': LoadConfig.getconf(self.mnq_name, '100级', ini_name=self.mnq_name),
             },
             '状态队列': {
                 '执行器': self.exec_queue,
@@ -283,6 +283,7 @@ class switch_case:
                 '离线时长': int(LoadConfig.getconf('全局配置', '离线时长')),
                 '无蓝窗口': self.use_mp,
                 '任务延时': self.random_tasktime,
+                '跳跃模式':True if LoadConfig.getconf('全局配置', '跳跃模式') == '1' else False,
             },
             '野图设置': {
                 '队伍id': self.team_id,
@@ -325,6 +326,7 @@ class switch_case:
                 '定时任务ID': 1,  # 下次定时任务的id
             },
             '强化设置': {
+                '托管红币': LoadConfig.getconf('全局配置', '托管红币'),
                 '目标等级': LoadConfig.getconf('全局配置', '强化等级'),
                 '幸运卷轴': True if LoadConfig.getconf('全局配置', '幸运卷轴') == '1' else False,
                 '盾牌卷轴': True if LoadConfig.getconf('全局配置', '盾牌卷轴') == '1' else False,
@@ -403,7 +405,7 @@ class switch_case:
                 else:
                     task = self.select_queue.get_task()  # 获取选择器任务
                     self.select_func[task][1]()  # 切换选择器状态
-        except (ConnectionResetError, DeviceConnectionError, ConnectionAbortedError,AdbShellError,AdbError):
+        except (ConnectionResetError, DeviceConnectionError, ConnectionAbortedError, AdbShellError, AdbError):
             self.sn.log_tab.emit(self.mnq_name, f"模拟器adb连接异常断开,尝试重连")
             self.sn.restart.emit(self.mnq_name, self.mnq_thread_list)
         except RestartTask:
@@ -453,7 +455,8 @@ class switch_case:
             if se_res != 0:
                 self.select_func[state][-1](**self.data_dic)
 
-    def get_task_time(self):
+    @staticmethod
+    def get_task_time():
         """计算每日任务开始时间"""
         meiri_task_time = LoadConfig.getconf('全局配置', '固定每日时间')
         meiri_time_list = meiri_task_time.split(':')
@@ -470,4 +473,3 @@ class switch_case:
         if time.time() - self._c_time > GlobalEnumG.CheckRoleTime:
             self.select_queue.put_queue("CheckGold")
             self._c_time = time.time()
-

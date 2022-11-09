@@ -1828,6 +1828,13 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QCheckBox" name="jump_mode_box">
+             <property name="text">
+              <string>方向键跳跃</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
          <item>
@@ -1930,6 +1937,84 @@
           </widget>
          </item>
         </layout>
+       </widget>
+       <widget class="QLabel" name="label_61">
+        <property name="geometry">
+         <rect>
+          <x>570</x>
+          <y>210</y>
+          <width>81</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>红币数量超过</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="red_coin_edit">
+        <property name="geometry">
+         <rect>
+          <x>650</x>
+          <y>210</y>
+          <width>31</width>
+          <height>16</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="Line" name="line_5">
+        <property name="geometry">
+         <rect>
+          <x>510</x>
+          <y>170</y>
+          <width>511</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_60">
+        <property name="geometry">
+         <rect>
+          <x>720</x>
+          <y>190</y>
+          <width>64</width>
+          <height>15</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>托管设置</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_62">
+        <property name="geometry">
+         <rect>
+          <x>690</x>
+          <y>210</y>
+          <width>171</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>千万,进行装备强化+升级</string>
+        </property>
        </widget>
       </widget>
      </widget>

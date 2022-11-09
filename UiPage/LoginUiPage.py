@@ -19,15 +19,15 @@ class LoginUiPageG(BasePageG):
         select_queue = kwargs['状态队列']['选择器']
         s_time = time.time()
         _WAIT_GX = 0
-        _WAIT_TIMES=0
+        _WAIT_TIMES = 0
         while time.time() - s_time < GlobalEnumG.LoginGameTimeOut:
-            if self.air_loop_find(ImgEnumG.GAME_ICON, False, timeout=1):
+            if self.air_loop_find(ImgEnumG.GAME_ICON, False):
                 self.start_game()
             elif self.air_loop_find(ImgEnumG.LOGIN_FLAG, False):
                 if not self.get_rgb(RgbEnumG.GX_XZ, True):
                     self.air_touch((875, 390))  # 点击空白区域登录
                     self.time_sleep(10)
-            elif self.find_info('game_login',True):
+            elif self.find_info('game_login', True):
                 self.time_sleep(10)
             elif self.find_info('ingame_flag2'):
                 self.sn.log_tab.emit(self.mnq_name, r"登录成功")
@@ -52,11 +52,11 @@ class LoginUiPageG(BasePageG):
                     self.time_sleep(10)
                     _WAIT_GX += 1
             else:
-                if _WAIT_TIMES>5:
+                if _WAIT_TIMES > 2:
                     if not self.check_err():
                         self.back()
-                        _WAIT_TIMES=0
-                _WAIT_TIMES+=1
+                        _WAIT_TIMES = 0
+                _WAIT_TIMES += 1
         return 0
 
     def check_ingame(self, **kwargs):
@@ -72,9 +72,7 @@ class LoginUiPageG(BasePageG):
                     self.sn.log_tab.emit(self.mnq_name, r"检查到死亡")
                     raise FuHuoRoleErr
             if self.crop_image_find(ImgEnumG.MR_BAT_EXIT):
-                # self.ocr_find(ImgEnumG.MR_YDZXD, True)
                 self.back_ksdy()
-                # self.ocr_find([(810, 519, 872, 548), '结'], True)
             select_queue.task_over('Check')
             return -1
         elif self.net_err():
@@ -90,7 +88,7 @@ class LoginUiPageG(BasePageG):
             select_queue.task_over('Check')
             select_queue.put_queue('FuHuo')
             return -1
-        elif self.crop_image_find(ImgEnumG.LOGIN_FLAG, False) or self.find_info('game_login',True):
+        elif self.crop_image_find(ImgEnumG.LOGIN_FLAG, False) or self.find_info('game_login', True):
             self.sn.log_tab.emit(self.mnq_name, r"检查到在登录相关界面")
             self.get_rgb(RgbEnumG.GX_XZ, True)
             self.get_rgb(RgbEnumG.CLOSE_GAME, True)  # 退出游戏-否
@@ -101,7 +99,7 @@ class LoginUiPageG(BasePageG):
             if self.find_info('task_close') and kwargs['任务id'] == '1':
                 # self.sn.log_tab.emit(self.mnq_name, r"检查到任务界面")
                 while not self.find_info('ingame_flag2'):
-                    if self.find_info('task_point',True):
+                    if self.find_info('task_point', True):
                         pass
                     elif self.air_loop_find(ImgEnumG.TASK_OVER, touch_wait=1):
                         pass
@@ -117,26 +115,6 @@ class LoginUiPageG(BasePageG):
                 return -1
             self.close_all(**kwargs)
         return 0
-
-    # def check_ui(self):
-    #     CLOSE_LIST = [
-    #         ColorEnumG.LOGIN_CLOSE, ColorEnumG.LOGIN_START, ColorEnumG.BAG_MAIN, ColorEnumG.BAT_RES,
-    #         ColorEnumG.MENU_MAIN, ColorEnumG.PET_TIME_END, ColorEnumG.QD_HD_BJBS, ColorEnumG.HB_ENUM,
-    #         ColorEnumG.QD_HD_BJBS_CLOSE, ColorEnumG.QD_MY, ColorEnumG.HD_LB, ColorEnumG.BAG_MAIN, ColorEnumG.BAG_SELL,
-    #         ColorEnumG.BAG_GOLD, ColorEnumG.BAG_SX, ColorEnumG.TASK_CLOSE, ColorEnumG.MR_KSDY, ColorEnumG.WL_MAIN,
-    #         ColorEnumG.WL_JR, ColorEnumG.JZT_MAIN, ColorEnumG.JZT_JR, ColorEnumG.MRDC_MAIN, ColorEnumG.MRDC_JR,
-    #         ColorEnumG.JHXT_MAIN, ColorEnumG.JHXT_JR, ColorEnumG.YZD_MAIN, ColorEnumG.GWSLT_MAIN, ColorEnumG.TBB_MAIN,
-    #         ColorEnumG.TBB_JR, ColorEnumG.JYDC_END, ColorEnumG.JZT_END, ColorEnumG.CYRQ_END_F, ColorEnumG.SKIP_NEW,
-    #         ColorEnumG.TBB_ZCJR, ColorEnumG.XLZC_MAIN, ColorEnumG.CYRQ_MAIN, ColorEnumG.MNDC_MAIN, ColorEnumG.MNDC_JR,
-    #         ColorEnumG.XGT_MAIN, ColorEnumG.EXIT_TEAM, ColorEnumG.HDYZD_MAIN, ColorEnumG.GH_MAIN, ColorEnumG.GH_WXDC,
-    #         ColorEnumG.MAIL_MAIN, ColorEnumG.KT_MAIN, ColorEnumG.PET_MAIN, ColorEnumG.JN_MAIN, ColorEnumG.YS_LOGIN,
-    #         ColorEnumG.YS_SHOP, ColorEnumG.YS_XQ, ColorEnumG.YS_GM_QR, ColorEnumG.EXIT_GAME, ColorEnumG.ROLE_INFO,
-    #         ColorEnumG.HD_CZZY, ColorEnumG.MAP_MAIN,
-    #     ]
-    #     for _c in CLOSE_LIST:
-    #         if self.mulcolor_check(_c, True):
-    #             return True
-    #     return False
 
     def close_all(self, **kwargs):
         s_time = time.time()
@@ -161,18 +139,18 @@ class LoginUiPageG(BasePageG):
             elif self.air_loop_find(ImgEnumG.GAME_ICON, False):
                 self.sn.log_tab.emit(self.mnq_name, r"掉线")
                 raise NotInGameErr
-            elif self.crop_image_find(ImgEnumG.LOGIN_FLAG) or self.find_info('game_login',True):
+            elif self.crop_image_find(ImgEnumG.LOGIN_FLAG) or self.find_info('game_login', True):
                 self.sn.log_tab.emit(self.mnq_name, r"在游戏登录主界面")
                 break
             elif self.get_rgb(RgbEnumG.FUHUO_BTN):
                 if self.crop_image_find(ImgEnumG.CZ_FUHUO):
                     self.sn.log_tab.emit(self.mnq_name, r"检查到死亡")
                     raise FuHuoRoleErr
-            elif self.find_info('task_point',True):
+            elif self.find_info('task_point', True):
                 pass
-            elif self.find_info('task_close',True):
+            elif self.find_info('LB_close', True):
                 pass
-            elif self.find_info('LB_close',True):
+            elif self.find_info('task_close', True):
                 pass
             elif self.get_rgb(RgbEnumG.PET_END):
                 self.air_touch((908, 97), touch_wait=1)
@@ -196,16 +174,9 @@ class LoginUiPageG(BasePageG):
         s_time = time.time()
         self.sn.log_tab.emit(self.mnq_name, r"复活检查")
         select_queue = kwargs['状态队列']['选择器']
-        exec_queue = kwargs['状态队列']['执行器']
-        task_id = kwargs['任务id']
         use_mp = kwargs['挂机设置']['无蓝窗口']
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.find_info('ingame_flag2'):
-                # if self.ocr_find(ImgEnumG.BAG_FULL):
-                # if self.ocr_find(ImgEnumG.HP_NULL_OCR):
-                #     select_queue.put_queue('BuyY')
-                # elif use_mp and self.ocr_find(ImgEnumG.MP_NULL_OCR):
-                #     select_queue.put_queue('BuyY')
                 _res_hpmp = self.check_hp_mp()
                 if _res_hpmp != '':
                     if 'HP' in _res_hpmp:
@@ -216,8 +187,6 @@ class LoginUiPageG(BasePageG):
                 elif self.crop_image_find(ImgEnumG.BAG_MAX_IMG, False):
                     select_queue.put_queue('BagSell')
                 select_queue.task_over('FuHuo')
-                # if task_id in ['3', '4']:
-                #     exec_queue.task_over('AutoBat')
                 return -1
             elif self.crop_image_find(ImgEnumG.CZ_FUHUO):
                 pass

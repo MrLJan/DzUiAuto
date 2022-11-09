@@ -46,8 +46,8 @@ class UpRoleG(BasePageG):
             elif self.get_rgb(RgbEnumG.TJP_SJ_XZ):
                 if _SX:
                     self.get_rgb(RgbEnumG.TJP_SJ_XZ, True)
-                # elif self.ocr_find(ImgEnumG.EQ_ZDXZ_SD_OCR):
                 elif self.find_info('zb_sjset'):
+                    self.sn.log_tab.emit(self.mnq_name, f"升级装备筛选")
                     self.get_rgb([375, 557, 'C2C5CA'], True)
                     self.get_rgb([739, 296, 'AEB8C2'], True)
                     self.get_rgb([478, 344, 'AEB8C2'], True)
@@ -63,14 +63,15 @@ class UpRoleG(BasePageG):
                     self.back()
                     select_queue.task_over('UpEquip')
                     return 1
-                self.crop_image_find(ImgEnumG.EQ_UP_QR, timeout=2)
+                if self.crop_image_find(ImgEnumG.EQ_UP_QR):
+                    self.sn.log_tab.emit(self.mnq_name, f"升级")
             # elif self.ocr_find(ImgEnumG.EQ_UP_OCR):
             elif self.find_info('ui_set'):  # 菜单界面
                 # self.ocr_find(ImgEnumG.EQ_TJP_OCR, True)
                 self.enum_find('tjp', True)
             elif self.find_info('zb_sj'):
+                self.sn.log_tab.emit(self.mnq_name, f"进入装备升级")
                 self.air_touch((84, 268), touch_wait=5)
-
             elif self.get_rgb(RgbEnumG.TJP_SJ_BTN, True, touch_wait=5):
                 pass
             else:
@@ -84,6 +85,7 @@ class UpRoleG(BasePageG):
         s_time = time.time()
         _HP = False  # 是否购买HP
         _MP = False
+        _CHECK = False
         _YS_TYPE = 0  # 区分HP,MP是否被装备
         _RES = False  # 是否购买成功
         _USE_MP = kwargs['挂机设置']['无蓝窗口']
@@ -91,12 +93,14 @@ class UpRoleG(BasePageG):
         _NUM_MP = kwargs['商店设置']['MP数量']  # 购买数量
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.find_info('ingame_flag2'):
-                _res = self.check_hp_mp()
-                if 'HP' in _res:
-                    _HP = True
-                if _USE_MP:
-                    if 'MP' in _res:
-                        _MP = True
+                if not _CHECK:
+                    _res = self.check_hp_mp()
+                    if 'HP' in _res:
+                        _HP = True
+                    if _USE_MP:
+                        if 'MP' in _res:
+                            _MP = True
+                    _CHECK = True
                 if _HP:
                     self.air_touch((1148, 364), duration=2)
                     _YS_TYPE = 1
@@ -115,7 +119,8 @@ class UpRoleG(BasePageG):
                         elif _YS_TYPE == 2 and _MP:
                             _MP = False
                 else:
-                    self.ys_contrl('ys_ljqw')
+                    if self.ys_contrl('ys_ljqw'):
+                        self.time_sleep(3)
             elif self.get_rgb(RgbEnumG.YS_GMQR):
                 if self.get_rgb(RgbEnumG.YS_GMQR, True):
                     _RES = True
@@ -147,8 +152,12 @@ class UpRoleG(BasePageG):
                         self.air_touch(mp_level)
                     else:
                         self.back()
+            elif self.find_info('LB_close', True):
+                pass
             else:
-                self.check_close()
+                if time.time() - s_time > 60:
+                    s_time = time.time()
+                    self.check_close()
         raise ControlTimeOut(r'买药异常超时')
 
     def useskill(self, **kwargs):
@@ -320,6 +329,7 @@ class UpRoleG(BasePageG):
                 pass
             elif self.get_rgb(RgbEnumG.TJP_QH_M):  # 进入铁匠铺
                 if _QH_OVER:
+                    self.sn.log_tab.emit(self.mnq_name, f"强化-完成")
                     self.back()
                     self.back()
                     select_queue.task_over('StrongEquip')
@@ -330,12 +340,12 @@ class UpRoleG(BasePageG):
                         _QH_OVER = True
                 if self.get_rgb(RgbEnumG.TJP_QH_BTN_F):
                     if _QH_FLAG:
+                        self.sn.log_tab.emit(self.mnq_name, f"检查装备中装备")
                         res = self.find_zbz()
                         if len(res) != len(_ZB_LIST):
                             _ZB_LIST = res
                             _POS = 0
                             _QH_FLAG = False
-
                     if _POS == len(_ZB_LIST):
                         _QH_OVER = True
                     else:
@@ -354,16 +364,19 @@ class UpRoleG(BasePageG):
                             if _USE_ZK:
                                 self.air_touch((446, 552), touch_wait=1)
                             if self.get_rgb(RgbEnumG.TJP_QH_BTN, True):
+                                self.sn.log_tab.emit(self.mnq_name, f"强化")
                                 _QH_FLAG = True
                         else:
                             self.air_touch((453, 162), touch_wait=1)
             elif self.find_info('ui_set'):  # 菜单界面
-                # if self.ocr_find(ImgEnumG.EQ_QH_OCR, True):
                 if self.find_info('zb_qh'):
+                    self.sn.log_tab.emit(self.mnq_name, f"进入星力强化")
                     self.air_touch((208, 259), touch_wait=2)
                 else:
                     self.enum_find('tjp', True)
-                    # self.ocr_find(ImgEnumG.EQ_TJP_OCR, True)  # 铁匠铺
+            elif self.find_info('zb_qh'):
+                self.sn.log_tab.emit(self.mnq_name, f"进入星力强化")
+                self.air_touch((208, 259), touch_wait=2)
             else:
                 if _WITE > 10:
                     self.check_close()

@@ -71,7 +71,8 @@ if __name__ == '__main__':
     # print(obj.get_task())
     # print(obj.queue.qsize())
     # obj.get_queue('q')
+    print(type(obj.queue.qsize()))
     if obj.queue.qsize() > 1:
-        print(obj.queue.qsize())
+        print(type(obj.queue.qsize()))
     else:
         print(21)
