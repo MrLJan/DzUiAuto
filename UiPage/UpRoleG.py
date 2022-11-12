@@ -3,7 +3,7 @@ import time
 
 from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
-from Utils.ExceptionTools import ControlTimeOut
+from Utils.ExceptionTools import ControlTimeOut, BagFullerr, FuHuoRoleErr
 from Utils.LoadConfig import LoadConfig
 
 
@@ -92,6 +92,9 @@ class UpRoleG(BasePageG):
         _NUM_HP = kwargs['商店设置']['HP数量']  # 购买数量
         _NUM_MP = kwargs['商店设置']['MP数量']  # 购买数量
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
+            if self.get_rgb(RgbEnumG.FUHUO_BTN):
+                if self.crop_image_find(ImgEnumG.CZ_FUHUO):
+                    raise FuHuoRoleErr
             if self.find_info('ingame_flag2'):
                 if not _CHECK:
                     _res = self.check_hp_mp()
@@ -101,6 +104,8 @@ class UpRoleG(BasePageG):
                         if 'MP' in _res:
                             _MP = True
                     _CHECK = True
+                if self.crop_image_find(ImgEnumG.BAG_MAX_IMG):
+                    raise BagFullerr
                 if _HP:
                     self.air_touch((1148, 364), duration=2)
                     _YS_TYPE = 1
@@ -118,9 +123,15 @@ class UpRoleG(BasePageG):
                             _HP = False
                         elif _YS_TYPE == 2 and _MP:
                             _MP = False
+                    else:
+                        raise BagFullerr  # 包满清理
                 else:
                     if self.ys_contrl('ys_ljqw'):
                         self.time_sleep(3)
+                    else:
+                        raise BagFullerr
+            elif self.ys_contrl('ys_ljqw'):
+                self.time_sleep(3)
             elif self.get_rgb(RgbEnumG.YS_GMQR):
                 if self.get_rgb(RgbEnumG.YS_GMQR, True):
                     _RES = True
@@ -171,6 +182,9 @@ class UpRoleG(BasePageG):
         _ZB_FLAG = 0
         _ZB_JN_NUM = 0
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
+            if self.get_rgb(RgbEnumG.FUHUO_BTN):
+                if self.crop_image_find(ImgEnumG.CZ_FUHUO):
+                    raise FuHuoRoleErr
             if self.find_info('ingame_flag2'):  # 游戏界面
                 self.find_info('ui_enum', True)
             elif self.find_info('ui_set'):  # 菜单界面
@@ -229,7 +243,8 @@ class UpRoleG(BasePageG):
         _PET_POS = ImgEnumG.PET_POS  # 宠物侧边栏是否被选中
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.find_info('ingame_flag2'):  # 游戏界面
-                self.find_info('ui_enum', True)
+                if self.find_info('ui_enum', True):
+                    self.time_sleep(GlobalEnumG.TouchWaitTime)
             elif self.find_info('ui_set'):  # 菜单界面
                 # self.ocr_find(ImgEnumG.MENU_CW, True)  # 宠物
                 self.enum_find('pet', True)
@@ -244,6 +259,18 @@ class UpRoleG(BasePageG):
                     _PET_FLAG += 1
                     if _PET_FLAG > 3:
                         _PET_FLAG = 1
+                elif self.get_rgb([1143, 622, 'C3C3C3']):
+                    if _PET_FLAG == 1:
+                        _PET1 = True
+                    elif _PET_FLAG == 2:
+                        _PET2 = True
+                    elif _PET_FLAG == 3:
+                        _PET3 = True
+                    _PET_FLAG += 1
+                    if _PET_FLAG > 3:
+                        _PET_FLAG = 1
+                    self.back()
+
             elif self.get_rgb(RgbEnumG.PET_JN):
                 if _C_JN:
                     if self.get_rgb([821, 205, 'C3C3C3']):

@@ -13,7 +13,8 @@ from UiPage.StateCheckG import StateCheckG
 from UiPage.TaskAutoG import TaskAutoG
 from UiPage.TeamStateG import TeamStateG
 from UiPage.UpRoleG import UpRoleG
-from Utils.ExceptionTools import MrTaskErr, ControlTimeOut, BuyYErr, NotInGameErr, RestartTask, FuHuoRoleErr
+from Utils.ExceptionTools import MrTaskErr, ControlTimeOut, BuyYErr, NotInGameErr, RestartTask, FuHuoRoleErr, \
+    BagFullerr, StopTaskErr
 from Utils.LoadConfig import LoadConfig
 from Utils.OtherTools import catch_ex
 
@@ -405,7 +406,7 @@ class switch_case:
                 else:
                     task = self.select_queue.get_task()  # 获取选择器任务
                     self.select_func[task][1]()  # 切换选择器状态
-        except (ConnectionResetError, DeviceConnectionError, ConnectionAbortedError, AdbShellError, AdbError):
+        except (ConnectionResetError, DeviceConnectionError, ConnectionAbortedError, AdbShellError, AdbError,TypeError):
             self.sn.log_tab.emit(self.mnq_name, f"模拟器adb连接异常断开,尝试重连")
             self.sn.restart.emit(self.mnq_name, self.mnq_thread_list)
         except RestartTask:
@@ -418,6 +419,8 @@ class switch_case:
             self.select.to_Check()
         except BuyYErr:
             self.select.to_BuyY()
+        except BagFullerr:
+            self.select.to_BagSell()
         except NotInGameErr:
             self.select.to_Check()
         except FuHuoRoleErr:

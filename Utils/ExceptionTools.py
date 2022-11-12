@@ -49,3 +49,13 @@ class BuyYErr(BaseError):
 class RestartTask(BaseError):
     """重启任务"""
     pass
+
+
+class BagFullerr(BaseError):
+    """背包满了"""
+    pass
+
+
+class StopTaskErr(BaseError):
+    """停止任务"""
+    pass

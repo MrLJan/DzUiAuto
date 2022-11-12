@@ -132,7 +132,7 @@ class StateCheckG(BasePageG):
                     STAR = self.check_num(2)
                     LoadConfig.writeconf(self.mnq_name, '星力', str(STAR), ini_name=self.mnq_name)
                     self.crop_image_find(ImgEnumG.BAG_GOLD, touch_wait=2)
-            elif self.find_info('coin_enum',True):
+            elif self.find_info('coin_enum', True):
                 pass
             else:
                 self.check_close()
@@ -142,7 +142,35 @@ class StateCheckG(BasePageG):
         red_coin = kwargs['强化设置']['托管红币']
         if red_coin == '0':
             red_coin = '1'
+        # _CW_FLAG = False if kwargs['角色信息']['宠物'] == '0' else True
+        # _L2_FLAG = False if kwargs['角色信息']['60级'] == '0' else True
+        # _L3_FLAG = False if kwargs['角色信息']['90级'] == '0' else True
         _L4_FLAG = False if kwargs['角色信息']['100级'] == '0' else True
+
+        # if 90 < int(level) <= 100 and _L4_FLAG:
+        #     LoadConfig.writeconf(self.mnq_name, '100级', '0', ini_name=self.mnq_name)
+        #     kwargs['角色信息']['100级'] = '0'
+        # if 60 < int(level) <= 90:
+        #     LoadConfig.writeconf(self.mnq_name, '100级', '0', ini_name=self.mnq_name)
+        #     kwargs['角色信息']['100级'] = '0'
+        #     LoadConfig.writeconf(self.mnq_name, '90级', '0', ini_name=self.mnq_name)
+        #     kwargs['角色信息']['90级'] = '0'
+        # if 30 < int(level) <= 60 and _L2_FLAG:
+        #     LoadConfig.writeconf(self.mnq_name, '100级', '0', ini_name=self.mnq_name)
+        #     kwargs['角色信息']['100级'] = '0'
+        #     LoadConfig.writeconf(self.mnq_name, '90级', '0', ini_name=self.mnq_name)
+        #     kwargs['角色信息']['90级'] = '0'
+        #     LoadConfig.writeconf(self.mnq_name, '60级', '0', ini_name=self.mnq_name)
+        #     kwargs['角色信息']['60级'] = '0'
+        # if int(level) <= 30 and _CW_FLAG:
+        #     LoadConfig.writeconf(self.mnq_name, '100级', '0', ini_name=self.mnq_name)
+        #     kwargs['角色信息']['100级'] = '0'
+        #     LoadConfig.writeconf(self.mnq_name, '90级', '0', ini_name=self.mnq_name)
+        #     kwargs['角色信息']['90级'] = '0'
+        #     LoadConfig.writeconf(self.mnq_name, '60级', '0', ini_name=self.mnq_name)
+        #     kwargs['角色信息']['60级'] = '0'
+        #     LoadConfig.writeconf(self.mnq_name, '宠物', '0', ini_name=self.mnq_name)
+        #     kwargs['角色信息']['宠物'] = '0'
         if int(star) >= 40:
             # self.change_mapdata('3', '研究所102', **kwargs)
             self.sn.log_tab.emit(self.mnq_name, r"选择星图混经验")

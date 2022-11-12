@@ -36,7 +36,9 @@ class RewardG(BasePageG):
             elif not _MAIL:
                 if self.get_mail_reward():
                     _MAIL = True
-        raise ControlTimeOut(r'领取奖励-异常超时')
+        self.sn.log_tab.emit(self.mnq_name, r'领取奖励-异常超时放弃')
+        return True
+        # raise ControlTimeOut(r'领取奖励-异常超时')
 
     def level_reward(self, **kwargs):
         s_time = time.time()
@@ -59,7 +61,9 @@ class RewardG(BasePageG):
                     _MAIL = True
             else:
                 self.check_close()
-        raise ControlTimeOut(r'获取成长奖励-异常超时')
+        self.sn.log_tab.emit(self.mnq_name, r'获取成长奖励-异常超时放弃')
+        return True
+        # raise ControlTimeOut(r'获取成长奖励-异常超时')
 
     def get_equip(self):
         s_time = time.time()
@@ -74,7 +78,9 @@ class RewardG(BasePageG):
                 elif self.get_rgb([720, 395, '617'], True):
                     pass
                 else:
-                    self.air_touch((1170, 39), touch_wait=1)
+                    self.air_touch((1170, 39), touch_wait=2)
+            elif self.find_info('coin_enum', True):
+                pass
             elif self.get_rgb(RgbEnumG.ZB_XQ):
                 self.get_rgb(RgbEnumG.ZB_JD, True)  # 鉴定
                 self.get_rgb(RgbEnumG.ZB_JDQR, True)  # 鉴定确认
@@ -98,14 +104,16 @@ class RewardG(BasePageG):
                         self.back()
             else:
                 self.check_close()
-        raise ControlTimeOut(r'穿戴装备-异常超时')
+        self.sn.log_tab.emit(self.mnq_name, r'穿戴装备-异常超时放弃')
+        return True
+        # raise ControlTimeOut(r'穿戴装备-异常超时')
 
     def get_mail_reward(self):
         s_time = time.time()
         self.sn.log_tab.emit(self.mnq_name, f"领取邮件")
         _G = False  # 公共
         _O = False  # 个人
-        while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
+        while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
             if self.find_info('ingame_flag2'):
                 self.crop_image_find(ImgEnumG.MAIL_RQ)
             elif self.get_rgb(RgbEnumG.MAIL_M):
@@ -129,7 +137,9 @@ class RewardG(BasePageG):
                 pass
             else:
                 self.check_close()
-        raise ControlTimeOut(r'领取邮件-异常超时')
+        self.sn.log_tab.emit(self.mnq_name, r'领取邮件-异常超时放弃')
+        return True
+        # raise ControlTimeOut(r'领取邮件-异常超时')
 
     def get_keti_reward(self):
         s_time = time.time()
@@ -137,7 +147,7 @@ class RewardG(BasePageG):
         _C_OVER = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.find_info('ingame_flag2'):
-                self.find_info('ui_enum',True)
+                self.find_info('ui_enum', True)
             elif self.find_info('ui_set'):  # 菜单界面
                 # self.ocr_find(ImgEnumG.KT_MENU, True)
                 self.enum_find('kt', True)
@@ -179,6 +189,8 @@ class RewardG(BasePageG):
                 pass
             elif self.get_rgb([687, 524, 'EE7047']):
                 pass
+            elif self.qr_or_qx(1):
+                pass
             else:
                 self.check_close()
         if self.find_info('ingame_flag2'):
@@ -193,7 +205,7 @@ class RewardG(BasePageG):
         _IN_XX = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.find_info('ingame_flag2'):
-                self.find_info('ui_enum',True)
+                self.find_info('ui_enum', True)
                 self.time_sleep(GlobalEnumG.TouchWaitTime)
             elif self.find_info('ui_set'):  # 菜单界面
                 # self.ocr_find(ImgEnumG.HD_MENU, True)
@@ -237,7 +249,8 @@ class RewardG(BasePageG):
             if self.find_info('ingame_flag2'):
                 if _FIND_TIMES > 3:
                     return True
-                if not self.find_info('czjl',True):
+                # if not self.find_info('czjl',True):
+                if not self.crop_image_find(ImgEnumG.CZJL_ICON, touch_wait=3):
                     self.air_touch((38, 149), touch_wait=1)
                     _FIND_TIMES += 1
             elif self.get_rgb(RgbEnumG.HD_CZZY):
@@ -249,11 +262,12 @@ class RewardG(BasePageG):
                     self.air_touch((1238, 655), touch_wait=2)
             elif self.get_rgb(RgbEnumG.HD_M):
                 # if not self.ocr_find([(29, 88, 181, 700), '全部的'], True):
-                if not self.find_info('hd_czzy',True):
+                if not self.find_info('hd_czzy', True):
                     self.air_swipe((105, 598), (105, 391))
             else:
                 self.check_close()
-        raise ControlTimeOut(r'领取奖励-异常超时')
+        self.sn.log_tab.emit(self.mnq_name, r'领取奖励-异常超时放弃')
+        return True
 
     def bag_clear(self, **kwargs):
         s_time = time.time()
@@ -270,6 +284,8 @@ class RewardG(BasePageG):
                     select_queue.task_over('BagClear')
                     return True
                 self.air_touch((1170, 39), touch_wait=2)
+            elif self.find_info('coin_enum', True):
+                pass
             elif self.get_rgb(RgbEnumG.BAG_DQ, True):
                 pass
             elif self.get_rgb(RgbEnumG.BAG_DQQR, True):
@@ -320,6 +336,7 @@ class RewardG(BasePageG):
                             else:
                                 self.air_swipe((1052, 559), (1052, 353), swipe_wait=1)
                                 _SWIP_TIMES += 1
+        select_queue.task_over('BagClear')
         raise ControlTimeOut(r'清理背包-异常超时')
 
     def bagsell(self, **kwargs):
@@ -331,66 +348,83 @@ class RewardG(BasePageG):
         _FJ_OVER = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.find_info('ingame_flag2'):
-                if _OVER:
+                if _OVER and _FJ_OVER:
                     select_queue.task_over('BagSell')
                     return True
                 self.air_touch((1170, 39), touch_wait=2)
+            elif self.find_info('coin_enum', True):
+                pass
             elif self.get_rgb(RgbEnumG.CSFJ_M):  # 出售界面
-                if _OVER and _FJ_OVER:
-                    self.back()
-                else:
-                    if not _OVER:
-                        if not self.get_rgb(RgbEnumG.CS_NULL):
-                            if not _SX_FLAG:
-                                self.air_touch((68, 677), touch_wait=1)  # 打开筛选
-                            else:
-                                _OVER = True
-                                self.find_info('task_close', True)
+                if _OVER or _FJ_OVER:
+                    if _FJ_OVER:
+                        if self.find_info('dec'):
+                            self.back()
+                    if _OVER:
+                        if self.find_info('sell'):
+                            self.back()
+                if not _FJ_OVER:
+                    if self.get_rgb(RgbEnumG.FJ_NULL):  # 分解栏空
+                        if not _FJSX_FLAG:
+                            self.air_touch((68, 677), touch_wait=2)
                         else:
-                            self.get_rgb(RgbEnumG.CS_QR, True)
-                            if self.get_rgb(RgbEnumG.QR, True, touch_wait=2):
-                                _OVER = True
-                    elif not _FJ_OVER:
-                        if self.get_rgb(RgbEnumG.FJ_NULL):  # 分解栏空
-                            if not _FJSX_FLAG:
-                                self.air_touch((68, 677), touch_wait=1)
-                            else:
-                                self.sn.log_tab.emit(self.mnq_name, r"分解完成")
-                                _FJ_OVER = True
+                            self.sn.log_tab.emit(self.mnq_name, r"分解完成")
+                            _FJ_OVER = True
+                    else:
+                        self.get_rgb(RgbEnumG.CS_QR, True, touch_wait=2)
+                        if self.get_rgb(RgbEnumG.FJ_END, True, touch_wait=2):
+                            self.sn.log_tab.emit(self.mnq_name, r"分解确认")
+                            _FJ_OVER = True
+                elif not _OVER:
+                    if not self.get_rgb(RgbEnumG.CS_NULL):
+                        if not _SX_FLAG:
+                            self.air_touch((68, 677), touch_wait=2)  # 打开筛选
                         else:
-                            self.get_rgb(RgbEnumG.CS_QR, True)
-                            if self.get_rgb(RgbEnumG.QR, True, touch_wait=2):
-                                self.sn.log_tab.emit(self.mnq_name, r"分解确认")
-                                _FJ_OVER = True
-            elif self.get_rgb(RgbEnumG.FJ_END) and _FJSX_FLAG:
-                self.get_rgb(RgbEnumG.FJ_END, True, touch_wait=5)
-                _FJ_OVER = True
+                            self.sn.log_tab.emit(self.mnq_name, r"出售完成")
+                            _OVER = True
+                            self.find_info('task_close', True)
+                    else:
+                        self.get_rgb(RgbEnumG.CS_QR, True)
+                        if self.get_rgb(RgbEnumG.QR, True, touch_wait=2):
+                            self.sn.log_tab.emit(self.mnq_name, r"出售完成")
+                            _OVER = True
+
             elif self.get_rgb(RgbEnumG.BAG_M):
                 if _OVER and _FJ_OVER:
                     self.back()
                 else:
-                    if not _OVER:
-                        self.get_rgb(RgbEnumG.CS, True)
-                    elif not _FJ_OVER:
-                        self.get_rgb(RgbEnumG.FJ, True)
-            elif self.get_rgb(RgbEnumG.BAG_SX) and not _SX_FLAG:
-                self.get_rgb(RgbEnumG.SX_SP, True)  # 饰品
-                self.get_rgb(RgbEnumG.SX_SP2, True)  # 饰品
-                self.get_rgb(RgbEnumG.SX_SP3, True)  # 饰品
-                if self.get_rgb(RgbEnumG.BAG_SX_TY, True):
-                    self.sn.log_tab.emit(self.mnq_name, r"出售筛选设置-完成")
-                    _SX_FLAG = True
-            elif self.get_rgb(RgbEnumG.BAG_FJSX) and not _FJSX_FLAG:
-                self.get_rgb(RgbEnumG.FJ_SX, True)  # 史诗
-                self.get_rgb(RgbEnumG.FJ_SX2, True)  # 史诗
-                if self.get_rgb(RgbEnumG.FJ_TY, True):
-                    self.sn.log_tab.emit(self.mnq_name, r"分解筛选设置-完成")
-                    _FJSX_FLAG = True
+                    if not _FJ_OVER:
+                        self.get_rgb(RgbEnumG.FJ, True)#分解
+                    elif not _OVER:
+                        self.get_rgb(RgbEnumG.CS, True)#出售
+            elif self.get_rgb(RgbEnumG.BAG_SX):
+                if _SX_FLAG:
+                    self.get_rgb(RgbEnumG.BAG_SX_TY, True)
+                else:
+                    self.get_rgb(RgbEnumG.SX_SP, True)  # 饰品
+                    self.get_rgb(RgbEnumG.SX_SP2, True)  # 饰品
+                    self.get_rgb(RgbEnumG.SX_SP3, True)  # 饰品
+                    if self.get_rgb(RgbEnumG.BAG_SX_TY, True):
+                        self.sn.log_tab.emit(self.mnq_name, r"出售筛选设置-完成")
+                        _SX_FLAG = True
+            elif self.get_rgb(RgbEnumG.BAG_FJSX):
+                if _FJSX_FLAG:
+                    self.get_rgb(RgbEnumG.FJ_TY, True)
+                else:
+                    self.get_rgb(RgbEnumG.FJ_SX, True)  # 史诗
+                    self.get_rgb(RgbEnumG.FJ_SX2, True)  # 史诗
+                    if self.get_rgb(RgbEnumG.FJ_TY, True):
+                        self.sn.log_tab.emit(self.mnq_name, r"分解筛选设置-完成")
+                        _FJSX_FLAG = True
+            elif self.get_rgb(RgbEnumG.FJ_END):
+                self.get_rgb(RgbEnumG.FJ_END, True, touch_wait=5)
+                self.sn.log_tab.emit(self.mnq_name, r"分解完成")
+                _FJ_OVER = True
             else:
                 if time.time() - s_time > 60:
                     self.check_close()
                     s_time = time.time()
                 self.time_sleep(1)
+        select_queue.task_over('BagSell')
         raise ControlTimeOut(r'出售背包-异常超时')
 
     def calculationgold(self, **kwargs):

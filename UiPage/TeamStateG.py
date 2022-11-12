@@ -180,12 +180,6 @@ class TeamStateG(BasePageG):
         self.sn.log_tab.emit(self.mnq_name, r"检查地图、频道")
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut / 2:
             if self.find_info('ingame_flag2'):
-                # if not _EX_FLAG and _ID == '3':
-                #     if self.check_map_ex(_MAP_NAME, _ID) and self.find_info('xt_flag'):
-                #         _MAP = True
-                #         _FLAG = True
-                #         return _MAP, _PD
-                #     _EX_FLAG = True
                 if _FLAG:
                     if _ID == '4':
                         if self.find_info('xt_flag'):

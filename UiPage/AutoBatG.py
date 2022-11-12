@@ -313,13 +313,14 @@ class AutoBatG(BasePageG):
                 if not self.find_info('ingame_flag2'):
                     return -1
                 else:
-                    _res_hp_mp = self.check_hp_mp()
-                    if _res_hp_mp != '':
-                        if 'HP' in _res_hp_mp:
-                            return -1
-                        if use_mp:
-                            if 'MP' in _res_hp_mp:
+                    if i % 10 == 0:
+                        _res_hp_mp = self.check_hp_mp()
+                        if _res_hp_mp != '':
+                            if 'HP' in _res_hp_mp:
                                 return -1
+                            if use_mp:
+                                if 'MP' in _res_hp_mp:
+                                    return -1
                     if self.get_rgb([736, 394, '617B96']):
                         self.air_touch((845, 390))
                     if not self.crop_image_find(ImgEnumG.AUTO_BAT, False, touch_wait=0):
@@ -347,78 +348,82 @@ class AutoBatG(BasePageG):
             if not res:
                 self.crop_image_find(ImgEnumG.S_MAP, touch_wait=1)
             else:
-                turn, turn_y = self.find_map_move(map_data, map_x, map_y, wait_queue, louti_queue)
-                if turn != 0:
-                    if not self.move_up_louti(turn, turn_y, wait_queue, saodi_mode, False):
-                        res4, map_x4, map_y4 = self._get_move_xy()
-                        if map_x4 == map_x:
-                            _i = random.randint(0, 1)
-                            if _i == 0:
-                                self.move_turn('left', 0.32, jump_mode=j_mode)
-                            else:
-                                self.move_turn('right', 0.32, jump_mode=j_mode)
-                        res6, map_x6, map_y6 = self._get_move_xy()
-                        if map_x4 == map_x6:
-                            self.move_turn('up', 1.12)
-                else:
-                    res3, map_x3, map_y3 = self._get_move_xy()
-                    if map_data[-1][0] > map_x3 > map_data[-1][1]:
-                        turn_queue.task_over('right')
-                        turn_queue.put_queue('left')
-                    elif map_data[-1][2] > map_x3 > map_data[-1][-1]:
-                        turn_queue.task_over('left')
-                        turn_queue.put_queue('right')
-                    else:
-                        _ro = random.randint(0, 10)
-                        if _ro > 5:
-                            _o = random.randint(0, 1)
-                            if _o == 0:
-                                turn_queue.task_over('left')
-                                turn_queue.put_queue('right')
-                            else:
-                                turn_queue.task_over('right')
-                                turn_queue.put_queue('left')
-                    move_to = turn_queue.get_task()
-                    if not move_to:
-                        _t = random.randint(0, 1)
-                        if _t == 0:
-                            move_to = 'left'
-                            turn_queue.put_queue('left')
-                        else:
-                            move_to = 'right'
-                            turn_queue.put_queue('right')
-                    self.move_bat(move_to, k_time, zhiye_id, saodi_mode, j_mode)
-                    res2, map_x2, map_y2 = self._get_move_xy()
-                    if map_data[-1][-1] > 900:  # 随机下跳概率
-                        r = random.randint(0, 1)
-                    else:
-                        r = random.randint(0, 3)
-                    if r == 0 and map_y2 == 135:
-                        self.jump_down_touch()
-                    if map_y2 < 135:
-                        """右边触底"""
-                        if zhiye_id == '1':
-                            self.move_bat(move_to, k_time, zhiye_id, saodi_mode, j_mode)
-                        if zhiye_id == '0':
-                            self.move_bat(move_to, k_time, zhiye_id, saodi_mode, j_mode)
-                        turn_queue.task_over('right')
-                        turn_queue.put_queue('left')
-                    if map_data[-1][0] > map_x2 > map_data[-1][1]:
-                        self.double_jump('left', jump_mode=j_mode)
-                    elif map_data[-1][2] > map_x2 > map_data[-1][-1]:
-                        self.double_jump('right', jump_mode=j_mode)
-                    if map_x2 == map_x3 and map_x2 not in range(1050, 1070):
-                        """防止挂绳子上不动"""
-                        self.double_jump(move_to, jump_mode=j_mode)
-                        self.move_turn('up', k_time / 10)
-                        res5, map_x5, map_y5 = self._get_move_xy()
-                        if res5 == 1060:
-                            self.double_jump(move_to, jump_mode=j_mode)
-                        if map_y2 == map_y5:
-                            self.double_jump('left', jump_mode=j_mode)
+                if not j_mode:
+                    turn, turn_y = self.find_map_move(map_data, map_x, map_y, wait_queue, louti_queue)
+                    if turn != 0:
+                        if not self.move_up_louti(turn, turn_y, wait_queue, saodi_mode, False):
+                            res4, map_x4, map_y4 = self._get_move_xy()
+                            if map_x4 == map_x:
+                                _i = random.randint(0, 1)
+                                if _i == 0:
+                                    self.move_turn('left', 0.32, jump_mode=j_mode)
+                                else:
+                                    self.move_turn('right', 0.32, jump_mode=j_mode)
                             res6, map_x6, map_y6 = self._get_move_xy()
-                            if map_x6 == map_x5:
-                                self.double_jump('right', jump_mode=j_mode)
+                            if map_x4 == map_x6:
+                                self.move_turn('up', 1.12)
+
+                res3, map_x3, map_y3 = self._get_move_xy()
+                if map_data[-1][0] > map_x3 > map_data[-1][1]:
+                    turn_queue.task_over('right')
+                    turn_queue.put_queue('left')
+                elif map_data[-1][2] > map_x3 > map_data[-1][-1]:
+                    turn_queue.task_over('left')
+                    turn_queue.put_queue('right')
+                else:
+                    _ro = random.randint(0, 10)
+                    if _ro > 5:
+                        _o = random.randint(0, 1)
+                        if _o == 0:
+                            turn_queue.task_over('left')
+                            turn_queue.put_queue('right')
+                        else:
+                            turn_queue.task_over('right')
+                            turn_queue.put_queue('left')
+                move_to = turn_queue.get_task()
+                if not move_to:
+                    _t = random.randint(0, 1)
+                    if _t == 0:
+                        move_to = 'left'
+                        turn_queue.put_queue('left')
+                    else:
+                        move_to = 'right'
+                        turn_queue.put_queue('right')
+                self.move_bat(move_to, k_time, zhiye_id, saodi_mode, j_mode)
+                res2, map_x2, map_y2 = self._get_move_xy()
+                if map_data[-1][-1] > 900:  # 随机下跳概率
+                    r = random.randint(0, 1)
+                else:
+                    r = random.randint(0, 3)
+                if r == 0 and map_y2 == 135:
+                    self.jump_down_touch()
+                if map_y2 < 135:
+                    """右边触底"""
+                    if zhiye_id == '1':
+                        self.move_bat(move_to, k_time, zhiye_id, saodi_mode, j_mode)
+                    if zhiye_id == '0':
+                        self.move_bat(move_to, k_time, zhiye_id, saodi_mode, j_mode)
+                    turn_queue.task_over('right')
+                    turn_queue.put_queue('left')
+                if map_data[-1][0] > map_x2 > map_data[-1][1]:
+                    self.double_jump('left', jump_mode=j_mode)
+                elif map_data[-1][2] > map_x2 > map_data[-1][-1]:
+                    self.double_jump('right', jump_mode=j_mode)
+                if map_x2 == map_x3 and map_x2 not in range(1050, 1070):
+                    """防止挂绳子上不动"""
+                    self.double_jump(move_to, jump_mode=j_mode)
+                    if j_mode:
+                        self.move_turn(move_to, k_time / 10)
+                    else:
+                        self.move_turn('up', k_time / 10)
+                    res5, map_x5, map_y5 = self._get_move_xy()
+                    if res5 == 1060:
+                        self.double_jump(move_to, jump_mode=j_mode)
+                    if map_y2 == map_y5:
+                        self.double_jump('left', jump_mode=j_mode)
+                        res6, map_x6, map_y6 = self._get_move_xy()
+                        if map_x6 == map_x5:
+                            self.double_jump('right', jump_mode=j_mode)
             i += 1
 
     def double_jump(self, turn, jump_mode=True):
@@ -440,7 +445,7 @@ class AutoBatG(BasePageG):
         _NO_TIMECARD = False
         _AUTO_START = False
         _AUTO_OVER = False
-        while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
+        while time.time() - s_time < GlobalEnumG.TaskCheckTime:
             if self.get_rgb(RgbEnumG.BAT_AUTO_M):
                 if not self.get_rgb(RgbEnumG.AUTO_TIME):
                     if _AUTO_START:

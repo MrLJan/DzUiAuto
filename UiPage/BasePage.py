@@ -72,6 +72,8 @@ class BasePageG(OpenCvTools, AirImgTools):
                 w_time = time.time()
             elif self.crop_image_find(ImgEnumG.GAME_ICON, False):
                 raise NotInGameErr
+            elif self.get_rgb(RgbEnumG.EXIT_FOU, True):
+                return True
             # elif self.get_rgb(RgbEnumG.EXIT_FOU, True, touch_wait=GlobalEnumG.ExitBtnTime) or self.get_rgb(
             #         RgbEnumG.CLOSE_GAME, True, touch_wait=GlobalEnumG.ExitBtnTime):  # 退出游戏-否
             elif self.find_info('ingame_flag2'):
@@ -80,19 +82,14 @@ class BasePageG(OpenCvTools, AirImgTools):
                 raise FuHuoRoleErr
             elif self.crop_image_find(ImgEnumG.LOGIN_TIPS, False):
                 raise NotInGameErr
-            elif self.get_rgb(RgbEnumG.HD_BJBS, True):
-                pass
-            elif self.get_rgb(RgbEnumG.QR, True):
-                pass
-            elif self.back_ksdy():
-                pass
-            elif self.get_rgb(RgbEnumG.MNDC_JG_QR, True):
-                pass
-            elif self.find_info('coin_enum',True):
-                pass
-            elif self.find_info('LB_close', True):
+            elif self.find_info('coin_enum', True):
                 pass
             else:
+                # self.get_rgb(RgbEnumG.HD_BJBS, True)
+                # self.get_rgb(RgbEnumG.QR, True)
+                # self.back_ksdy()
+                # self.get_rgb(RgbEnumG.MNDC_JG_QR, True)
+                # self.find_info('LB_close', True)
                 self.back()
 
     def check_err(self):
@@ -106,9 +103,6 @@ class BasePageG(OpenCvTools, AirImgTools):
             return True
         self.get_rgb(RgbEnumG.BAT_JG, True)
         return False
-        # if self.ocr_find(ImgEnumG.AUTO_JG):
-        #     self.air_loop_find(ImgEnumG.UI_QR)
-        # self.crop_image_find(ImgEnumG.UI_LB)
 
     def close_window(self):
         for i in range(10):
@@ -135,14 +129,12 @@ class BasePageG(OpenCvTools, AirImgTools):
         return False
 
     def check_is_stop(self):
-        _COLOR = self.rgb(450, 654)
+        _COLOR = self.rgb(427, 656)
         # if self.crop_image_find(ImgEnumG.MOVE_NOW, False):
-        if self.find_info('xl_lkyd'):
-            self.time_sleep(GlobalEnumG.TaskWaitTime)
-        _COLOR_1 = self.rgb(450, 654)
+        _COLOR_1 = self.rgb(427, 656)
         if _COLOR == _COLOR_1:
             self.time_sleep(2)
-            _COLOR_1 = self.rgb(450, 654)
+            _COLOR_1 = self.rgb(427, 656)
             if _COLOR_1 == _COLOR:
                 return True
         return False

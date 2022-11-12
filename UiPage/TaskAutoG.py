@@ -4,7 +4,7 @@ import time
 
 from Enum.ResEnum import ImgEnumG, GlobalEnumG, BatEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
-from Utils.ExceptionTools import NotInGameErr
+from Utils.ExceptionTools import NotInGameErr, FuHuoRoleErr
 from Utils.LoadConfig import LoadConfig
 
 
@@ -24,7 +24,7 @@ class TaskAutoG(BasePageG):
         _L2_FLAG = False if kwargs['角色信息']['60级'] == '0' else True
         _L3_FLAG = False if kwargs['角色信息']['90级'] == '0' else True
         s_time = time.time()
-        t_time = time.time()
+        # t_time = time.time()
         self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
                         **kwargs)
         self.sn.log_tab.emit(self.mnq_name, r"任务进行中")
@@ -35,21 +35,35 @@ class TaskAutoG(BasePageG):
                 self.check_close()
                 s_time = time.time()
             if not self.find_info('ingame_flag2'):
-                if self.get_rgb([1033, 414, 'EE7047'], True):  # 完成/接受
-                    pass
-                elif self.get_rgb(RgbEnumG.CLOSE_GAME, True):
-                    pass
-                elif self.find_info('task_arrow', True):
-                    pass
-                elif self.get_rgb([367, 565, '4C87AF'], True):
-                    pass
-                elif self.get_rgb([361, 570, 'EE7047'], True):
-                    pass
+                if self.find_info('task_close'):
+                    if self.get_rgb([1033, 414, 'EE7047'], True):  # 完成/接受
+                        pass
+                    elif self.find_info('task_arrow', True,touch_wait=0):
+                        pass
+                    elif self.get_rgb([367, 565, '4C87AF'], True):
+                        pass
+                    elif self.get_rgb([361, 570, 'EE7047'], True):
+                        pass
+                    elif self.get_rgb([685, 515, 'EE7047'], True):
+                        pass
+                    elif self.get_rgb(RgbEnumG.CLOSE_GAME, True):
+                        pass
+                    elif self.get_rgb(RgbEnumG.EXIT_FOU, True):
+                        pass
+                    elif self.get_rgb(RgbEnumG.FUHUO_BTN):
+                        if self.crop_image_find(ImgEnumG.CZ_FUHUO):
+                            raise FuHuoRoleErr
+                    elif self.get_rgb(RgbEnumG.SKILL_M):
+                        self.back()
+                    elif self.find_info('ui_set'):
+                        self.back()
                 elif self.get_rgb([359, 636, 'EE7047'], True):
                     pass  # 领取奖励
                 elif self.get_rgb([531, 632, 'EE7047'], True):
                     pass  # 领取奖励
-                elif self.get_rgb([685, 515, 'EE7047'], True):
+                elif self.get_rgb(RgbEnumG.CLOSE_GAME, True):
+                    pass
+                elif self.get_rgb(RgbEnumG.EXIT_FOU, True):
                     pass
                 elif self.get_rgb(RgbEnumG.SKIP_NEW, touch_wait=1):
                     if self.crop_image_find(ImgEnumG.JN_TEACH, touch_wait=1):
@@ -69,13 +83,17 @@ class TaskAutoG(BasePageG):
                     pass
                 elif self.air_loop_find(ImgEnumG.UI_QBLQ):
                     pass
-                elif self.find_info('LB_close', True):
+                elif self.find_info('LB_close', True,touch_wait=0):
                     pass
-                elif self.find_info('ingame_flag1'):
+                elif self.find_info('ingame_flag1',touch_wait=0):
                     if self.crop_image_find(ImgEnumG.CZ_FUHUO):
                         pass
                     self.back()
-                elif self.find_info('task_close', True):
+                elif self.get_rgb(RgbEnumG.SKILL_M):
+                    self.back()
+                elif self.find_info('task_close', True,touch_wait=0):
+                    pass
+                elif self.find_info('task_arrow', True,touch_wait=0):
                     pass
                 elif self.get_rgb([563, 634, 'EE7047'], True):
                     pass
@@ -86,7 +104,11 @@ class TaskAutoG(BasePageG):
                         raise NotInGameErr
                     if self.crop_image_find(ImgEnumG.CZ_FUHUO):
                         pass
+                    self.back()
             else:
+                if use_stone:
+                    if self.find_info('xl_lkyd', True,touch_wait=0):
+                        self.time_sleep(GlobalEnumG.TaskWaitTime)
                 if self.get_rgb(RgbEnumG.SKIP_NEW, True):
                     self.skip_new()
                 elif self.get_rgb([394, 403, 'EE7047']):
@@ -99,19 +121,18 @@ class TaskAutoG(BasePageG):
                 elif self.get_rgb([711, 206, 'FEFFF5'], True):
                     pass  # 提示装备技能
                 else:
-                    if use_stone:
-                        r = random.randint(0, 4)
-                        if r != 0:
-                            if self.find_info('xl_lkyd', True):
-                                self.time_sleep(GlobalEnumG.TaskWaitTime)
                     if self.find_info('bat_auto') or self.check_is_stop():
                         if time.time() - s_time > GlobalEnumG.TaskCheckTime:
                             self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
                                             **kwargs)
                             s_time = time.time()
-                        if not self.find_info('task_point', True):
+                        if not self.find_info('task_point', True,touch_wait=0):
                             self.air_loop_find(ImgEnumG.TASK_TAB)
-                    self.time_sleep(GlobalEnumG.TaskWaitTime)
+                        else:
+                            self.time_sleep(2)
+                    # if self.check_is_stop():
+                    #     if not self.find_info('task_point', True):
+                    #         self.air_loop_find(ImgEnumG.TASK_TAB)
 
     def level_task(self, stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG, **kwargs):
         """到达等级后执行任务"""
@@ -142,21 +163,22 @@ class TaskAutoG(BasePageG):
                 _CW_FLAG = True
                 raise NotInGameErr
             elif 100 >= kwargs['角色信息']['等级'] >= 60 and not _L2_FLAG:
-                r = random.randint(1, 3)
-                mrtask_queue.put_queue(str(r))  # 武林
-                select_queue.put_queue('AutoMR')
+                # r = random.randint(1, 3)
+                # mrtask_queue.put_queue(str(r))  # 武林
+                # select_queue.put_queue('AutoMR')
                 select_queue.put_queue('UseSkill')
                 select_queue.put_queue('GetLevelReard')
                 # select_queue.put_queue('CheckRole')
                 kwargs['角色信息']['60级'] = '1'
                 _L2_FLAG = True
                 raise NotInGameErr
-            elif 100 >=kwargs['角色信息']['等级'] >= 90 and not _L3_FLAG:
-                r = random.randint(1, 3)
+            elif 100 >= kwargs['角色信息']['等级'] >= 90 and not _L3_FLAG:
+                # r = random.randint(1, 3)
                 # exec_queue = kwargs['状态队列']['执行器']
                 select_queue.put_queue('CheckRole')
-                mrtask_queue.put_queue(str(r))  # 武林
-                select_queue.put_queue('AutoMR')
+                # mrtask_queue.put_queue(str(r))  # 武林
+                # select_queue.put_queue('AutoMR')
+                select_queue.put_queue('UseSkill')
                 select_queue.put_queue('GetLevelReard')
                 # select_queue.put_queue('CheckRole')
                 # self.sete_mapdata('3', '西边森林', **kwargs)

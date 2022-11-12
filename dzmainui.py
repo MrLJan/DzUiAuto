@@ -15,6 +15,7 @@ from cv2 import cv2
 from qt_material import apply_stylesheet
 from DzTest.DzModeMachine import switch_case, StateExecute, StateMachine, StateSelect, execute_transition, \
     select_transition
+from Utils.ExceptionTools import StopTaskErr
 from Utils.LoadConfig import LoadConfig
 from Utils.MnqTools import MnqTools
 from Utils.OtherTools import OT, catch_ex
@@ -158,7 +159,7 @@ class DzUi:
         self.set_meiri_time_box(self.ui_main.meiri_time_box, "全局配置", "固定每日时间", True)
         self.set_meiri_time_box(self.ui_main.fenz_box, "全局配置", "固定每日时间", False)
         # dm 设置tablewidget
-        self.ui_main.windows_pid.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # 关闭水平进度条
+
         # self.ui_main.windows_pid.doubleClicked.connect(self.windows_click)
         self.ui_main.windows_pid.itemClicked.connect(self.item_choose)
         self.ui_main.windows_pid.setColumnCount(12)  # 设置列数
@@ -847,9 +848,10 @@ class DzUi:
                 UpEvent(9),
             ]
             try:
-                dev.touch_proxy.perform(multitouch_event)
+                # dev.touch_proxy.perform(multitouch_event)
+                dev.touch_proxy.uninstall()
                 dev.adb.disconnect()  # 断开tcp连接
-            except (NotImplementedError,TypeError):
+            except (NotImplementedError, TypeError):
                 pass
             ThreadTools.stop_thread_list(mnq_thread_list)  # 利用tid关闭线程
             mnq_thread_list.clear()
@@ -903,6 +905,7 @@ class DzUi:
                     ThreadTools.stop_thread_list(mnq_thread_list)  # 利用tid关闭线程
                     mnq_thread_list.clear()
                     dev = self.dev_list[mnq_name]
+                    dev.touch_proxy.uninstall()
                     dev.adb.disconnect()  # 断开tcp连接
                     self.sn.table_value.emit(mnq_name, 7, "")
                     self.stop_btn_dic[mnq_name].setEnabled(False)
@@ -934,7 +937,7 @@ class DzUi:
             else:
                 devname = self.dev_obj_list[mnq_name][0]  # devname 设备名,mnq_name是标题名
                 try:
-                    res, dev = DevicesConnect(devname,mnq_name,self.sn).connect_device()
+                    res, dev = DevicesConnect(devname, mnq_name, self.sn).connect_device()
                     self.dev_list[mnq_name] = dev  # dev是连接成功后的设备对象
                     devinfo = (dev, devname)
                 except:
@@ -961,10 +964,11 @@ class DzUi:
                 try:
                     check_mnq_thread(f"{mnq_name}_{task_name}", mnq_thread_list,
                                      switch_case(self.sn, **taskdic).do_case, thread_while=True)
-                except:
+                except (Exception, TypeError):
                     ThreadTools.stop_thread_list(mnq_thread_list)
                     mnq_thread_list.clear()
                     dev_colse = self.dev_list[mnq_name]
+                    dev_colse.touch_proxy.uninstall()
                     dev_colse.adb.disconnect()  # 断开tcp连接
                     self._do_task_list(index_list)
 
@@ -1005,7 +1009,8 @@ class DzUi:
                 UpEvent(8),
                 UpEvent(9)]
             try:
-                dev.touch_proxy.perform(multitouch_event)
+                # dev.touch_proxy.perform(multitouch_event)
+                # dev.touch_proxy.uninstall()
                 dev.adb.disconnect()  # 断开tcp连接
             except (NotImplementedError, ConnectionResetError, ConnectionAbortedError, TypeError):
                 pass
@@ -1013,6 +1018,7 @@ class DzUi:
             mnq_thread_list.clear()
 
         dev = self.dev_list[mnq_name]
+        dev.touch_proxy.uninstall()
         index_list = [self.mnq_rownum_dic[mnq_name]['index']]
         ThreadTools('Restart', stop).start()
         self._do_task_list(index_list)
@@ -1075,6 +1081,7 @@ class DzUi:
             table_object.removeRow(_i)
         table_object.setRowCount(len(index_list))  # 设置行数
         num = len(index_list)
+        table_object.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # 关闭水平进度条
         if len(self.mnq_name_old_list) > 0:
             for mnq_name in self.mnq_name_old_list:
                 if mnq_name not in pinfo_list:
@@ -1170,6 +1177,8 @@ class DzUi:
         else:
             for i in range(num):
                 self.mnq_thread_tid[pinfo_list[i]] = []
+        table_object.setColumnHidden(10,True)
+        table_object.setColumnHidden(11, True)
         pop.clear()
         old.clear()
         new.clear()
