@@ -2,6 +2,8 @@
 import random
 import time
 
+from memory_profiler import profile
+
 from Enum.ResEnum import ImgEnumG, GlobalEnumG, BatEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
 from Utils.ExceptionTools import NotInGameErr, FuHuoRoleErr

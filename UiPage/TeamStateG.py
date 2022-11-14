@@ -564,7 +564,7 @@ class TeamStateG(BasePageG):
                     self.back()
                     return False  # 无队伍需要创建
                 if len(_POS_LIST) == 0:
-                    team_pos = self.air_all_find(ImgEnumG.PWD_TEAM)
+                    team_pos = self.find_all_results(ImgEnumG.PWD_TEAM)
                     if len(team_pos) > 0:
                         _POS_LIST = team_pos
                     else:

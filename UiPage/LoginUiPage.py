@@ -152,7 +152,7 @@ class LoginUiPageG(BasePageG):
                 pass
             elif self.find_info('coin_enum', True):
                 pass
-            elif self.get_rgb(RgbEnumG.WL_QX,True):
+            elif self.get_rgb(RgbEnumG.WL_QX, True):
                 pass
             elif self.find_info('task_close', True):
                 pass
@@ -160,11 +160,11 @@ class LoginUiPageG(BasePageG):
                 self.air_touch((908, 97), touch_wait=1)
             elif self.get_rgb(RgbEnumG.GX_XZ_BACK, True):
                 pass
-            elif self.find_info('task_arrow',True):
+            elif self.find_info('task_arrow', True):
                 pass
             elif self.get_rgb([1033, 414, 'EE7047'], True):
                 pass
-            elif self.find_info('skip',True):
+            elif self.find_info('skip', True):
                 pass
             else:
                 if task_id in ['1']:

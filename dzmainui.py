@@ -15,7 +15,6 @@ from cv2 import cv2
 from qt_material import apply_stylesheet
 from DzTest.DzModeMachine import switch_case, StateExecute, StateMachine, StateSelect, execute_transition, \
     select_transition
-from Utils.ExceptionTools import StopTaskErr
 from Utils.LoadConfig import LoadConfig
 from Utils.MnqTools import MnqTools
 from Utils.OtherTools import OT, catch_ex
@@ -849,8 +848,9 @@ class DzUi:
             ]
             try:
                 # dev.touch_proxy.perform(multitouch_event)
-                dev.touch_proxy.uninstall()
-                dev.adb.disconnect()  # 断开tcp连接
+                # dev.touch_proxy.uninstall()
+                # dev.adb.disconnect()  # 断开tcp连接
+                dev.uiautomator.stop()
             except (NotImplementedError, TypeError):
                 pass
             ThreadTools.stop_thread_list(mnq_thread_list)  # 利用tid关闭线程
@@ -905,8 +905,9 @@ class DzUi:
                     ThreadTools.stop_thread_list(mnq_thread_list)  # 利用tid关闭线程
                     mnq_thread_list.clear()
                     dev = self.dev_list[mnq_name]
-                    dev.touch_proxy.uninstall()
-                    dev.adb.disconnect()  # 断开tcp连接
+                    # dev.touch_proxy.uninstall()
+                    dev.uiautomator.stop()
+                    # dev.adb.disconnect()  # 断开tcp连接
                     self.sn.table_value.emit(mnq_name, 7, "")
                     self.stop_btn_dic[mnq_name].setEnabled(False)
                     self.start_btn_dic[mnq_name].setEnabled(True)
@@ -968,8 +969,9 @@ class DzUi:
                     ThreadTools.stop_thread_list(mnq_thread_list)
                     mnq_thread_list.clear()
                     dev_colse = self.dev_list[mnq_name]
-                    dev_colse.touch_proxy.uninstall()
-                    dev_colse.adb.disconnect()  # 断开tcp连接
+                    dev_colse.uiautomator.stop()
+                    # dev_colse.touch_proxy.uninstall()
+                    # dev_colse.adb.disconnect()  # 断开tcp连接
                     self._do_task_list(index_list)
 
     def restart_task(self, mnq_name, mnq_thread_list):
@@ -1011,7 +1013,8 @@ class DzUi:
             try:
                 # dev.touch_proxy.perform(multitouch_event)
                 # dev.touch_proxy.uninstall()
-                dev.adb.disconnect()  # 断开tcp连接
+                # dev.adb.disconnect()  # 断开tcp连接
+                dev.uiautomator.stop()
             except (NotImplementedError, ConnectionResetError, ConnectionAbortedError, TypeError):
                 pass
             ThreadTools.stop_thread_list(mnq_thread_list)
@@ -1203,7 +1206,6 @@ class DzUi:
             self.ui_main.close_all_task_btn.setEnabled(True)
             self.ui_main.close_all_task_btn.setText(f"全部停止")
             self.stop_time = 3
-
 
 def main():
     app = QApplication(sys.argv)

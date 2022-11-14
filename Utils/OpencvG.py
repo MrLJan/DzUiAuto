@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
+import gc
+import random
 import time
 
+import airtest.aircv
 import numpy
-from airtest.aircv import aircv, HomographyError
+import numpy as np
 from airtest.core.android.touch_methods.base_touch import DownEvent, SleepEvent, UpEvent
 from cv2 import cv2
+from memory_profiler import profile
 
-from Enum.ResEnum import GlobalEnumG, OpenCvEnumG
+from Enum.ResEnum import GlobalEnumG, OpenCvEnumG, ImgEnumG
 from Utils.Devicesconnect import DevicesConnect
 from Utils.OtherTools import OT, catch_ex
 
@@ -18,29 +22,34 @@ class OpenCvTools:
         self._img = None
         self.mnq_name = None
 
-    @catch_ex
+    @profile
     def get_rgb(self, rgb_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime,
                 t_log=GlobalEnumG.TestLog):
         """获取某一像素点RBG数据"""
         get_x, get_y, find_color = rgb_info
-        self._img = self.dev.snapshot()
-        if self._img is not None:
-            _color = self.nd_to_hex(self._img[get_y, get_x])
-            if t_log:
-                self.sn.log_tab.emit(self.mnq_name, f'expoint:{_color}_find:{find_color}_x,y:{get_x},{get_y}')
-            if find_color in _color:
-                if clicked:
-                    self.dev.touch((get_x, get_y))
-                    if touch_wait > 0:
-                        time.sleep(touch_wait)
-                return True
+        _color = self.rgb(get_x, get_y)
+        if t_log:
+            self.sn.log_tab.emit(self.mnq_name, f'expoint:{_color}_find:{find_color}_x,y:{get_x},{get_y}')
+        if find_color in _color:
+            if clicked:
+                # self.dev.click(get_x, get_y)
+                if touch_wait > 0:
+                    time.sleep(touch_wait)
+            return True
         return False
 
     @catch_ex
+    @profile
     def rgb(self, get_x, get_y):
-        self._img = self.dev.snapshot()
-        _color = self._img[get_y, get_x]  # 横屏1280x720
-        return self.nd_to_hex(_color)
+        # self.dev.screenshot(format='opencv')
+        self._img = self.dev.screenshot(format='opencv')
+        airtest.aircv.crop_image()
+        _color = self.nd_to_hex(self._img[get_y, get_x])  # 横屏1280x720
+        del self._img
+        # del _color
+        gc.collect()
+        # return self.nd_to_hex(self._img[get_y, get_x])
+        return _color
 
     @staticmethod
     def nd_to_hex(ndarry):
@@ -72,7 +81,8 @@ class OpenCvTools:
     def mulcolor_check(self, find_list, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog,
                        get_grb=False):
         """对比多个点的颜色，只要有一个错误就返回"""
-        self._img = self.dev.snapshot()
+        self.dev.screenshot(filename=OT.snappath(self.mnq_name), format='opencv')
+        self._img = cv2.imread(OT.snappath(self.mnq_name))
         if self._img is not None:
             c_list = []
             if get_grb:
@@ -92,7 +102,7 @@ class OpenCvTools:
             if t_log:
                 self.sn.log_tab.emit(self.mnq_name, c_list)
             if clicked:
-                self.dev.touch((find_list[0][0][0], find_list[0][0][1]), duration=0.1)
+                self.dev.click(find_list[0][0][0], find_list[0][0][1])
                 if touch_wait > 0:
                     time.sleep(touch_wait)
             if t_log:
@@ -169,7 +179,7 @@ class OpenCvTools:
                                 _con = 100
                     if find_info == _str:
                         if clicked:
-                            self.dev.touch((_x + 1091, _y + 150), duration=0.1)
+                            self.dev.click(_x + 1091, _y + 150)
                         if t_log:
                             self.sn.log_tab.emit(self.mnq_name, f'T_{_str}_xy{_x + 1091}_{_y + 150}')
                         if touch_wait > 0:
@@ -229,7 +239,7 @@ class OpenCvTools:
                         _y = _t[1]
             if _pd_num == find_info:
                 if clicked:
-                    self.dev.touch((_x + 239, _y + 157), duration=0.1)
+                    self.dev.click(_x + 239, _y + 157)
                 if touch_wait > 0:
                     time.sleep(touch_wait)
                 if t_log:
@@ -284,7 +294,7 @@ class OpenCvTools:
                 numpy.load(_cmp_img), method=cv2.TM_CCOEFF_NORMED)
             if numpy.any(_re > 0.7):
                 if clicked:
-                    self.dev.touch((ori_list[_num][-1][0] + 38, ori_list[_num][-1][-1] + 158), duration=0.1)
+                    self.dev.click(ori_list[_num][-1][0] + 38, ori_list[_num][-1][-1] + 158)
                 if t_log:
                     self.sn.log_tab.emit(self.mnq_name,
                                          f'T_{find_info}_xy{ori_list[_num][-1][0] + 38}_{ori_list[_num][-1][-1] + 158}')
@@ -294,8 +304,9 @@ class OpenCvTools:
         return False
 
     def enum_find(self, find_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog):
-        self._img = self.dev.snapshot()
-        self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
+        self.dev.screenshot(filename=OT.snappath(self.mnq_name), format='opencv')
+        self._img = cv2.imread(OT.snappath(self.mnq_name), flags=0)
+        # self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
         # _crop_img = self._img[y:y1, x:x1]
         _crop_img = self._img[62:632, 800:1263]
         sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (8, 8))
@@ -317,7 +328,7 @@ class OpenCvTools:
             if numpy.any(_re > 0.6):
                 # if _t == find_info:
                 if clicked:
-                    self.dev.touch((ori_list[_num][-1][0] + 800, ori_list[_num][-1][-1] + 62), duration=0.1)
+                    self.dev.click(ori_list[_num][-1][0] + 800, ori_list[_num][-1][-1] + 62)
                 if t_log:
                     self.sn.log_tab.emit(self.mnq_name,
                                          f'T_{find_info}_xy{ori_list[_num][-1][0] + 800}_{ori_list[_num][-1][-1] + 62}')
@@ -517,7 +528,7 @@ class OpenCvTools:
         if _res:
             if t_log:
                 self.sn.log_tab.emit(self.mnq_name, f"map_yt_{map_name}")
-            self.dev.touch((_pos[0] + 2, _pos[-1] + 76), duration=0.1)
+            self.dev.click(_pos[0] + 2, _pos[-1] + 76)
             time.sleep(1)
         return _res
 
@@ -577,8 +588,8 @@ class OpenCvTools:
                 cv2.resize(ori_list[_row][0], (72, 128)),
                 numpy.load(OT.npypath('exit_ydzxd')), method=cv2.TM_CCOEFF_NORMED)
             if numpy.any(_re > 0.9):
-                self.dev.touch((ori_list[_row][1][0] + 251,
-                                ori_list[_row][1][-1] + 167))
+                self.dev.click(ori_list[_row][1][0] + 251,
+                               ori_list[_row][1][-1] + 167)
                 time.sleep(GlobalEnumG.TouchWaitTime)
                 return True
         return False
@@ -629,8 +640,8 @@ class OpenCvTools:
                 numpy.load(_cmp_img), method=cv2.TM_CCOEFF_NORMED)
             if numpy.any(_re > 0.7):
                 self.sn.log_tab.emit(self.mnq_name, r"点击弹窗按钮")
-                self.dev.touch((ori_list[_row][1][0] + 228,
-                                ori_list[_row][1][-1] + 73))
+                self.dev.click(ori_list[_row][1][0] + 228,
+                               ori_list[_row][1][-1] + 73)
                 return True
         return False
 
@@ -672,16 +683,18 @@ class OpenCvTools:
                 numpy.load(_cmp_img), method=cv2.TM_CCOEFF_NORMED)
             if numpy.any(_re > 0.79):
                 _tx, _ty = ori_list[_row][1]
-                self.dev.touch((_tx + 789, _ty + 159), duration=0.1)
+                self.dev.click(_tx + 789, _ty + 159, duration=0.1)
                 return True
         return False
 
     def _get_crop_img(self, x, y, x1, y1):
-        self._img = self.dev.snapshot()
+        self._img = self.dev.screenshot(format='opencv')
         try:
             self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
-            # _crop_img = self._img[y:y1, x:x1]
-            return self._img[y:y1, x:x1]
+            _crop_img = self._img[y:y1, x:x1]
+            del self._img
+            gc.collect()
+            return _crop_img
         except Exception:
             return self._get_crop_img(x, y, x1, y1)
 
@@ -730,7 +743,7 @@ class OpenCvTools:
         except:
             return False
 
-    def find_info(self, find_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime,t_log=GlobalEnumG.TestLog):
+    def find_info(self, find_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog):
         _data = OpenCvEnumG.FIND_INFO[find_info]
         _x, _y, _x1, _y1 = _data[0]
         _k_size, _thr_value, _thr_method, _mor_method, _cont_method, _comp_rate = _data[-1]
@@ -751,8 +764,8 @@ class OpenCvTools:
         if clicked:
             _res, _pos = self._match_text(ori_list, _cmp_img, clicked=clicked, cont_res=_comp_rate)
             if _res:
-                self.dev.touch((_pos[0] + _x, _pos[-1] + _y), duration=0.2)
-                if touch_wait>0:
+                self.dev.click(_pos[0] + _x, _pos[-1] + _y)
+                if touch_wait > 0:
                     time.sleep(touch_wait)
                 # time.sleep(1)  # 防止操作过快
         else:
@@ -839,109 +852,207 @@ class OpenCvTools:
         return False
 
 
+def check_source_larger_than_search(im_source, im_search):
+    """检查图像识别的输入."""
+    # 图像格式, 确保输入图像为指定的矩阵格式:
+    # 图像大小, 检查截图宽、高是否大于了截屏的宽、高:
+    h_search, w_search = im_search.shape[:2]
+    h_source, w_source = im_source.shape[:2]
+    # if h_search > h_source or w_search > w_source:
+    #     raise TemplateInputError("error: in template match, found im_search bigger than im_source.")
+
+
+def img_mat_rgb_2_gray(img_mat):
+    """
+    Turn img_mat into gray_scale, so that template match can figure the img data.
+    "print(type(im_search[0][0])")  can check the pixel type.
+    """
+    assert isinstance(img_mat[0][0], np.ndarray), "input must be instance of np.ndarray"
+    return cv2.cvtColor(img_mat, cv2.COLOR_BGR2GRAY)
+
+
+def generate_result(middle_point, pypts, confi):
+    """Format the result: 定义图像识别结果格式."""
+    ret = dict(result=middle_point,
+               rectangle=pypts,
+               confidence=confi)
+    return ret
+
+
+def cal_rgb_confidence(img_src_rgb, img_sch_rgb):
+    """同大小彩图计算相似度."""
+    # 减少极限值对hsv角度计算的影响
+    img_src_rgb = np.clip(img_src_rgb, 10, 245)
+    img_sch_rgb = np.clip(img_sch_rgb, 10, 245)
+    # 转HSV强化颜色的影响
+    img_src_rgb = cv2.cvtColor(img_src_rgb, cv2.COLOR_BGR2HSV)
+    img_sch_rgb = cv2.cvtColor(img_sch_rgb, cv2.COLOR_BGR2HSV)
+
+    # 扩展置信度计算区域
+    img_src_rgb = cv2.copyMakeBorder(img_src_rgb, 10, 10, 10, 10, cv2.BORDER_REPLICATE)
+    # 加入取值范围干扰，防止算法过于放大微小差异
+    img_src_rgb[0, 0] = 0
+    img_src_rgb[0, 1] = 255
+
+    # 计算BGR三通道的confidence，存入bgr_confidence
+    src_bgr, sch_bgr = cv2.split(img_src_rgb), cv2.split(img_sch_rgb)
+    bgr_confidence = [0, 0, 0]
+    for i in range(3):
+        res_temp = cv2.matchTemplate(src_bgr[i], sch_bgr[i], cv2.TM_CCOEFF_NORMED)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res_temp)
+        bgr_confidence[i] = max_val
+
+    return min(bgr_confidence)
+
+
 class AirImgTools:
     def __init__(self):
         self.dev = None
-        self._img = None
+        self._img = None  # 截图
         self.sn = None
         self.mnq_name = None
+        self.im_source = None  # 匹配模板图
+        self.turn_pos = {
 
-    turn_pos = {
-        'up': (146, 471),
-        'down': (144, 629),
-        'left': (79, 543),
-        'right': (239, 544),
-        'jump': (1207, 624),
-        'attack': (1074, 619),
-        'c': (948, 659),
-        'v': (958, 559),
-        'd': (1054, 501),
-        'f': (1148, 505)
-    }
+        }
+
+    def _get_template_result_matrix(self):
+        """求取模板匹配的结果矩阵."""
+        # 灰度识别: cv2.matchTemplate( )只能处理灰度图片参数
+        s_gray, i_gray = img_mat_rgb_2_gray(self.im_source), img_mat_rgb_2_gray(self._img)
+        return cv2.matchTemplate(i_gray, s_gray, cv2.TM_CCOEFF_NORMED)
+
+    def find_best_result(self, temp):
+        """基于kaze进行图像识别，只筛选出最优区域."""
+        """函数功能：找到最优结果."""
+
+        # 第一步：校验图像输入
+        self._screen_img(temp[0])
+        self.im_source = cv_imread(temp[-1])
+        # self.im_source = cv2.imread(cv_imread(temp[-1]))
+        # 第二步：计算模板匹配的结果矩阵res
+        res = self._get_template_result_matrix()
+        # 第三步：依次获取匹配结果
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+        h, w = self.im_source.shape[:2]
+        # 求取可信度:
+        confidence = max_val  # self._get_confidence_from_matrix(max_loc, max_val, w, h)
+        # 求取识别位置: 目标中心 + 目标区域:
+        middle_point, rectangle = self._get_target_rectangle(max_loc, w, h)
+        best_match = generate_result(middle_point, rectangle, confidence)
+        del res
+        gc.collect()
+        return best_match if confidence >= 0.9 else None
+
+    def _get_target_rectangle(self, left_top_pos, w, h):
+        """根据左上角点和宽高求出目标区域."""
+        x_min, y_min = left_top_pos
+        # 中心位置的坐标:
+        x_middle, y_middle = int(x_min + w / 2), int(y_min + h / 2)
+        # 左下(min,max)->右下(max,max)->右上(max,min)
+        left_bottom_pos, right_bottom_pos = (x_min, y_min + h), (x_min + w, y_min + h)
+        right_top_pos = (x_min + w, y_min)
+        # 点击位置:
+        middle_point = (x_middle, y_middle)
+        # 识别目标区域: 点序:左上->左下->右下->右上, 左上(min,min)右下(max,max)
+        rectangle = (left_top_pos, left_bottom_pos, right_bottom_pos, right_top_pos)
+
+        return middle_point, rectangle
+
+    def _screen_img(self, area=None):
+        screen_img = self.dev.screenshot(format='opencv')
+        if area is not None and area[-1] != 720:
+            x, y, x1, y1 = area
+            self._img = screen_img[y:y1, x:x1]
+        else:
+            self._img = screen_img
+        del screen_img
+        gc.collect()
+
+    def find_all_results(self, temp, t_log=GlobalEnumG.TestLog):
+        """基于模板匹配查找多个目标区域的方法."""
+        # 第一步：校验图像输入
+        self._screen_img(temp[0])
+        self.im_source = cv_imread(temp[-1])
+        # 第二步：计算模板匹配的结果矩阵res
+        res = self._get_template_result_matrix()
+        # 第三步：依次获取匹配结果
+        result = []
+        h, w = self.im_source.shape[:2]
+        while True:
+            # 本次循环中,取出当前结果矩阵中的最优值
+            min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+            # 求取可信度:
+            confidence = max_val
+            if confidence < 0.9 or len(result) > 10:
+                break
+
+            # 求取识别位置: 目标中心 + 目标区域:
+            middle_point, rectangle = self._get_target_rectangle(max_loc, w, h)
+            result.append(middle_point)
+            # 屏蔽已经取出的最优结果,进入下轮循环继续寻找:
+            cv2.rectangle(res, (int(max_loc[0] - w / 2), int(max_loc[1] - h / 2)),
+                          (int(max_loc[0] + w / 2), int(max_loc[1] + h / 2)), (0, 0, 0), -1)
+        if t_log:
+            self.sn.log_tab.emit(self.mnq_name, f"find_all_results:{temp[-1]}_{result}")
+        del res
+        gc.collect()
+        return result if result else None
 
     @catch_ex
     def crop_image_find(self, area_temp, clicked=True, touch_wait=GlobalEnumG.TouchWaitTime,
                         get_pos=False, t_log=GlobalEnumG.TestLog):
         """区域找图"""
-        self._img = self.dev.snapshot()
-        if self._img is not None:
-            area = area_temp[0]
-            temp = area_temp[-1]
-            crop_img = aircv.crop_image(self._img, area)
-            res = temp.match_in(crop_img)
-            if res:
-                pos = (res[0] + area[0], res[1] + area[1])
-                if clicked:
-                    self.dev.touch(pos)
-                    if touch_wait > 0:
-                        time.sleep(touch_wait)
-                if get_pos:
-                    if t_log:
-                        self.sn.log_tab.emit(self.mnq_name, f"crop_image_find:{temp}")
-                    return True, pos[0], pos[-1]
-                if t_log:
-                    self.sn.log_tab.emit(self.mnq_name, f"crop_image_find:{temp}")
-                return True
+        _res = self.find_best_result(area_temp)
+        if _res is not None:
+            if clicked:
+                self.air_touch(_res['result'])
+                if touch_wait > 0:
+                    time.sleep(touch_wait)
             if get_pos:
-                return False, 0, 0
+                _dx, _dy = _res['result']
+                if t_log:
+                    self.sn.log_tab.emit(self.mnq_name, f"crop_image_find:{area_temp[-1]}")
+                return True, _dx, _dy
             if t_log:
-                self.sn.log_tab.emit(self.mnq_name, f"f_crop_image_find:{temp}")
-            return False
+                self.sn.log_tab.emit(self.mnq_name, f"crop_image_find:{area_temp[-1]}")
+            return True
+        if get_pos:
+            return False, 0, 0
+        if t_log:
+            self.sn.log_tab.emit(self.mnq_name, f"f_crop_image_find:{area_temp[-1]}")
         return False
 
     @catch_ex
     def air_loop_find(self, temp, clicked=True, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog):
         """
-        循环查找图片并点击，超时返回
+        全图查找
         """
-        try:
-            img = temp[-1]
-            self._img = self.dev.snapshot()
-            if self._img is not None:
-                match_pos = img.match_in(self._img)
-                if not match_pos:
-                    if t_log:
-                        self.sn.log_tab.emit(self.mnq_name, f"f_air_loop_find:{temp}")
-                    return False
-                if match_pos:
-                    if clicked:
-                        self.dev.touch(match_pos)
-                        if touch_wait > 0:
-                            time.sleep(touch_wait)
-                if t_log:
-                    self.sn.log_tab.emit(self.mnq_name, f"air_loop_find:{temp}")
-                return True
+        _res = self.find_best_result(temp)
+        if _res is not None:
+            if clicked:
+                self.air_touch(_res['result'])
+                if touch_wait > 0:
+                    time.sleep(touch_wait)
             if t_log:
-                self.sn.log_tab.emit(self.mnq_name, f"f_air_loop_find:{temp}")
-            return False
-        except HomographyError:
-            return False
-
-    @catch_ex
-    def air_all_find(self, temp, t_log=GlobalEnumG.TestLog):
-        _pos_list = []
-        try:
-            img = temp[-1]
-            self._img = self.dev.snapshot()
-            if self._img is not None:
-                match_pos = img.match_all_in(self._img)
-                for _match in match_pos:
-                    _pos_list.append(_match['result'])
-                if t_log:
-                    self.sn.log_tab.emit(self.mnq_name, f"air_all_find:{temp}_{match_pos}")
-            return _pos_list
-        except HomographyError:
-            return _pos_list
+                self.sn.log_tab.emit(self.mnq_name, f"air_loop_find:{temp}")
+            return True
+        if t_log:
+            self.sn.log_tab.emit(self.mnq_name, f"f_air_loop_find:{temp}")
+        return False
 
     @catch_ex
     def air_touch(self, touch_xy, duration=0.02, touch_wait=1):
-        self.dev.touch(touch_xy, duration=duration)
+        _tx, _ty = touch_xy
+        self.dev.click(_tx, _ty)
         if touch_wait > 0:
             time.sleep(touch_wait)
 
     @catch_ex
     def air_swipe(self, start_xy, end_xy, swipe_wait=0):
-        self.dev.swipe(start_xy, end_xy)
+        _sx, _sy = start_xy
+        _ex, _ey = end_xy
+        self.dev.swipe(_sx, _sy, _ex, _ey)
         if swipe_wait > 0:
             time.sleep(swipe_wait)
 
@@ -1035,10 +1146,15 @@ class AirImgTools:
         self.air_touch(_k_pos, duration=k_time)
 
 
+def cv_imread(file_path):
+    cv_img = cv2.imdecode(np.fromfile(file_path, dtype=np.uint8), -1)
+    return cv_img
+
+
 if __name__ == '__main__':
     # img_fp = r'D:\DzAutoUi\Res\img\21.bmp'
     # res, dev = DevicesConnect('127.0.0.1:5555').connect_device()
-    res2, dev2 = DevicesConnect('127.0.0.1:5555').connect_device()
+    dev2 = DevicesConnect('127.0.0.1:5555').connect_device()[-1]
     o = OpenCvTools()
     o.dev = dev2
     a = AirImgTools()
@@ -1068,16 +1184,37 @@ if __name__ == '__main__':
     # r = o.ys_contrl('ys_ljqw')
     # r = o.check_xt_map('120')
     # r = o.check_boss_end(0)
-    r=o.rgb(433, 666)
+    t2 = time.time()
+    while True:
+        rt = random.randint(1, 3)
+        r=o.rgb(433 + rt, 666 + rt)
+        t3 = time.time()
+        # r = a.crop_image_find(ImgEnumG.GAME_ICON, False, t_log=False)
+        # print(r)
+        # r = o.get_rgb([444,222,'rrr'], t_log=False)
+        time.sleep(1)
+        # del r
+        # gc.collect()
+        # x,y=r['result']
+        #
+        # dev2.click(x+733,y+258)
+    # gc.collect()
+
+    # for i in range(10):
+    #     r = o.rgb(433+i, 666+i)
+    #     print(r)
+    # print('C：%.2f MB' % (psutil.Process(os.getpid()).memory_info().rss / 1024 / 1024))
+
+    # gc.collect()
     # r=o.check_ui('ui_jzt',t_log=False)
-    print(r)
+    # print(r)
     # r=o.gold_num(2)'
     # r=a.crop_image_find(ImgEnumG.PERSON_POS, clicked=False, get_pos=True,t_log=False)
     # r=o.check_num(2,t_log=False)
     r1 = time.time()
     # r = o.find_pic(BAG_GOLD)
     print(time.time() - r1)
-    # r=o.find_info('coin_enum',True,t_log=False)
+    dev2.uiautomator.stop()
     # r = a.air_all_find(ImgEnumG.PWD_TEAM,t_log=False)
     # r = o.check_num(1, t_log=False)
     # if not r:
@@ -1136,12 +1273,12 @@ if __name__ == '__main__':
     #     ColorEnumG.MAIL_MAIN, ColorEnumG.KT_MAIN, ColorEnumG.PET_MAIN, ColorEnumG.JN_MAIN, ColorEnumG.YS_LOGIN,
     #     ColorEnumG.YS_SHOP, ColorEnumG.YS_XQ, ColorEnumG.YS_GM_QR
     # ]
-    # screen=dev2.snapshot()
+    # screen=dev2.screenshot(format='opencv')
     # cv2.cv2.setNumThreads(1)
     # cv2.cv2.ocl.setUseOpenCL(False)
     # while True:
     #     t1 = time.time()
-    #     # o.screen = dev2.snapshot()
+    #     # o.screen = dev2.screenshot(format='opencv')
     #     # r = DailyTaskG.DailyTaskAutoG((dev2, 'emulator-5556'), 1, 1,cn_ocr).wulin_task()
     #     # r=o.mulcolor_check(ColorEnumG.LOGIN_START, clicked=True,test=False)
     #     r = o.mulcolor_check(ColorEnumG.MR_KSDY, test=False)

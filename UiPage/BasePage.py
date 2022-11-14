@@ -25,7 +25,8 @@ class BasePageG(OpenCvTools, AirImgTools):
     def start_game(self, wait_time=10):
         """启动游戏"""
         self.sn.log_tab.emit(self.mnq_name, r"启动游戏")
-        self.dev.start_app(GlobalEnumG.GamePackgeName)
+        self.dev.app_start(GlobalEnumG.GamePackgeName,use_monkey=True)
+        # self.dev.start_app(GlobalEnumG.GamePackgeName)
         time.sleep(wait_time)
 
     def key_event(self, key, wait_time=2):
@@ -40,14 +41,15 @@ class BasePageG(OpenCvTools, AirImgTools):
     def stop_game(self):
         """关闭游戏"""
         self.sn.log_tab.emit(self.mnq_name, r"关闭游戏")
-        self.dev.stop_app(GlobalEnumG.GamePackgeName)
+        self.dev.app_stop(GlobalEnumG.GamePackgeName)
+        # self.dev.stop_app(GlobalEnumG.GamePackgeName)
 
     def close_other_app(self):
         """关闭除游戏客户端外其他应用"""
-        app_list = self.dev.list_app()
+        app_list = self.dev.app_list_running()
         for al in app_list:
             if al != GlobalEnumG.GamePackgeName:
-                self.dev.stop_app(al)
+                self.dev.app_stop(al)
 
     # @staticmethod
     def check_mulpic(self, pic_list, clicked=True):

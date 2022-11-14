@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+from adbutils import AdbDevice
 from airtest.core.android import Android
 from airtest.core.error import DeviceConnectionError, AdbError, AdbShellError
 
 from Utils.AdbUtils import PD, PhoneDevives
-
+import uiautomator2 as u2
 
 class DevicesConnect:
     def __init__(self, devname,mnq_name=None,sn=None):
@@ -12,20 +13,22 @@ class DevicesConnect:
         self.sn=sn
 
     def connect_device(self):
-        dev = None
         try:
-            PhoneDevives(self.devname).disconnect()
-            dev = Android(serialno=self.devname, cap_method='MINICAP', touch_method='ADBTOUCH', ori_method='ADBORI')
+            # PhoneDevives(self.devname).disconnect()
+            # dev = Android(serialno=self.devname, cap_method='MINICAP', touch_method='ADBTOUCH', ori_method='ADBORI')
+
+            dev=u2.connect(self.devname)
+            AdbDevice(dev).screenshot()
             if self.sn:
-                self.sn.log_tab.emit(self.mnq_name, f"{dev.serialno}_连接成功")
+                self.sn.log_tab.emit(self.mnq_name, f"{self.devname}_连接成功")
             else:
-                print(f"{dev.serialno}_连接成功")
+                print(f"{self.devname}_连接成功")
             return True, dev
         except (UnicodeDecodeError, ConnectionResetError, Exception, ConnectionAbortedError, AdbError, TypeError,
                 AdbShellError):
-            print(f"Adb重连")
-            dev.adb.disconnect()
-            PD.kill_adb()
+            # print(f"Adb重连")
+            # dev.adb.disconnect()
+            # PD.kill_adb()
             self.connect_device()
         except DeviceConnectionError as e:
             return False, e

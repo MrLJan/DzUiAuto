@@ -13,8 +13,9 @@ class GlobalEnumG:
     Ver = '2.19'
     TestLog = True if LoadConfig.getconf('全局配置', '日志') == '1' else False
     TouchWait = int(LoadConfig.getconf('全局配置', '点击延时'))
-    GamePackgeName = r'com.nexon.maplem.global'  # r'com.nexon.maplem.japan'  # r'com.nexon.maplem.global'
+    GamePackgeName = 'com.nexon.maplem.global'  # r'com.nexon.maplem.japan'  # r'com.nexon.maplem.global'
     WaitTime = 1
+    Threshold=0.9 #图片比对相似度
     ExitBtnTime = 2  # 点击退出游戏否按钮等待时长
     FindImgTimeOut = 20  # 查找图片等待超时时间
     TouchDurationTime = 1  # 延时点击
@@ -112,49 +113,49 @@ class GlobalEnumG:
 
 class ImgEnumG:
     """图片数据"""
-    TIP = [(271, 47, 1018, 182), Template(OT.imgpath('引导提示'))]
-    UI_CLOSE = [(1060, 24, 1149, 97), Template(OT.imgpath('弹窗'))]
-    UI_QR = [(0, 0, 1280, 720), Template(OT.imgpath('确认'))]
-    UI_QBLQ = [(0, 0, 1280, 720), Template(OT.imgpath('全部领取'))]
+    TIP = [(271, 47, 1018, 182), OT.imgpath('引导提示')]
+    UI_CLOSE = [(1060, 24, 1149, 97), OT.imgpath('弹窗')]
+    UI_QR = [(0, 0, 1280, 720), OT.imgpath('确认')]
+    UI_QBLQ = [(0, 0, 1280, 720), OT.imgpath('全部领取')]
     # 活动
-    QD_1 = [(1218, 12, 1265, 55), Template(OT.imgpath('活动签到1'))]
+    QD_1 = [(1218, 12, 1265, 55), OT.imgpath('活动签到1')]
     # 登录相关
-    GAME_ICON = [(0, 0, 1280, 720), Template(OT.imgpath('游戏icon'))]
-    LOGIN_FLAG = [(973, 485, 1278, 715), Template(OT.imgpath('游戏登陆标志'))]
-    INGAME_FLAG = [(877, 307, 969, 396), Template(OT.imgpath('验证登录标记2'))]  # 734,9,1253,64
-    INGAME_FLAG2 = [(877, 307, 969, 396), Template(OT.imgpath('验证登录标记2'))]
-    LOGIN_TIPS = [(1240, 14, 1264, 61), Template(OT.imgpath('登录弹窗'))]
+    GAME_ICON = [(0, 0, 1280, 720), OT.imgpath('游戏icon')]
+    LOGIN_FLAG = [(973, 485, 1278, 715), OT.imgpath('游戏登陆标志')]
+    INGAME_FLAG = [(877, 307, 969, 396), OT.imgpath('验证登录标记2')]  # 734,9,1253,64
+    INGAME_FLAG2 = [(877, 307, 969, 396), OT.imgpath('验证登录标记2')]
+    LOGIN_TIPS = [(1240, 14, 1264, 61), OT.imgpath('登录弹窗')]
     # 任务相关
-    ZB_TS = [(722, 144, 1272, 656), Template(OT.imgpath('装备提升'))]  # 装备上绿色小箭头
-    TASK_TAB = [(0, 0, 1280, 720), Template(OT.imgpath('任务页签'), rgb=True)]
-    TASK_START = [(341, 529, 482, 715), Template(OT.imgpath('任务可开始'))]
-    TASK_TAKE = [(1067, 403, 1150, 438), Template(OT.imgpath('任务接受'))]
-    TASK_OVER = [(0, 0, 1280, 720), Template(OT.imgpath('任务完成'))]
-    TASK_REWARD = [(595, 630, 685, 659), Template(OT.imgpath('任务奖励'))]
-    CZJL_ICON = [(3, 122, 498, 185), Template(OT.imgpath('成长奖励'))]
+    ZB_TS = [(722, 144, 1272, 656), OT.imgpath('装备提升')]  # 装备上绿色小箭头
+    TASK_TAB = [(0, 0, 1280, 720), OT.imgpath('任务页签')]
+    TASK_START = [(341, 529, 482, 715), OT.imgpath('任务可开始')]
+    TASK_TAKE = [(1067, 403, 1150, 438), OT.imgpath('任务接受')]
+    TASK_OVER = [(0, 0, 1280, 720), OT.imgpath('任务完成')]
+    TASK_REWARD = [(595, 630, 685, 659), OT.imgpath('任务奖励')]
+    CZJL_ICON = [(3, 122, 498, 185), OT.imgpath('成长奖励')]
     # 活动
-    KT_QBLQ = [(1138, 650, 1223, 680), Template(OT.imgpath('课题全部领取'))]
+    KT_QBLQ = [(1138, 650, 1223, 680), OT.imgpath('课题全部领取')]
     # 背包清理
-    BAG_MAX_IMG = [(1140, 36, 1195, 64), Template(OT.imgpath('背包满'))]
-    BAG_GOLD = [(858, 19, 1115, 63), Template(OT.imgpath('金币详情'))]
+    BAG_MAX_IMG = [(1140, 36, 1195, 64), OT.imgpath('背包满')]
+    BAG_GOLD = [(858, 19, 1115, 63), OT.imgpath('金币详情')]
     # 邮件
-    MAIL_RQ = [(972, 27, 1006, 49), Template(OT.imgpath('邮件'))]
+    MAIL_RQ = [(972, 27, 1006, 49), OT.imgpath('邮件')]
     # 战斗相关
-    AUTO_BAT = [(379, 622, 469, 688), Template(OT.imgpath('自动战斗'))]
-    RES_EXIT_TEAM = [(0, 0, 1280, 720), Template(OT.imgpath('休息离队提示'))]
-    S_MAP = [(1190, 70, 1272, 140), Template(OT.imgpath('小地图'))]
-    PERSON_POS = [(864, 75, 1257, 193), Template(OT.imgpath('人物坐标'))]
+    AUTO_BAT = [(379, 622, 469, 688), OT.imgpath('自动战斗')]
+    RES_EXIT_TEAM = [(0, 0, 1280, 720), OT.imgpath('休息离队提示')]
+    S_MAP = [(1190, 70, 1272, 140), OT.imgpath('小地图')]
+    PERSON_POS = [(864, 75, 1257, 193), OT.imgpath('人物坐标')]
     # 组队相关
-    TEMA_ING = [(332, 245, 410, 332), Template(OT.imgpath('组队中'))]
+    TEMA_ING = [(332, 245, 410, 332), OT.imgpath('组队中')]
 
     # 装备
-    EQ_WZB = [(225, 97, 370, 211), Template(OT.imgpath('无装备'))]
-    EQ_UP = [(559, 621, 717, 701), Template(OT.imgpath('升级'), rgb=True)]  # 升级确认按钮
-    EQ_UP_QR = [(492, 604, 789, 682), Template(OT.imgpath('升级确认'))]
+    EQ_WZB = [(225, 97, 370, 211), OT.imgpath('无装备')]
+    EQ_UP = [(559, 621, 717, 701), OT.imgpath('升级')]  # 升级确认按钮
+    EQ_UP_QR = [(492, 604, 789, 682), OT.imgpath('升级确认')]
     # 买药
-    CZ_FUHUO = [(267, 472, 525, 585), Template(OT.imgpath('复活'))]
-    BUY_YS_LOGIN = [(792, 162, 914, 685), Template(OT.imgpath('药水登录'))]
-    JN_LOGIN_2 = [(790, 305, 912, 382), Template(OT.imgpath('药水登录'))]
+    CZ_FUHUO = [(267, 472, 525, 585), OT.imgpath('复活')]
+    BUY_YS_LOGIN = [(792, 162, 914, 685), OT.imgpath('药水登录')]
+    JN_LOGIN_2 = [(790, 305, 912, 382), OT.imgpath('药水登录')]
     YS_NUM_OCR = {
         '5': [(733, 631, 810, 658), '500'],
         '4': [(733, 631, 810, 658), '400'],
@@ -184,29 +185,29 @@ class ImgEnumG:
     }
 
     # 清理背包
-    RED_BS = [(738, 161, 1266, 644), Template(OT.imgpath('红宝石'))]
-    G_BS = [(738, 161, 1266, 644), Template(OT.imgpath('绿宝石A'))]
-    Z_BS = [(738, 161, 1266, 644), Template(OT.imgpath('紫宝石A'))]
-    L_BS = [(738, 161, 1266, 644), Template(OT.imgpath('蓝宝石A'))]
-    JZT_DJ = [(738, 161, 1266, 644), Template(OT.imgpath('金字塔产物'))]
-    FJ_HE1 = [(738, 161, 1266, 644), Template(OT.imgpath('防具合成石1'))]
-    FJ_HE2 = [(738, 161, 1266, 644), Template(OT.imgpath('防具合成石2'))]
-    WQ_HE1 = [(738, 161, 1266, 644), Template(OT.imgpath('武器合成石1'))]
-    WQ_HE2 = [(738, 161, 1266, 644), Template(OT.imgpath('武器合成石2'))]
-    BAG_NULL = [(738, 161, 1266, 644), Template(OT.imgpath('空格子'))]
+    RED_BS = [(738, 161, 1266, 644), OT.imgpath('红宝石')]
+    G_BS = [(738, 161, 1266, 644), OT.imgpath('绿宝石A')]
+    Z_BS = [(738, 161, 1266, 644), OT.imgpath('紫宝石A')]
+    L_BS = [(738, 161, 1266, 644), OT.imgpath('蓝宝石A')]
+    JZT_DJ = [(738, 161, 1266, 644), OT.imgpath('金字塔产物')]
+    FJ_HE1 = [(738, 161, 1266, 644), OT.imgpath('防具合成石1')]
+    FJ_HE2 = [(738, 161, 1266, 644), OT.imgpath('防具合成石2')]
+    WQ_HE1 = [(738, 161, 1266, 644), OT.imgpath('武器合成石1')]
+    WQ_HE2 = [(738, 161, 1266, 644), OT.imgpath('武器合成石2')]
+    BAG_NULL = [(738, 161, 1266, 644), OT.imgpath('空格子')]
     # 宠物
-    PET_1 = [(349, 143, 433, 217), Template(OT.imgpath('默认宠物1'), threshold=0.9)]
-    PET_2 = [(349, 143, 433, 217), Template(OT.imgpath('默认宠物2'), threshold=0.9)]
+    PET_1 = [(349, 143, 433, 217), OT.imgpath('默认宠物1')]
+    PET_2 = [(349, 143, 433, 217), OT.imgpath('默认宠物2')]
     CW_TYPE = {
-        'A': [[(735, 163, 1268, 651), Template(OT.imgpath('宠物A1'))],
-              [(735, 163, 1268, 651), Template(OT.imgpath('宠物A2'))],
-              [(735, 163, 1268, 651), Template(OT.imgpath('宠物A3'))]],
-        'B': [[(735, 163, 1268, 651), Template(OT.imgpath('宠物B1'))],
-              [(735, 163, 1268, 651), Template(OT.imgpath('宠物B2'))],
-              [(735, 163, 1268, 651), Template(OT.imgpath('宠物B3'))]],
-        'C': [[(735, 163, 1268, 651), Template(OT.imgpath('宠物C1'))],
-              [(735, 163, 1268, 651), Template(OT.imgpath('宠物C2'))],
-              [(735, 163, 1268, 651), Template(OT.imgpath('宠物C3'))]]
+        'A': [[(735, 163, 1268, 651), OT.imgpath('宠物A1')],
+              [(735, 163, 1268, 651), OT.imgpath('宠物A2')],
+              [(735, 163, 1268, 651), OT.imgpath('宠物A3')]],
+        'B': [[(735, 163, 1268, 651), OT.imgpath('宠物B1')],
+              [(735, 163, 1268, 651), OT.imgpath('宠物B2')],
+              [(735, 163, 1268, 651), OT.imgpath('宠物B3')]],
+        'C': [[(735, 163, 1268, 651), OT.imgpath('宠物C1')],
+              [(735, 163, 1268, 651), OT.imgpath('宠物C2')],
+              [(735, 163, 1268, 651), OT.imgpath('宠物C3')]]
     }
     PET_POS = {
         1: [131, 130, '2B3747', 'EE7546'],
@@ -214,25 +215,25 @@ class ImgEnumG:
         3: [127, 306, '2B3747', 'EE7546']
     }
     # BOSS
-    YM = [(65, 103, 262, 194), Template(OT.imgpath('炎魔'))]
-    PKJ = [(704, 104, 891, 193), Template(OT.imgpath('皮卡啾'))]
-    NH = [(1048, 103, 1191, 194), Template(OT.imgpath('女皇'))]
+    YM = [(65, 103, 262, 194), OT.imgpath('炎魔')]
+    PKJ = [(704, 104, 891, 193), OT.imgpath('皮卡啾')]
+    NH = [(1048, 103, 1191, 194), OT.imgpath('女皇')]
     # 每日
-    MR_BACK = [(23, 22, 66, 61), Template(OT.imgpath('返回'))]
-    MR_BAT_EXIT = [(1202, 251, 1269, 317), Template(OT.imgpath('战斗退出'), threshold=0.9)]
-    JRGH_IMG = [(0, 0, 1280, 720), Template(OT.imgpath('加入公会'))]
+    MR_BACK = [(23, 22, 66, 61), OT.imgpath('返回')]
+    MR_BAT_EXIT = [(1202, 251, 1269, 317), OT.imgpath('战斗退出')]
+    JRGH_IMG = [(0, 0, 1280, 720), OT.imgpath('加入公会')]
 
     # ------
 
     # 组队
-    TEAM_TAB = [(8, 291, 62, 343), Template(OT.imgpath('组队页签'))]
-    TEAM_XZDW = [(86, 333, 215, 381), Template(OT.imgpath('寻找队伍'))]
-    TEAM_CLDW = [(86, 197, 214, 248), Template(OT.imgpath('创立队伍'))]
-    PWD_TEAM = [(897, 189, 964, 533), Template(OT.imgpath('密码队伍'))]
-    EXIT_TEAM = [(290, 187, 328, 446), Template(OT.imgpath('离开队伍'))]
-    SKIP_NEW = [(2, 72, 491, 212), Template(OT.imgpath('新内容'))]
-    JN_TEACH = [(790, 569, 981, 717), Template(OT.imgpath('教学'))]
-    GX_XZ_ING = [(0, 0, 1280, 720), Template(OT.imgpath('数据更新'))]
+    TEAM_TAB = [(8, 291, 62, 343), OT.imgpath('组队页签')]
+    TEAM_XZDW = [(86, 333, 215, 381), OT.imgpath('寻找队伍')]
+    TEAM_CLDW = [(86, 197, 214, 248), OT.imgpath('创立队伍')]
+    PWD_TEAM = [(897, 189, 964, 533), OT.imgpath('密码队伍')]
+    EXIT_TEAM = [(290, 187, 328, 446), OT.imgpath('离开队伍')]
+    SKIP_NEW = [(2, 72, 491, 212), OT.imgpath('新内容')]
+    JN_TEACH = [(790, 569, 981, 717), OT.imgpath('教学')]
+    GX_XZ_ING = [(0, 0, 1280, 720), OT.imgpath('数据更新')]
 
 
 class BatEnumG:
