@@ -14,7 +14,7 @@ from UiPage.TaskAutoG import TaskAutoG
 from UiPage.TeamStateG import TeamStateG
 from UiPage.UpRoleG import UpRoleG
 from Utils.ExceptionTools import MrTaskErr, ControlTimeOut, BuyYErr, NotInGameErr, RestartTask, FuHuoRoleErr, \
-    BagFullerr, StopTaskErr
+    BagFullerr
 from Utils.LoadConfig import LoadConfig
 from Utils.OtherTools import catch_ex
 

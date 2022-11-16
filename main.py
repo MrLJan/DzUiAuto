@@ -1,8 +1,10 @@
 # -*- coding:utf-8 -*-
+import gc
 import os
 import sys
 import time
 
+import psutil
 from PyQt5 import QtGui, QtWidgets, uic
 from PyQt5.QtGui import QTextCursor, QRegExpValidator
 from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, \
@@ -28,4 +30,4 @@ from Utils.Devicesconnect import DevicesConnect
 
 import dzmainui
 if __name__ == '__main__':
-    dzmainui.main()
+    a = dzmainui.main()

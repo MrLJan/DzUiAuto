@@ -74,6 +74,11 @@ class OtherTools:
             res_path = path + r'/res/Npy/map/' + npyname + '.npy'
         return res_path
 
+    @staticmethod
+    def snappath(name):
+        res_path = path + r'/res/img/' + name + '.png'
+        return res_path
+
 
 OT = OtherTools()
 if __name__ == '__main__':
