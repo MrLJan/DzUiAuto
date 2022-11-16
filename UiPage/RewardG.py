@@ -102,6 +102,7 @@ class RewardG(BasePageG):
                         _FJ = True
                     elif _WQ and _FJ:
                         self.back()
+
             else:
                 self.check_close()
         self.sn.log_tab.emit(self.mnq_name, r'穿戴装备-异常超时放弃')
@@ -118,6 +119,7 @@ class RewardG(BasePageG):
                 self.crop_image_find(ImgEnumG.MAIL_RQ)
             elif self.get_rgb(RgbEnumG.MAIL_M):
                 if _G and _O:
+                    self.sn.log_tab.emit(self.mnq_name, f"邮件领取-完成")
                     self.back()
                     return True
                 self.air_loop_find(ImgEnumG.UI_QBLQ)
@@ -135,6 +137,8 @@ class RewardG(BasePageG):
                 pass
             elif self.crop_image_find(ImgEnumG.UI_QBLQ):
                 pass
+            elif self.qr_or_qx(1):
+                self.time_sleep(2)
             else:
                 self.check_close()
         self.sn.log_tab.emit(self.mnq_name, r'领取邮件-异常超时放弃')
@@ -420,10 +424,7 @@ class RewardG(BasePageG):
                 self.sn.log_tab.emit(self.mnq_name, r"分解完成")
                 _FJ_OVER = True
             else:
-                if time.time() - s_time > 60:
-                    self.check_close()
-                    s_time = time.time()
-                self.time_sleep(1)
+                self.check_close()
         select_queue.task_over('BagSell')
         raise ControlTimeOut(r'出售背包-异常超时')
 

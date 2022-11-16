@@ -10,7 +10,7 @@ from Utils.OtherTools import OT
 class GlobalEnumG:
     if not os.path.exists(OT.abspath(f"/Res/配置文件.ini")):
         LoadConfig.init_config()
-    Ver = '2.19'
+    Ver = '2.20'
     TestLog = True if LoadConfig.getconf('全局配置', '日志') == '1' else False
     TouchWait = int(LoadConfig.getconf('全局配置', '点击延时'))
     GamePackgeName = r'com.nexon.maplem.global'  # r'com.nexon.maplem.japan'  # r'com.nexon.maplem.global'
@@ -125,6 +125,7 @@ class ImgEnumG:
     INGAME_FLAG2 = [(877, 307, 969, 396), Template(OT.imgpath('验证登录标记2'))]
     LOGIN_TIPS = [(1240, 14, 1264, 61), Template(OT.imgpath('登录弹窗'))]
     # 任务相关
+    TASK_POINT=[(70,179,121,414),Template(OT.imgpath('任务点'))]
     ZB_TS = [(722, 144, 1272, 656), Template(OT.imgpath('装备提升'))]  # 装备上绿色小箭头
     TASK_TAB = [(0, 0, 1280, 720), Template(OT.imgpath('任务页签'), rgb=True)]
     TASK_START = [(341, 529, 482, 715), Template(OT.imgpath('任务可开始'))]
@@ -319,7 +320,7 @@ class RgbEnumG:
     EXIT_FOU = [391, 532, '4C87AF']  # 退出游戏-否
     CLOSE_GAME = [433, 543, '4D87AF']  # 关闭游戏-否
     FUHUO_BTN = [293, 522, '4C87AF']  # 复活按钮
-    BG_PINDAO = [1083, 55, 'EE7047']  # 地图主界面-变更频道
+    BG_PINDAO = [1083, 55, 'EE704']  # 地图主界面-变更频道
     MAP_QWPD = [529, 635, 'EE7047']  # 地图-前往频道
     MAP_SJYD = [927, 657, '4C87AF']  # 瞬间移动
     HD_BJBS = [1058, 655, 'EDCE01']  # 活动签到
@@ -368,7 +369,7 @@ class RgbEnumG:
     CYQR_JR_QR1 = [682, 549, 'EE7047']
     CYRQ_JR_F = [1055, 656, 'C3C3C3']
 
-    MNDC_XZ = [54, 138, '2B3747']
+    MNDC_XZ = [57, 138, '2B3747']
     MNDC_XZ2 = [78, 214, '2B3747']
     MNDC_XZ3 = [633, 331, 'FFFFFF']
     MNDC_JRQR = [670, 652, 'EE7047']
@@ -427,12 +428,12 @@ class RgbEnumG:
     MAP_XLQR = [660, 521, 'EE7047']  # 寻路按钮确认
     MAP_ERR = [520, 520, 'EE7047']  # 无法瞬间移动
 
-    BAG_M = [407, 32, 'EE7047']
+    BAG_M = [407, 32, 'EE7']  # 背包界面-奖励优惠保管箱
     BAG_GOLD_QR = [579, 510, 'EE7047']
-    BAG_BS = [1043, 132, 'AAB5CB']  # 宝石栏
-    BAG_SP = [954, 129, 'AAB5C7']  # 饰品
-    BAG_FJ = [860, 122, 'A9B6C9']  # 防具
-    BAG_WQ = [770, 133, 'A4AFC3']  # 武器
+    BAG_BS = [1043, 132, 'AAB']  # 宝石栏
+    BAG_SP = [954, 129, 'A6B7']  # 饰品
+    BAG_FJ = [860, 122, 'ACB4C']  # 防具
+    BAG_WQ = [770, 133, 'A9B5']  # 武器
     BAG_DQ = [685, 637, '4C87AF']  # 丢弃
     BAG_DQQR = [670, 523, 'EE7047']
 
@@ -508,7 +509,7 @@ class RgbEnumG:
     TJP_SJXZ_BTN_F = [1132, 638, 'C3C3C3']
     TJP_SJ_XZ = [697, 639, 'EE7047']  # 自动选择确认
     HD_M = [286, 41, '415067']
-    HD_CZZY = [240, 280, 'FF8D4F']  # 成长支援
+    HD_CZZY = [240, 280, 'FF8D']  # 成长支援
     TC_1 = [1172, 269, '617B94']
 
     GX_XZ_BACK = [523, 188, 'FF7C52']  # 更新下载完成

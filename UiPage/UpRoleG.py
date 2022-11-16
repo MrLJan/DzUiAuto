@@ -99,12 +99,15 @@ class UpRoleG(BasePageG):
                 if not _CHECK:
                     _res = self.check_hp_mp()
                     if 'HP' in _res:
+                        self.sn.log_tab.emit(self.mnq_name, f"需要购买HP")
                         _HP = True
                     if _USE_MP:
                         if 'MP' in _res:
+                            self.sn.log_tab.emit(self.mnq_name, f"需要购买MP")
                             _MP = True
                     _CHECK = True
                 if self.crop_image_find(ImgEnumG.BAG_MAX_IMG):
+                    self.sn.log_tab.emit(self.mnq_name, f"背包满了,清理背包")
                     raise BagFullerr
                 if _HP:
                     self.air_touch((1148, 364), duration=2)
@@ -127,10 +130,12 @@ class UpRoleG(BasePageG):
                         raise BagFullerr  # 包满清理
                 else:
                     if self.ys_contrl('ys_ljqw'):
+                        self.sn.log_tab.emit(self.mnq_name, f"前往商店")
                         self.time_sleep(3)
                     else:
                         raise BagFullerr
             elif self.ys_contrl('ys_ljqw'):
+                self.sn.log_tab.emit(self.mnq_name, f"前往商店")
                 self.time_sleep(3)
             elif self.get_rgb(RgbEnumG.YS_GMQR):
                 if self.get_rgb(RgbEnumG.YS_GMQR, True):
@@ -166,7 +171,7 @@ class UpRoleG(BasePageG):
             elif self.find_info('LB_close', True):
                 pass
             else:
-                if time.time() - s_time > 60:
+                if time.time() - s_time > 30:
                     s_time = time.time()
                     self.check_close()
         raise ControlTimeOut(r'买药异常超时')

@@ -211,6 +211,7 @@ class switch_case:
                 self.exec_queue.put_queue('Nothing')
                 self.select_queue.put_queue('AutoHDboss')
                 self.select_queue.put_queue(BatEnumG.TASK_ID[task_name]['state'])
+                self.select_queue.put_queue('CheckRole')
             elif _id == '99':
                 self.select_queue.put_queue('CheckRole')
             else:

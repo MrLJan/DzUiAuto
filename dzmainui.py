@@ -9,13 +9,13 @@ from PyQt5.QtGui import QTextCursor, QRegExpValidator
 from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, \
     QTreeWidgetItem, QFileDialog
 from PyQt5.QtCore import Qt, QTimer, QRegExp
-from airtest.core.android.touch_methods.base_touch import DownEvent, SleepEvent, UpEvent
+# from airtest.core.android.touch_methods.base_touch import DownEvent, SleepEvent, UpEvent
 
 from cv2 import cv2
 from qt_material import apply_stylesheet
 from DzTest.DzModeMachine import switch_case, StateExecute, StateMachine, StateSelect, execute_transition, \
     select_transition
-from Utils.ExceptionTools import StopTaskErr
+# from Utils.ExceptionTools import StopTaskErr
 from Utils.LoadConfig import LoadConfig
 from Utils.MnqTools import MnqTools
 from Utils.OtherTools import OT, catch_ex
@@ -814,41 +814,7 @@ class DzUi:
         """列表停止按钮点击事件"""
 
         def _stop():
-            turn_pos = {'up': (146, 471),
-                        'down': (144, 629),
-                        'left': (79, 543),
-                        'right': (239, 544),
-                        'jump': (1207, 624),
-                        'attack': (1074, 619),
-                        'c': (948, 659),
-                        'v': (958, 559),
-                        'd': (1054, 501),
-                        'f': (1148, 505)}
-            multitouch_event = [
-                DownEvent(turn_pos['up'], 0),
-                DownEvent(turn_pos['down'], 1),
-                DownEvent(turn_pos['left'], 2),
-                DownEvent(turn_pos['right'], 3),
-                DownEvent(turn_pos['jump'], 4),
-                DownEvent(turn_pos['attack'], 5),
-                DownEvent(turn_pos['c'], 6),
-                DownEvent(turn_pos['v'], 7),
-                DownEvent(turn_pos['d'], 8),
-                DownEvent(turn_pos['f'], 9),
-                SleepEvent(0.1),
-                UpEvent(0),
-                UpEvent(1),
-                UpEvent(2),
-                UpEvent(3),
-                UpEvent(4),
-                UpEvent(5),
-                UpEvent(6),
-                UpEvent(7),
-                UpEvent(8),
-                UpEvent(9),
-            ]
             try:
-                # dev.touch_proxy.perform(multitouch_event)
                 dev.touch_proxy.uninstall()
                 dev.adb.disconnect()  # 断开tcp连接
             except (NotImplementedError, TypeError):
@@ -976,41 +942,39 @@ class DzUi:
         """重启任务"""
 
         def stop():
-            turn_pos = {'up': (146, 471),
-                        'down': (144, 629),
-                        'left': (79, 543),
-                        'right': (239, 544),
-                        'jump': (1207, 624),
-                        'attack': (1074, 619),
-                        'c': (948, 659),
-                        'v': (958, 559),
-                        'd': (1054, 501),
-                        'f': (1148, 505)}
-            multitouch_event = [
-                DownEvent(turn_pos['up'], 0),
-                DownEvent(turn_pos['down'], 1),
-                DownEvent(turn_pos['left'], 2),
-                DownEvent(turn_pos['right'], 3),
-                DownEvent(turn_pos['jump'], 4),
-                DownEvent(turn_pos['attack'], 5),
-                DownEvent(turn_pos['c'], 6),
-                DownEvent(turn_pos['v'], 7),
-                DownEvent(turn_pos['d'], 8),
-                DownEvent(turn_pos['f'], 9),
-                SleepEvent(0.1),
-                UpEvent(0),
-                UpEvent(1),
-                UpEvent(2),
-                UpEvent(3),
-                UpEvent(4),
-                UpEvent(5),
-                UpEvent(6),
-                UpEvent(7),
-                UpEvent(8),
-                UpEvent(9)]
+            # turn_pos = {'up': (146, 471),
+            #             'down': (144, 629),
+            #             'left': (79, 543),
+            #             'right': (239, 544),
+            #             'jump': (1207, 624),
+            #             'attack': (1074, 619),
+            #             'c': (948, 659),
+            #             'v': (958, 559),
+            #             'd': (1054, 501),
+            #             'f': (1148, 505)}
+            # multitouch_event = [
+            #     DownEvent(turn_pos['up'], 0),
+            #     DownEvent(turn_pos['down'], 1),
+            #     DownEvent(turn_pos['left'], 2),
+            #     DownEvent(turn_pos['right'], 3),
+            #     DownEvent(turn_pos['jump'], 4),
+            #     DownEvent(turn_pos['attack'], 5),
+            #     DownEvent(turn_pos['c'], 6),
+            #     DownEvent(turn_pos['v'], 7),
+            #     DownEvent(turn_pos['d'], 8),
+            #     DownEvent(turn_pos['f'], 9),
+            #     SleepEvent(0.1),
+            #     UpEvent(0),
+            #     UpEvent(1),
+            #     UpEvent(2),
+            #     UpEvent(3),
+            #     UpEvent(4),
+            #     UpEvent(5),
+            #     UpEvent(6),
+            #     UpEvent(7),
+            #     UpEvent(8),
+            #     UpEvent(9)]
             try:
-                # dev.touch_proxy.perform(multitouch_event)
-                # dev.touch_proxy.uninstall()
                 dev.adb.disconnect()  # 断开tcp连接
             except (NotImplementedError, ConnectionResetError, ConnectionAbortedError, TypeError):
                 pass

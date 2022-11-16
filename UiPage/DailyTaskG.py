@@ -47,23 +47,23 @@ class DailyTaskAutoG(BasePageG):
             '10': self.gw_park_task
         }
         self.skip_new()
-        # while not mrtask_queue.queue.empty():
-        #     _id = mrtask_queue.get_task()
-        #     if 100 <= level < 140 and _id == '10':
-        #         mrtask_queue.task_over(_id)
-        #     elif level < 100 and _id in ['5', '6', '9', '10']:
-        #         mrtask_queue.task_over(_id)
-        #     elif level < 60:
-        #         mrtask_queue.task_over(_id)
-        #     else:
-        #         res = do_task[_id]()
-        #         if res:
-        #             mrtask_queue.task_over(_id)
-        #         else:
-        #             if not self.check_close():
-        #                 select_queue.put_queue('Check')
-        #                 return 0
-        #         self.back_mr_main()
+        while not mrtask_queue.queue.empty():
+            _id = mrtask_queue.get_task()
+            if 100 <= level < 140 and _id == '10':
+                mrtask_queue.task_over(_id)
+            elif level < 100 and _id in ['5', '6', '9', '10']:
+                mrtask_queue.task_over(_id)
+            elif level < 60:
+                mrtask_queue.task_over(_id)
+            else:
+                res = do_task[_id]()
+                if res:
+                    mrtask_queue.task_over(_id)
+                else:
+                    if not self.check_close():
+                        select_queue.put_queue('Check')
+                        return 0
+                self.back_mr_main()
         if level >= 100:
             if is_gonghui:
                 self.gonghui_task()
@@ -75,8 +75,8 @@ class DailyTaskAutoG(BasePageG):
 
     def back_mr_main(self):
         self.sn.log_tab.emit(self.mnq_name, r"返回")
-        _s_time=time.time()
-        while time.time()-_s_time>GlobalEnumG.UiCheckTimeOut:
+        _s_time = time.time()
+        while time.time() - _s_time > GlobalEnumG.UiCheckTimeOut:
             if self.crop_image_find(ImgEnumG.MR_BACK, touch_wait=3):
                 pass
             elif self.get_rgb(RgbEnumG.EXIT_FOU, True, touch_wait=GlobalEnumG.ExitBtnTime) or self.get_rgb(
@@ -129,11 +129,11 @@ class DailyTaskAutoG(BasePageG):
                 elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.find_mr_task('wl', True):
                         if _SWIPE_TIMES < 3:
-                            self.air_swipe((925, 432), (400, 432), swipe_wait=1)
+                            self.air_swipe((925, 432), (400, 432), swipe_wait=2)
                         else:
                             if _SWIPE_TIMES > 6:
                                 _SWIPE_TIMES = 0
-                            self.air_swipe((400, 432), (925, 432), swipe_wait=1)
+                            self.air_swipe((400, 432), (925, 432), swipe_wait=2)
                         _SWIPE_TIMES += 1
                 elif self.get_rgb(RgbEnumG.WL_JRQR):  # 入场选择
                     if _JION_TIMES > 3:
@@ -145,7 +145,7 @@ class DailyTaskAutoG(BasePageG):
                         self.air_touch((729, 629), touch_wait=1)
                         _JION_TIMES += 1
                 elif self.check_ui('ui_wl'):
-                # elif self.get_rgb(RgbEnumG.WL_M):  # 道场界面
+                    # elif self.get_rgb(RgbEnumG.WL_M):  # 道场界面
                     # times = self.get_num((157, 516, 188, 543))  # 剩余次数
                     # if times > 0:
                     self.get_rgb(RgbEnumG.WL_JR, True, touch_wait=3)
@@ -193,11 +193,11 @@ class DailyTaskAutoG(BasePageG):
                 elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.find_mr_task('jzt', True):
                         if _SWIPE_TIMES < 3:
-                            self.air_swipe((925, 432), (400, 432), swipe_wait=1)
+                            self.air_swipe((925, 432), (400, 432), swipe_wait=2)
                         else:
                             if _SWIPE_TIMES > 6:
                                 _SWIPE_TIMES = 0
-                            self.air_swipe((400, 432), (925, 432), swipe_wait=1)
+                            self.air_swipe((400, 432), (925, 432), swipe_wait=2)
                         _SWIPE_TIMES += 1
                 elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
                     pass
@@ -255,11 +255,11 @@ class DailyTaskAutoG(BasePageG):
                     elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                         if not self.find_mr_task('jy', True):
                             if _SWIPE_TIMES <= 3:
-                                self.air_swipe((925, 432), (400, 432), swipe_wait=1)
+                                self.air_swipe((925, 432), (400, 432), swipe_wait=2)
                             else:
                                 if _SWIPE_TIMES > 6:
                                     _SWIPE_TIMES = 0
-                                self.air_swipe((400, 432), (925, 432), swipe_wait=1)
+                                self.air_swipe((400, 432), (925, 432), swipe_wait=2)
                             _SWIPE_TIMES += 1
                     elif self.get_rgb(RgbEnumG.JZT_JRQR):  # 进入界面 和金字塔一样
                         self.get_rgb(RgbEnumG.JYDC_MAX, True)
@@ -314,11 +314,11 @@ class DailyTaskAutoG(BasePageG):
                     elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                         if not self.find_mr_task('mr', True):
                             if _SWIPE_TIMES < 3:
-                                self.air_swipe((925, 432), (400, 432), swipe_wait=1)
+                                self.air_swipe((925, 432), (400, 432), swipe_wait=2)
                             else:
                                 if _SWIPE_TIMES > 6:
                                     _SWIPE_TIMES = 0
-                                self.air_swipe((400, 432), (925, 432), swipe_wait=1)
+                                self.air_swipe((400, 432), (925, 432), swipe_wait=2)
                             _SWIPE_TIMES += 1
                     elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
                         pass
@@ -371,11 +371,11 @@ class DailyTaskAutoG(BasePageG):
                 elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.find_mr_task('tbb', True):
                         if _SWIPE_TIMES < 3:
-                            self.air_swipe((925, 432), (400, 432), swipe_wait=1)
+                            self.air_swipe((925, 432), (400, 432), swipe_wait=2)
                         else:
                             if _SWIPE_TIMES > 7:
                                 _SWIPE_TIMES = 0
-                            self.air_swipe((400, 432), (925, 432), swipe_wait=1)
+                            self.air_swipe((400, 432), (925, 432), swipe_wait=2)
                         _SWIPE_TIMES += 1
                 elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
                     pass
@@ -417,11 +417,11 @@ class DailyTaskAutoG(BasePageG):
                 elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.find_mr_task('jh', True):
                         if _SWIPE_TIMES < 3:
-                            self.air_swipe((925, 432), (400, 432), swipe_wait=1)
+                            self.air_swipe((925, 432), (400, 432), swipe_wait=2)
                         else:
                             if _SWIPE_TIMES > 7:
                                 _SWIPE_TIMES = 0
-                            self.air_swipe((400, 432), (925, 432), swipe_wait=1)
+                            self.air_swipe((400, 432), (925, 432), swipe_wait=2)
                         _SWIPE_TIMES += 1
                 elif self.get_rgb(RgbEnumG.MR_EXIT_TEAM, True):
                     pass
@@ -448,7 +448,7 @@ class DailyTaskAutoG(BasePageG):
         _SWIPE_TIMES = 0
         _BAT = False
         _JION_TIMES = 0
-        _WAIT_TEAM=False
+        _WAIT_TEAM = False
         self.sn.log_tab.emit(self.mnq_name, r"次元入侵")
         self.sn.table_value.emit(self.mnq_name, 8, r"次元入侵")
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut * 2:
@@ -480,11 +480,11 @@ class DailyTaskAutoG(BasePageG):
                     # if not self.ocr_find([ImgEnumG.MR_AREA, '次元入侵'], True):
                     if not self.find_mr_task('cyrq', True):
                         if _SWIPE_TIMES <= 3:
-                            self.air_swipe((925, 432), (400, 432), swipe_wait=1)
+                            self.air_swipe((925, 432), (400, 432), swipe_wait=2)
                         else:
                             if _SWIPE_TIMES > 6:
                                 _SWIPE_TIMES = 0
-                            self.air_swipe((400, 432), (925, 432), swipe_wait=1)
+                            self.air_swipe((400, 432), (925, 432), swipe_wait=2)
                         _SWIPE_TIMES += 1
                 elif self.get_rgb(RgbEnumG.CYQR_JR_QR):
                     self.air_touch((817, 452), touch_wait=1)
@@ -540,11 +540,11 @@ class DailyTaskAutoG(BasePageG):
                 elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.find_mr_task('mn', True):
                         if _SWIPE_TIMES <= 3:
-                            self.air_swipe((925, 432), (400, 432), swipe_wait=1)
+                            self.air_swipe((925, 432), (400, 432), swipe_wait=2)
                         else:
                             if _SWIPE_TIMES > 7:
                                 _SWIPE_TIMES = 0
-                            self.air_swipe((400, 432), (925, 432), swipe_wait=1)
+                            self.air_swipe((400, 432), (925, 432), swipe_wait=2)
                         _SWIPE_TIMES += 1
                 elif self.get_rgb(RgbEnumG.MNDC_JRQR, True):  # 入场选择
                     pass
@@ -592,11 +592,11 @@ class DailyTaskAutoG(BasePageG):
                     # if not self.ocr_find([ImgEnumG.MR_AREA, '星光M塔'], True):
                     if not self.find_mr_task('xgt', True):
                         if _SWIPE_TIMES < 3:
-                            self.air_swipe((925, 432), (400, 432), swipe_wait=1)
+                            self.air_swipe((925, 432), (400, 432), swipe_wait=2)
                         else:
                             if _SWIPE_TIMES > 7:
                                 _SWIPE_TIMES = 0
-                            self.air_swipe((400, 432), (925, 432), swipe_wait=1)
+                            self.air_swipe((400, 432), (925, 432), swipe_wait=2)
                         _SWIPE_TIMES += 1
                 elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
                     pass
@@ -656,11 +656,11 @@ class DailyTaskAutoG(BasePageG):
                 elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.find_mr_task('gwgy', True):
                         if _SWIPE_TIMES <= 3:
-                            self.air_swipe((925, 432), (400, 432), swipe_wait=1)
+                            self.air_swipe((925, 432), (400, 432), swipe_wait=2)
                         else:
                             if _SWIPE_TIMES > 7:
                                 _SWIPE_TIMES = 0
-                            self.air_swipe((400, 432), (925, 432), swipe_wait=1)
+                            self.air_swipe((400, 432), (925, 432), swipe_wait=2)
                         _SWIPE_TIMES += 1
                 elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
                     pass
@@ -790,11 +790,11 @@ class DailyTaskAutoG(BasePageG):
                     elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                         if not self.find_mr_task('yzd', True):
                             if _SWIPE_TIMES < 3:
-                                self.air_swipe((925, 432), (400, 432), swipe_wait=1)
+                                self.air_swipe((925, 432), (400, 432), swipe_wait=2)
                             else:
                                 if _SWIPE_TIMES > 7:
                                     _SWIPE_TIMES = 0
-                                self.air_swipe((400, 432), (925, 432), swipe_wait=1)
+                                self.air_swipe((400, 432), (925, 432), swipe_wait=2)
                             _SWIPE_TIMES += 1
                     # elif self.get_rgb(RgbEnumG.BACK):  # boss远征界面
                     elif self.check_ui('ui_yzd'):
@@ -930,11 +930,11 @@ class DailyTaskAutoG(BasePageG):
                     elif self.get_rgb(RgbEnumG.KSDY):  # 快速单元界面
                         if not self.find_mr_task('hdyzd', True):
                             if _SWIPE_TIMES < 3:
-                                self.air_swipe((925, 432), (400, 432), swipe_wait=1)
+                                self.air_swipe((925, 432), (400, 432), swipe_wait=2)
                             else:
                                 if _SWIPE_TIMES > 7:
                                     _SWIPE_TIMES = 0
-                                self.air_swipe((400, 432), (925, 432), swipe_wait=1)
+                                self.air_swipe((400, 432), (925, 432), swipe_wait=2)
                             _SWIPE_TIMES += 1
                     # elif self.get_rgb(RgbEnumG.BACK):  # 混沌远征界面
                     elif self.check_ui('ui_hdboss'):
@@ -1014,11 +1014,11 @@ class DailyTaskAutoG(BasePageG):
                         # if not self.ocr_find([ImgEnumG.MR_AREA, '公'], True):
                         if not self.find_mr_task('gh', True):
                             if _SWIPE_TIMES < 3:
-                                self.air_swipe((925, 432), (400, 432), swipe_wait=1)
+                                self.air_swipe((925, 432), (400, 432), swipe_wait=2)
                             else:
                                 if _SWIPE_TIMES > 7:
                                     _SWIPE_TIMES = 0
-                                self.air_swipe((400, 432), (925, 432), swipe_wait=1)
+                                self.air_swipe((400, 432), (925, 432), swipe_wait=2)
                             _SWIPE_TIMES += 1
                 # elif self.get_rgb(RgbEnumG.GH_WXDC):
                 elif self.check_ui('ui_ghwxdc'):
@@ -1051,6 +1051,8 @@ class DailyTaskAutoG(BasePageG):
                     if self.get_rgb(RgbEnumG.GH_JRQR, True):
                         _JION_TIMES += 1
                 elif self.air_loop_find(ImgEnumG.JRGH_IMG):
+                    pass
+                elif self.qr_or_qx(1):
                     pass
                 else:
                     self.check_close()

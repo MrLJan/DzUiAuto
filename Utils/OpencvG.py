@@ -6,7 +6,7 @@ from airtest.aircv import aircv, HomographyError
 from airtest.core.android.touch_methods.base_touch import DownEvent, SleepEvent, UpEvent
 from cv2 import cv2
 
-from Enum.ResEnum import GlobalEnumG, OpenCvEnumG
+from Enum.ResEnum import GlobalEnumG, OpenCvEnumG, ImgEnumG
 from Utils.Devicesconnect import DevicesConnect
 from Utils.OtherTools import OT, catch_ex
 
@@ -113,7 +113,7 @@ class OpenCvTools:
         """
         for x in range(get_x, get_x1):
             for y in range(get_y, get_y1):
-                color = self.get_rgb(x, y)
+                color = self.rgb(x, y)
                 if color == f_color:
                     return x, y
         return False
@@ -447,7 +447,7 @@ class OpenCvTools:
         for cnt in res_cont:
             x, y, w1, h1 = cv2.boundingRect(cnt)
             ar = w1 / float(h1)
-            if ar > 1.5 and w1 > 15:
+            if ar > 0.5 and w1 > 15:
                 ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
         ori_list.reverse()
         return self._match_res(ori_list, OpenCvEnumG.HP_MP, cont_res=0.79)
@@ -561,7 +561,7 @@ class OpenCvTools:
 
     def back_ksdy(self):
         """检查返回至快速单元"""
-        _crop_img = self._get_crop_img(251, 167, 1035, 688)
+        _crop_img = self._get_crop_img(223, 36, 1135, 705)
         sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 10))
         _img1 = cv2.threshold(_crop_img.copy(), 240, 255, cv2.THRESH_BINARY)[1]
         _img2 = cv2.morphologyEx(_img1, cv2.MORPH_GRADIENT, sqKernel)
@@ -576,9 +576,9 @@ class OpenCvTools:
             _re = cv2.matchTemplate(
                 cv2.resize(ori_list[_row][0], (72, 128)),
                 numpy.load(OT.npypath('exit_ydzxd')), method=cv2.TM_CCOEFF_NORMED)
-            if numpy.any(_re > 0.9):
-                self.dev.touch((ori_list[_row][1][0] + 251,
-                                ori_list[_row][1][-1] + 167))
+            if numpy.any(_re > 0.79):
+                _x, _y = ori_list[_row][1][0] + 251, ori_list[_row][1][-1] + 36
+                self.dev.touch((_x, _y), duration=0.1)
                 time.sleep(GlobalEnumG.TouchWaitTime)
                 return True
         return False
@@ -670,9 +670,10 @@ class OpenCvTools:
             _re = cv2.matchTemplate(
                 cv2.resize(ori_list[_row][0], (72, 128)),
                 numpy.load(_cmp_img), method=cv2.TM_CCOEFF_NORMED)
-            if numpy.any(_re > 0.79):
+            if numpy.any(_re > 0.59):
                 _tx, _ty = ori_list[_row][1]
                 self.dev.touch((_tx + 789, _ty + 159), duration=0.1)
+                time.sleep(GlobalEnumG.TouchWaitTime)
                 return True
         return False
 
@@ -730,7 +731,7 @@ class OpenCvTools:
         except:
             return False
 
-    def find_info(self, find_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime,t_log=GlobalEnumG.TestLog):
+    def find_info(self, find_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog):
         _data = OpenCvEnumG.FIND_INFO[find_info]
         _x, _y, _x1, _y1 = _data[0]
         _k_size, _thr_value, _thr_method, _mor_method, _cont_method, _comp_rate = _data[-1]
@@ -752,7 +753,7 @@ class OpenCvTools:
             _res, _pos = self._match_text(ori_list, _cmp_img, clicked=clicked, cont_res=_comp_rate)
             if _res:
                 self.dev.touch((_pos[0] + _x, _pos[-1] + _y), duration=0.2)
-                if touch_wait>0:
+                if touch_wait > 0:
                     time.sleep(touch_wait)
                 # time.sleep(1)  # 防止操作过快
         else:
@@ -887,6 +888,8 @@ class AirImgTools:
             if t_log:
                 self.sn.log_tab.emit(self.mnq_name, f"f_crop_image_find:{temp}")
             return False
+        if t_log:
+            self.sn.log_tab.emit(self.mnq_name, f"f_crop_image_find:{area_temp}")
         return False
 
     @catch_ex
@@ -940,7 +943,7 @@ class AirImgTools:
             time.sleep(touch_wait)
 
     @catch_ex
-    def air_swipe(self, start_xy, end_xy, swipe_wait=0):
+    def air_swipe(self, start_xy, end_xy, swipe_wait=GlobalEnumG.TouchWaitTime):
         self.dev.swipe(start_xy, end_xy)
         if swipe_wait > 0:
             time.sleep(swipe_wait)
@@ -1068,7 +1071,9 @@ if __name__ == '__main__':
     # r = o.ys_contrl('ys_ljqw')
     # r = o.check_xt_map('120')
     # r = o.check_boss_end(0)
-    r=o.rgb(433, 666)
+    # r=o.qr_or_qx(1)
+    r = a.air_loop_find(ImgEnumG.JRGH_IMG)
+    # r=o.back_ksdy()
     # r=o.check_ui('ui_jzt',t_log=False)
     print(r)
     # r=o.gold_num(2)'

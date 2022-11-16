@@ -187,12 +187,13 @@ class LoginUiPageG(BasePageG):
         use_mp = kwargs['挂机设置']['无蓝窗口']
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.find_info('ingame_flag2'):
-                _res_hpmp = self.check_hp_mp()
-                if _res_hpmp != '':
-                    if 'HP' in _res_hpmp:
+                self.time_sleep(2)
+                _res_hp_mp = self.check_hp_mp()
+                if _res_hp_mp != '':
+                    if 'HP' in _res_hp_mp:
                         select_queue.put_queue('BuyY')
                     elif use_mp:
-                        if 'MP' in _res_hpmp:
+                        if 'MP' in _res_hp_mp:
                             select_queue.put_queue('BuyY')
                 elif self.crop_image_find(ImgEnumG.BAG_MAX_IMG, False):
                     select_queue.put_queue('BagSell')

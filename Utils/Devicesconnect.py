@@ -15,7 +15,7 @@ class DevicesConnect:
         dev = None
         try:
             PhoneDevives(self.devname).disconnect()
-            dev = Android(serialno=self.devname, cap_method='MINICAP', touch_method='ADBTOUCH', ori_method='ADBORI')
+            dev = Android(serialno=self.devname, cap_method='JAVACAP', touch_method='ADBTOUCH', ori_method='ADBORI')
             if self.sn:
                 self.sn.log_tab.emit(self.mnq_name, f"{dev.serialno}_连接成功")
             else:
@@ -33,7 +33,4 @@ class DevicesConnect:
 
 if __name__ == '__main__':
     s, r,t = DevicesConnect('127.0.0.1:5555').connect_device()
-    print(r.adb, r.adb._forward_local_using)
-
-    r.adb._cleanup_forwards()
     print(r.adb)

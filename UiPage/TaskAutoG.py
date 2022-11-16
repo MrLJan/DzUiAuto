@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import random
 import time
 
 from Enum.ResEnum import ImgEnumG, GlobalEnumG, BatEnumG, RgbEnumG
@@ -31,9 +30,14 @@ class TaskAutoG(BasePageG):
         _COLOR = self.rgb(447, 699)
         _COLOR_1 = 'FFFFFF'
         while True:
+            self.sn.log_tab.emit(self.mnq_name, r"任务进行中..")
             if time.time() - s_time > GlobalEnumG.SelectCtrTimeOut:
                 self.check_close()
                 s_time = time.time()
+            if self.air_loop_find(ImgEnumG.GAME_ICON, False):
+                raise NotInGameErr
+            if self.crop_image_find(ImgEnumG.CZ_FUHUO):
+                raise FuHuoRoleErr
             if not self.find_info('ingame_flag2'):
                 if self.find_info('task_close'):
                     if self.get_rgb([1033, 414, 'EE7047'], True):  # 完成/接受
@@ -100,10 +104,6 @@ class TaskAutoG(BasePageG):
                 elif self.qr_or_qx(1):
                     pass
                 else:
-                    if self.air_loop_find(ImgEnumG.GAME_ICON, False):
-                        raise NotInGameErr
-                    if self.crop_image_find(ImgEnumG.CZ_FUHUO):
-                        pass
                     self.back()
             else:
                 if use_stone:
@@ -128,8 +128,10 @@ class TaskAutoG(BasePageG):
                             s_time = time.time()
                         if not self.find_info('task_point', True,touch_wait=0):
                             self.air_loop_find(ImgEnumG.TASK_TAB)
+                            self.crop_image_find(ImgEnumG.TASK_POINT)
                         else:
-                            self.time_sleep(2)
+                            self.time_sleep(5)
+                    self.time_sleep(2)
                     # if self.check_is_stop():
                     #     if not self.find_info('task_point', True):
                     #         self.air_loop_find(ImgEnumG.TASK_TAB)

@@ -25,10 +25,10 @@ class QtSignals(QtCore.QObject):
     start_thread = QtCore.pyqtSignal(int, str)
     error_label = QtCore.pyqtSignal(str, str)  # 桌面弹窗提示
     log_tab = QtCore.pyqtSignal(str, str)  # 输出各窗口日志
-    btn_enable=QtCore.pyqtSignal(QPushButton,bool)
-    task_over_signal=QtCore.pyqtSignal(str,str)
-    close_mnq_index=QtCore.pyqtSignal(str)
-    restart=QtCore.pyqtSignal(str,list)
+    btn_enable = QtCore.pyqtSignal(QPushButton, bool)
+    task_over_signal = QtCore.pyqtSignal(str, str)
+    close_mnq_index = QtCore.pyqtSignal(str)
+    restart = QtCore.pyqtSignal(str, list)
     # task_thread=QtCore.pyqtSignal(int, str,int)
     # 重定向信号
     text_signal = QtCore.pyqtSignal(str)  # 定义一个发送str的信号
