@@ -3,7 +3,7 @@ import time
 
 from Enum.ResEnum import ImgEnumG, GlobalEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
-from Utils.ExceptionTools import NotInGameErr, ControlTimeOut, FuHuoRoleErr
+from Utils.ExceptionTools import NotInGameErr, ControlTimeOut, FuHuoRoleErr, NetErr
 
 
 class LoginUiPageG(BasePageG):
@@ -26,8 +26,10 @@ class LoginUiPageG(BasePageG):
             elif self.air_loop_find(ImgEnumG.LOGIN_FLAG, False):
                 if not self.get_rgb(RgbEnumG.GX_XZ, True):
                     self.air_touch((875, 390))  # 点击空白区域登录
+                    self.sn.log_tab.emit(self.mnq_name, r"等待进入选角界面")
                     self.time_sleep(10)
             elif self.find_info('game_login', True):
+                self.sn.log_tab.emit(self.mnq_name, r"等待进入游戏")
                 self.time_sleep(10)
             elif self.find_info('ingame_flag2'):
                 self.sn.log_tab.emit(self.mnq_name, r"登录成功")
@@ -54,14 +56,16 @@ class LoginUiPageG(BasePageG):
             else:
                 if _WAIT_TIMES > 2:
                     if not self.check_err():
-                        self.back()
                         _WAIT_TIMES = 0
                 _WAIT_TIMES += 1
         return 0
 
     def check_ingame(self, **kwargs):
         select_queue = kwargs['状态队列']['选择器']
-        if self.find_info('ingame_flag2'):
+        if self.net_err():
+            self.sn.log_tab.emit(self.mnq_name, r"网络断开_等待重连")
+            raise NetErr
+        elif self.find_info('ingame_flag2'):
             self.sn.log_tab.emit(self.mnq_name, r"检查到在游戏中")
             # if kwargs['角色信息']['等级'] == 0:
             #     select_queue.put_queue('CheckRole')
@@ -75,9 +79,7 @@ class LoginUiPageG(BasePageG):
                 self.back_ksdy()
             select_queue.task_over('Check')
             return -1
-        elif self.net_err():
-            self.sn.log_tab.emit(self.mnq_name, r"网络断开_等待重连")
-            self.time_sleep(10)
+
         elif self.air_loop_find(ImgEnumG.GAME_ICON, False):
             self.sn.log_tab.emit(self.mnq_name, r"检查到掉线")
             select_queue.task_over('Check')
@@ -123,6 +125,9 @@ class LoginUiPageG(BasePageG):
             self.sn.log_tab.emit(self.mnq_name, r"检查界面")
             if self.get_rgb(RgbEnumG.EXIT_FOU, True) or self.get_rgb(RgbEnumG.CLOSE_GAME, True):  # 退出游戏-否
                 pass
+            elif self.net_err():
+                self.sn.log_tab.emit(self.mnq_name, r"网络断开_等待重连")
+                raise NetErr
             elif self.find_info('ingame_flag2'):
                 self.sn.log_tab.emit(self.mnq_name, r"在游戏主界面")
                 if self.get_rgb(RgbEnumG.FUHUO_BTN):
@@ -187,20 +192,40 @@ class LoginUiPageG(BasePageG):
         use_mp = kwargs['挂机设置']['无蓝窗口']
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.find_info('ingame_flag2'):
-                self.time_sleep(2)
-                _res_hp_mp = self.check_hp_mp()
-                if _res_hp_mp != '':
-                    if 'HP' in _res_hp_mp:
-                        select_queue.put_queue('BuyY')
-                    elif use_mp:
-                        if 'MP' in _res_hp_mp:
+                if self.crop_image_find(ImgEnumG.CZ_FUHUO):
+                    pass
+                else:
+                    self.time_sleep(2)
+                    _res_hp_mp = self.check_hp_mp()
+                    if _res_hp_mp != '':
+                        if 'HP' in _res_hp_mp:
                             select_queue.put_queue('BuyY')
-                elif self.crop_image_find(ImgEnumG.BAG_MAX_IMG, False):
-                    select_queue.put_queue('BagSell')
-                select_queue.task_over('FuHuo')
-                return -1
+                        elif use_mp:
+                            if 'MP' in _res_hp_mp:
+                                select_queue.put_queue('BuyY')
+                    elif self.crop_image_find(ImgEnumG.BAG_MAX_IMG, False):
+                        select_queue.put_queue('BagSell')
+                    select_queue.task_over('FuHuo')
+                    return -1
             elif self.crop_image_find(ImgEnumG.CZ_FUHUO):
                 pass
             else:
                 self.close_all(**kwargs)
         raise ControlTimeOut('复活检查-超时异常')
+
+    def wait_net_err(self, **kwargs):
+        s_time = time.time()
+        self.sn.log_tab.emit(self.mnq_name, r"网络检查")
+        select_queue = kwargs['状态队列']['选择器']
+        while time.time() - s_time < GlobalEnumG.LoginGameTimeOut/5:
+            if self.net_err():
+                self.sn.log_tab.emit(self.mnq_name, r"网络异常,等待重新连接")
+                self.time_sleep(10)
+            elif self.find_info('ingame_flag2'):
+                select_queue.task_over('NetErr')
+                return -1
+            else:
+                self.close_all(**kwargs)
+        self.sn.log_tab.emit(self.mnq_name, r"网络无法连接,重启游戏")
+        self.stop_game()
+        raise ControlTimeOut('网络检查-超时异常')

@@ -59,3 +59,7 @@ class BagFullerr(BaseError):
 class StopTaskErr(BaseError):
     """停止任务"""
     pass
+
+class NetErr(BaseError):
+    """网络异常"""
+    pass

@@ -129,7 +129,15 @@ class UpRoleG(BasePageG):
                     else:
                         raise BagFullerr  # 包满清理
                 else:
-                    if self.ys_contrl('ys_ljqw'):
+                    if self.ys_contrl('ys_dl'):
+                        _RES = False
+                        if _YS_TYPE == 1 and _HP:
+                            self.sn.log_tab.emit(self.mnq_name, f"装备HP")
+                            _HP = False
+                        elif _YS_TYPE == 2 and _MP:
+                            self.sn.log_tab.emit(self.mnq_name, f"装备MP")
+                            _MP = False
+                    elif self.ys_contrl('ys_ljqw'):
                         self.sn.log_tab.emit(self.mnq_name, f"前往商店")
                         self.time_sleep(3)
                     else:

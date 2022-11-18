@@ -10,7 +10,7 @@ from Utils.OtherTools import OT
 class GlobalEnumG:
     if not os.path.exists(OT.abspath(f"/Res/配置文件.ini")):
         LoadConfig.init_config()
-    Ver = '2.20'
+    Ver = '2.21'
     TestLog = True if LoadConfig.getconf('全局配置', '日志') == '1' else False
     TouchWait = int(LoadConfig.getconf('全局配置', '点击延时'))
     GamePackgeName = r'com.nexon.maplem.global'  # r'com.nexon.maplem.japan'  # r'com.nexon.maplem.global'
@@ -66,6 +66,7 @@ class GlobalEnumG:
         'Check': {'name': "检查界面", 'id': -1},
         'BuyY': {'name': "买药", 'id': 4},
         'FuHuo': {'name': "复活", 'id': 3},
+        'NetErr': {'name': "复活", 'id': 3},
         'BagSell': {'name': "背包出售", 'id': 5},
         'BagClear': {'name': "背包清理", 'id': 5},
         'UpEquip': {'name': "升级装备", 'id': 8},
@@ -91,6 +92,7 @@ class GlobalEnumG:
                     'Check',
                     'Login',
                     'FuHuo',
+                    'NetErr',
                     'BuyY',
                     'BagSell',
                     'BagClear',
@@ -122,10 +124,9 @@ class ImgEnumG:
     GAME_ICON = [(0, 0, 1280, 720), Template(OT.imgpath('游戏icon'))]
     LOGIN_FLAG = [(973, 485, 1278, 715), Template(OT.imgpath('游戏登陆标志'))]
     INGAME_FLAG = [(877, 307, 969, 396), Template(OT.imgpath('验证登录标记2'))]  # 734,9,1253,64
-    INGAME_FLAG2 = [(877, 307, 969, 396), Template(OT.imgpath('验证登录标记2'))]
     LOGIN_TIPS = [(1240, 14, 1264, 61), Template(OT.imgpath('登录弹窗'))]
     # 任务相关
-    TASK_POINT=[(70,179,121,414),Template(OT.imgpath('任务点'))]
+    TASK_POINT = [(70, 179, 121, 414), Template(OT.imgpath('任务点'))]
     ZB_TS = [(722, 144, 1272, 656), Template(OT.imgpath('装备提升'))]  # 装备上绿色小箭头
     TASK_TAB = [(0, 0, 1280, 720), Template(OT.imgpath('任务页签'), rgb=True)]
     TASK_START = [(341, 529, 482, 715), Template(OT.imgpath('任务可开始'))]
@@ -320,7 +321,7 @@ class RgbEnumG:
     EXIT_FOU = [391, 532, '4C87AF']  # 退出游戏-否
     CLOSE_GAME = [433, 543, '4D87AF']  # 关闭游戏-否
     FUHUO_BTN = [293, 522, '4C87AF']  # 复活按钮
-    BG_PINDAO = [1083, 55, 'EE704']  # 地图主界面-变更频道
+    BG_PINDAO = [1083, 55, 'EE7']  # 地图主界面-变更频道
     MAP_QWPD = [529, 635, 'EE7047']  # 地图-前往频道
     MAP_SJYD = [927, 657, '4C87AF']  # 瞬间移动
     HD_BJBS = [1058, 655, 'EDCE01']  # 活动签到
@@ -418,7 +419,7 @@ class RgbEnumG:
 
     TEAM_CLDW_M = [53, 671, 'F2F2F2']  # 创立队伍界面
     TEAM_CLQR = [536, 642, 'EE7047']
-    TEAM_MMDW = [102, 521, '3B759B']  # 密码队伍选项
+    TEAM_MMDW = [102, 521, '41799E']  # 密码队伍选项
     TEAM_QRMM = [524, 609, 'EE7047']  # 确认密码
 
     TEAM_SQJR = [1125, 647, 'EE7047']  # 申请加入
@@ -513,7 +514,7 @@ class RgbEnumG:
     TC_1 = [1172, 269, '617B94']
 
     GX_XZ_BACK = [523, 188, 'FF7C52']  # 更新下载完成
-    GX_XZ = [536, 528, 'EB7047']  # 有下载
+    GX_XZ = [536, 528, 'EF714B']  # 有下载EB7047
 
 
 class OpenCvEnumG:
@@ -595,7 +596,7 @@ class OpenCvEnumG:
         'EXP': [(6, 344, 59, 384), (5, 1, 20, 10)],  # 经验队伍
     }
     FIND_INFO = {
-        'team_zdjr': [(88, 198, 210, 382), (100, 5, 50, 0), (20, 240, 0, 1, 0, 0.8)],
+        'team_zdjr': [(88, 198, 210, 382), (100, 1, 50, 0), (20, 240, 6, 1, 0, 0.7)],
         # 自动加入中
         'zb_qh': [(48, 314, 254, 355), (100, 1, 20, 15), (20, 240, 0, 1, 0, 0.8)],  # 装备强化
         'zb_sj': [(48, 314, 254, 355), (100, 1, 20, 15), (20, 240, 0, 1, 0, 0.8)],  # 装备升级
@@ -625,4 +626,7 @@ class OpenCvEnumG:
         'skip': [(1159, 13, 1269, 46), (10, 1, 5, 0), (15, 240, 0, 0, 0, 0.69)],  # 跳过
         'sell': [(10, 15, 92, 67), (10, 1, 10, 0), (20, 240, 0, 1, 0, 0.8)],  # 道具出售界面
         'dec': [(10, 15, 92, 67), (10, 1, 10, 0), (20, 240, 0, 1, 0, 0.8)],  # 道具分解界面
+        'team_tip_exit': [(454, 261, 833, 326), (5, 3, 50, 0), (8, 240, 0, 0, 0, 0.69)],  # 离队提示
+        'team_xzdw': [(86,192,215,393), (5, 3, 50, 0), (8, 240, 0, 0, 0, 0.79)],  # 寻找队伍
+        'team_cldw': [(86,192,215,393), (5, 3, 50, 0), (8, 240, 0, 0, 0, 0.79)],  # 创立队伍
     }

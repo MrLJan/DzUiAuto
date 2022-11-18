@@ -63,6 +63,12 @@ class MnqTools:
             cmd.close()
             print(f"模拟器 {i} 启动")
 
+    def start_mnq_name_list(self, index_list):
+        for i in index_list:
+            cmd = os.popen(self.ld_path + f" launch --name {i}")
+            cmd.close()
+            print(f"模拟器 {i} 启动")
+
     def start_mnq_name(self, name):
         cmd = os.popen(self.ld_path + f" launch --name {str(name)}")
         cmd.close()
@@ -104,6 +110,16 @@ class MnqTools:
         cmd.close()
         print("模拟器全部关闭")
 
+    def global_setting(self,fps):
+        cmd = os.popen(self.ld_path + f" globalsetting --fps {fps} --audio 0 --fastplay 1 --cleanmode")
+        cmd.close()
+        print(f"模拟器已经设置帧率{fps}_关闭声音,开启纯净模式")
+
+    def sort_windows(self):
+        cmd = os.popen(self.ld_path + r" sortWnd")
+        cmd.close()
+        print("模拟器全部排序")
+
     def lockwindow(self, index):
         cmd = os.popen(self.ld_path + f"  modify --index {index} --lockwindow 1")
         res = cmd.read()
@@ -125,3 +141,7 @@ class MnqTools:
     def reboot_and_runapp(self, index):
         cmd = os.popen(self.ld_path + f" action --index {index} --key call.reboot --value com.nexon.maplem.global")
         cmd.close()
+
+
+if __name__ == '__main__':
+    MnqTools().global_setting()

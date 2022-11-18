@@ -25,8 +25,8 @@ class BasePageG(OpenCvTools, AirImgTools):
     def start_game(self, wait_time=10):
         """启动游戏"""
         self.sn.log_tab.emit(self.mnq_name, r"启动游戏")
-        self.dev.app_start(GlobalEnumG.GamePackgeName,use_monkey=True)
-        # self.dev.start_app(GlobalEnumG.GamePackgeName)
+        # self.dev.app_start(GlobalEnumG.GamePackgeName,use_monkey=True)
+        self.dev.start_app(GlobalEnumG.GamePackgeName)
         time.sleep(wait_time)
 
     def key_event(self, key, wait_time=2):
@@ -41,8 +41,8 @@ class BasePageG(OpenCvTools, AirImgTools):
     def stop_game(self):
         """关闭游戏"""
         self.sn.log_tab.emit(self.mnq_name, r"关闭游戏")
-        self.dev.app_stop(GlobalEnumG.GamePackgeName)
-        # self.dev.stop_app(GlobalEnumG.GamePackgeName)
+        # self.dev.app_stop(GlobalEnumG.GamePackgeName)
+        self.dev.stop_app(GlobalEnumG.GamePackgeName)
 
     def close_other_app(self):
         """关闭除游戏客户端外其他应用"""
@@ -104,6 +104,7 @@ class BasePageG(OpenCvTools, AirImgTools):
         if self.find_info('game_login', True):
             return True
         self.get_rgb(RgbEnumG.BAT_JG, True)
+        self.back()
         return False
 
     def close_window(self):
@@ -127,7 +128,6 @@ class BasePageG(OpenCvTools, AirImgTools):
                     self.air_loop_find(ImgEnumG.TASK_OVER, touch_wait=0)
                     self.air_loop_find(ImgEnumG.TASK_START, touch_wait=0)
                     self.check_err()
-                    self.back()
         return False
 
     def check_is_stop(self):
@@ -219,3 +219,13 @@ class BasePageG(OpenCvTools, AirImgTools):
         if not auto_choose:
             LoadConfig.writeconf(self.mnq_name, '最近任务', map_name, ini_name=self.mnq_name)
         return kwargs
+
+    def check_level_star(self):
+        if self.find_info('ingame_flag2'):
+            _level = self.check_num(0)
+            _star = self.check_num(1)
+            self.sn.table_value.emit(self.mnq_name, 3, f"{_level}")
+            self.sn.table_value.emit(self.mnq_name, 4, f"{_star}")
+            LoadConfig.writeconf(self.mnq_name, '等级', str(_level), ini_name=self.mnq_name)
+            LoadConfig.writeconf(self.mnq_name, '星力', str(_star), ini_name=self.mnq_name)
+            self.sn.log_tab.emit(self.mnq_name, f"等级:{_level}_星力:{_star}")

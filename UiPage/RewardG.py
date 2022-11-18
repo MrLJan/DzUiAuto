@@ -116,7 +116,8 @@ class RewardG(BasePageG):
         _O = False  # 个人
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
             if self.find_info('ingame_flag2'):
-                self.crop_image_find(ImgEnumG.MAIL_RQ)
+                self.air_touch((995,41),touch_wait=3)
+                # self.crop_image_find(ImgEnumG.MAIL_RQ)
             elif self.get_rgb(RgbEnumG.MAIL_M):
                 if _G and _O:
                     self.sn.log_tab.emit(self.mnq_name, f"邮件领取-完成")
@@ -140,7 +141,7 @@ class RewardG(BasePageG):
             elif self.qr_or_qx(1):
                 self.time_sleep(2)
             else:
-                self.check_close()
+                self.check_err()
         self.sn.log_tab.emit(self.mnq_name, r'领取邮件-异常超时放弃')
         return True
         # raise ControlTimeOut(r'领取邮件-异常超时')
@@ -196,7 +197,7 @@ class RewardG(BasePageG):
             elif self.qr_or_qx(1):
                 pass
             else:
-                self.check_close()
+                self.check_err()
         if self.find_info('ingame_flag2'):
             return True
         return False
@@ -240,7 +241,7 @@ class RewardG(BasePageG):
                 pass
             else:
                 self.time_sleep(GlobalEnumG.TouchWaitTime)
-                self.check_close()
+                self.check_err()
         if self.find_info('ingame_flag2'):
             return True
         return False
@@ -269,7 +270,7 @@ class RewardG(BasePageG):
                 if not self.find_info('hd_czzy', True):
                     self.air_swipe((105, 598), (105, 391))
             else:
-                self.check_close()
+                self.check_err()
         self.sn.log_tab.emit(self.mnq_name, r'领取奖励-异常超时放弃')
         return True
 
@@ -424,7 +425,8 @@ class RewardG(BasePageG):
                 self.sn.log_tab.emit(self.mnq_name, r"分解完成")
                 _FJ_OVER = True
             else:
-                self.check_close()
+                self.check_err()
+            self.time_sleep(GlobalEnumG.WaitTime)
         select_queue.task_over('BagSell')
         raise ControlTimeOut(r'出售背包-异常超时')
 
@@ -444,9 +446,6 @@ class RewardG(BasePageG):
                 if _C_OVER:
                     self.get_rgb(RgbEnumG.BAG_GOLD_QR, True)
                 else:
-                    # _res = self.get_roleinfo([(694, 368, 927, 412), (398, 370, 630, 413)])
-                    # GOLD = _res[0]
-                    # RED_COIN = _res[-1]
                     GOLD = self.gold_num(1)
                     RED_COIN = self.gold_num(0)
                     _T_GOLD = GOLD - int(_GOLD_NUM)

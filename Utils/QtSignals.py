@@ -29,6 +29,7 @@ class QtSignals(QtCore.QObject):
     task_over_signal = QtCore.pyqtSignal(str, str)
     close_mnq_index = QtCore.pyqtSignal(str)
     restart = QtCore.pyqtSignal(str, list)
+    stoptask=QtCore.pyqtSignal(list,bool)
     # task_thread=QtCore.pyqtSignal(int, str,int)
     # 重定向信号
     text_signal = QtCore.pyqtSignal(str)  # 定义一个发送str的信号

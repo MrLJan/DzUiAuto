@@ -14,7 +14,7 @@ from UiPage.TaskAutoG import TaskAutoG
 from UiPage.TeamStateG import TeamStateG
 from UiPage.UpRoleG import UpRoleG
 from Utils.ExceptionTools import MrTaskErr, ControlTimeOut, BuyYErr, NotInGameErr, RestartTask, FuHuoRoleErr, \
-    BagFullerr
+    BagFullerr, StopTaskErr, NetErr
 from Utils.LoadConfig import LoadConfig
 from Utils.OtherTools import catch_ex
 
@@ -56,6 +56,9 @@ class StateSelect(object):
 
     def fuhuo(self, **kwargs):
         return LoginUiPageG(self.devinfo, self.mnq_name, self.sn).fuhuo_check(**kwargs)
+
+    def neterr(self,**kwargs):
+        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn).wait_net_err(**kwargs)
 
     def checkroleinfo(self, **kwargs):
         return StateCheckG(self.devinfo, self.mnq_name, self.sn).check_roleinfo(**kwargs)
@@ -175,6 +178,7 @@ class switch_case:
             'AutoChoose': [self.select.checkroleinfo, self.select.to_CheckRole, self.select.to_Check],
             'Login': [self.select.login_game, self.select.to_Login, self.select.to_Check],
             'FuHuo': [self.select.fuhuo, self.select.to_FuHuo, self.select.to_Check],
+            'NetErr': [self.select.neterr, self.select.to_NetErr, self.select.to_Check],
             'BuyY': [self.select.buyyao, self.select.to_BuyY, self.select.to_Check],
             'BagSell': [self.select.bagsell, self.select.to_BagSell, self.select.to_Check],
             'BagClear': [self.select.bagclear, self.select.to_BagClear, self.select.to_Check],
@@ -407,10 +411,14 @@ class switch_case:
                 else:
                     task = self.select_queue.get_task()  # 获取选择器任务
                     self.select_func[task][1]()  # 切换选择器状态
-        except (ConnectionResetError, DeviceConnectionError, ConnectionAbortedError, AdbShellError, AdbError,TypeError):
-            self.sn.log_tab.emit(self.mnq_name, f"模拟器adb连接异常断开,尝试重连")
-            self.sn.restart.emit(self.mnq_name, self.mnq_thread_list)
+
+        except StopTaskErr:
+            self.sn.log_tab.emit(self.mnq_name, f"模拟器adb连接异常断开,停止任务")
+            self.sn.stoptask.emit([self.mnq_name],True)
         except RestartTask:
+            self.sn.restart.emit(self.mnq_name, self.mnq_thread_list)
+        except (ConnectionResetError, DeviceConnectionError, ConnectionAbortedError, AdbShellError, AdbError, TypeError):
+            self.sn.log_tab.emit(self.mnq_name, f"模拟器adb连接异常断开,尝试重连")
             self.sn.restart.emit(self.mnq_name, self.mnq_thread_list)
         except MrTaskErr:
             self.sn.log_tab.emit(self.mnq_name, f"每日任务异常,开始检查")
@@ -418,6 +426,8 @@ class switch_case:
         except ControlTimeOut as e:
             self.sn.log_tab.emit(self.mnq_name, e.task)
             self.select.to_Check()
+        except NetErr:
+            self.select.to_NetErr()
         except BuyYErr:
             self.select.to_BuyY()
         except BagFullerr:

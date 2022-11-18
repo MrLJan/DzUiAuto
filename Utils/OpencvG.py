@@ -8,6 +8,7 @@ from cv2 import cv2
 
 from Enum.ResEnum import GlobalEnumG, OpenCvEnumG, ImgEnumG
 from Utils.Devicesconnect import DevicesConnect
+from Utils.ExceptionTools import StopTaskErr
 from Utils.OtherTools import OT, catch_ex
 
 
@@ -267,22 +268,26 @@ class OpenCvTools:
         """查找每日任务"""
         _crop_img = self._get_crop_img(38, 158, 1268, 580)
         sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 10))
-        _img1 = cv2.threshold(_crop_img.copy(), 240, 255, cv2.THRESH_BINARY_INV)[1]  # 转换为二值图像, thresh=63
+        _img1 = cv2.threshold(_crop_img.copy(), 250, 255, cv2.THRESH_BINARY)[1]  # 转换为二值图像, thresh=63
         _img2 = cv2.morphologyEx(_img1, cv2.MORPH_GRADIENT, sqKernel)
         res_cont, hierarchy = cv2.findContours(_img2, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
         ori_list = []
+        if find_info=='xgt':
+            _cnt_res=0.3
+        else:
+            _cnt_res=0.7
         for cnt in res_cont:
             x, y, w1, h1 = cv2.boundingRect(cnt)
             ar = w1 / float(h1)
             if 5 > ar > 1 and w1 > 50:
                 ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
+        ori_list = sorted(ori_list, key=lambda x: x[-1][0])
         _cmp_img = OT.npypath(f'mr_{find_info}')
         for _num in range(len(ori_list)):
-            # for _t in OpenCvEnumG.TEMP.keys():
             _re = cv2.matchTemplate(
                 cv2.resize(ori_list[_num][0], (72, 128)),
                 numpy.load(_cmp_img), method=cv2.TM_CCOEFF_NORMED)
-            if numpy.any(_re > 0.7):
+            if numpy.any(_re > _cnt_res):
                 if clicked:
                     self.dev.touch((ori_list[_num][-1][0] + 38, ori_list[_num][-1][-1] + 158), duration=0.1)
                 if t_log:
@@ -294,10 +299,7 @@ class OpenCvTools:
         return False
 
     def enum_find(self, find_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog):
-        self._img = self.dev.snapshot()
-        self._img = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
-        # _crop_img = self._img[y:y1, x:x1]
-        _crop_img = self._img[62:632, 800:1263]
+        _crop_img = self._get_crop_img(800, 62, 1263, 632)
         sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (8, 8))
         _img1 = cv2.threshold(_crop_img.copy(), 245, 255, cv2.THRESH_TOZERO)[1]  # 转换为二值图像, thresh=63
         _img2 = cv2.morphologyEx(_img1, cv2.MORPH_CLOSE, sqKernel)
@@ -456,9 +458,11 @@ class OpenCvTools:
         """检查药水购买数量 或 组队密码输入数量"""
         if type_id == 0:
             """检查药水"""
+            _cont_res = 0.69
             _crop_img = self._get_crop_img(717, 624, 823, 667)
         else:
             _crop_img = self._get_crop_img(538, 205, 749, 254)
+            _cont_res = 0.79
         _img1 = cv2.threshold(_crop_img.copy(), 140, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[
             1]  # 转换为二值图像
         res_cont = cv2.findContours(_img1, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
@@ -469,7 +473,7 @@ class OpenCvTools:
             if 0.8 > ar > 0.4 and h1 > 5:
                 ori_list.append([_crop_img[y:y + h1, x:x + w1], (x, y)])
         ori_list = sorted(ori_list, key=lambda _t: _t[-1][0])
-        return self._match_res(ori_list, OpenCvEnumG.YS_NUM, cont_res=0.69)
+        return self._match_res(ori_list, OpenCvEnumG.YS_NUM, cont_res=_cont_res)
 
     def check_map(self, map_name, t_log=GlobalEnumG.TestLog):
         """在主界面 检查地图名"""
@@ -584,6 +588,7 @@ class OpenCvTools:
         return False
 
     def check_boss_end(self, boss_id):
+        """检查boss图是否完成"""
         if boss_id == 0:
             """炎魔"""
             _crop_img = self._get_crop_img(89, 121, 239, 177)
@@ -607,6 +612,7 @@ class OpenCvTools:
         return self._match_text(ori_list, _cmp_img, cont_res=0.7)
 
     def qr_or_qx(self, type_id=0):
+        """检查确认、取消弹窗"""
         # self.sn.log_tab.emit(self.mnq_name, r"检查弹窗按钮")
         if type_id == 0:
             _cmp_img = OT.npypath('ui_qx')  # 取消
@@ -635,6 +641,7 @@ class OpenCvTools:
         return False
 
     def net_err(self):
+        """检查网路异常弹窗"""
         _crop_img = self._get_crop_img(430, 319, 848, 460)
         sqKernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 10))
         _img1 = cv2.threshold(_crop_img.copy(), 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[
@@ -684,7 +691,7 @@ class OpenCvTools:
             # _crop_img = self._img[y:y1, x:x1]
             return self._img[y:y1, x:x1]
         except Exception:
-            return self._get_crop_img(x, y, x1, y1)
+            raise StopTaskErr
 
     def in_team(self):
         """判定是否在组队中，1/6 ZZZ"""
@@ -1072,10 +1079,21 @@ if __name__ == '__main__':
     # r = o.check_xt_map('120')
     # r = o.check_boss_end(0)
     # r=o.qr_or_qx(1)
-    r = a.air_loop_find(ImgEnumG.JRGH_IMG)
-    # r=o.back_ksdy()
-    # r=o.check_ui('ui_jzt',t_log=False)
+    # r=o.rgb(102, 521)
+    # while True:
+    #     task_id=['wl','jzt','mr','jy','mn','gh','xl','tbb','yzd','jh','xgt','cyrq','hdyzd','gwgy']
+    #     for i in task_id:
+    r=o.find_info('team_zdjr',t_log=False)
+    # r = o.find_mr_task('xgt',True, t_log=False)
     print(r)
+            # if r:
+            #     print(f'T',i)
+        # r=o.find_info('team_tip_exit',t_log=False)
+        # r = a.air_loop_find(ImgEnumG.JRGH_IMG)
+        # r=o.back_ksdy()
+        # r=o.check_ui('ui_jzt',t_log=False)
+        #     else:
+        #         print(f'F', i)
     # r=o.gold_num(2)'
     # r=a.crop_image_find(ImgEnumG.PERSON_POS, clicked=False, get_pos=True,t_log=False)
     # r=o.check_num(2,t_log=False)

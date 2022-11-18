@@ -12,8 +12,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1326</width>
-    <height>742</height>
+    <width>1337</width>
+    <height>762</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -1343,13 +1343,13 @@
          <rect>
           <x>10</x>
           <y>10</y>
-          <width>481</width>
-          <height>163</height>
+          <width>484</width>
+          <height>181</height>
          </rect>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,5,0,0,0,0">
+          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,5,0,0,0,0,0">
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_5">
              <item>
@@ -1462,6 +1462,13 @@
               <widget class="QLineEdit" name="d3_duiyuan_edit"/>
              </item>
             </layout>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_22">
+             <property name="text">
+              <string>频道配置：主频道,副频道（默认先检查主频道,没有主频道会识别切换成副频道,逗号隔开</string>
+             </property>
+            </widget>
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="1,0,1,0,1,0">
@@ -2034,6 +2041,13 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'SimSun'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;岛主v2.21&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;1.修复卡点&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;2.优化星图挂机使用挂机卡&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;3.修复部分报错&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;4.优化买药&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;5.增加模拟器设置、排列&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;岛主v2.20&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;1.修复卡点&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;2.降低占用&lt;/span&gt;&lt;/p&gt;
@@ -2145,7 +2159,7 @@ p, li { white-space: pre-wrap; }
    <property name="geometry">
     <rect>
      <x>1050</x>
-     <y>450</y>
+     <y>470</y>
      <width>271</width>
      <height>241</height>
     </rect>
@@ -2273,6 +2287,42 @@ p, li { white-space: pre-wrap; }
     <string>自动切换角色（用于自动任务、自动每日最大支持6角色）</string>
    </property>
   </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>1050</x>
+     <y>440</y>
+     <width>271</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_31" stretch="1,1,5,5">
+    <item>
+     <widget class="QLabel" name="label_29">
+      <property name="text">
+       <string>整体帧率</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="fps_edit"/>
+    </item>
+    <item>
+     <widget class="QPushButton" name="mnq_set_btn">
+      <property name="text">
+       <string>模拟器设置</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="sort_btn">
+      <property name="text">
+       <string>模拟器排序</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
   <zorder>is_change_role_box</zorder>
   <zorder>console_text</zorder>
   <zorder>layoutWidget</zorder>
@@ -2282,6 +2332,7 @@ p, li { white-space: pre-wrap; }
   <zorder>layoutWidget</zorder>
   <zorder>log_tab_wid</zorder>
   <zorder>label_21</zorder>
+  <zorder>layoutWidget</zorder>
  </widget>
  <tabstops>
   <tabstop>console_text</tabstop>

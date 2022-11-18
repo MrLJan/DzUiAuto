@@ -135,7 +135,8 @@ class StateCheckG(BasePageG):
             elif self.find_info('coin_enum', True):
                 pass
             else:
-                self.check_close()
+                self.check_err()
+            self.time_sleep(GlobalEnumG.WaitTime)
 
     def auto_choose_task(self, level, star, red_gold, select_queue, **kwargs):
         exec_queue = kwargs['状态队列']['执行器']

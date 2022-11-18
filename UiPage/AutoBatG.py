@@ -4,7 +4,7 @@ import time
 
 from Enum.ResEnum import ImgEnumG, GlobalEnumG, RgbEnumG
 from UiPage.BasePage import BasePageG
-from Utils.ExceptionTools import FuHuoRoleErr
+from Utils.ExceptionTools import FuHuoRoleErr, NetErr
 
 
 class AutoBatG(BasePageG):
@@ -273,6 +273,7 @@ class AutoBatG(BasePageG):
         _s_time = time.time()
         _c_time = time.time()
         i = 0
+        self.check_level_star()
         _res_hp_mp = self.check_hp_mp()
         if _res_hp_mp != '':
             if 'HP' in _res_hp_mp:
@@ -309,6 +310,9 @@ class AutoBatG(BasePageG):
             if time.time() - _c_time > GlobalEnumG.CheckRoleTime:
                 select_queue.put_queue("CheckRole")
                 return 0
+            if self.find_info('team_tip_exit'):
+                if not self.use_auto(10, **kwargs):
+                    return -1
             if i % 5 == 0:
                 if not self.find_info('ingame_flag2'):
                     return -1
@@ -325,13 +329,16 @@ class AutoBatG(BasePageG):
                         self.air_touch((845, 390))
                     if not self.crop_image_find(ImgEnumG.AUTO_BAT, False, touch_wait=0):
                         self.air_touch((423, 655), touch_wait=2)  # 点击确认战斗结果
+                    if self.net_err():
+                        self.sn.log_tab.emit(self.mnq_name, r"网络断开_等待重连")
+                        raise NetErr
                     # else:
                     # self.crop_image_find(ImgEnumG.XC_IMG)
                     # self.find_info('bat_xc',True)
-                    if self.air_loop_find(ImgEnumG.RES_EXIT_TEAM, False, touch_wait=0):
-                        if not self.use_auto(10, **kwargs):
-                            return -1
-                    elif not self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
+                    # if self.air_loop_find(ImgEnumG.RES_EXIT_TEAM, False, touch_wait=0):
+                    #     if not self.use_auto(10, **kwargs):
+                    #         return -1
+                    if not self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
                         return -1
                     if _IS_EXIT and task_id != '4':
                         pos = self.crop_image_find(ImgEnumG.EXIT_TEAM, False, get_pos=True)
@@ -370,16 +377,16 @@ class AutoBatG(BasePageG):
                 elif map_data[-1][2] > map_x3 > map_data[-1][-1]:
                     turn_queue.task_over('left')
                     turn_queue.put_queue('right')
-                else:
-                    _ro = random.randint(0, 10)
-                    if _ro > 5:
-                        _o = random.randint(0, 1)
-                        if _o == 0:
-                            turn_queue.task_over('left')
-                            turn_queue.put_queue('right')
-                        else:
-                            turn_queue.task_over('right')
-                            turn_queue.put_queue('left')
+                # else:
+                #     _ro = random.randint(0, 10)
+                #     if _ro > 5:
+                #         _o = random.randint(0, 1)
+                #         if _o == 0:
+                #             turn_queue.task_over('left')
+                #             turn_queue.put_queue('right')
+                #         else:
+                #             turn_queue.task_over('right')
+                #             turn_queue.put_queue('left')
                 move_to = turn_queue.get_task()
                 if not move_to:
                     _t = random.randint(0, 1)
@@ -445,31 +452,31 @@ class AutoBatG(BasePageG):
         _NO_TIMECARD = False
         _AUTO_START = False
         _AUTO_OVER = False
+        _USE_CARD=False
         while time.time() - s_time < GlobalEnumG.TaskCheckTime:
             if self.get_rgb(RgbEnumG.BAT_AUTO_M):
-                if not self.get_rgb(RgbEnumG.AUTO_TIME):
+                if not _AUTO_START:
+                    now_time = self.check_time_num()  # 剩余时间
+                    if int(now_time) > 1:
+                        if self.get_rgb(RgbEnumG.BAT_AUTO_QR, True):
+                            _AUTO_START = True
+                else:
                     if _AUTO_START:
-                        if _NO_TIMECARD:
-                            self.air_loop_find(ImgEnumG.UI_CLOSE)
+                        if _USE_CARD:
+                            self.back()
+                            # self.air_loop_find(ImgEnumG.UI_CLOSE)
                         else:
                             if self.get_rgb(RgbEnumG.AUTO_FREE, True):
-                                pass
+                                _USE_CARD=True
                             elif self.get_rgb(RgbEnumG.AUTO_10, True):
-                                pass
+                                _USE_CARD=True
                             elif self.get_rgb(RgbEnumG.AUTO_30, True):
-                                pass
+                                _USE_CARD=True
                             elif self.get_rgb(RgbEnumG.AUTO_60, True):
-                                pass
+                                _USE_CARD=True
                             else:
                                 _NO_TIMECARD = True
-                    else:
-                        now_time = self.check_time_num()  # 剩余时间
-                        if int(now_time) > 1:
-                            if self.get_rgb(RgbEnumG.BAT_AUTO_QR, True):
-                                _AUTO_START = True
-                else:
-                    if self.get_rgb(RgbEnumG.BAT_AUTO_QR, True):
-                        _AUTO_START = True
+                                _USE_CARD = True
             elif self.get_rgb(RgbEnumG.BAT_JG, True):
                 _AUTO_OVER = True
             elif self.find_info('ingame_flag2'):

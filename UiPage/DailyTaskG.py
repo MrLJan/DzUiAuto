@@ -24,6 +24,7 @@ class DailyTaskAutoG(BasePageG):
         mrtask_queue = kwargs['每日任务']['每日任务队列']
         is_gonghui = kwargs['每日任务']['公会']
         level = int(kwargs['角色信息']['等级'])
+        self.check_level_star()
         if len(task_list) == 0:
             select_queue.task_over('AutoMR')
             select_queue.put_queue('GetReward')
@@ -76,7 +77,7 @@ class DailyTaskAutoG(BasePageG):
     def back_mr_main(self):
         self.sn.log_tab.emit(self.mnq_name, r"返回")
         _s_time = time.time()
-        while time.time() - _s_time > GlobalEnumG.UiCheckTimeOut:
+        while time.time() - _s_time < GlobalEnumG.UiCheckTimeOut:
             if self.crop_image_find(ImgEnumG.MR_BACK, touch_wait=3):
                 pass
             elif self.get_rgb(RgbEnumG.EXIT_FOU, True, touch_wait=GlobalEnumG.ExitBtnTime) or self.get_rgb(
@@ -182,10 +183,11 @@ class DailyTaskAutoG(BasePageG):
                 elif self.find_info('ingame_flag2'):
                     if _JION:
                         if _WAIT_TIMES > 3:
-                            self.time_sleep(10)
                             _JION = False
                             _WAIT_TIMES = 0
-                        _WAIT_TIMES += 1
+                        else:
+                            self.time_sleep(10)
+                            _WAIT_TIMES += 1
                     else:
                         self.find_info('ui_enum', True)
                 elif self.find_info('ui_set'):  # 菜单界面
@@ -202,13 +204,14 @@ class DailyTaskAutoG(BasePageG):
                 elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
                     pass
                 elif self.get_rgb(RgbEnumG.JZT_JRQR):
-                    self.air_touch((846, 439), touch_wait=2)
+                    self.air_touch((844, 431), touch_wait=2)
                     if self.get_rgb(RgbEnumG.JZT_JRQR, True):
                         self.time_sleep(3)
                         _JION = True
                 # elif self.get_rgb(RgbEnumG.BACK):  # 金字塔界面
                 elif self.check_ui('ui_jzt'):
                     if _JION:
+                        self.back()
                         self.sn.log_tab.emit(self.mnq_name, r"金字塔-战斗完成")
                         return True
                     if _JION_TIMES > 1:
@@ -307,7 +310,7 @@ class DailyTaskAutoG(BasePageG):
                     self.time_sleep(15)
                     self.get_rgb(RgbEnumG.TEAM_KS, True, touch_wait=3)  # 开始
                 else:
-                    if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
+                    if self.find_info('ingame_flag2'):
                         self.find_info('ui_enum', True)
                     elif self.find_info('ui_set'):  # 菜单界面
                         self.enum_find('ksnr', True)
@@ -364,7 +367,7 @@ class DailyTaskAutoG(BasePageG):
                     self.sn.log_tab.emit(self.mnq_name, r"汤宝宝战斗中")
                     self.time_sleep(15)
             else:
-                if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
+                if self.find_info('ingame_flag2'):
                     self.find_info('ui_enum', True)
                 elif self.find_info('ui_set'):  # 菜单界面
                     self.enum_find('ksnr', True)
@@ -408,7 +411,7 @@ class DailyTaskAutoG(BasePageG):
                 self.sn.log_tab.emit(self.mnq_name, r"进化系统战斗中")
                 self.time_sleep(15)
             else:
-                if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
+                if self.find_info('ingame_flag2'):
                     self.find_info('ui_enum', True)
                 elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
                     pass
@@ -577,7 +580,7 @@ class DailyTaskAutoG(BasePageG):
                 self.sn.log_tab.emit(self.mnq_name, r"星光M塔战斗中_等待15秒")
                 self.time_sleep(15)
             else:
-                if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
+                if self.find_info('ingame_flag2'):
                     self.find_info('ui_enum', True)
                 elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
                     pass
@@ -647,7 +650,8 @@ class DailyTaskAutoG(BasePageG):
                     self.sn.log_tab.emit(self.mnq_name, r"怪物公园战斗中")
                     self.time_sleep(15)
             else:
-                if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
+                # if self.crop_image_find(ImgEnumG.INGAME_FLAG, False):
+                if self.find_info('ingame_flag2'):
                     self.find_info('ui_enum', True)
                 elif self.get_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
                     pass
@@ -658,7 +662,7 @@ class DailyTaskAutoG(BasePageG):
                         if _SWIPE_TIMES <= 3:
                             self.air_swipe((925, 432), (400, 432), swipe_wait=2)
                         else:
-                            if _SWIPE_TIMES > 7:
+                            if _SWIPE_TIMES > 6:
                                 _SWIPE_TIMES = 0
                             self.air_swipe((400, 432), (925, 432), swipe_wait=2)
                         _SWIPE_TIMES += 1
