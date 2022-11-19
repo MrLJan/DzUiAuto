@@ -2,44 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="218bbaa1-7ac1-41ff-a550-012b423f111d" name="Changes" comment="Changes">
+      <change beforePath="$PROJECT_DIR$/.idea/DzUiAuto.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/DzUiAuto.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DzTest/DzModeMachine.py" beforeDir="false" afterPath="$PROJECT_DIR$/DzTest/DzModeMachine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DzTest/t2.py" beforeDir="false" afterPath="$PROJECT_DIR$/DzTest/t2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Enum/ResEnum.py" beforeDir="false" afterPath="$PROJECT_DIR$/Enum/ResEnum.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QtUI/dzmain.ui" beforeDir="false" afterPath="$PROJECT_DIR$/QtUI/dzmain.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/LDPlayer-14.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/LDPlayer-14.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/LDPlayer.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/LDPlayer.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_cyrq.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/mr_cyrq.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_jzt.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/mr_jzt.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_xgt.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/mr_xgt.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/Npy/team_zdjr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/Res/Npy/team_zdjr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/LDPlayer.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/创立队伍.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/怪物公园.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/怪物狩猎团.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/星力战场.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/次元入侵.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/武陵道场.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/汤宝宝.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/菁英地城.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/进化系统.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/远征队.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/金字塔.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/配置文件.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/配置文件.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/AutoBatG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/AutoBatG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/BasePage.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/BasePage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/DailyTaskG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/DailyTaskG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/LoginUiPage.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/LoginUiPage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/RewardG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/RewardG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/StateCheckG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/StateCheckG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/TeamStateG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/TeamStateG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/UpRoleG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/UpRoleG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utils/Devicesconnect.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/Devicesconnect.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/ExceptionTools.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/ExceptionTools.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/MnqTools.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/MnqTools.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utils/OpencvG.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/OpencvG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/QtSignals.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/QtSignals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dzmainui.py" beforeDir="false" afterPath="$PROJECT_DIR$/dzmainui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,7 +83,7 @@
       <recent name="D:\DzAutoUi\Enum" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python.OpencvG">
     <configuration name="Devicesconnect" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="DzUiAuto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -230,9 +198,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.OpencvG" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.t2" />
-        <item itemvalue="Python.OpencvG" />
         <item itemvalue="Python.MnqTools" />
         <item itemvalue="Python.Devicesconnect" />
       </list>
@@ -317,11 +285,6 @@
           <url>file://$PROJECT_DIR$/UiPage/RewardG.py</url>
           <line>2</line>
           <option name="timeStamp" value="2126" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Utils/OpencvG.py</url>
-          <line>22</line>
-          <option name="timeStamp" value="2161" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/DzTest/t2.py</url>

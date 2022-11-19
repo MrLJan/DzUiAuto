@@ -1083,7 +1083,9 @@ if __name__ == '__main__':
     # while True:
     #     task_id=['wl','jzt','mr','jy','mn','gh','xl','tbb','yzd','jh','xgt','cyrq','hdyzd','gwgy']
     #     for i in task_id:
-    r=o.find_info('team_zdjr',t_log=False)
+    r=aircv.imread(r'D:\KodAuto\res\DMimg\G\screen.png')
+    aircv.show(r)
+    # r=o.find_info('team_zdjr',t_log=False)
     # r = o.find_mr_task('xgt',True, t_log=False)
     print(r)
             # if r:

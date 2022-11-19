@@ -483,19 +483,19 @@ class AutoBatG(BasePageG):
                 if _AUTO_OVER or _NO_TIMECARD:
                     self.get_rgb(RgbEnumG.BAT_JG, True)
                     return True
-                if not self.crop_image_find(ImgEnumG.AUTO_BAT, True):
+                if not self.crop_image_find(ImgEnumG.AUTO_BAT, True) or not self.find_info('bat_auto'):
                     if _AUTO_START:
                         if _EXIT_GAME:
                             self.stop_game()
                             self.time_sleep(_EXIT_TIME * 60)
                         else:
                             self.time_sleep(AUTO_TIME)
-                            self.air_touch((422, 655))
+                            self.air_touch((422, 655),touch_wait=GlobalEnumG.TouchWaitTime)
                         # _AUTO_OVER = True
                     else:
-                        self.air_touch((422, 655))
+                        self.air_touch((422, 655),touch_wait=GlobalEnumG.TouchWaitTime)
             else:
-                self.check_close()
+                self.check_err()
 
     def get_time_to_dotask(self, **kwargs):
         _t = kwargs['定时设置']['距离任务开始时间']
