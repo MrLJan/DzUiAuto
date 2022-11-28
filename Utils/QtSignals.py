@@ -19,7 +19,7 @@ class QtSignals(QtCore.QObject):
     label_text = QtCore.pyqtSignal(QLabel, str)  # 更改标签文本
     mnq_index = QtCore.pyqtSignal(QLabel, int)  # 模拟器indexID
     device_list = QtCore.pyqtSignal(QTableWidget, list)  # 设备列表
-    windows_pid = QtCore.pyqtSignal(QTableWidget, list, list, list)  # 窗口句柄列表
+    windows_pid = QtCore.pyqtSignal(QTableWidget, list, list, list,list)  # 窗口句柄列表
     table_value = QtCore.pyqtSignal(str, int, str)  # 表格更新
     thread_name = QtCore.pyqtSignal(list, str)
     start_thread = QtCore.pyqtSignal(int, str)

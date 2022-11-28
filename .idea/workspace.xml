@@ -5,9 +5,396 @@
       <change beforePath="$PROJECT_DIR$/.idea/DzUiAuto.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/DzUiAuto.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Adb/AdbWinApi.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Adb/AdbWinUsbApi.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Adb/adb.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DzTest/DzModeMachine.py" beforeDir="false" afterPath="$PROJECT_DIR$/DzTest/DzModeMachine.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DzTest/t2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DzTest/t3.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DzTest/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Enum/ResEnum.py" beforeDir="false" afterPath="$PROJECT_DIR$/Enum/ResEnum.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QtUI/dzmain.ui" beforeDir="false" afterPath="$PROJECT_DIR$/QtUI/dzmain.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/LDPlayer-14.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/LDPlayer-14.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/LDPlayer.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/LDPlayer.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/EXP.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/LB_close.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/ZZZ.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/back_ksdy.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/bat_auto.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/bat_xc.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/cyrq.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/czjl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/exit_ydzxd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/g0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/g1.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/g2.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/g3.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/g4.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/g5.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/g6.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/g7.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/g8.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/g9.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/game_login.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/gh_ryz.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/gh_wxdc.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/hd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/hd_czzy.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/hd_dljl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/hd_xxjl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/hp.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/ingame_flag1.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/ingame_flag2.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/ksnr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/kt.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/map_alsl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/map_ldsh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/map_mnesl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/map_sjsd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/map_wlzm.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_105.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_105_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_110.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_110_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_113.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_113_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_115.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_115_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_120.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_120_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_130.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_130_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_136.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_136_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_142.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_142_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_144.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_144_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_147.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_147_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_40.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_40_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_45.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_45_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_65.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_65_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_80.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_80_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_90.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/xt_90_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/yt_lt.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/yt_lt_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/yt_mggl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/yt_mggl_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/yt_qqxg.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/yt_qqxg_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/yt_sm.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/yt_sm_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/yt_wq.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/yt_wq_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/yt_wqk.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/map/yt_wqk_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mp.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr_boss_clear.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr_boss_end.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr_cyrq.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr_gh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr_gwgy.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr_hdyzd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr_jh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr_jy.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr_jzt.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr_mn.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr_mr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr_tbb.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr_wl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr_xgt.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr_xl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/mr_yzd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/net_err.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/p0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/p1.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/p10.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/p2.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/p3.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/p4.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/p5.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/p6.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/p7.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/p8.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/p9.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/pet.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/skill.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/task_arrow.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/task_close.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/task_point.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/tbb.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/team_null.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/team_zdjr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/tjp.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/ui_enum.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/ui_qr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/ui_qx.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/ui_set.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/wl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/xgt.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/xl_lkyd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/xt_flag.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/y0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/y1.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/y2.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/y3.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/y4.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/y5.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/y6.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/y7.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/y8.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/y9.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/ys_dl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/ys_ljqw.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/ys_xc.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/z0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/z1.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/z2.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/z3.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/z4.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/z5.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/z6.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/z7.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/z8.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/z9.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/zb.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/zb_qh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/zb_sj.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/zb_sjset.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy - 副本/zb_zbz.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/EXP.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/LB_close.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ZZZ.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/back_ksdy.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/bat_auto.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/bat_xc.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/coin_enum.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/cyrq.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/czjl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/dec.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/exit_ydzxd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/g0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/g1.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/g2.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/g3.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/g4.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/g5.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/g6.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/g7.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/g8.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/g9.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/game_login.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/gh_ryz.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/gh_wxdc.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/hd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/hd_czzy.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/hd_dljl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/hd_xxjl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/hp.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ingame_flag1.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ingame_flag2.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ksnr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/kt.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/map_alsl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/map_ldsh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/map_mnesl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/map_sjsd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/map_wlzm.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_105.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_105_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_110.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_110_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_113.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_113_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_115.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_115_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_120.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_120_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_130.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_130_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_136.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_136_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_142.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_142_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_144.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_144_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_147.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_147_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_40.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_40_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_45.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_45_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_65.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_65_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_80.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_80_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_90.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/xt_90_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/yt_lt.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/yt_lt_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/yt_mggl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/yt_mggl_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/yt_qqxg.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/yt_qqxg_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/yt_sm.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/yt_sm_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/yt_wq.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/yt_wq_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/yt_wqk.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/map/yt_wqk_e.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mp.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_boss_clear.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_boss_end.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_cyrq.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_gh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_gwgy.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_hdyzd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_jh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_jy.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_jzt.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_mn.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_mr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_tbb.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_wl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_xgt.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_xl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/mr_yzd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/net_err.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/p0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/p1.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/p10.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/p2.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/p3.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/p4.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/p5.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/p6.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/p7.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/p8.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/p9.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/pet.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/sell.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/skill.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/skip.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/task_arrow.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/task_close.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/task_point.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/tbb.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/team_cldw.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/team_null.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/team_tip_exit.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/team_xzdw.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/team_zdjr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/tjp.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_cyrq.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_enum.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_ghryz.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_ghwxdc.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_gwgy.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_hdboss.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_jhxt.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_jydc.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_jzt.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_mndc.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_mrdc.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_qr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_qx.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_set.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_tbb.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_wl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_xgt.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_xlzc.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ui_yzd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/wl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/xgt.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/xl_lkyd.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/xt_flag.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/y0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/y1.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/y2.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/y3.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/y4.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/y5.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/y6.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/y7.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/y8.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/y9.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ys_dl.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ys_ljqw.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/ys_xc.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/z0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/z1.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/z2.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/z3.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/z4.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/z5.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/z6.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/z7.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/z8.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/z9.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/zb.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/zb_qh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/zb_sj.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/zb_sjset.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/Npy/zb_zbz.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/人物坐标.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/任务点.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/任务页签.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/任务页签.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/休息奖励领取.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/休息离队提示.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/卸载技能.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/卸除.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/复活.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/复活.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/密码队伍.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/密码队伍.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/小地图.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/快速组队.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/战斗退出.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/战斗退出.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/断线.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/新内容.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/新内容.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/星图移动.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/游戏登陆标志.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/游戏登陆标志.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/立即前往.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/组队页签.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/组队页签.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/自动战斗.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/自动战斗1.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/药品数量.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/装备技能.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/设置.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/返回.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/道具掉落.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/邮件.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/验证登录标记.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/验证登录标记2.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/游戏icon.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/游戏登陆标志.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/配置文件.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/配置文件.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UiPage/AutoBatG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/AutoBatG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/BasePage.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/BasePage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/DailyTaskG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/DailyTaskG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/LoginUiPage.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/LoginUiPage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/RewardG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/RewardG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/StateCheckG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/StateCheckG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/TaskAutoG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/TaskAutoG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/TeamStateG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/TeamStateG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/UpRoleG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/UpRoleG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/AdbUtils.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Utils/Devicesconnect.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/Devicesconnect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/ExceptionTools.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/ExceptionTools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/LoadConfig.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/LoadConfig.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/MnqTools.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/MnqTools.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utils/OpencvG.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/OpencvG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/OtherTools.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/OtherTools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/QtSignals.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/QtSignals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/QueueManageTools.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/QueueManageTools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dzmainui.py" beforeDir="false" afterPath="$PROJECT_DIR$/dzmainui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.spec" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,19 +420,18 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/dzmainui.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Utils/ThreadTools.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Utils/QueueManageTools.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/DzTest/test.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/UiPage/DailyTaskG.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/UiPage/AutoBatG.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/UiPage/StateCheckG.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/UiPage/TeamStateG.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/UiPage/DailyTaskG.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Utils/LoadConfig.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Utils/ThreadTools.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/dzmainui.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/UiPage/BasePage.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Enum/ResEnum.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Utils/OpencvG.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/UiPage/BasePage.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Utils/OtherTools.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Utils/LoadConfig.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/UiPage/AutoBatG.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/UiPage/TeamStateG.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/DzTest/DzModeMachine.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -54,6 +440,7 @@
   <component name="ProblemsViewState">
     <option name="groupByToolId" value="true" />
     <option name="selectedTabId" value="CurrentFile" />
+    <option name="showPreview" value="true" />
     <option name="sortByName" value="true" />
   </component>
   <component name="ProjectId" id="2EoAOzoJ9eayK6kbakcfhtbg0Wk" />
@@ -69,9 +456,9 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../KodAuto" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="terminal" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -83,28 +470,7 @@
       <recent name="D:\DzAutoUi\Enum" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.OpencvG">
-    <configuration name="Devicesconnect" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="DzUiAuto" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Utils" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Utils/Devicesconnect.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python.main">
     <configuration name="MnqTools" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="DzUiAuto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -147,6 +513,48 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="QueueManageTools" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="DzUiAuto" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Utils" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Utils/QueueManageTools.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="ResEnum" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="DzUiAuto" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Enum" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Enum/ResEnum.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="DzUiAuto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -168,41 +576,20 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="t2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="DzUiAuto" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/DzTest" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/DzTest/t2.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <list>
       <item itemvalue="Python.OpencvG" />
       <item itemvalue="Python.main" />
-      <item itemvalue="Python.Devicesconnect" />
-      <item itemvalue="Python.t2" />
+      <item itemvalue="Python.ResEnum" />
+      <item itemvalue="Python.QueueManageTools" />
       <item itemvalue="Python.MnqTools" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.OpencvG" />
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.t2" />
+        <item itemvalue="Python.OpencvG" />
+        <item itemvalue="Python.ResEnum" />
         <item itemvalue="Python.MnqTools" />
-        <item itemvalue="Python.Devicesconnect" />
+        <item itemvalue="Python.QueueManageTools" />
       </list>
     </recent_temporary>
   </component>
@@ -216,6 +603,9 @@
       <updated>1663251535509</updated>
     </task>
     <servers />
+  </component>
+  <component name="TerminalProjectNonSharedOptionsProvider">
+    <option name="startingDirectory" value="C:\Users\igg\AppData\Local\Programs\Python\Python39-32" />
   </component>
   <component name="UnknownFeatures">
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.spec" />
@@ -276,21 +666,6 @@
           <line>770</line>
           <option name="timeStamp" value="887" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/UiPage/UpRoleG.py</url>
-          <line>267</line>
-          <option name="timeStamp" value="2026" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/UiPage/RewardG.py</url>
-          <line>2</line>
-          <option name="timeStamp" value="2126" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/DzTest/t2.py</url>
-          <line>1</line>
-          <option name="timeStamp" value="2201" />
-        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
@@ -300,5 +675,11 @@
         </breakpoint>
       </default-breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="turn_queue" language="Python" />
+        <watch expression="team_event" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

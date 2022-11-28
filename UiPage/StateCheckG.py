@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 import time
 
-from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG
+from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG, MulColorEnumG, WorldEnumG
 from UiPage.BasePage import BasePageG
 from Utils.LoadConfig import LoadConfig
 
 
 class StateCheckG(BasePageG):
-    def __init__(self, devinfo, mnq_name, sn):
+    def __init__(self, devinfo, sn):
         super(StateCheckG, self).__init__()
-        self.dev = devinfo[0]
-        self.serialno = devinfo[-1]
+        self.dev, self.mnq_name = devinfo
         self.sn = sn
-        self.mnq_name = mnq_name
 
     def choose_task(self, **kwargs):
         select_queue = kwargs['状态队列']['选择器']
@@ -20,12 +18,12 @@ class StateCheckG(BasePageG):
         if select_queue.queue.empty():
             if not self.check_hpmp(use_mp):
                 select_queue.put_queue('BuyY')
-            if self.crop_image_find(ImgEnumG.BAG_MAX_IMG, False):
+            if self.pic_find(ImgEnumG.BAG_MAX_IMG, False):
                 select_queue.put_queue('BagSell')
         else:
             if not self.check_hpmp(use_mp):
                 select_queue.put_queue('BuyY')
-            if self.crop_image_find(ImgEnumG.BAG_MAX_IMG, False):
+            if self.pic_find(ImgEnumG.BAG_MAX_IMG, False):
                 select_queue.put_queue('BagSell')
             if self.check_team():
                 select_queue.put_queue('ChooseTeam')
@@ -46,9 +44,9 @@ class StateCheckG(BasePageG):
     def check_team(self):
         s_time = time.time()
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut / 2:
-            if self.find_info('ingame_flag2'):
-                self.crop_image_find(ImgEnumG.TEAM_TAB)
-                if self.crop_image_find(ImgEnumG.EXIT_TEAM, False):
+            if self.find_color(MulColorEnumG.IGAME):
+                self.pic_find(ImgEnumG.TEAM_TAB)
+                if self.pic_find(ImgEnumG.EXIT_TEAM, False):
                     return True
                 else:
                     return False
@@ -59,13 +57,13 @@ class StateCheckG(BasePageG):
     def close_all(self):
         s_time = time.time()
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.find_info('ingame_flag2'):
+            if self.find_color(MulColorEnumG.IGAME):
                 self.sn.log_tab.emit(self.mnq_name, r"在游戏主界面")
                 return True
-            elif self.crop_image_find(ImgEnumG.GAME_ICON, False):
+            elif self.pic_find(ImgEnumG.GAME_ICON, False):
                 self.sn.log_tab.emit(self.mnq_name, r"掉线")
                 return True
-            elif self.air_loop_find(ImgEnumG.MR_BAT_EXIT):
+            elif self.pic_find(ImgEnumG.MR_BAT_EXIT):
                 self.back_ksdy()
             else:
                 self.check_close()
@@ -84,11 +82,11 @@ class StateCheckG(BasePageG):
         LEVEL = 0  # 等级
         STAR = 0  # 星力
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.find_info('ingame_flag2'):
+            if self.find_color(MulColorEnumG.IGAME):
                 if not _C_LEVEL:
                     self.sn.log_tab.emit(self.mnq_name, r"检查等级、战力数")
-                    LEVEL = self.check_num(0)
-                    BAT_NUM = self.check_num(1)
+                    LEVEL = self.check_num(4)
+                    BAT_NUM = self.check_num(3)
                     if LEVEL != '0':
                         LoadConfig.writeconf(self.mnq_name, '等级', str(LEVEL), ini_name=self.mnq_name)
                         LoadConfig.writeconf(self.mnq_name, '战力', str(BAT_NUM), ini_name=self.mnq_name)
@@ -112,18 +110,18 @@ class StateCheckG(BasePageG):
                     if auto_choose:
                         self.auto_choose_task(LEVEL, STAR, RED_GOLD, select_queue, **kwargs)
                     return True
-                self.air_touch((1170, 39), touch_wait=3)
-            elif self.get_rgb(RgbEnumG.BAG_GOLD_QR):
+                self.touch((1170, 39), touch_wait=3)
+            elif self.cmp_rgb(RgbEnumG.BAG_GOLD_QR):
                 if _C_OVER:
-                    self.get_rgb(RgbEnumG.BAG_GOLD_QR, True)
+                    self.cmp_rgb(RgbEnumG.BAG_GOLD_QR, True)
                 else:
                     self.sn.log_tab.emit(self.mnq_name, r"检查金币、红币数量")
-                    GOLD = self.gold_num(1)
-                    RED_GOLD = self.gold_num(0)
+                    GOLD = self.check_num(0)
+                    RED_GOLD = self.check_num(1)
                     LoadConfig.writeconf(self.mnq_name, '金币', str(GOLD), ini_name=self.mnq_name)
                     LoadConfig.writeconf(self.mnq_name, '红币', str(RED_GOLD), ini_name=self.mnq_name)
                     _C_OVER = True
-            elif self.get_rgb(RgbEnumG.BAG_M):
+            elif self.cmp_rgb(RgbEnumG.BAG_M):
                 self.time_sleep(1)
                 if _C_OVER:
                     self.back()
@@ -131,8 +129,8 @@ class StateCheckG(BasePageG):
                     self.sn.log_tab.emit(self.mnq_name, r"检查星力")
                     STAR = self.check_num(2)
                     LoadConfig.writeconf(self.mnq_name, '星力', str(STAR), ini_name=self.mnq_name)
-                    self.crop_image_find(ImgEnumG.BAG_GOLD, touch_wait=2)
-            elif self.find_info('coin_enum', True):
+                    self.pic_find(ImgEnumG.BAG_GOLD, touch_wait=2)
+            elif self.mul_color(MulColorEnumG.COIN_ENUM, True):
                 pass
             else:
                 self.check_err()
@@ -146,7 +144,7 @@ class StateCheckG(BasePageG):
         # _CW_FLAG = False if kwargs['角色信息']['宠物'] == '0' else True
         # _L2_FLAG = False if kwargs['角色信息']['60级'] == '0' else True
         # _L3_FLAG = False if kwargs['角色信息']['90级'] == '0' else True
-        _L4_FLAG = False if kwargs['角色信息']['100级'] == '0' else True
+        # _L4_FLAG = False if kwargs['角色信息']['100级'] == '0' else True
 
         # if 90 < int(level) <= 100 and _L4_FLAG:
         #     LoadConfig.writeconf(self.mnq_name, '100级', '0', ini_name=self.mnq_name)
@@ -179,10 +177,10 @@ class StateCheckG(BasePageG):
         else:
             self.sn.log_tab.emit(self.mnq_name, r"星力不足,继续做任务")
             exec_queue.put_queue('AutoTask')
-        if int(level) > 100 and not _L4_FLAG:
-            self.sn.log_tab.emit(self.mnq_name, r"大于100级,且配置中未检查装备技能")
-            select_queue.put_queue('UseSkill')
-            select_queue.put_queue('GetLevelReard')
+        # if int(level) > 100 and not _L4_FLAG:
+        #     self.sn.log_tab.emit(self.mnq_name, r"大于100级,且配置中未检查装备技能")
+        #     select_queue.put_queue('UseSkill')
+        #     select_queue.put_queue('GetLevelReard')
         if int(red_gold) > int(red_coin) * 10000000:
             self.sn.log_tab.emit(self.mnq_name, f"红币数量大于【{red_coin}千万】,进行强化+升级装备")
             # select_queue.put_queue('CheckRole')

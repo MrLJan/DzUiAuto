@@ -48,10 +48,12 @@ def catch_ex(func):
 
 
 class OtherTools:
-    def abspath(self, addpath):
+    @staticmethod
+    def abspath( addpath):
         return path + addpath
 
-    def imgpath(self, imgname):
+    @staticmethod
+    def imgpath(imgname):
         try:
             res_path = path + r'/res/img/' + imgname + '.bmp'
         except BaseException:

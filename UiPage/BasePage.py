@@ -1,17 +1,17 @@
 # -*- coding:utf-8 -*-
 import time
 
-from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG, BatEnumG
+from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG, BatEnumG, MulColorEnumG, WorldEnumG
 from Utils.ExceptionTools import NotInGameErr, FuHuoRoleErr
 from Utils.LoadConfig import LoadConfig
-from Utils.OpencvG import OpenCvTools, AirImgTools
+from Utils.MnqTools import MnqTools
+from Utils.OpencvG import ColorCvTools, DmImgTools
 
 
-class BasePageG(OpenCvTools, AirImgTools):
+class BasePageG(ColorCvTools, DmImgTools):
     def __init__(self):
-        super(OpenCvTools, self).__init__()
+        super(ColorCvTools, self).__init__()
         self.dev = None
-        self.serialno = None
         self.sn = None
         self.mnq_name = None
 
@@ -25,24 +25,19 @@ class BasePageG(OpenCvTools, AirImgTools):
     def start_game(self, wait_time=10):
         """启动游戏"""
         self.sn.log_tab.emit(self.mnq_name, r"启动游戏")
+        MnqTools().start_mnq_app(self.mnq_name, GlobalEnumG.GamePackgeName)
         # self.dev.app_start(GlobalEnumG.GamePackgeName,use_monkey=True)
-        self.dev.start_app(GlobalEnumG.GamePackgeName)
-        time.sleep(wait_time)
-
-    def key_event(self, key, wait_time=2):
-        self.dev.keyevent(key)
         time.sleep(wait_time)
 
     def back(self, wait_time=GlobalEnumG.BackWaitTime):
         self.sn.log_tab.emit(self.mnq_name, r"返回back")
-        self.dev.keyevent('back')
+        self.key_event('esc')
         time.sleep(wait_time)
 
     def stop_game(self):
         """关闭游戏"""
         self.sn.log_tab.emit(self.mnq_name, r"关闭游戏")
-        # self.dev.app_stop(GlobalEnumG.GamePackgeName)
-        self.dev.stop_app(GlobalEnumG.GamePackgeName)
+        MnqTools().stop_mnq_app(self.mnq_name, GlobalEnumG.GamePackgeName)
 
     def close_other_app(self):
         """关闭除游戏客户端外其他应用"""
@@ -55,14 +50,14 @@ class BasePageG(OpenCvTools, AirImgTools):
     def check_mulpic(self, pic_list, clicked=True):
         """检查多个图，找到其中1个则返回True"""
         for pic in pic_list:
-            if self.air_loop_find(pic, clicked):
+            if self.pic_find(pic, clicked):
                 return True
         return False
 
     def check_allpic(self, pic_list, clicked=True):
         """检查多个图，未找到其中1个则返回Flase"""
         for pic in pic_list:
-            if not self.crop_image_find(pic, clicked):
+            if not self.pic_find(pic, clicked):
                 return False
         return True
 
@@ -72,81 +67,92 @@ class BasePageG(OpenCvTools, AirImgTools):
             if time.time() - w_time > GlobalEnumG.SelectCtrTimeOut:
                 self.stop_game()
                 w_time = time.time()
-            elif self.crop_image_find(ImgEnumG.GAME_ICON, False):
+            elif self.pic_find(ImgEnumG.GAME_ICON, False):
                 raise NotInGameErr
-            elif self.get_rgb(RgbEnumG.EXIT_FOU, True):
+            elif self.cmp_rgb(RgbEnumG.EXIT_FOU, True):
                 return True
-            # elif self.get_rgb(RgbEnumG.EXIT_FOU, True, touch_wait=GlobalEnumG.ExitBtnTime) or self.get_rgb(
-            #         RgbEnumG.CLOSE_GAME, True, touch_wait=GlobalEnumG.ExitBtnTime):  # 退出游戏-否
-            elif self.find_info('ingame_flag2'):
+            elif self.word_find(WorldEnumG.SKIP,True):
+                pass
+            elif self.find_color(MulColorEnumG.IGAME):
                 return True
-            elif self.crop_image_find(ImgEnumG.CZ_FUHUO):
+            elif self.cmp_rgb(RgbEnumG.FUHUO_BTN):
+                if self.pic_find(ImgEnumG.CZ_FUHUO):
+                    raise FuHuoRoleErr
+            elif self.pic_find(ImgEnumG.CZ_FUHUO):
                 raise FuHuoRoleErr
-            elif self.crop_image_find(ImgEnumG.LOGIN_TIPS, False):
+            elif self.pic_find(ImgEnumG.LOGIN_TIPS, False):
                 raise NotInGameErr
-            elif self.find_info('coin_enum', True):
+            elif self.mul_color(MulColorEnumG.COIN_ENUM, True):
+                pass
+            elif self.net_err():
+                self.time_sleep(5)
                 pass
             else:
-                # self.get_rgb(RgbEnumG.HD_BJBS, True)
-                # self.get_rgb(RgbEnumG.QR, True)
-                # self.back_ksdy()
-                # self.get_rgb(RgbEnumG.MNDC_JG_QR, True)
-                # self.find_info('LB_close', True)
                 self.back()
 
     def check_err(self):
-        if self.air_loop_find(ImgEnumG.GAME_ICON, False):
+        if self.pic_find(ImgEnumG.GAME_ICON, False):
             raise NotInGameErr
-        if self.crop_image_find(ImgEnumG.CZ_FUHUO):
-            raise FuHuoRoleErr
-        if self.find_info('ingame_flag2'):
+        if self.cmp_rgb(RgbEnumG.FUHUO_BTN):
+            if self.pic_find(ImgEnumG.CZ_FUHUO):
+                raise FuHuoRoleErr
+        if self.find_color(MulColorEnumG.IGAME):
             return True
-        if self.find_info('game_login', True):
+        if self.mul_color(MulColorEnumG.GAME_START, True):
             return True
-        self.get_rgb(RgbEnumG.BAT_JG, True)
+        self.cmp_rgb(RgbEnumG.BAT_JG, True)
         self.back()
         return False
 
     def close_window(self):
         for i in range(10):
-            if self.air_loop_find(ImgEnumG.GAME_ICON, False):
+            if self.pic_find(ImgEnumG.GAME_ICON, False):
                 raise NotInGameErr
-            if self.crop_image_find(ImgEnumG.CZ_FUHUO):
-                raise FuHuoRoleErr
-            if self.find_info('ingame_flag2'):
+            if self.cmp_rgb(RgbEnumG.FUHUO_BTN):
+                if self.pic_find(ImgEnumG.CZ_FUHUO):
+                    raise FuHuoRoleErr
+            if self.find_color(MulColorEnumG.IGAME):
                 return True
-            self.air_loop_find(ImgEnumG.UI_CLOSE)
-            self.find_info('task_close', True)
-            self.find_info('LB_close', True)
-            self.air_loop_find(ImgEnumG.QD_1)
-            self.air_loop_find(ImgEnumG.UI_QR)
-            self.air_loop_find(ImgEnumG.LOGIN_TIPS)
+            self.pic_find(ImgEnumG.UI_CLOSE)
+            self.mul_color(MulColorEnumG.TASK_CLOSE, True)
+            self.pic_find(ImgEnumG.QD_1)
+            self.pic_find(ImgEnumG.UI_QR)
+            self.pic_find(ImgEnumG.LOGIN_TIPS)
             if i > 5:
-                while not self.find_info('ingame_flag2'):
-                    if self.find_info('task_arrow', True):
+                while not self.find_color(MulColorEnumG.IGAME):
+                    if self.word_find(WorldEnumG.TASK_ARROW, True, touch_wait=0):
                         pass
-                    self.air_loop_find(ImgEnumG.TASK_OVER, touch_wait=0)
-                    self.air_loop_find(ImgEnumG.TASK_START, touch_wait=0)
+                    self.pic_find(ImgEnumG.TASK_OVER, touch_wait=0)
+                    self.pic_find(ImgEnumG.TASK_START, touch_wait=0)
                     self.check_err()
         return False
 
+    def check_now_app(self):
+        now_app = MnqTools().check_now_runapp(self.mnq_name)
+        if now_app in ['com.nexon.maplem.global','com.google.android.gms']:
+            # self.sn.log_tab.emit(self.mnq_name, r"当前运行正常")
+            return True
+        else:
+            self.sn.log_tab.emit(self.mnq_name, f"游戏没有运行")
+            MnqTools().stop_mnq_app(self.mnq_name, now_app)
+            MnqTools().start_mnq_app(self.mnq_name, 'com.nexon.maplem.global')
+            return False
+
+
     def check_is_stop(self):
-        _COLOR = self.rgb(427, 656)
-        # if self.crop_image_find(ImgEnumG.MOVE_NOW, False):
-        _COLOR_1 = self.rgb(427, 656)
-        if _COLOR == _COLOR_1:
-            self.time_sleep(2)
-            _COLOR_1 = self.rgb(427, 656)
-            if _COLOR_1 == _COLOR:
-                return True
+        self.sn.log_tab.emit(self.mnq_name, r"检查界面是否卡住")
+        res = self.dev.IsDisplayDead(322, 611, 454, 694, 5)
+        res2 = self.dev.IsDisplayDead(384, 17, 608, 105, 5)
+        if res == 1 and res2 == 1:
+            return True
         return False
 
     def skip_fever_buff(self):
         s_time = time.time()
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.find_info('ingame_flag2'):
-                self.air_touch((857, 645))
-            elif self.get_rgb(RgbEnumG.FEVER_BUFF):
+            if self.find_color(MulColorEnumG.IGAME):
+                self.touch((857, 645))
+            elif self.cmp_rgb(RgbEnumG.FEVER_BUFF):
                 return True
             # elif self.ocr_find(ImgEnumG.SKIP_OCR, True):
             #     pass
@@ -158,28 +164,29 @@ class BasePageG(OpenCvTools, AirImgTools):
         s_time = time.time()
         _C_TIMES = 0
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.get_rgb(RgbEnumG.SKIP_NEW) or self.get_rgb(RgbEnumG.SKIP_NEW1):
-                self.air_touch((328, 369), touch_wait=0)
-                self.air_touch((469, 369), touch_wait=0)
-                self.air_touch((456, 369), touch_wait=0)
-                self.air_touch((625, 369), touch_wait=0)
-                self.air_touch((773, 369), touch_wait=0)
-                self.air_touch((655, 369), touch_wait=0)
-                self.air_touch((788, 369), touch_wait=0)
-                if not self.get_rgb(RgbEnumG.SKIP_BTN, True):
+            if self.cmp_rgb(RgbEnumG.SKIP_NEW) or self.cmp_rgb(RgbEnumG.SKIP_NEW1):
+                self.sn.log_tab.emit(self.mnq_name, r"关闭引导")
+                self.touch((328, 369), touch_wait=0)
+                self.touch((469, 369), touch_wait=0)
+                self.touch((456, 369), touch_wait=0)
+                self.touch((625, 369), touch_wait=0)
+                self.touch((773, 369), touch_wait=0)
+                self.touch((655, 369), touch_wait=0)
+                self.touch((788, 369), touch_wait=0)
+                if not self.cmp_rgb(RgbEnumG.SKIP_BTN, True):
                     if _C_TIMES > 10:
-                        self.get_rgb(RgbEnumG.SKIP_NEW, True)
+                        self.cmp_rgb(RgbEnumG.SKIP_NEW, True)
                     else:
                         _C_TIMES += 1
                 else:
                     _C_TIMES = 0
-            elif self.get_rgb(RgbEnumG.SKIP_BTN, True):
+            elif self.cmp_rgb(RgbEnumG.SKIP_BTN, True):
                 if _C_TIMES > 10:
-                    self.get_rgb(RgbEnumG.SKIP_NEW, True)
+                    self.cmp_rgb(RgbEnumG.SKIP_NEW, True)
                 else:
                     _C_TIMES += 1
-            elif self.find_info('ingame_flag2'):
-                if not self.crop_image_find(ImgEnumG.SKIP_NEW):
+            elif self.find_color(MulColorEnumG.IGAME):
+                if not self.pic_find(ImgEnumG.SKIP_NEW):
                     return True
             else:
                 self.check_close()
@@ -221,11 +228,8 @@ class BasePageG(OpenCvTools, AirImgTools):
         return kwargs
 
     def check_level_star(self):
-        if self.find_info('ingame_flag2'):
-            _level = self.check_num(0)
-            _star = self.check_num(1)
+        if self.find_color(MulColorEnumG.IGAME):
+            _level = self.check_num(4)
             self.sn.table_value.emit(self.mnq_name, 3, f"{_level}")
-            self.sn.table_value.emit(self.mnq_name, 4, f"{_star}")
             LoadConfig.writeconf(self.mnq_name, '等级', str(_level), ini_name=self.mnq_name)
-            LoadConfig.writeconf(self.mnq_name, '星力', str(_star), ini_name=self.mnq_name)
-            self.sn.log_tab.emit(self.mnq_name, f"等级:{_level}_星力:{_star}")
+            self.sn.log_tab.emit(self.mnq_name, f"等级:{_level}")

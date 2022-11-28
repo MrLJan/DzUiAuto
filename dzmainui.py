@@ -7,15 +7,13 @@ import time
 from PyQt5 import QtGui, QtWidgets, uic
 from PyQt5.QtGui import QTextCursor, QRegExpValidator
 from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, \
-    QTreeWidgetItem, QFileDialog
+    QTreeWidgetItem, QFileDialog, QListWidget
 from PyQt5.QtCore import Qt, QTimer, QRegExp
-# from airtest.core.android.touch_methods.base_touch import DownEvent, SleepEvent, UpEvent
 
-from cv2 import cv2
 from qt_material import apply_stylesheet
 from DzTest.DzModeMachine import switch_case, StateExecute, StateMachine, StateSelect, execute_transition, \
     select_transition
-# from Utils.ExceptionTools import StopTaskErr
+
 from Utils.ExceptionTools import StopTaskErr
 from Utils.LoadConfig import LoadConfig
 from Utils.MnqTools import MnqTools
@@ -23,7 +21,7 @@ from Utils.OtherTools import OT, catch_ex
 from Utils.QtSignals import QtSignals
 from Utils.QueueManageTools import QueueManage
 from Utils.ThreadTools import ThreadTools, check_mnq_thread
-from Utils.AdbUtils import PhoneDevives
+
 from Enum.ResEnum import GlobalEnumG
 from Utils.Devicesconnect import DevicesConnect
 
@@ -97,6 +95,7 @@ class DzUi:
         self.ui_main.save_setting_btn.clicked.connect(self.save_setting)
         self.ui_main.save_setting_btn_2.clicked.connect(self.save_setting)
         self.set_setting_label(self.ui_main.line_mnqpath, "路径", "模拟器路径")
+        self.set_combobox_text(self.ui_main.mode_choose_box, "路径", "绑定模式")
         self.set_lineedit_text(self.ui_main.start_mnq_index_edit, "全局配置", "启动模拟器序号")
         self.set_lineedit_text(self.ui_main.auto_time_edit, "全局配置", "离线时长")
         self.set_lineedit_text(self.ui_main.autobat_time_edit, "全局配置", "挂机卡时长")
@@ -164,9 +163,9 @@ class DzUi:
         self.set_meiri_time_box(self.ui_main.fenz_box, "全局配置", "固定每日时间", False)
         # dm 设置tablewidget
 
-        # self.ui_main.windows_pid.doubleClicked.connect(self.windows_click)
+        self.ui_main.windows_pid.doubleClicked.connect(self.windows_click)
         self.ui_main.windows_pid.itemClicked.connect(self.item_choose)
-        self.ui_main.windows_pid.setColumnCount(12)  # 设置列数
+        self.ui_main.windows_pid.setColumnCount(14)  # 设置列数
         self.ui_main.windows_pid.setColumnWidth(0, 80)
         self.ui_main.windows_pid.setColumnWidth(1, 100)
         self.ui_main.windows_pid.setColumnWidth(2, 100)
@@ -179,8 +178,13 @@ class DzUi:
         self.ui_main.windows_pid.setColumnWidth(9, 160)
         self.ui_main.windows_pid.setColumnWidth(10, 160)
         self.ui_main.windows_pid.setColumnWidth(11, 100)
+        self.ui_main.windows_pid.setColumnWidth(12, 50)
+        self.ui_main.windows_pid.setColumnWidth(13, 50)
         self.ui_main.windows_pid.setShowGrid(False)
 
+        self.set_list_widget()  # 清理道具list_widget
+        self.ui_main.add_list_btn.clicked.connect(self.add_list_item)
+        self.ui_main.remove_list_btn.clicked.connect(self.remove_list_item)
         # 重定向print输出信号
         self.sn = QtSignals()  # 初始化信号类
         sys.stdout = QtSignals(text_signal=self.console_output)
@@ -205,8 +209,6 @@ class DzUi:
         self.mnq_name_old_list = []  # 存储旧窗口名
         self.mnq_name_pop_list = []  # 存储需要删除的窗口
         self.mnq_name_flag = None
-        cv2.setNumThreads(1)
-        cv2.ocl.setUseOpenCL(False)
         self.dev_obj_list = {}  # 初始化每个模拟器的连接对象名
         self.dev_list = {}  # 存储连接成功后的dev
         self.mnq_thread_tid = {}  # 存储每个模拟器的线程tid
@@ -232,9 +234,42 @@ class DzUi:
         self.team_event_dic = self.get_team_event()
         self.team_queue_dic = self.get_team_queue()
 
-    @staticmethod
-    def sort_window():
-        MnqTools().sort_windows()
+    def sort_window(self):
+        row = self.ui_main.windows_pid.rowCount()
+        if not row == 0:
+            for i in range(row):
+                if i > 19:
+                    move_y = 410
+                    move_x = 10 + ((i - 20) * 150)
+                elif i > 14:
+                    move_y = 310
+                    move_x = 10 + ((i - 15) * 150)
+                elif i > 9:
+                    move_y = 210
+                    move_x = 10 + ((i - 10) * 150)
+                elif i > 4:
+                    move_y = 110
+                    move_x = 10 + ((i - 5) * 150)
+                else:
+                    move_y = 10
+                    move_x = 10 + (i * 150)
+                mnq_name = self.ui_main.windows_pid.item(i, 1).text()
+                hwnd = int(self.ui_main.windows_pid.item(i, 13).text())
+                dev = self.dev_obj_list[mnq_name]
+                dev.MoveWindow(hwnd, move_x, move_y)
+                dev.SetWindowState(hwnd, 1)  # 置顶窗口
+
+    def windows_click(self, Item):
+        row = Item.row()  # 获取行数
+        mnq_name = self.ui_main.windows_pid.item(row, 1).text()
+        dev = self.dev_obj_list[mnq_name]
+        hwnd = int(self.ui_main.windows_pid.item(row, 13).text())
+        self.ui_main.windows_pid.cellWidget(row, 0).setChecked(True)
+        dev.SetWindowState(hwnd, 1)
+
+    def item_choose(self, Item):
+        row = Item.row()  # 获取行数
+        self.ui_main.windows_pid.cellWidget(row, 0).setChecked(True)
 
     def set_mnq(self):
         _fps = self.ui_main.fps_edit.text()
@@ -360,10 +395,6 @@ class DzUi:
         set_path = OT.abspath('/res')
         os.startfile(set_path)
 
-    def item_choose(self, Item):
-        row = Item.row()  # 获取行数
-        self.ui_main.windows_pid.cellWidget(row, 0).setChecked(True)
-
     def set_setting_label(self, label_obj, data_section, data_name):
         data_text = LoadConfig.getconf(data_section, data_name)
         self.set_label_text(label_obj, data_text)
@@ -373,6 +404,18 @@ class DzUi:
             "<a style='color: red; text-decoration: none' href = http://www.huoniu.buzz>岛主24小时自助提卡网址,点击跳转")
         self.ui_main.label_21.setAlignment(Qt.AlignCenter)
         self.ui_main.label_21.setOpenExternalLinks(True)
+
+    @staticmethod
+    def set_bingmode(label_obj, data_section, data_name):
+        data_text = LoadConfig.getconf(data_section, data_name)
+        if data_text == '模式一':
+            label_obj.setCurrentIndex(0)
+        elif data_text == '模式二':
+            label_obj.setCurrentIndex(1)
+        elif data_text == '模式三':
+            label_obj.setCurrentIndex(2)
+        else:
+            label_obj.setCurrentIndex(0)
 
     @staticmethod
     def set_combobox_text(label_obj, data_section, data_name):
@@ -447,8 +490,26 @@ class DzUi:
         index_num = int(data_text) - 1
         label_obj.setCurrentIndex(index_num)
 
+    def get_list_widget_textlist(self):
+        """获取道具清理列表"""
+        rows = self.ui_main.dq_list_w2.count()
+        d_value = list(GlobalEnumG.Discard_ID.values())
+        dv_list = []
+        dv_str = ''
+        for dr in range(rows):
+            dr_text = self.ui_main.dq_list_w2.item(dr).text()
+            dv_list.append(str(d_value.index(dr_text)))
+        for ds in dv_list:
+            if dv_str != '':
+                dv_str = dv_str + ',' + ds
+            else:
+                dv_str = ds
+        return dv_str
+
     def save_setting(self):
         """保存设置界面设置，写入配置文件"""
+        dv_list = str(self.get_list_widget_textlist())  # 道具丢弃列表
+        bind_mode = self.ui_main.mode_choose_box.currentText()
         ld_mnq_path = self.ui_main.line_mnqpath.text()
         hp_levle = self.ui_main.hp_box.currentText()
         mp_levle = self.ui_main.mp_box.currentText()
@@ -518,6 +579,8 @@ class DzUi:
         jump_mode = '1' if self.ui_main.jump_mode_box.isChecked() else '0'
 
         LoadConfig.writeconf("路径", "模拟器路径", ld_mnq_path)
+        LoadConfig.writeconf("路径", "绑定模式", bind_mode)
+        LoadConfig.writeconf("全局配置", "清理道具", dv_list)
         LoadConfig.writeconf("全局配置", "扫地模式", saodi_mode)
         LoadConfig.writeconf("全局配置", "跳跃模式", jump_mode)
         LoadConfig.writeconf("全局配置", "HP等级", hp_levle)
@@ -604,7 +667,7 @@ class DzUi:
         tree_obj.setHeaderLabels(['任务', '备注'])
         root_item = QTreeWidgetItem(tree_obj)
         root_item.setText(0, '一键托管')
-        root_item.setText(1, '自动任务+星图+强化')
+        root_item.setText(1, '自动选择任务')
         # child31 = QTreeWidgetItem(tree_obj)
         # child31.setText(0, '自定义一')
         # child31.setText(1, '自定义任务顺序')
@@ -700,16 +763,19 @@ class DzUi:
         child21.setText(1, '默认使用罕见研磨材料')
         child14 = QTreeWidgetItem(child12)
         child14.setText(0, '装备技能')
-        child14.setText(1, '领取成长奖励,摆放技能')
+        child14.setText(1, '摆放技能')
         child15 = QTreeWidgetItem(child12)
         child15.setText(0, '穿戴新手宠物')
-        child15.setText(1, '仅限新手宠物摆放')
+        child15.setText(1, '仅限3种新手宠物摆放')
         child161 = QTreeWidgetItem(child12)
         child161.setText(0, '背包出售')
-        child161.setText(1, '出售/分解')
+        child161.setText(1, '出售+分解')
         child16 = QTreeWidgetItem(child12)
         child16.setText(0, '背包清理')
         child16.setText(1, '丢弃部分垃圾')
+        child17 = QTreeWidgetItem(child12)
+        child17.setText(0, '奖励领取')
+        child17.setText(1, '领取奖励,邮件')
 
         # child13 = QTreeWidgetItem(child12)
         # child13.setText(0, '装备技能')
@@ -737,6 +803,47 @@ class DzUi:
         else:
             self.set_label_text(self.ui_main.task_name_label, res.text(0))
             self.ui_main.task_name_label.setStyleSheet("color:red")
+
+    def add_list_item(self):
+        try:
+            res = self.ui_main.dq_list_w.currentItem().text()
+            self.ui_main.dq_list_w2.addItem(res)
+            self.ui_main.dq_list_w.removeItemWidget(self.ui_main.dq_list_w.currentItem())
+            self.ui_main.dq_list_w.takeItem(self.ui_main.dq_list_w.currentRow())
+        except Exception as e:
+            print('没有选中任何道具')
+
+    def remove_list_item(self):
+        try:
+            res = self.ui_main.dq_list_w2.currentItem().text()
+            self.ui_main.dq_list_w.addItem(res)
+            self.ui_main.dq_list_w2.removeItemWidget(self.ui_main.dq_list_w2.currentItem())
+            self.ui_main.dq_list_w2.takeItem(self.ui_main.dq_list_w2.currentRow())
+        except Exception as e:
+            print('没有选中任何道具')
+
+    def set_list_widget(self):
+        try:
+            d_list = LoadConfig.getconf('全局配置', '清理道具')
+            if d_list != '':
+                d_list = d_list.split(',')
+            else:
+                d_list = []
+            d_k_list = list(GlobalEnumG.Discard_ID.keys())
+            d_name_list = []
+            d2_name_list = []
+            for d2_id in d_list:
+                dis_name = GlobalEnumG.Discard_ID[d2_id]
+                d2_name_list.append(dis_name)
+                d_k_list.pop(d_k_list.index(d2_id))
+            for d_id in d_k_list:
+                dis_name = GlobalEnumG.Discard_ID[d_id]
+                d_name_list.append(dis_name)
+            if len(d2_name_list) != 0:
+                self.ui_main.dq_list_w2.addItems(d2_name_list)
+            self.ui_main.dq_list_w.addItems(d_name_list)
+        except Exception as e:
+            print(e, '配置清理道具id错误')
 
     @staticmethod
     def set_tableitem_center(item):
@@ -804,24 +911,30 @@ class DzUi:
                 mnq_index = str(self.ui_main.windows_pid.cellWidget(row_num, 0).text())
                 mnq_name = self.ui_main.windows_pid.item(row_num, 1).text()
                 task_name = self.ui_main.windows_pid.item(row_num, 2).text()
-                # serialno = self.dev_obj_list[mnq_name]
-
-                # if serialno is None:
-                #     self.get_messagebox("错误", f"模拟器{mnq_name}未启动或模拟器名称异常")
-                # else:
-                if task_name == "":
-                    self.get_messagebox("错误", f"模拟器:[{mnq_name}]未设置执行任务")
+                sub_hwnd = self.ui_main.windows_pid.item(row_num, 12).text()
+                pid_now, hwnd_now, subhwnd_now = MnqTools().check_ld_hwnd_subhwnd(str(mnq_index))
+                if pid_now == 0 or hwnd_now == 0 or subhwnd_now == 0:
+                    self.get_messagebox("错误", f"模拟器{mnq_name}未启动或模拟器名称异常")
                 else:
-                    if len(self.mnq_thread_tid[mnq_name]) == 0:
-                        self.start_btn_dic[mnq_name].setEnabled(False)
-
-                        def run():
-                            self._do_task_list([mnq_name])
-
-                        ThreadTools('', run).start()
-                        self.stop_btn_dic[mnq_name].setEnabled(True)
+                    if sub_hwnd != subhwnd_now:
+                        if hwnd_now == 0:
+                            self.get_messagebox("错误", f"等待模拟器{mnq_name}启动完成")
+                        else:
+                            self.sn.table_value.emit(mnq_name, 12, str(subhwnd_now))
+                            self.sn.table_value.emit(mnq_name, 13, str(hwnd_now))
+                    if task_name == "":
+                        self.get_messagebox("错误", f"模拟器:[{mnq_name}]未设置执行任务")
                     else:
-                        self.get_messagebox("错误", f"模拟器:[{mnq_name}]之前的任务还在停止中,等待几秒后重试")
+                        if len(self.mnq_thread_tid[mnq_name]) == 0:
+                            self.start_btn_dic[mnq_name].setEnabled(False)
+
+                            def run():
+                                self._do_task_list([mnq_name])
+
+                            ThreadTools('', run).start()
+                            self.stop_btn_dic[mnq_name].setEnabled(True)
+                        else:
+                            self.get_messagebox("错误", f"模拟器:[{mnq_name}]之前的任务还在停止中,等待几秒后重试")
         except Exception as e:
             print(e)
 
@@ -829,24 +942,27 @@ class DzUi:
         """列表停止按钮点击事件"""
 
         def _stop():
-            try:
-                dev.touch_proxy.uninstall()
-                dev.adb.disconnect()  # 断开tcp连接
-            except (NotImplementedError, TypeError):
-                pass
+            dev_close.KeyDownChar('up')
+            dev_close.KeyDownChar('down')
+            dev_close.KeyDownChar('left')
+            dev_close.KeyDownChar('right')
+            time.sleep(0.05)
+            dev_close.KeyUpChar('up')
+            dev_close.KeyUpChar('down')
+            dev_close.KeyUpChar('left')
+            dev_close.KeyUpChar('right')
             ThreadTools.stop_thread_list(mnq_thread_list)  # 利用tid关闭线程
             mnq_thread_list.clear()
+            dev_close.UnBindWindow()  # 解除绑定
 
         button = self.ui_main.windows_pid.sender()
         if button:  # 确定位置
             row_num = self.ui_main.windows_pid.indexAt(button.parent().pos()).row()
             mnq_name = self.ui_main.windows_pid.item(row_num, 1).text()
-            dev = self.dev_list[mnq_name]
+            dev_close = self.dev_list[mnq_name]
             mnq_thread_list = self.mnq_thread_tid[mnq_name]
-            # if :
             if not ThreadTools.is_threadname('停止任务', mnq_thread_list):
                 if len(mnq_thread_list) > 0:
-                    # dm_obj = self.dev_obj_list[mnq_name][0]
                     self.stop_btn_dic[mnq_name].setEnabled(False)
                     t1 = ThreadTools(f'{mnq_name}停止', _stop)
                     t1.start()
@@ -876,7 +992,7 @@ class DzUi:
             edit.setTextCursor(cursor)
             edit.ensureCursorVisible()
 
-    def _stop_task(self, name_list,err_stop=False):
+    def _stop_task(self, name_list, err_stop=False):
 
         def stop_thread():
             for mnq_name in name_list:
@@ -885,28 +1001,35 @@ class DzUi:
                 if len(mnq_thread_list) != 0:
                     ThreadTools.stop_thread_list(mnq_thread_list)  # 利用tid关闭线程
                     mnq_thread_list.clear()
-                    dev = self.dev_list[mnq_name]
-                    try:
-                        self.sn.table_value.emit(mnq_name, 7, "")
-                        self.stop_btn_dic[mnq_name].setEnabled(False)
-                        self.start_btn_dic[mnq_name].setEnabled(True)
-                        if not err_stop:
-                            dev.touch_proxy.uninstall()
-                            dev.adb.disconnect()  # 断开tcp连接
-                    finally:
-                        pass
-                    # if close_mnq:
-                    #     self.ui_main.windows_pid.removeRow(self.mnq_rownum_dic[mnq_name])  # 移除模拟器
-                    #     MnqTools().quit_mnq_index(mnq_index)
+                    dev_close = self.dev_list[mnq_name]
+                    dev_close.KeyDownChar('up')
+                    dev_close.KeyDownChar('down')
+                    dev_close.KeyDownChar('left')
+                    dev_close.KeyDownChar('right')
+                    time.sleep(0.05)
+                    dev_close.KeyUpChar('up')
+                    dev_close.KeyUpChar('down')
+                    dev_close.KeyUpChar('left')
+                    dev_close.KeyUpChar('right')
+                    if not err_stop:
+                        dev_close.UnBindWindow()
+                    self.sn.table_value.emit(mnq_name, 7, "")
+                    self.stop_btn_dic[mnq_name].setEnabled(False)
+                    self.start_btn_dic[mnq_name].setEnabled(True)
             return True
+
         if err_stop:
             mnq_thread_list = self.mnq_thread_tid[name_list[-1]]
             if not ThreadTools.is_threadname('停止任务', mnq_thread_list):
-                stop=ThreadTools("停止任务", stop_thread)
+                stop = ThreadTools("停止任务", stop_thread)
                 stop.start()
         else:
             stop = ThreadTools("停止任务", stop_thread)
             stop.start()
+
+    @staticmethod
+    def init_dm(dm_obj, sub_hwnd):
+        DevicesConnect.bind_windows(dm_obj, sub_hwnd)
 
     def _do_task_list(self, name_list, message=True):
         """启动任务"""
@@ -920,26 +1043,27 @@ class DzUi:
                 self.get_messagebox("错误", f"模拟器信息异常,启动失败{e}")
                 return False
             task_name = self.ui_main.windows_pid.item(row_num, 2).text()
-            # mnq_index = int(self.ui_main.windows_pid.cellWidget(row_num, 0).text())
+            dm_obj = self.dev_obj_list[mnq_name]
+            sub_hwnd = int(self.ui_main.windows_pid.item(row_num, 12).text())
             if task_name == "":
                 if message:
                     self.get_messagebox("错误", f"模拟器:[{mnq_name}]未设置执行任务")
                 return False
             else:
-                devname = self.dev_obj_list[mnq_name][0]  # devname 设备名,mnq_name是标题名
-                try:
-                    res, dev = DevicesConnect(devname, mnq_name, self.sn).connect_device()
-                    self.dev_list[mnq_name] = dev  # dev是连接成功后的设备对象
-                    devinfo = (dev, devname)
-                except:
-                    res = False
-                    devinfo = []
-                if not res:
-                    self.get_messagebox("错误", f"模拟器:[{mnq_name}]连接失败_检查adb")
-                    self.start_btn_dic[mnq_name].setEnabled(True)
-                    self.stop_btn_dic[mnq_name].setEnabled(False)
-                    mnq_thread_list.clear()
-                    return False
+                # devname = self.dev_obj_list[mnq_name][0]  # devname 设备名,mnq_name是标题名
+                # try:
+                ThreadTools("初始化", self.init_dm, args=(dm_obj, sub_hwnd)).start()
+                self.dev_list[mnq_name] = dm_obj  # dev是连接成功后的设备对象
+                devinfo = (dm_obj, mnq_name)
+                # except:
+                # res = False
+                # devinfo = []
+                # if not res:
+                #     self.get_messagebox("错误", f"模拟器:[{mnq_name}]连接失败_检查adb")
+                #     self.start_btn_dic[mnq_name].setEnabled(True)
+                #     self.stop_btn_dic[mnq_name].setEnabled(False)
+                #     mnq_thread_list.clear()
+                #     return False
                 # self.dev_list[mnq_name] = dev  # dev是连接成功后的设备对象
                 mnq_name = self.ui_main.windows_pid.item(row_num, 1).text()
                 _time = time.time()
@@ -949,7 +1073,7 @@ class DzUi:
                 self.sn.table_value.emit(mnq_name, 10, login_time)  # 最近登录时间
                 self.sn.table_value.emit(mnq_name, 11, '0')  # 闪退次数
                 self.sn.log_tab.emit(mnq_name, '------启动任务------')
-                taskdic = self.task_dic(devinfo, mnq_name, task_name, mnq_thread_list)
+                taskdic = self.task_dic(devinfo, task_name, mnq_thread_list)
                 StateMachine(taskdic['执行器'], GlobalEnumG.ExecuteStates, execute_transition, "Wait")
                 StateMachine(taskdic['选择器'], GlobalEnumG.SelectStates, select_transition, "Check")
                 try:
@@ -957,11 +1081,19 @@ class DzUi:
                                      switch_case(self.sn, **taskdic).do_case, thread_while=True)
                 except StopTaskErr:
                     self.sn.log_tab.emit(self.mnq_name, f"模拟器adb连接异常断开,停止任务")
-                    self.sn.stoptask.emit([self.mnq_name],True)
+                    self.sn.stoptask.emit([self.mnq_name], True)
                 except (Exception, TypeError):
-                    dev_colse = self.dev_list[mnq_name]
-                    dev_colse.touch_proxy.uninstall()
-                    dev_colse.adb.disconnect()  # 断开tcp连接
+                    dev_close = self.dev_list[mnq_name]
+                    dev_close.KeyDownChar('up')
+                    dev_close.KeyDownChar('down')
+                    dev_close.KeyDownChar('left')
+                    dev_close.KeyDownChar('right')
+                    time.sleep(0.05)
+                    dev_close.KeyUpChar('up')
+                    dev_close.KeyUpChar('down')
+                    dev_close.KeyUpChar('left')
+                    dev_close.KeyUpChar('right')
+                    dev_close.UnBindWindow()  # 解除绑定
                     ThreadTools.stop_thread_list(mnq_thread_list)
                     mnq_thread_list.clear()
                     self._do_task_list([mnq_name])
@@ -970,62 +1102,34 @@ class DzUi:
         """重启任务"""
 
         def stop():
-            # turn_pos = {'up': (146, 471),
-            #             'down': (144, 629),
-            #             'left': (79, 543),
-            #             'right': (239, 544),
-            #             'jump': (1207, 624),
-            #             'attack': (1074, 619),
-            #             'c': (948, 659),
-            #             'v': (958, 559),
-            #             'd': (1054, 501),
-            #             'f': (1148, 505)}
-            # multitouch_event = [
-            #     DownEvent(turn_pos['up'], 0),
-            #     DownEvent(turn_pos['down'], 1),
-            #     DownEvent(turn_pos['left'], 2),
-            #     DownEvent(turn_pos['right'], 3),
-            #     DownEvent(turn_pos['jump'], 4),
-            #     DownEvent(turn_pos['attack'], 5),
-            #     DownEvent(turn_pos['c'], 6),
-            #     DownEvent(turn_pos['v'], 7),
-            #     DownEvent(turn_pos['d'], 8),
-            #     DownEvent(turn_pos['f'], 9),
-            #     SleepEvent(0.1),
-            #     UpEvent(0),
-            #     UpEvent(1),
-            #     UpEvent(2),
-            #     UpEvent(3),
-            #     UpEvent(4),
-            #     UpEvent(5),
-            #     UpEvent(6),
-            #     UpEvent(7),
-            #     UpEvent(8),
-            #     UpEvent(9)]
-            try:
-                dev.adb.disconnect()  # 断开tcp连接
-            except (NotImplementedError, ConnectionResetError, ConnectionAbortedError, TypeError):
-                pass
+            dev_close = self.dev_list[mnq_name]
+            dev_close.KeyDownChar('up')
+            dev_close.KeyDownChar('down')
+            dev_close.KeyDownChar('left')
+            dev_close.KeyDownChar('right')
+            time.sleep(0.05)
+            dev_close.KeyUpChar('up')
+            dev_close.KeyUpChar('down')
+            dev_close.KeyUpChar('left')
+            dev_close.KeyUpChar('right')
             ThreadTools.stop_thread_list(mnq_thread_list)
             mnq_thread_list.clear()
 
-        dev = self.dev_list[mnq_name]
-        dev.touch_proxy.uninstall()
-        # index_list = [self.mnq_rownum_dic[mnq_name]['index']]
+        dev_colse = self.dev_list[mnq_name]
+        dev_colse.UnBindWindow()  # 解除绑定
         ThreadTools('Restart', stop).start()
         self._do_task_list([mnq_name])
 
-    def task_dic(self, devinfo, mnq_name, task_name, mnq_thread_list):
-        execute = StateExecute(devinfo, mnq_name, self.sn)
-        select = StateSelect(devinfo, mnq_name, self.sn)
+    def task_dic(self, devinfo, task_name, mnq_thread_list):
+        execute = StateExecute(devinfo, self.sn)
+        select = StateSelect(devinfo, self.sn)
         taskdic = {
             '执行器': execute,
             '选择器': select,
-            '机器名': mnq_name,
-            '设备名': devinfo[-1],
+            '机器名': devinfo[-1],
             '线程列表': mnq_thread_list,
             '任务名': task_name,
-            '位置信息': self.mnq_rownum_dic[mnq_name],
+            '位置信息': self.mnq_rownum_dic[devinfo[-1]],
             '队列': {
                 '执行器任务队列': QueueManage(1),
                 '选择器任务队列': QueueManage(10, lifo=True),
@@ -1043,13 +1147,14 @@ class DzUi:
         """获取设备信息"""
 
         def ldconsole_find_dev():
-            mnq_index_list, mnq_name_list, mnq_devname_list = MnqTools().get_mnq_list()
+            mnq_index_list, mnq_name_list, mnq_subhwnd_list, mnq_hwnd_list = MnqTools().get_mnq_list()
             # print(mnq_index_list, mnq_name_list, mnq_devname_list)
-            self.sn.windows_pid.emit(self.ui_main.windows_pid, mnq_index_list, mnq_name_list, mnq_devname_list)
+            self.sn.windows_pid.emit(self.ui_main.windows_pid, mnq_index_list,
+                                     mnq_name_list, mnq_subhwnd_list, mnq_hwnd_list)
 
-        def phone_devices():
-            devindex_list, pinfo_list, dev_name_list = PhoneDevives().get_devices()
-            self.sn.windows_pid.emit(self.ui_main.windows_pid, devindex_list, pinfo_list, dev_name_list)
+        # def phone_devices():
+        #     devindex_list, pinfo_list, dev_name_list = PhoneDevives().get_devices()
+        #     self.sn.windows_pid.emit(self.ui_main.windows_pid, devindex_list, pinfo_list, dev_name_list)
 
         try:
             if self.ui_main.get_windows.isEnabled():
@@ -1061,7 +1166,7 @@ class DzUi:
             print(e)
 
     @catch_ex
-    def set_windows_pid(self, table_object, index_list, pinfo_list, devname_list):
+    def set_windows_pid(self, table_object, index_list, pinfo_list, subhwnd_list, hwnd_list):
         """
         设置窗口标题，句柄，pid,设备名
         组件名：windows_pid
@@ -1122,7 +1227,8 @@ class DzUi:
             table_object.setItem(i, 10, self.set_tableitem_center(
                 time.strftime('%m-%d %H:%M:%S', time.localtime(float(_time)))))  # 最近登录时间
             table_object.setItem(i, 11, self.set_tableitem_center('0'))  # 闪退次数
-
+            table_object.setItem(i, 12, self.set_tableitem_center(subhwnd_list[i]))  # 子句柄
+            table_object.setItem(i, 13, self.set_tableitem_center(hwnd_list[i]))  # 窗口句柄
             if pinfo_list[i] in self.mnq_thread_tid.keys():
                 if len(self.mnq_thread_tid[pinfo_list[i]]) != 0:
                     start_btn.setEnabled(False)
@@ -1141,25 +1247,22 @@ class DzUi:
             if pinfo_list[i] in self.log_tab_dic.keys():
                 pass
             else:
-                # try:
                 wd = QtWidgets.QWidget()
                 ed = QtWidgets.QTextEdit()
                 ed.setReadOnly(True)
+                ed.document().setMaximumBlockCount(100)
                 layout = QVBoxLayout()
                 layout.addWidget(ed)
                 self.log_tab_dic[pinfo_list[i]] = ed
                 wd.setLayout(layout)
                 self.ui_main.log_tab_wid.insertTab(i, wd, f"窗口{index_list[i]}")
-                # except BaseException as e:
-                #     # DTools.error_log(e)
-                #     print(e)
         if len(self.dev_obj_list) > 0:
             for i in range(num):
                 if not pinfo_list[i] in self.dev_obj_list.keys():
-                    self.dev_obj_list[pinfo_list[i]] = [devname_list[i]]
+                    self.dev_obj_list[pinfo_list[i]] = DevicesConnect.dm_init()
         else:
             for i in range(num):
-                self.dev_obj_list[pinfo_list[i]] = [devname_list[i]]  # 初始化多个链接对象,线程列表
+                self.dev_obj_list[pinfo_list[i]] = DevicesConnect.dm_init()  # 初始化多个链接对象,线程列表
         # if not self.mnq_thread_tid:
         if len(self.mnq_thread_tid) > 0:
             keys = self.mnq_thread_tid.keys()
@@ -1169,8 +1272,10 @@ class DzUi:
         else:
             for i in range(num):
                 self.mnq_thread_tid[pinfo_list[i]] = []
-        table_object.setColumnHidden(10, True)
+        table_object.setColumnHidden(10, True)  # 隐藏10-13列
         table_object.setColumnHidden(11, True)
+        table_object.setColumnHidden(12, True)
+        table_object.setColumnHidden(13, True)
         pop.clear()
         old.clear()
         new.clear()

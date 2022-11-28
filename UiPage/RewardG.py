@@ -2,19 +2,16 @@
 
 import time
 
-from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG
+from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG, MulColorEnumG, WorldEnumG
 from UiPage.BasePage import BasePageG
 from Utils.ExceptionTools import ControlTimeOut
-from Utils.LoadConfig import LoadConfig
 
 
 class RewardG(BasePageG):
-    def __init__(self, devinfo, mnq_name, sn):
+    def __init__(self, devinfo, sn):
         super(RewardG, self).__init__()
-        self.dev = devinfo[0]
-        self.serialno = devinfo[-1]
+        self.dev, self.mnq_name = devinfo
         self.sn = sn
-        self.mnq_name = mnq_name
 
     def get_reward(self, **kwargs):
         self.sn.table_value.emit(self.mnq_name, 8, r"领取奖励")
@@ -48,7 +45,7 @@ class RewardG(BasePageG):
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if _GET and _MAIL:
                 for i in range(3):
-                    self.get_rgb([737, 395, '617A'], True)  # 穿戴装备
+                    self.cmp_rgb([737, 395, '617A'], True)  # 穿戴装备
                     # self.ocr_find(ImgEnumG.TASK_ZB, touch_wait=2)
                 self.get_equip()
                 select_queue.task_over('GetLevelReard')
@@ -71,34 +68,36 @@ class RewardG(BasePageG):
         _WQ = False
         _FJ = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.find_info('ingame_flag2'):
+            if self.find_color(MulColorEnumG.IGAME):
                 if _WQ and _FJ:
                     self.back()
                     return True
-                elif self.get_rgb([720, 395, '617'], True):
+                elif self.cmp_rgb([720, 395, '617'], True):
                     pass
                 else:
-                    self.air_touch((1170, 39), touch_wait=2)
-            elif self.find_info('coin_enum', True):
+                    self.touch((1170, 39), touch_wait=2)
+            elif self.mul_color(MulColorEnumG.COIN_ENUM, True):
                 pass
-            elif self.get_rgb(RgbEnumG.ZB_XQ):
-                self.get_rgb(RgbEnumG.ZB_JD, True)  # 鉴定
-                self.get_rgb(RgbEnumG.ZB_JDQR, True)  # 鉴定确认
-                self.get_rgb(RgbEnumG.ZB_CD, True)  # 穿戴
-            elif self.get_rgb(RgbEnumG.QR, True):
+            elif self.cmp_rgb(RgbEnumG.ZB_XQ):
+                self.cmp_rgb(RgbEnumG.ZB_JD, True)  # 鉴定
+                self.cmp_rgb(RgbEnumG.ZB_JDQR, True)  # 鉴定确认
+                self.cmp_rgb(RgbEnumG.ZB_CD, True)  # 穿戴
+            elif self.cmp_rgb(RgbEnumG.QR, True):
                 pass
-            elif self.crop_image_find(ImgEnumG.ZB_TS, touch_wait=2):
+            elif self.cmp_rgb(RgbEnumG.ZB_JDQR, True):  # 鉴定确认
                 pass
-            elif self.get_rgb(RgbEnumG.BAG_M):
+            elif self.mul_color(MulColorEnumG.ZB_TS, True, touch_wait=2):
+                pass
+            elif self.cmp_rgb(RgbEnumG.BAG_M):
                 self.time_sleep(2)
-                if not self.air_loop_find(ImgEnumG.ZB_TS, touch_wait=2):
+                if not self.mul_color(MulColorEnumG.ZB_TS, True, touch_wait=2):
                     if not _WQ:
-                        self.air_touch((780, 127), touch_wait=2)
-                        self.sn.log_tab.emit(self.mnq_name, f"穿戴装备-武器完成")
+                        self.touch((780, 127), touch_wait=2)
+                        self.sn.log_tab.emit(self.mnq_name, f"穿戴装备-武器")
                         _WQ = True
                     elif not _FJ:
-                        self.air_touch((868, 125), touch_wait=2)
-                        self.sn.log_tab.emit(self.mnq_name, f"穿戴装备-防具完成")
+                        self.touch((868, 125), touch_wait=2)
+                        self.sn.log_tab.emit(self.mnq_name, f"穿戴装备-防具")
                         _FJ = True
                     elif _WQ and _FJ:
                         self.back()
@@ -115,30 +114,30 @@ class RewardG(BasePageG):
         _G = False  # 公共
         _O = False  # 个人
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
-            if self.find_info('ingame_flag2'):
-                self.air_touch((995,41),touch_wait=3)
-                # self.crop_image_find(ImgEnumG.MAIL_RQ)
-            elif self.get_rgb(RgbEnumG.MAIL_M):
+            if self.find_color(MulColorEnumG.IGAME):
+                self.touch((995, 41), touch_wait=3)
+                # self.pic_find(ImgEnumG.MAIL_RQ)
+            elif self.cmp_rgb(RgbEnumG.MAIL_M):
                 if _G and _O:
                     self.sn.log_tab.emit(self.mnq_name, f"邮件领取-完成")
                     self.back()
                     return True
-                self.air_loop_find(ImgEnumG.UI_QBLQ)
-                self.get_rgb(RgbEnumG.MAIL_LQ, True)
-                self.crop_image_find(ImgEnumG.UI_QR)
-                if self.get_rgb(RgbEnumG.MAIL_LQ_F):
+                self.pic_find(ImgEnumG.UI_QBLQ)
+                self.cmp_rgb(RgbEnumG.MAIL_LQ, True)
+                self.pic_find(ImgEnumG.UI_QR)
+                if self.cmp_rgb(RgbEnumG.MAIL_LQ_F):
                     _G = True
-                    if self.get_rgb(RgbEnumG.MAIL_GR):
-                        if self.get_rgb(RgbEnumG.MAIL_LQ_F):
+                    if self.cmp_rgb(RgbEnumG.MAIL_GR):
+                        if self.cmp_rgb(RgbEnumG.MAIL_LQ_F):
                             _O = True
                     else:
-                        self.get_rgb(RgbEnumG.MAIL_GR_F, True)
-                        self.air_touch((922, 160))
-            elif self.air_loop_find(ImgEnumG.UI_QR):
+                        self.cmp_rgb(RgbEnumG.MAIL_GR_F, True)
+                        self.touch((922, 160))
+            elif self.pic_find(ImgEnumG.UI_QR):
                 pass
-            elif self.crop_image_find(ImgEnumG.UI_QBLQ):
+            elif self.pic_find(ImgEnumG.UI_QBLQ):
                 pass
-            elif self.qr_or_qx(1):
+            elif self.qr_tip():
                 self.time_sleep(2)
             else:
                 self.check_err()
@@ -151,54 +150,54 @@ class RewardG(BasePageG):
         self.sn.log_tab.emit(self.mnq_name, f"领取课题奖励")
         _C_OVER = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.find_info('ingame_flag2'):
-                self.find_info('ui_enum', True)
-            elif self.find_info('ui_set'):  # 菜单界面
+            if self.find_color(MulColorEnumG.IGAME):
+                self.cmp_rgb(RgbEnumG.ENUM_BTN, True)
+            elif self.word_find(WorldEnumG.SET_BTN):  # 菜单界面
                 # self.ocr_find(ImgEnumG.KT_MENU, True)
-                self.enum_find('kt', True)
-            elif self.get_rgb(RgbEnumG.KT_M):
+                self.enum_find('课题', True)
+            elif self.cmp_rgb(RgbEnumG.KT_M):
                 if _C_OVER:
                     self.sn.log_tab.emit(self.mnq_name, f"领取课题奖励-完成")
                     self.back()
                     return True
-                if self.get_rgb(RgbEnumG.KT_MRRW):  # 每日任务
+                if self.cmp_rgb(RgbEnumG.KT_MRRW):  # 每日任务
                     self.sn.log_tab.emit(self.mnq_name, f"领取-每日任务奖励")
-                    if self.get_rgb(RgbEnumG.KT_F, False):
-                        self.air_touch((48, 207), touch_wait=1)
+                    if self.cmp_rgb(RgbEnumG.KT_F, False):
+                        self.touch((48, 207), touch_wait=3)
                     else:
-                        self.air_touch((1119, 650), touch_wait=1)
+                        self.touch((1119, 650), touch_wait=3)
                         # self.ocr_find(ImgEnumG.KT_MZRW_OCR, True)
-                elif self.get_rgb(RgbEnumG.KT_MZRW):  # 每周任务
+                elif self.cmp_rgb(RgbEnumG.KT_MZRW):  # 每周任务
                     self.sn.log_tab.emit(self.mnq_name, f"领取-每周任务奖励")
-                    if self.get_rgb(RgbEnumG.KT_F):
-                        self.air_touch((169, 309))
+                    if self.cmp_rgb(RgbEnumG.KT_F):
+                        self.touch((169, 309), touch_wait=3)
                     else:
-                        self.air_touch((1120, 652))
+                        self.touch((1120, 652), touch_wait=3)
                         # self.ocr_find(ImgEnumG.KT_MRSL_OCR, True)
-                elif self.get_rgb(RgbEnumG.KT_MRSL):  # 每日狩猎
+                elif self.cmp_rgb(RgbEnumG.KT_MRSL):  # 每日狩猎
                     self.sn.log_tab.emit(self.mnq_name, f"领取-每日狩猎奖励")
-                    if self.get_rgb(RgbEnumG.KT_F):
-                        self.air_touch((155, 490))
+                    if self.cmp_rgb(RgbEnumG.KT_F):
+                        self.touch((155, 490), touch_wait=3)
                     else:
-                        self.air_touch((1109, 641))
+                        self.touch((1109, 641), touch_wait=3)
                         # self.ocr_find(ImgEnumG.KT_CJ_OCR, True)
-                elif self.get_rgb(RgbEnumG.KT_CJ):  # 成就
+                elif self.cmp_rgb(RgbEnumG.KT_CJ):  # 成就
                     self.sn.log_tab.emit(self.mnq_name, f"领取-成就奖励")
-                    if self.get_rgb(RgbEnumG.KT_F):
+                    if self.cmp_rgb(RgbEnumG.KT_F):
                         _C_OVER = True
                     else:
-                        self.air_touch((1107, 644))
-            elif self.air_loop_find(ImgEnumG.KT_QBLQ):
-                self.air_loop_find(ImgEnumG.UI_QR)
-            elif self.air_loop_find(ImgEnumG.UI_QR):
+                        self.touch((1107, 644), touch_wait=3)
+            elif self.pic_find(ImgEnumG.KT_QBLQ):
+                self.pic_find(ImgEnumG.UI_QR)
+            elif self.pic_find(ImgEnumG.UI_QR):
                 pass
-            elif self.get_rgb([687, 524, 'EE7047']):
-                pass
-            elif self.qr_or_qx(1):
-                pass
+            elif self.cmp_rgb([687, 524, 'ee7046']):
+                self.time_sleep(2)
+            elif self.qr_tip():
+                self.time_sleep(2)
             else:
                 self.check_err()
-        if self.find_info('ingame_flag2'):
+        if self.find_color(MulColorEnumG.IGAME):
             return True
         return False
 
@@ -209,40 +208,38 @@ class RewardG(BasePageG):
         _IN_DLJL = False
         _IN_XX = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.find_info('ingame_flag2'):
-                self.find_info('ui_enum', True)
-                self.time_sleep(GlobalEnumG.TouchWaitTime)
-            elif self.find_info('ui_set'):  # 菜单界面
-                # self.ocr_find(ImgEnumG.HD_MENU, True)
-                self.enum_find('hd', True)
-            elif self.get_rgb(RgbEnumG.HD_M):
+            if self.find_color(MulColorEnumG.IGAME):
+                self.cmp_rgb(RgbEnumG.ENUM_BTN, True)
+            elif self.word_find(WorldEnumG.SET_BTN):
+                self.enum_find('活动', True)  # 菜单界面
+            elif self.cmp_rgb(RgbEnumG.HD_M):
                 self.time_sleep(GlobalEnumG.TouchWaitTime)
                 if not _LOGIN:
-                    if self.find_info('hd_dljl', True):
+                    if self.word_find(WorldEnumG.LOGIN_REWARD, True):
                         self.sn.log_tab.emit(self.mnq_name, f"领取登录奖励")
                         _IN_DLJL = True
                         self.time_sleep(GlobalEnumG.TouchWaitTime)
                 if _IN_DLJL:
-                    if not self.get_rgb(RgbEnumG.RE_LQJL, True):  # 领取奖励:
-                        if self.find_info('hd_xxjl', True):
+                    if not self.cmp_rgb(RgbEnumG.RE_LQJL, True):  # 领取奖励:
+                        if self.word_find(WorldEnumG.SLEEP_REWARD, True):
                             self.sn.log_tab.emit(self.mnq_name, f"领取休息奖励")
                             _IN_XX = True
                             _IN_DLJL = False
                             _LOGIN = True
                 if _IN_XX:
                     self.time_sleep(GlobalEnumG.TouchWaitTime)
-                    if not self.get_rgb(RgbEnumG.RE_LQJL1, True):  # 领取奖励
+                    if not self.cmp_rgb(RgbEnumG.RE_LQJL1, True):  # 领取奖励
                         self.back()
                         self.back()
                         break
                 else:
-                    self.air_swipe((112, 621), (112, 256), swipe_wait=1)
-            elif self.qr_or_qx(1):
+                    self.dm_swipe((112, 621), (112, 256), swipe_wait=1)
+            elif self.qr_tip():
                 pass
             else:
                 self.time_sleep(GlobalEnumG.TouchWaitTime)
                 self.check_err()
-        if self.find_info('ingame_flag2'):
+        if self.find_color(MulColorEnumG.IGAME):
             return True
         return False
 
@@ -251,24 +248,24 @@ class RewardG(BasePageG):
         self.sn.log_tab.emit(self.mnq_name, f"领取成长奖励")
         _FIND_TIMES = 0
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
-            if self.find_info('ingame_flag2'):
+            if self.find_color(MulColorEnumG.IGAME):
                 if _FIND_TIMES > 3:
                     return True
                 # if not self.find_info('czjl',True):
-                if not self.crop_image_find(ImgEnumG.CZJL_ICON, touch_wait=3):
-                    self.air_touch((38, 149), touch_wait=1)
+                if not self.pic_find(ImgEnumG.CZJL_ICON, touch_wait=3):
+                    self.touch((38, 149), touch_wait=1)
                     _FIND_TIMES += 1
-            elif self.get_rgb(RgbEnumG.HD_CZZY):
-                if self.get_rgb([1238, 655, 'ADADAD']) or self.get_rgb([1238, 655, 'AEAEAE']):
+            elif self.cmp_rgb(RgbEnumG.HD_CZZY):
+                if self.cmp_rgb(RgbEnumG.HC_CZZY_LQ):
                     self.sn.log_tab.emit(self.mnq_name, r"领取成长奖励-完成")
                     self.back()
                     return True
                 else:
-                    self.air_touch((1238, 655), touch_wait=2)
-            elif self.get_rgb(RgbEnumG.HD_M):
+                    self.touch((1238, 655), touch_wait=2)
+            elif self.cmp_rgb(RgbEnumG.HD_M):
                 # if not self.ocr_find([(29, 88, 181, 700), '全部的'], True):
-                if not self.find_info('hd_czzy', True):
-                    self.air_swipe((105, 598), (105, 391))
+                if not self.word_find(WorldEnumG.HD_CZZY, True):
+                    self.dm_swipe((105, 598), (105, 391))
             else:
                 self.check_err()
         self.sn.log_tab.emit(self.mnq_name, r'领取奖励-异常超时放弃')
@@ -278,68 +275,94 @@ class RewardG(BasePageG):
         s_time = time.time()
         _SWIP_TIMES = 0
         select_queue = kwargs['状态队列']['选择器']
+        dis_list = kwargs['挂机设置']['清理道具']
         _C_FLAG = False
         _BS = False  # 宝石清理
         _SP = False  # 饰品
         _FJ = False  # 防具
         _WQ = False  # 武器
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
-            if self.find_info('ingame_flag2'):
+            if self.find_color(MulColorEnumG.IGAME):
                 if _C_FLAG:
                     select_queue.task_over('BagClear')
                     return True
-                self.air_touch((1170, 39), touch_wait=2)
-            elif self.find_info('coin_enum', True):
+                self.touch((1170, 39), touch_wait=2)
+            elif self.mul_color(MulColorEnumG.COIN_ENUM, True):
                 pass
-            elif self.get_rgb(RgbEnumG.BAG_DQ, True):
+            elif self.cmp_rgb(RgbEnumG.BAG_DQ, True, touch_wait=1):
                 pass
-            elif self.get_rgb(RgbEnumG.BAG_DQQR, True):
+            elif self.cmp_rgb(RgbEnumG.BAG_DQQR, True, touch_wait=1):
                 pass
-            elif self.get_rgb(RgbEnumG.BAG_M):
+            elif self.cmp_rgb(RgbEnumG.BAG_M):
                 if _BS and _SP and _FJ and _WQ:
                     _C_FLAG = True
                 if _C_FLAG:
                     self.back()
                 else:
                     if not _BS:
-                        self.get_rgb(RgbEnumG.BAG_BS, True)
-                        if not self.crop_image_find(ImgEnumG.RED_BS) and not self.crop_image_find(ImgEnumG.G_BS):
-                            if _SWIP_TIMES > 1:
-                                self.sn.log_tab.emit(self.mnq_name, f"宝石清理完成")
+                        self.cmp_rgb(RgbEnumG.BAG_BS, True)
+                        if '0' in dis_list and self.mul_color(MulColorEnumG.BS_RED, True, touch_wait=1):
+                            pass
+                        elif '1' in dis_list and self.mul_color(MulColorEnumG.BS_BLUE, True, touch_wait=1):
+                            pass
+                        elif '2' in dis_list and self.mul_color(MulColorEnumG.BS_GREE, True, touch_wait=1):
+                            pass
+                        elif '3' in dis_list and self.mul_color(MulColorEnumG.BS_Z, True, touch_wait=1):
+                            pass
+                        elif '4' in dis_list and self.mul_color(MulColorEnumG.BS_H, True, touch_wait=1):
+                            pass
+                        elif '5' in dis_list and self.mul_color(MulColorEnumG.WQ_DZ, True, touch_wait=1):
+                            pass
+                        elif '6' in dis_list and self.mul_color(MulColorEnumG.FJ_DZ, True, touch_wait=1):
+                            pass
+                        elif '7' in dis_list and self.mul_color(MulColorEnumG.FJ_DZ, True, touch_wait=1):
+                            pass
+                        elif '8' in dis_list and self.mul_color(MulColorEnumG.JH_COIN, True, touch_wait=1):
+                            pass
+                        else:
+                            if self.pic_find(ImgEnumG.BAG_NULL, False) or _SWIP_TIMES > 15:
+                                self.sn.log_tab.emit(self.mnq_name, f"消耗栏清理完成")
                                 _BS = True
                                 _SWIP_TIMES = 0
                             else:
-                                self.air_swipe((1052, 559), (1052, 353), swipe_wait=1)
+                                self.dm_swipe((1052, 559), (1052, 353), swipe_wait=1)
                                 _SWIP_TIMES += 1
                     elif not _SP:
-                        self.get_rgb(RgbEnumG.BAG_SP, True)
-                        if not self.crop_image_find(ImgEnumG.JZT_DJ, touch_wait=1):
-                            if _SWIP_TIMES > 1:
+                        self.cmp_rgb(RgbEnumG.BAG_SP, True)
+                        if '8' in dis_list and self.mul_color(MulColorEnumG.JZT_BMFLJZ, True, touch_wait=1):
+                            pass
+                        elif '9' in dis_list and self.pic_find(ImgEnumG.PKJ_FLAG, touch_wait=1):
+                            pass
+                        else:
+                            if self.pic_find(ImgEnumG.BAG_NULL, False) or _SWIP_TIMES > 15:
                                 self.sn.log_tab.emit(self.mnq_name, f"饰品清理完成")
                                 _SP = True
                                 _SWIP_TIMES = 0
                             else:
-                                self.air_swipe((1052, 559), (1052, 353), swipe_wait=1)
+                                self.dm_swipe((1052, 559), (1052, 353), swipe_wait=1)
                                 _SWIP_TIMES += 1
                     elif not _FJ:
-                        self.get_rgb(RgbEnumG.BAG_FJ, True)
-                        if not self.check_mulpic([ImgEnumG.FJ_HE1, ImgEnumG.FJ_HE2]):
-                            if _SWIP_TIMES > 1:
+                        self.cmp_rgb(RgbEnumG.BAG_FJ, True)
+                        # if not self.check_mulpic([ImgEnumG.FJ_HE1, ImgEnumG.FJ_HE2]):
+                        if '10' in dis_list and self.pic_find(ImgEnumG.YM_YD, touch_wait=1):
+                            pass
+                        else:
+                            if self.pic_find(ImgEnumG.BAG_NULL, False) or _SWIP_TIMES > 15:
                                 self.sn.log_tab.emit(self.mnq_name, f"防具清理完成")
                                 _FJ = True
                                 _SWIP_TIMES = 0
                             else:
-                                self.air_swipe((1052, 559), (1052, 353), swipe_wait=1)
+                                self.dm_swipe((1052, 559), (1052, 353), swipe_wait=1)
                                 _SWIP_TIMES += 1
                     elif not _WQ:
-                        self.get_rgb(RgbEnumG.BAG_WQ, True)
+                        self.cmp_rgb(RgbEnumG.BAG_WQ, True)
                         if not self.check_mulpic([ImgEnumG.WQ_HE1, ImgEnumG.WQ_HE2]):
-                            if _SWIP_TIMES > 1:
+                            if self.pic_find(ImgEnumG.BAG_NULL, False) or _SWIP_TIMES > 15:
                                 self.sn.log_tab.emit(self.mnq_name, f"武器清理完成")
                                 _WQ = True
                                 _SWIP_TIMES = 0
                             else:
-                                self.air_swipe((1052, 559), (1052, 353), swipe_wait=1)
+                                self.dm_swipe((1052, 559), (1052, 353), swipe_wait=1)
                                 _SWIP_TIMES += 1
         select_queue.task_over('BagClear')
         raise ControlTimeOut(r'清理背包-异常超时')
@@ -352,76 +375,77 @@ class RewardG(BasePageG):
         _OVER = False
         _FJ_OVER = False
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.find_info('ingame_flag2'):
+            if self.find_color(MulColorEnumG.IGAME):
                 if _OVER and _FJ_OVER:
                     select_queue.task_over('BagSell')
                     return True
-                self.air_touch((1170, 39), touch_wait=2)
-            elif self.find_info('coin_enum', True):
+                self.touch((1170, 39), touch_wait=2)
+            elif self.mul_color(MulColorEnumG.COIN_ENUM, True):
                 pass
-            elif self.get_rgb(RgbEnumG.CSFJ_M):  # 出售界面
+            elif self.cmp_rgb(RgbEnumG.CSFJ_M):  # 出售界面
                 if _OVER or _FJ_OVER:
                     if _FJ_OVER:
-                        if self.find_info('dec'):
+                        if self.check_ui('分解'):
                             self.back()
                     if _OVER:
-                        if self.find_info('sell'):
+                        if self.check_ui('贩售'):
                             self.back()
                 if not _FJ_OVER:
-                    if self.get_rgb(RgbEnumG.FJ_NULL):  # 分解栏空
+                    if self.cmp_rgb(RgbEnumG.FJ_NULL):  # 分解栏空
                         if not _FJSX_FLAG:
-                            self.air_touch((68, 677), touch_wait=2)
+                            # self.touch((68, 677), touch_wait=2)
+                            self.cmp_rgb(RgbEnumG.SX_BTN, True)
                         else:
                             self.sn.log_tab.emit(self.mnq_name, r"分解完成")
                             _FJ_OVER = True
                     else:
-                        self.get_rgb(RgbEnumG.CS_QR, True, touch_wait=2)
-                        if self.get_rgb(RgbEnumG.FJ_END, True, touch_wait=2):
+                        self.cmp_rgb(RgbEnumG.CS_QR, True, touch_wait=2)
+                        if self.cmp_rgb(RgbEnumG.FJ_END, True, touch_wait=2):
                             self.sn.log_tab.emit(self.mnq_name, r"分解确认")
                             _FJ_OVER = True
                 elif not _OVER:
-                    if not self.get_rgb(RgbEnumG.CS_NULL):
+                    if not self.cmp_rgb(RgbEnumG.CS_NULL):
                         if not _SX_FLAG:
-                            self.air_touch((68, 677), touch_wait=2)  # 打开筛选
+                            self.cmp_rgb(RgbEnumG.SX_BTN, True)
+                            # self.touch((68, 677), touch_wait=2)  # 打开筛选
                         else:
                             self.sn.log_tab.emit(self.mnq_name, r"出售完成")
                             _OVER = True
-                            self.find_info('task_close', True)
+                            self.mul_color(MulColorEnumG.TASK_CLOSE, True)
                     else:
-                        self.get_rgb(RgbEnumG.CS_QR, True)
-                        if self.get_rgb(RgbEnumG.QR, True, touch_wait=2):
+                        self.cmp_rgb(RgbEnumG.CS_QR, True)
+                        if self.cmp_rgb(RgbEnumG.QR, True, touch_wait=2):
                             self.sn.log_tab.emit(self.mnq_name, r"出售完成")
                             _OVER = True
-
-            elif self.get_rgb(RgbEnumG.BAG_M):
+            elif self.cmp_rgb(RgbEnumG.BAG_M):
                 if _OVER and _FJ_OVER:
                     self.back()
                 else:
                     if not _FJ_OVER:
-                        self.get_rgb(RgbEnumG.FJ, True)#分解
+                        self.cmp_rgb(RgbEnumG.FJ, True)  # 分解
                     elif not _OVER:
-                        self.get_rgb(RgbEnumG.CS, True)#出售
-            elif self.get_rgb(RgbEnumG.BAG_SX):
+                        self.cmp_rgb(RgbEnumG.CS, True)  # 出售
+            elif self.cmp_rgb(RgbEnumG.BAG_SX):
                 if _SX_FLAG:
-                    self.get_rgb(RgbEnumG.BAG_SX_TY, True)
+                    self.cmp_rgb(RgbEnumG.BAG_SX_TY, True)
                 else:
-                    self.get_rgb(RgbEnumG.SX_SP, True)  # 饰品
-                    self.get_rgb(RgbEnumG.SX_SP2, True)  # 饰品
-                    self.get_rgb(RgbEnumG.SX_SP3, True)  # 饰品
-                    if self.get_rgb(RgbEnumG.BAG_SX_TY, True):
+                    self.cmp_rgb(RgbEnumG.SX_SP, True)  # 饰品
+                    self.cmp_rgb(RgbEnumG.SX_SP2, True)  # 饰品
+                    self.cmp_rgb(RgbEnumG.SX_SP3, True)  # 饰品
+                    if self.cmp_rgb(RgbEnumG.BAG_SX_TY, True):
                         self.sn.log_tab.emit(self.mnq_name, r"出售筛选设置-完成")
                         _SX_FLAG = True
-            elif self.get_rgb(RgbEnumG.BAG_FJSX):
+            elif self.cmp_rgb(RgbEnumG.BAG_FJSX):
                 if _FJSX_FLAG:
-                    self.get_rgb(RgbEnumG.FJ_TY, True)
+                    self.cmp_rgb(RgbEnumG.FJ_TY, True)
                 else:
-                    self.get_rgb(RgbEnumG.FJ_SX, True)  # 史诗
-                    self.get_rgb(RgbEnumG.FJ_SX2, True)  # 史诗
-                    if self.get_rgb(RgbEnumG.FJ_TY, True):
+                    self.cmp_rgb(RgbEnumG.FJ_SX, True)  # 史诗
+                    self.cmp_rgb(RgbEnumG.FJ_SX2, True)  # 史诗
+                    if self.cmp_rgb(RgbEnumG.FJ_TY, True):
                         self.sn.log_tab.emit(self.mnq_name, r"分解筛选设置-完成")
                         _FJSX_FLAG = True
-            elif self.get_rgb(RgbEnumG.FJ_END):
-                self.get_rgb(RgbEnumG.FJ_END, True, touch_wait=5)
+            elif self.cmp_rgb(RgbEnumG.FJ_END):
+                self.cmp_rgb(RgbEnumG.FJ_END, True, touch_wait=5)
                 self.sn.log_tab.emit(self.mnq_name, r"分解完成")
                 _FJ_OVER = True
             else:
@@ -429,49 +453,3 @@ class RewardG(BasePageG):
             self.time_sleep(GlobalEnumG.WaitTime)
         select_queue.task_over('BagSell')
         raise ControlTimeOut(r'出售背包-异常超时')
-
-    def calculationgold(self, **kwargs):
-        s_time = time.time()
-        select_queue = kwargs['状态队列']['选择器']
-        _GOLD_NUM = LoadConfig.getconf(self.mnq_name, '金币', ini_name=self.mnq_name)
-        _T_GOLD = 0
-        _C_OVER = False
-        while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
-            if self.find_info('ingame_flag2'):
-                if _C_OVER:
-                    select_queue.task_over('CheckGold')
-                    return True
-                self.air_touch((1170, 39), touch_wait=2)
-            elif self.get_rgb(RgbEnumG.BAG_GOLD_QR):
-                if _C_OVER:
-                    self.get_rgb(RgbEnumG.BAG_GOLD_QR, True)
-                else:
-                    GOLD = self.gold_num(1)
-                    RED_COIN = self.gold_num(0)
-                    _T_GOLD = GOLD - int(_GOLD_NUM)
-                    self.sn.table_value.emit(self.mnq_name, 6, f"{GOLD}")
-                    self.sn.table_value.emit(self.mnq_name, 7, f"{round(_T_GOLD / 10000, 2)}万")
-                    LoadConfig.writeconf(self.mnq_name, '产金量', str(_T_GOLD), ini_name=self.mnq_name)
-                    LoadConfig.writeconf(self.mnq_name, '金币', str(GOLD), ini_name=self.mnq_name)
-                    LoadConfig.writeconf(self.mnq_name, '红币', str(RED_COIN), ini_name=self.mnq_name)
-                    _C_OVER = True
-            elif self.get_rgb(RgbEnumG.BAG_M):
-                if _C_OVER:
-                    self.back()
-                else:
-                    r = self.get_roleinfo([(225, 162, 326, 187), (253, 218, 307, 243), (315, 505, 469, 536)])
-                    LEVEL = r[0]
-                    STAR = r[1]
-                    BAT_NUM = r[-1]
-                    if LEVEL > 0:
-                        self.sn.table_value.emit(self.mnq_name, 3, f"{LEVEL}")
-                        self.sn.table_value.emit(self.mnq_name, 4, f"{STAR}")
-                        self.sn.table_value.emit(self.mnq_name, 5, f"{BAT_NUM}")
-                        LoadConfig.writeconf(self.mnq_name, '等级', str(LEVEL), ini_name=self.mnq_name)
-                        LoadConfig.writeconf(self.mnq_name, '星力', str(STAR), ini_name=self.mnq_name)
-                        LoadConfig.writeconf(self.mnq_name, '战力', str(BAT_NUM), ini_name=self.mnq_name)
-                        self.crop_image_find(ImgEnumG.BAG_GOLD, touch_wait=2)
-            else:
-                self.check_close()
-        select_queue.task_over('CheckGold')
-        raise ControlTimeOut(r'计算产出-异常超时')

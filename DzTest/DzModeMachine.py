@@ -2,7 +2,6 @@
 import random
 import time
 
-from airtest.core.error import DeviceConnectionError, AdbShellError, AdbError
 from transitions import Machine
 from Enum.ResEnum import GlobalEnumG, BatEnumG
 from UiPage.AutoBatG import AutoBatG
@@ -14,7 +13,7 @@ from UiPage.TaskAutoG import TaskAutoG
 from UiPage.TeamStateG import TeamStateG
 from UiPage.UpRoleG import UpRoleG
 from Utils.ExceptionTools import MrTaskErr, ControlTimeOut, BuyYErr, NotInGameErr, RestartTask, FuHuoRoleErr, \
-    BagFullerr, StopTaskErr, NetErr
+    BagFullerr, StopTaskErr, NetErr, MoGuErr
 from Utils.LoadConfig import LoadConfig
 from Utils.OtherTools import catch_ex
 
@@ -22,97 +21,95 @@ from Utils.OtherTools import catch_ex
 class StateExecute(object):
     """状态执行器"""
 
-    def __init__(self, devinfo, mnq_name, sn):
+    def __init__(self, devinfo, sn):
         self.devinfo = devinfo
         self.sn = sn
-        self.mnq_name = mnq_name
 
     def autotask(self, **kwargs):
-        return TaskAutoG(self.devinfo, self.mnq_name, self.sn).start_autotask(**kwargs)
+        return TaskAutoG(self.devinfo, self.sn).start_autotask(**kwargs)
 
     def autobat(self, **kwargs):
-        return AutoBatG(self.devinfo, self.mnq_name, self.sn).keyboard_bat(**kwargs)
+        return AutoBatG(self.devinfo, self.sn).keyboard_bat(**kwargs)
 
     def checkstate(self, **kwargs):
-        return TeamStateG(self.devinfo, self.mnq_name, self.sn).check_team_state(**kwargs)
+        return TeamStateG(self.devinfo, self.sn).check_team_state(**kwargs)
 
 
 class StateSelect(object):
     """状态选择器"""
 
-    def __init__(self, devinfo, mnq_name, sn):
+    def __init__(self, devinfo, sn):
         self.devinfo = devinfo
         self.sn = sn
-        self.mnq_name = mnq_name
 
     def login_game(self, **kwargs):
-        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn).start_login(**kwargs)
+        return LoginUiPageG(self.devinfo, self.sn).start_login(**kwargs)
 
     def closegame(self):
-        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn).close_game()
+        return LoginUiPageG(self.devinfo, self.sn).close_game()
 
     def check_ingame(self, **kwargs):
-        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn).check_ingame(**kwargs)
+        return LoginUiPageG(self.devinfo, self.sn).check_ingame(**kwargs)
 
     def fuhuo(self, **kwargs):
-        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn).fuhuo_check(**kwargs)
+        return LoginUiPageG(self.devinfo, self.sn).fuhuo_check(**kwargs)
 
-    def neterr(self,**kwargs):
-        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn).wait_net_err(**kwargs)
+    def neterr(self, **kwargs):
+        return LoginUiPageG(self.devinfo, self.sn).wait_net_err(**kwargs)
 
     def checkroleinfo(self, **kwargs):
-        return StateCheckG(self.devinfo, self.mnq_name, self.sn).check_roleinfo(**kwargs)
+        return StateCheckG(self.devinfo, self.sn).check_roleinfo(**kwargs)
 
     def getlevelreard(self, **kwargs):
-        return RewardG(self.devinfo, self.mnq_name, self.sn).level_reward(**kwargs)
+        return RewardG(self.devinfo, self.sn).level_reward(**kwargs)
 
     def calculationgold(self, **kwargs):
-        return RewardG(self.devinfo, self.mnq_name, self.sn).calculationgold(**kwargs)
+        return RewardG(self.devinfo, self.sn).calculationgold(**kwargs)
 
     def autoboss(self, **kwargs):
-        return DailyTaskAutoG(self.devinfo, self.mnq_name, self.sn).boss_task(**kwargs)
+        return DailyTaskAutoG(self.devinfo, self.sn).boss_task(**kwargs)
 
     def hdboss(self, **kwargs):
-        return DailyTaskAutoG(self.devinfo, self.mnq_name, self.sn).hdboss_task(**kwargs)
+        return DailyTaskAutoG(self.devinfo, self.sn).hdboss_task(**kwargs)
 
     def automr(self, **kwargs):
-        return DailyTaskAutoG(self.devinfo, self.mnq_name, self.sn).dailytask_start(**kwargs)
+        return DailyTaskAutoG(self.devinfo, self.sn).dailytask_start(**kwargs)
 
     def buyyao(self, **kwargs):
-        return UpRoleG(self.devinfo, self.mnq_name, self.sn).buyyao(**kwargs)
+        return UpRoleG(self.devinfo, self.sn).buyyao(**kwargs)
 
     def bagsell(self, **kwargs):
-        return RewardG(self.devinfo, self.mnq_name, self.sn).bagsell(**kwargs)
+        return RewardG(self.devinfo, self.sn).bagsell(**kwargs)
 
     def bagclear(self, **kwargs):
-        return RewardG(self.devinfo, self.mnq_name, self.sn).bag_clear(**kwargs)
+        return RewardG(self.devinfo, self.sn).bag_clear(**kwargs)
 
     def useskill(self, **kwargs):
-        return UpRoleG(self.devinfo, self.mnq_name, self.sn).useskill(**kwargs)
+        return UpRoleG(self.devinfo, self.sn).useskill(**kwargs)
 
     def usepet(self, **kwargs):
-        return UpRoleG(self.devinfo, self.mnq_name, self.sn).usepet(**kwargs)
+        return UpRoleG(self.devinfo, self.sn).usepet(**kwargs)
 
     def upequip(self, **kwargs):
-        return UpRoleG(self.devinfo, self.mnq_name, self.sn).upequip(**kwargs)
+        return UpRoleG(self.devinfo, self.sn).upequip(**kwargs)
 
     def strongequip(self, **kwargs):
-        return UpRoleG(self.devinfo, self.mnq_name, self.sn).strongequip(**kwargs)
+        return UpRoleG(self.devinfo, self.sn).strongequip(**kwargs)
 
     def getreward(self, **kwargs):
-        return RewardG(self.devinfo, self.mnq_name, self.sn).get_reward(**kwargs)
+        return RewardG(self.devinfo, self.sn).get_reward(**kwargs)
 
     def checkxtteam(self, **kwargs):
-        return TeamStateG(self.devinfo, self.mnq_name, self.sn).check_xt(**kwargs)
+        return TeamStateG(self.devinfo, self.sn).check_xt(**kwargs)
 
     def checkytteam(self, **kwargs):
-        return TeamStateG(self.devinfo, self.mnq_name, self.sn).check_yt(**kwargs)
+        return TeamStateG(self.devinfo, self.sn).check_yt(**kwargs)
 
     def choose_task(self, **kwargs):
-        return StateCheckG(self.devinfo, self.mnq_name, self.sn).choose_task(**kwargs)
+        return StateCheckG(self.devinfo, self.sn).choose_task(**kwargs)
 
     def back_ingame(self, **kwargs):
-        return LoginUiPageG(self.devinfo, self.mnq_name, self.sn).close_all(**kwargs)
+        return LoginUiPageG(self.devinfo, self.sn).close_all(**kwargs)
 
 
 execute_transition = [
@@ -142,7 +139,6 @@ class switch_case:
         self.exec = kwargs['执行器']
         self.select = kwargs['选择器']
         self.mnq_name = kwargs['机器名']
-        self.dev_name = kwargs['设备名']
         self.mnq_thread_list = kwargs['线程列表']
         self.queue_dic = kwargs['队列']
         self.exec_queue = self.queue_dic['执行器任务队列']
@@ -150,7 +146,7 @@ class switch_case:
         self.dingshi = LoadConfig.getconf('全局配置', '定时任务')
         self.boss_map = LoadConfig.getconf('全局配置', '混王图')
         self.hd_boss = LoadConfig.getconf('全局配置', '混沌炎魔')
-        self.random_tasktime = random.randint(200, 600)  # 随机定时任务等待时间
+        self.random_tasktime = random.randint(100, 500)  # 随机定时任务等待时间
         self.meiri_time = self.get_task_time()  # 获取每日任务设定时间
         # self._t_time = time.time()  # 计算任务时间时的当前时间
         # self._t = 0  # 距离下次任务的时间
@@ -208,15 +204,15 @@ class switch_case:
         # if LoadConfig.getconf()
         if task_name in all_task:
             _id = BatEnumG.TASK_ID[task_name]['id']
-            if _id in ['1']:
+            if _id in ['1']:  # 自动任务
                 # self.select_queue.put_queue('CheckRole')
                 self.exec_queue.put_queue(BatEnumG.TASK_ID[task_name]['state'])
-            elif _id == '5':
+            elif _id == '5':  # 混boss
                 self.exec_queue.put_queue('Nothing')
                 self.select_queue.put_queue('AutoHDboss')
                 self.select_queue.put_queue(BatEnumG.TASK_ID[task_name]['state'])
-                self.select_queue.put_queue('CheckRole')
-            elif _id == '99':
+                # self.select_queue.put_queue('CheckRole')
+            elif _id == '99':  # 托管
                 self.select_queue.put_queue('CheckRole')
             else:
                 self.exec_queue.put_queue('Nothing')
@@ -225,13 +221,13 @@ class switch_case:
                     self.select_queue.put_queue('CheckRole')
             return BatEnumG.TASK_ID[task_name]['id'], 'NULL'
         elif task_name in xt_map:
-            if _C_ROLE:
-                self.select_queue.put_queue('CheckRole')
+            # if _C_ROLE:
+            self.select_queue.put_queue('CheckRole')
             self.exec_queue.put_queue('AutoBat')
             return '3', task_name
         elif task_name in yt_map:
-            if _C_ROLE:
-                self.select_queue.put_queue('CheckRole')
+            # if _C_ROLE:
+            self.select_queue.put_queue('CheckRole')
             self.exec_queue.put_queue('AutoBat')
             return '4', task_name
         else:
@@ -244,6 +240,12 @@ class switch_case:
         if mnq_index in no_mp_list:
             return False
         return True
+
+    @staticmethod
+    def get_dis_list():
+        """获取丢弃道具list"""
+        dis_list = LoadConfig.getconf('全局配置', '清理道具').split(',')
+        return dis_list
 
     def get_data_dic(self):
         data = {
@@ -289,7 +291,8 @@ class switch_case:
                 '离线时长': int(LoadConfig.getconf('全局配置', '离线时长')),
                 '无蓝窗口': self.use_mp,
                 '任务延时': self.random_tasktime,
-                '跳跃模式':True if LoadConfig.getconf('全局配置', '跳跃模式') == '1' else False,
+                '跳跃模式': True if LoadConfig.getconf('全局配置', '跳跃模式') == '1' else False,
+                '清理道具': self.get_dis_list()
             },
             '野图设置': {
                 '队伍id': self.team_id,
@@ -411,14 +414,19 @@ class switch_case:
                 else:
                     task = self.select_queue.get_task()  # 获取选择器任务
                     self.select_func[task][1]()  # 切换选择器状态
-
+        except MoGuErr:
+            self.sn.log_tab.emit(self.mnq_name, f"出现蘑菇,停止任务")
+            self.select.to_InGame()
+            self.select_queue.clear()
+            self.exec_queue.clear()
+            self.exec.to_Nothing()
         except StopTaskErr:
             self.sn.log_tab.emit(self.mnq_name, f"模拟器adb连接异常断开,停止任务")
-            self.sn.stoptask.emit([self.mnq_name],True)
+            self.sn.stoptask.emit([self.mnq_name], True)
         except RestartTask:
             self.sn.restart.emit(self.mnq_name, self.mnq_thread_list)
-        except (ConnectionResetError, DeviceConnectionError, ConnectionAbortedError, AdbShellError, AdbError, TypeError):
-            self.sn.log_tab.emit(self.mnq_name, f"模拟器adb连接异常断开,尝试重连")
+        except (ConnectionResetError, ConnectionAbortedError, TypeError):
+            self.sn.log_tab.emit(self.mnq_name, f"模拟器连接异常断开,尝试重连")
             self.sn.restart.emit(self.mnq_name, self.mnq_thread_list)
         except MrTaskErr:
             self.sn.log_tab.emit(self.mnq_name, f"每日任务异常,开始检查")

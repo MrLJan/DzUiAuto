@@ -1,20 +1,16 @@
 # -*- coding: utf-8 -*-
 import time
-
-from memory_profiler import profile
-
-from Enum.ResEnum import ImgEnumG, GlobalEnumG, BatEnumG, RgbEnumG
+from Enum.ResEnum import ImgEnumG, GlobalEnumG, BatEnumG, RgbEnumG, MulColorEnumG, WorldEnumG
 from UiPage.BasePage import BasePageG
 from Utils.ExceptionTools import NotInGameErr, FuHuoRoleErr
 from Utils.LoadConfig import LoadConfig
 
 
 class TaskAutoG(BasePageG):
-    def __init__(self, devinfo, mnq_name, sn):
+    def __init__(self, devinfo, sn):
         super(TaskAutoG, self).__init__()
-        self.dev, self.serialno = devinfo
+        self.dev, self.mnq_name = devinfo
         self.sn = sn
-        self.mnq_name = mnq_name
 
     def start_autotask(self, **kwargs):
         select_queue = kwargs['状态队列']['选择器']
@@ -36,121 +32,142 @@ class TaskAutoG(BasePageG):
             if time.time() - s_time > GlobalEnumG.SelectCtrTimeOut:
                 self.check_close()
                 s_time = time.time()
-            if self.air_loop_find(ImgEnumG.GAME_ICON, False):
+            if self.pic_find(ImgEnumG.GAME_ICON, False):
                 raise NotInGameErr
-            if self.crop_image_find(ImgEnumG.CZ_FUHUO):
+            if self.pic_find(ImgEnumG.CZ_FUHUO):
                 raise FuHuoRoleErr
-            if not self.find_info('ingame_flag2'):
-                if self.find_info('task_close'):
-                    if self.get_rgb([1033, 414, 'EE7047'], True):  # 完成/接受
+            if not self.find_color(MulColorEnumG.IGAME):
+                if self.mul_color(MulColorEnumG.TASK_CLOSE):
+                    if self.cmp_rgb([1033, 414, 'ee7046'], True):  # 完成/接受
+                        self.sn.log_tab.emit(self.mnq_name, r"完成/接受")  # 完成/接受
+                    elif self.word_find(WorldEnumG.TASK_ARROW, True, touch_wait=0):
+                        self.sn.log_tab.emit(self.mnq_name, r"点击对话箭头")
+                    elif self.cmp_rgb([367, 565, '4c87b0'], True):
                         pass
-                    elif self.find_info('task_arrow', True,touch_wait=0):
+                    elif self.cmp_rgb([361, 570, 'ee7046'], True):
                         pass
-                    elif self.get_rgb([367, 565, '4C87AF'], True):
+                    elif self.cmp_rgb([685, 515, 'ee7046'], True):
                         pass
-                    elif self.get_rgb([361, 570, 'EE7047'], True):
+                    elif self.cmp_rgb(RgbEnumG.CLOSE_GAME, True):
                         pass
-                    elif self.get_rgb([685, 515, 'EE7047'], True):
+                    elif self.cmp_rgb(RgbEnumG.EXIT_FOU, True):
                         pass
-                    elif self.get_rgb(RgbEnumG.CLOSE_GAME, True):
-                        pass
-                    elif self.get_rgb(RgbEnumG.EXIT_FOU, True):
-                        pass
-                    elif self.get_rgb(RgbEnumG.FUHUO_BTN):
-                        if self.crop_image_find(ImgEnumG.CZ_FUHUO):
+                    elif self.cmp_rgb(RgbEnumG.FUHUO_BTN):
+                        if self.pic_find(ImgEnumG.CZ_FUHUO):
                             raise FuHuoRoleErr
-                    elif self.get_rgb(RgbEnumG.SKILL_M):
+                    elif self.cmp_rgb(RgbEnumG.SKILL_M):
                         self.back()
-                    elif self.find_info('ui_set'):
+                    elif self.word_find(WorldEnumG.SET_BTN):
                         self.back()
-                elif self.get_rgb([359, 636, 'EE7047'], True):
+                elif self.cmp_rgb([359, 636, 'ee7046'], True):
+                    self.sn.log_tab.emit(self.mnq_name, r"领取奖励")  # 领取奖励
+                elif self.cmp_rgb([531, 632, 'ee7046'], True):
                     pass  # 领取奖励
-                elif self.get_rgb([531, 632, 'EE7047'], True):
-                    pass  # 领取奖励
-                elif self.get_rgb(RgbEnumG.CLOSE_GAME, True):
+                elif self.cmp_rgb([685, 515, 'ee7046'], True):
+                    pass  # 幻影技能确认
+                elif self.cmp_rgb(RgbEnumG.CLOSE_GAME, True):
                     pass
-                elif self.get_rgb(RgbEnumG.EXIT_FOU, True):
+                elif self.cmp_rgb(RgbEnumG.EXIT_FOU, True):
                     pass
-                elif self.get_rgb(RgbEnumG.SKIP_NEW, touch_wait=1):
-                    if self.crop_image_find(ImgEnumG.JN_TEACH, touch_wait=1):
+                elif self.cmp_rgb(RgbEnumG.SKIP_NEW, touch_wait=1):
+                    if self.pic_find(ImgEnumG.JN_TEACH, touch_wait=1):
                         self.skip_fever_buff()
                     self.skip_new()
-                elif self.get_rgb([1033, 414, 'EE7047'], True):
+                elif self.cmp_rgb([1033, 414, 'ee7046'], True):
                     pass
-                elif self.get_rgb([541, 537, 'EE7047'], True):
+                elif self.cmp_rgb([541, 537, 'ee7046'], True):
                     pass
-                elif self.get_rgb([1140, 80, '415067'], True):
+                elif self.cmp_rgb([1140, 80, '415066'], True):
                     pass
-                elif self.get_rgb([1140, 90, 'EE7047'], True):
+                elif self.cmp_rgb([1140, 90, 'ee7046'], True):
                     pass
-                elif self.get_rgb([528, 658, 'EE7047'], True):
+                elif self.cmp_rgb([528, 658, 'ee7046'], True):
                     pass
-                elif self.get_rgb(RgbEnumG.SKIP_NEW, True):
+                elif self.cmp_rgb(RgbEnumG.SKIP_NEW, True):
                     pass
-                elif self.air_loop_find(ImgEnumG.UI_QBLQ):
+                elif self.pic_find(ImgEnumG.UI_QBLQ):
                     pass
-                elif self.find_info('LB_close', True,touch_wait=0):
-                    pass
-                elif self.find_info('ingame_flag1',touch_wait=0):
-                    if self.crop_image_find(ImgEnumG.CZ_FUHUO):
+                elif self.find_color(MulColorEnumG.IGAME):
+                    if self.pic_find(ImgEnumG.CZ_FUHUO):
                         pass
                     self.back()
-                elif self.get_rgb(RgbEnumG.SKILL_M):
+                elif self.cmp_rgb(RgbEnumG.SKILL_M):
                     self.back()
-                elif self.find_info('task_close', True,touch_wait=0):
+                elif self.word_find(WorldEnumG.TASK_ARROW, True, touch_wait=0):
                     pass
-                elif self.find_info('task_arrow', True,touch_wait=0):
+                elif self.cmp_rgb([563, 634, 'ee7046'], True):
                     pass
-                elif self.get_rgb([563, 634, 'EE7047'], True):
-                    pass
-                elif self.qr_or_qx(1):
+                elif self.qr_tip():
                     pass
                 else:
                     self.back()
             else:
                 if use_stone:
-                    if self.find_info('xl_lkyd', True,touch_wait=0):
+                    if self.cmp_rgb([737, 203, '617a95'], True):
                         self.time_sleep(GlobalEnumG.TaskWaitTime)
-                if self.get_rgb(RgbEnumG.SKIP_NEW, True):
+                    # if self.find_info('xl_lkyd', True,touch_wait=0):
+                    #     self.time_sleep(GlobalEnumG.TaskWaitTime)
+                if self.cmp_rgb(RgbEnumG.SKIP_NEW, True):
                     self.skip_new()
-                elif self.get_rgb([394, 403, 'EE7047']):
-                    self.air_touch((710, 204))
-                elif self.get_rgb([835, 354, 'BC3B57'], True):
+                elif self.cmp_rgb([394, 403, 'ee7046']):
+                    self.touch((710, 204))
+                elif self.cmp_rgb([735, 345, 'bc3c57'], True):
                     pass  # 自动分配技能
-                elif self.get_rgb([737, 395, '617B96'], True):  # 穿戴装备
-                    for i in range(3):
-                        self.get_rgb([737, 395, '617B96'], True)
-                elif self.get_rgb([711, 206, 'FEFFF5'], True):
+                elif self.cmp_rgb([835, 354, 'bc3b57'], True):
+                    pass
+                elif self.cmp_rgb([711, 206, 'FEFFF5'], True):
                     pass  # 提示装备技能
+                elif self.cmp_rgb([737, 395, '617a95']):  # 穿戴装备
+                    self.cmp_rgb([835, 354, 'bc3b57'], True)
+                    self.cmp_rgb([735, 345, 'bc3c57'], True)
+                    self.sn.log_tab.emit(self.mnq_name, r"穿戴装备")
+                    for i in range(3):
+                        self.cmp_rgb([737, 395, '617a95'], True)
                 else:
-                    if self.find_info('bat_auto') or self.check_is_stop():
+                    # if self.find_info('bat_auto') or self.check_is_stop():
+                    # if self.rgb(449, 654)[0] == 'a' or '1':
+                    if self.find_color([70, 179, 339, 390, 'ff00ce-000000']):
+                        self.sn.log_tab.emit(self.mnq_name, r"做完主线任务停止任务")
+                        return 1
+                    if not self.word_find(WorldEnumG.TASK_AUTO):
                         if time.time() - s_time > GlobalEnumG.TaskCheckTime:
                             self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
                                             **kwargs)
                             s_time = time.time()
-                        if not self.find_info('task_point', True,touch_wait=0):
-                            self.air_loop_find(ImgEnumG.TASK_TAB)
-                            self.crop_image_find(ImgEnumG.TASK_POINT)
+                        if self.word_find(WorldEnumG.BAT_AUTO) or self.cmp_rgb_list(
+                                ['110f0c', '110f0d', '11100d', '11100c'], (431, 654)):
+                            if not self.mul_color(MulColorEnumG.TASK_POINT, True, touch_wait=0):
+                                self.pic_find(ImgEnumG.TASK_TAB)
+                                if not self.mul_color(MulColorEnumG.TASK_POINT, True, touch_wait=0):
+                                    self.task_block()
                         else:
-                            self.time_sleep(5)
-                    self.time_sleep(2)
+                            if self.check_is_stop():
+                                self.pic_find(ImgEnumG.TASK_TAB)
+                                if not self.mul_color(MulColorEnumG.TASK_POINT, True, touch_wait=0):
+                                    self.task_block()
+                        self.time_sleep(5)
+                    else:
+                        self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
+                                        **kwargs)
+                        self.time_sleep(2)
                     # if self.check_is_stop():
                     #     if not self.find_info('task_point', True):
-                    #         self.air_loop_find(ImgEnumG.TASK_TAB)
+                    #         self.pic_find(ImgEnumG.TASK_TAB)
 
     def level_task(self, stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG, **kwargs):
         """到达等级后执行任务"""
-        if self.crop_image_find(ImgEnumG.SKIP_NEW, touch_wait=1):
-            if self.crop_image_find(ImgEnumG.JN_TEACH, touch_wait=1):
+        if self.pic_find(ImgEnumG.SKIP_NEW, touch_wait=1):
+            if self.pic_find(ImgEnumG.JN_TEACH, touch_wait=1):
                 self.skip_fever_buff()
             self.skip_new()
         try:
-            _res = int(self.check_num(0))
-            _bat_res = self.check_num(1)
+            _res = int(self.check_num(4))
+            _bat_res = self.check_num(3)
             if _res >= int(stop_task):
                 self.sn.log_tab.emit(self.mnq_name, r"超过任务停止等级")
                 return 1
-        except Exception:
+        except Exception as e:
+            print(e)
             return 0
         if _res != 0:
             kwargs['角色信息']['等级'] = _res
@@ -165,6 +182,8 @@ class TaskAutoG(BasePageG):
                 select_queue.put_queue('GetLevelReard')
                 # select_queue.put_queue('CheckRole')
                 _CW_FLAG = True
+                if self.word_find(WorldEnumG.TASK_AUTO):
+                    self.touch((448, 654), touch_wait=2)
                 raise NotInGameErr
             elif 100 >= kwargs['角色信息']['等级'] >= 60 and not _L2_FLAG:
                 # r = random.randint(1, 3)
@@ -175,6 +194,8 @@ class TaskAutoG(BasePageG):
                 # select_queue.put_queue('CheckRole')
                 kwargs['角色信息']['60级'] = '1'
                 _L2_FLAG = True
+                if self.word_find(WorldEnumG.TASK_AUTO):
+                    self.touch((448, 654), touch_wait=2)
                 raise NotInGameErr
             elif 100 >= kwargs['角色信息']['等级'] >= 90 and not _L3_FLAG:
                 # r = random.randint(1, 3)
@@ -190,6 +211,8 @@ class TaskAutoG(BasePageG):
                 # exec_queue.task_over('AutoTask')
                 # exec_queue.put_queue('AutoBat')
                 _L3_FLAG = True
+                if self.word_find(WorldEnumG.TASK_AUTO):
+                    self.touch((448, 654), touch_wait=2)
                 raise NotInGameErr
 
     def sete_mapdata(self, xt_yt, map_name, **kwargs):

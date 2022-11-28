@@ -51,6 +51,11 @@ class RestartTask(BaseError):
     pass
 
 
+class MoGuErr(BaseError):
+    """出现蘑菇/举报"""
+    pass
+
+
 class BagFullerr(BaseError):
     """背包满了"""
     pass
@@ -59,6 +64,7 @@ class BagFullerr(BaseError):
 class StopTaskErr(BaseError):
     """停止任务"""
     pass
+
 
 class NetErr(BaseError):
     """网络异常"""

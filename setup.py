@@ -7,6 +7,6 @@ from Cython.Build import cythonize
 setup(ext_modules=cythonize("dzmainui.py"))
 distutils.core.setup(
     name='dz',
-    version='v2.02',
+    version='2.26',
     author='dz'
 )
