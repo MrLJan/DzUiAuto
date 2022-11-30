@@ -87,7 +87,7 @@ class AutoBatG(BasePageG):
             else:
                 if y1 != y:
                     return False, x1
-                if x1 in range(louti_x - 2, louti_x + 2):
+                if x1 in range(louti_x - 3, louti_x + 3):
                     if louti_x in [974, 1169]:
                         self.move_turn('x', 0.32)
                         self.time_sleep(1)
@@ -479,8 +479,11 @@ class AutoBatG(BasePageG):
                         self.stop_game()
                         self.time_sleep(_EXIT_TIME * 60)
                     else:
-                        self.time_sleep(AUTO_TIME)
-                        self.touch((422, 655), touch_wait=GlobalEnumG.TouchWaitTime)
+                        if self.find_color(MulColorEnumG.AUTO_ING):
+                            self.time_sleep(AUTO_TIME)
+                            self.touch((422, 655), touch_wait=GlobalEnumG.TouchWaitTime)
+                        else:
+                            _AUTO_START = False
                 else:
                     self.touch((422, 655), touch_wait=GlobalEnumG.TouchWaitTime)
             else:

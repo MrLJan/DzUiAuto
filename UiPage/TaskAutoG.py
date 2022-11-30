@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import random
 import time
 from Enum.ResEnum import ImgEnumG, GlobalEnumG, BatEnumG, RgbEnumG, MulColorEnumG, WorldEnumG
 from UiPage.BasePage import BasePageG
@@ -186,9 +187,9 @@ class TaskAutoG(BasePageG):
                     self.touch((448, 654), touch_wait=2)
                 raise NotInGameErr
             elif 100 >= kwargs['角色信息']['等级'] >= 60 and not _L2_FLAG:
-                # r = random.randint(1, 3)
-                # mrtask_queue.put_queue(str(r))  # 武林
-                # select_queue.put_queue('AutoMR')
+                r = random.randint(1, 3)
+                mrtask_queue.put_queue(str(r))  # 武林
+                select_queue.put_queue('AutoMR')
                 select_queue.put_queue('UseSkill')
                 select_queue.put_queue('GetLevelReard')
                 # select_queue.put_queue('CheckRole')
@@ -198,11 +199,11 @@ class TaskAutoG(BasePageG):
                     self.touch((448, 654), touch_wait=2)
                 raise NotInGameErr
             elif 100 >= kwargs['角色信息']['等级'] >= 90 and not _L3_FLAG:
-                # r = random.randint(1, 3)
+                r = random.randint(1, 3)
                 # exec_queue = kwargs['状态队列']['执行器']
                 select_queue.put_queue('CheckRole')
-                # mrtask_queue.put_queue(str(r))  # 武林
-                # select_queue.put_queue('AutoMR')
+                mrtask_queue.put_queue(str(r))  # 武林
+                select_queue.put_queue('AutoMR')
                 select_queue.put_queue('UseSkill')
                 select_queue.put_queue('GetLevelReard')
                 # select_queue.put_queue('CheckRole')

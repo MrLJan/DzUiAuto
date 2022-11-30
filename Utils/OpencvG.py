@@ -482,14 +482,14 @@ class DmImgTools:
 
 if __name__ == '__main__':
     dev = DevicesConnect.dm_init()
-    DevicesConnect.bind_windows(dev, 5904964)
+    DevicesConnect.bind_windows(dev, 794136)
     o = ColorCvTools()
     o.dev = dev
     a = DmImgTools()
     a.dev = dev
     # r=a.pic_find(ImgEnumG.EXIT_TEAM,t_log=False)
     # r=a.dm_swipe((1093, 535), (1093, 314))
-    r=o.find_color(MulColorEnumG.XT_FLAG,False,t_log=False)
+    r=o.cmp_rgb([687, 524, 'ee7046'], True,t_log=False)
     # r=o.find_color([495,237,794,344,'EB8D6B-0B2229'],True,t_log=False)
     # r=o.word_find(WorldEnumG.INGAME_FLAG,False,t_log=False)
     # r=o.mul_color(MulColorEnumG.LB_TIP,False,t_log=False)

@@ -142,8 +142,8 @@ class LoginUiPageG(BasePageG):
             elif self.net_err():
                 self.sn.log_tab.emit(self.mnq_name, r"网络断开_等待重连")
                 raise NetErr
-            elif not self.check_now_app():
-                raise NotInGameErr
+            # elif not self.check_now_app():
+            #     raise NotInGameErr
             elif self.find_color(MulColorEnumG.IGAME):
                 self.sn.log_tab.emit(self.mnq_name, r"在游戏主界面")
                 if self.cmp_rgb(RgbEnumG.FUHUO_BTN):
@@ -209,7 +209,7 @@ class LoginUiPageG(BasePageG):
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.find_color(MulColorEnumG.IGAME):
                 self.mul_color(MulColorEnumG.LB_TIP,True)
-                if self.cmp_rgb(RgbEnumG.FUHUO_BTN):
+                if self.cmp_rgb(RgbEnumG.FUHUO_BTN,True):
                     if self.pic_find(ImgEnumG.CZ_FUHUO):
                         self.time_sleep(2)
                 _res_hp_mp = self.check_hp_mp()

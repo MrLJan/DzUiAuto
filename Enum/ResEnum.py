@@ -9,7 +9,7 @@ from Utils.OtherTools import OT
 class GlobalEnumG:
     if not os.path.exists(OT.abspath(f"/Res/配置文件.ini")):
         LoadConfig.init_config()
-    Ver = '2.26'
+    Ver = '2.28'
     TestLog = True if LoadConfig.getconf('全局配置', '日志') == '1' else False
     TouchWait = int(LoadConfig.getconf('全局配置', '点击延时'))
     GamePackgeName = r'com.nexon.maplem.global'  # r'com.nexon.maplem.japan'  # r'com.nexon.maplem.global'
@@ -588,6 +588,7 @@ class MulColorEnumG:
     BOSS_DROP = [495, 237, 794, 344, 'EB8D6B-0B2229']  # boss掉落
     BOSS_FUHUO = [399, 459, 941, 617, 'C6481E-000000']  # boss战死亡
     XT_FLAG = [196, 69, 390, 141, 'FF3303-001203']
+    AUTO_ING = [397, 644, 449, 663, '91F9FC-000101']  # AUTO进行中
 
 
 class WorldEnumG:
@@ -599,7 +600,7 @@ class WorldEnumG:
     PKJ_READY = [0, 745, 146, 864, 182, 'READY', 'EAEBEA-151415', 0.9]
     NH_READY = [0, 1072, 151, 1176, 179, 'READY', 'EAEBEA-151415', 0.9]
     BAT_ENDY = [0, 431, 318, 630, 363, '游戏单元结束', 'D4D3D3-2B2C2C', 0.9]
-    NET_ERR = [0, 495, 309, 781, 355, '自动连线中', 'C2A904-3D3504', 0.8]
+    NET_ERR = [0, 540,315,752,359, '自动连线中', 'C2A904-3D3504', 0.8]
     BACN_KSDY = [0, 223, 36, 1135, 705, '移动至选单', 'D5E3EC-2A1C13', 0.9]
     QR_BTN = [0, 228, 73, 1014, 665, '确认', 'F8C5B4-073A4B', 0.9]
     EXIT_TEAM = [0, 288, 174, 328, 499, '退出队伍', 'DADBDC-252423', 0.9]
@@ -617,5 +618,5 @@ class WorldEnumG:
     YS_LJQW = [0, 789, 159, 918, 688, '立即前往', 'D7DED7-282128', 0.9]
     TEAM_NULL = [0, 972, 433, 1196, 501, '无队伍', '717982-2F2C29', 0.9]
     EXIT_TEAM_TIP = [0, 377, 174, 874, 421, '离队提示', 'D7C548-282716', 0.9]
-    DATA_UP=[0,536,150,749,197,'数据更新','D7D9DE-282621',0.9]
+    DATA_UP = [0, 536, 150, 749, 197, '数据更新', 'D7D9DE-282621', 0.9]
     # mr

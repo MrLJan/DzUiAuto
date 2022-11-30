@@ -3,7 +3,7 @@ import time
 
 from Enum.ResEnum import GlobalEnumG, ImgEnumG, RgbEnumG, MulColorEnumG, WorldEnumG
 from UiPage.BasePage import BasePageG
-from Utils.ExceptionTools import NotInGameErr, ControlTimeOut
+from Utils.ExceptionTools import NotInGameErr, ControlTimeOut, FuHuoRoleErr
 import random
 
 from Utils.OpencvG import DmImgTools
@@ -86,6 +86,10 @@ class DailyTaskAutoG(BasePageG):
             elif self.cmp_rgb(RgbEnumG.KSDY):
                 self.sn.log_tab.emit(self.mnq_name, r"在快速内容界面")
                 return True
+            elif self.cmp_rgb(RgbEnumG.FUHUO_BTN):
+                if self.pic_find(ImgEnumG.CZ_FUHUO):
+                    self.sn.log_tab.emit(self.mnq_name, r"检查到死亡")
+                    raise FuHuoRoleErr
             elif self.cmp_rgb(RgbEnumG.WL_QX, True):
                 pass
             elif self.back_ksdy():
@@ -95,6 +99,8 @@ class DailyTaskAutoG(BasePageG):
                 return True
             elif self.pic_find(ImgEnumG.GAME_ICON, False):
                 raise NotInGameErr
+            elif self.cmp_rgb([562, 634, 'ee7046'], True):  #迷你地城最终结果
+                pass
             else:
                 self.back()
             self.time_sleep(2)
@@ -114,6 +120,7 @@ class DailyTaskAutoG(BasePageG):
                         self.sn.log_tab.emit(self.mnq_name, r"武林道场-战斗完成")
                         return True
                 self.sn.log_tab.emit(self.mnq_name, r"武林道场战斗中")
+                _SWIPE_TIMES = 0
                 self.time_sleep(15)
             else:
                 if self.find_color(MulColorEnumG.IGAME):
@@ -134,7 +141,7 @@ class DailyTaskAutoG(BasePageG):
                             self.dm_swipe((400, 432), (925, 432), swipe_wait=2)
                         _SWIPE_TIMES += 1
                 elif self.cmp_rgb(RgbEnumG.WL_JRQR):  # 入场选择
-                    if _JION_TIMES > 2:
+                    if _JION_TIMES > 3:
                         self.sn.log_tab.emit(self.mnq_name, r"武林道场-无次数")
                         self.back()
                         return True
@@ -171,6 +178,7 @@ class DailyTaskAutoG(BasePageG):
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.pic_find(ImgEnumG.MR_BAT_EXIT, False, touch_wait=3):
                 self.sn.log_tab.emit(self.mnq_name, r"金字塔战斗中")
+                _SWIPE_TIMES = 0
                 self.time_sleep(10)
             else:
                 if self.pic_find(ImgEnumG.TEMA_ING, False):
@@ -242,6 +250,7 @@ class DailyTaskAutoG(BasePageG):
                     self.sn.log_tab.emit(self.mnq_name, r"菁英地城-战斗完成")
                     return True
                 self.sn.log_tab.emit(self.mnq_name, r"菁英地城战斗中")
+                _SWIPE_TIMES = 0
                 self.time_sleep(10)
             else:
                 if self.pic_find(ImgEnumG.TEMA_ING, False):
@@ -302,6 +311,7 @@ class DailyTaskAutoG(BasePageG):
                     self.sn.log_tab.emit(self.mnq_name, r"每日地城-战斗完成")
                     return True
                 self.sn.log_tab.emit(self.mnq_name, r"每日地城战斗")
+                _SWIPE_TIMES = 0
                 self.time_sleep(15)
             else:
                 if self.pic_find(ImgEnumG.TEMA_ING, False):
@@ -366,6 +376,7 @@ class DailyTaskAutoG(BasePageG):
                     pass
                 else:
                     self.sn.log_tab.emit(self.mnq_name, r"汤宝宝战斗中")
+                    _SWIPE_TIMES = 0
                     self.time_sleep(15)
             else:
                 if self.find_color(MulColorEnumG.IGAME):
@@ -413,6 +424,7 @@ class DailyTaskAutoG(BasePageG):
                         return True
                     self.cmp_rgb(RgbEnumG.JHXT_END, True)
                 self.sn.log_tab.emit(self.mnq_name, r"进化系统战斗中")
+                _SWIPE_TIMES = 0
                 self.time_sleep(15)
             else:
                 if self.find_color(MulColorEnumG.IGAME):
@@ -433,15 +445,15 @@ class DailyTaskAutoG(BasePageG):
                 elif self.cmp_rgb(RgbEnumG.MR_EXIT_TEAM, True):
                     pass
                 elif self.cmp_rgb(RgbEnumG.JHXT_JRQR):  # 入场选择
-                    self.touch((953, 244), touch_wait=2)
-                    self.cmp_rgb(RgbEnumG.JHXT_JRQR, True)
-                # elif self.cmp_rgb(RgbEnumG.BACK):  # 进化系统界面
-                elif self.check_ui('进化系统'):
                     if _JION_TIMES > 3:
                         self.sn.log_tab.emit(self.mnq_name, r"进化系统-无次数")
                         return True
-                    if self.cmp_rgb(RgbEnumG.JR, True):
+                    self.touch((953, 244), touch_wait=2)
+                    if self.cmp_rgb(RgbEnumG.JHXT_JRQR, True):
                         _JION_TIMES += 1
+                # elif self.cmp_rgb(RgbEnumG.BACK):  # 进化系统界面
+                elif self.check_ui('进化系统'):
+                    self.cmp_rgb(RgbEnumG.JR, True)
                 elif self.back_ksdy():
                     self.sn.log_tab.emit(self.mnq_name, r"进化系统-战斗完成")
                     return True
@@ -467,6 +479,7 @@ class DailyTaskAutoG(BasePageG):
                         _BAT = False
                 else:
                     self.sn.log_tab.emit(self.mnq_name, r"次元入侵战斗中")
+                    _SWIPE_TIMES = 0
                     self.time_sleep(15)
             else:
                 if self.pic_find(ImgEnumG.TEMA_ING, False):
@@ -546,6 +559,7 @@ class DailyTaskAutoG(BasePageG):
                 elif self.cmp_rgb(RgbEnumG.BAT_JG, True):
                     pass
                 self.sn.log_tab.emit(self.mnq_name, r"迷你地城战斗中")
+                _SWIPE_TIMES = 0
                 self.time_sleep(15)
             else:
                 if self.find_color(MulColorEnumG.IGAME):
@@ -558,6 +572,8 @@ class DailyTaskAutoG(BasePageG):
                     self.sn.log_tab.emit(self.mnq_name, r"迷你地城-战斗完成")
                     return True
                 elif self.cmp_rgb(RgbEnumG.MNDC_JG_QR, True):
+                    pass
+                elif self.cmp_rgb([562, 634, 'ee7046'], True):  # 迷你地城最终结果
                     pass
                 elif self.word_find(WorldEnumG.SET_BTN):  # 菜单界面
                     self.enum_find('快速内容', True)
@@ -572,7 +588,6 @@ class DailyTaskAutoG(BasePageG):
                         _SWIPE_TIMES += 1
                 elif self.cmp_rgb(RgbEnumG.MNDC_JRQR, True):  # 入场选择
                     pass
-                # elif self.cmp_rgb(RgbEnumG.BACK):  # 迷你地城界面
                 elif self.check_ui('迷你地城'):
                     self.cmp_rgb(RgbEnumG.MNDC_XZ, True)
                     self.cmp_rgb(RgbEnumG.MNDC_XZ2, True)
@@ -599,6 +614,7 @@ class DailyTaskAutoG(BasePageG):
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut * 3:
             if self.pic_find(ImgEnumG.MR_BAT_EXIT, False, touch_wait=3):
                 self.sn.log_tab.emit(self.mnq_name, r"星光M塔战斗中_等待15秒")
+                _SWIPE_TIMES = 0
                 self.time_sleep(15)
             else:
                 if self.find_color(MulColorEnumG.IGAME):
@@ -663,6 +679,7 @@ class DailyTaskAutoG(BasePageG):
                     self.sn.log_tab.emit(self.mnq_name, r"怪物公园-战斗死亡")
                     return True
                 self.sn.log_tab.emit(self.mnq_name, r"怪物公园战斗中")
+                _SWIPE_TIMES = 0
                 self.time_sleep(15)
             else:
                 if self.cmp_rgb([718, 632, '4c87b0']):

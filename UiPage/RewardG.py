@@ -191,8 +191,10 @@ class RewardG(BasePageG):
                 self.pic_find(ImgEnumG.UI_QR)
             elif self.pic_find(ImgEnumG.UI_QR):
                 pass
-            elif self.cmp_rgb([687, 524, 'ee7046']):
-                self.time_sleep(2)
+            elif self.cmp_rgb([687, 524, 'ee7046'],True):
+                pass
+            elif self.cmp_rgb([695,546,'ee7046'],True):
+                pass
             elif self.qr_tip():
                 self.time_sleep(2)
             else:
