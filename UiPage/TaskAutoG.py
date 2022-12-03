@@ -3,7 +3,7 @@ import random
 import time
 from Enum.ResEnum import ImgEnumG, GlobalEnumG, BatEnumG, RgbEnumG, MulColorEnumG, WorldEnumG
 from UiPage.BasePage import BasePageG
-from Utils.ExceptionTools import NotInGameErr, FuHuoRoleErr
+from Utils.ExceptionTools import NotInGameErr, FuHuoRoleErr, BagFullerr
 from Utils.LoadConfig import LoadConfig
 
 
@@ -125,35 +125,25 @@ class TaskAutoG(BasePageG):
                     for i in range(3):
                         self.cmp_rgb([737, 395, '617a95'], True)
                 else:
-                    # if self.find_info('bat_auto') or self.check_is_stop():
-                    # if self.rgb(449, 654)[0] == 'a' or '1':
                     if self.find_color([70, 179, 339, 390, 'ff00ce-000000']):
                         self.sn.log_tab.emit(self.mnq_name, r"做完主线任务停止任务")
                         return 1
-                    if not self.word_find(WorldEnumG.TASK_AUTO):
-                        if time.time() - s_time > GlobalEnumG.TaskCheckTime:
+                    if not self.word_find(WorldEnumG.TASK_AUTO) and self.find_color(MulColorEnumG.IGAME):
+                        if self.find_color(MulColorEnumG.IGAME):
                             self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
                                             **kwargs)
-                            s_time = time.time()
-                        if self.word_find(WorldEnumG.BAT_AUTO) or self.cmp_rgb_list(
-                                ['110f0c', '110f0d', '11100d', '11100c'], (431, 654)):
+                            if self.pic_find(ImgEnumG.BAG_MAX_IMG):
+                                self.sn.log_tab.emit(self.mnq_name, r"背包满了,清理背包")
+                                raise BagFullerr
+                        if not self.mul_color(MulColorEnumG.TASK_POINT, True, touch_wait=0):
+                            self.pic_find(ImgEnumG.TASK_TAB)
                             if not self.mul_color(MulColorEnumG.TASK_POINT, True, touch_wait=0):
-                                self.pic_find(ImgEnumG.TASK_TAB)
-                                if not self.mul_color(MulColorEnumG.TASK_POINT, True, touch_wait=0):
-                                    self.task_block()
-                        else:
-                            if self.check_is_stop():
-                                self.pic_find(ImgEnumG.TASK_TAB)
-                                if not self.mul_color(MulColorEnumG.TASK_POINT, True, touch_wait=0):
-                                    self.task_block()
-                        self.time_sleep(5)
+                                self.task_block()
                     else:
-                        self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
-                                        **kwargs)
+                        if self.find_color(MulColorEnumG.IGAME):
+                            self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
+                                            **kwargs)
                         self.time_sleep(2)
-                    # if self.check_is_stop():
-                    #     if not self.find_info('task_point', True):
-                    #         self.pic_find(ImgEnumG.TASK_TAB)
 
     def level_task(self, stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG, **kwargs):
         """到达等级后执行任务"""

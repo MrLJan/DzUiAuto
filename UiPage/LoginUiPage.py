@@ -21,6 +21,8 @@ class LoginUiPageG(BasePageG):
         while time.time() - s_time < GlobalEnumG.LoginGameTimeOut:
             if self.pic_find(ImgEnumG.GAME_ICON, False):
                 self.start_game()
+            elif self.pic_find(ImgEnumG.UI_ERR_IMG):
+                pass
             elif self.pic_find(ImgEnumG.LOGIN_FLAG, False) or self.word_find(WorldEnumG.NEXON):
                 if not self.cmp_rgb(RgbEnumG.GX_XZ, True):
                     self.touch((875, 390))  # 点击空白区域登录
@@ -142,8 +144,16 @@ class LoginUiPageG(BasePageG):
             elif self.net_err():
                 self.sn.log_tab.emit(self.mnq_name, r"网络断开_等待重连")
                 raise NetErr
-            # elif not self.check_now_app():
-            #     raise NotInGameErr
+            elif self.pic_find(ImgEnumG.MOGU, False) or self.pic_find(ImgEnumG.MOGU1, False) or self.pic_find(
+                    ImgEnumG.JUBAO,
+                    False):
+                self.sn.log_tab.emit(self.mnq_name, r"出现举报/蘑菇")
+                self.stop_game()
+                raise MoGuErr
+            elif self.pic_find(ImgEnumG.UI_ERR_IMG):
+                pass
+            elif not self.check_now_app():
+                raise NotInGameErr
             elif self.find_color(MulColorEnumG.IGAME):
                 self.sn.log_tab.emit(self.mnq_name, r"在游戏主界面")
                 if self.cmp_rgb(RgbEnumG.FUHUO_BTN):

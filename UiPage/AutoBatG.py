@@ -100,6 +100,8 @@ class AutoBatG(BasePageG):
                     if louti_x in [1096]:
                         self.double_jump('left', jump_mode=j_mode)
                     return True, x1
+                if i==5:
+                    self.move_turn('up', 0.56)
                 if x1 - louti_x < 0:
                     # if i > 3:
                     #     self.double_jump('right', jump_mode=j_mode)
@@ -140,7 +142,6 @@ class AutoBatG(BasePageG):
                     if t > 0.5:
                         if saodi_mode == '0':
                             self.move_turn('z', 0.23)
-
         res1, x1, y1 = self._get_move_xy()
         return True, x1
 
@@ -168,6 +169,7 @@ class AutoBatG(BasePageG):
                     self.time_sleep(r)
                     self.sn.log_tab.emit(self.mnq_name, f"休息结束")
                     wait_queue.task_over(True)
+                    return True
                 else:
                     self.move_turn('up', 1.42)
                     if louti_x in [1206, 1020, 1065, 1035]:  # 绳子长的补一1206 偏僻泥沼
@@ -176,11 +178,7 @@ class AutoBatG(BasePageG):
                         self.move_turn('up', 0.67)
                     if louti_x in [1000]:  # 龙蛋跳一下
                         self.move_turn('x', 0.38)
-                    # self.keypress_and_up(self.dm, "up", 2.12)
-                return True
-            # if i == 1:
-            #     self.move_turn('up', 1.84)
-            # self.keypress_and_up(self.dm, "up", 1.84)
+                    return True
         return False
 
     def keep_bat(self, turn, auto_time, saodi_mode, j_mode):
@@ -293,9 +291,12 @@ class AutoBatG(BasePageG):
                         self.sn.log_tab.emit(self.mnq_name, f"离线休息{_t * 30}秒")
                         self.time_sleep(_t * 30)
             if use_autobat:
-                if time.time() - _use > use_time * 10:
+                if time.time() - _use > use_time*10:
                     _use = time.time()
+                    self.sn.log_tab.emit(self.mnq_name, f"使用挂机卡{use_time}秒")
                     self.use_auto(use_time, **kwargs)
+                else:
+                    self.sn.log_tab.emit(self.mnq_name, f"已按键{round(time.time() - _use)}秒_达到{use_time*10}秒后开启自动挂机卡")
             if task_id == '4':
                 if not team_queue.check_queue(kwargs['设备名称']):
                     self.pic_find(ImgEnumG.EXIT_TEAM, True)
@@ -392,7 +393,7 @@ class AutoBatG(BasePageG):
                     if map_data[-1][-1] > 900:  # 随机下跳概率
                         r = random.randint(0, 1)
                     else:
-                        r = random.randint(0, 3)
+                        r = random.randint(0, 2)
                     if r == 0 and map_y2 == 134:
                         self.jump_down_touch()
                     # if 1245 < map_x2 < 1250:

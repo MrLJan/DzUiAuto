@@ -9,7 +9,7 @@ from Utils.OtherTools import OT
 class GlobalEnumG:
     if not os.path.exists(OT.abspath(f"/Res/配置文件.ini")):
         LoadConfig.init_config()
-    Ver = '2.28'
+    Ver = '2.29'
     TestLog = True if LoadConfig.getconf('全局配置', '日志') == '1' else False
     TouchWait = int(LoadConfig.getconf('全局配置', '点击延时'))
     GamePackgeName = r'com.nexon.maplem.global'  # r'com.nexon.maplem.japan'  # r'com.nexon.maplem.global'
@@ -130,9 +130,10 @@ class ImgEnumG:
     UI_CLOSE = [(1060, 24, 1149, 97), '222222', '弹窗']
     UI_QR = [(0, 0, 1280, 720), '222222', '确认']
     UI_QBLQ = [(0, 0, 1280, 720), '222222', '全部领取']
-    MOGU = [(162, 10, 1120, 694), '222222', '蘑菇']
-    MOGU1 = [(162, 10, 1120, 694), '222222', '蘑菇1']
-    JUBAO = [(162, 10, 1120, 694), "222222", r'举报']
+    MOGU = [(162, 10, 1120, 694), '111111', '蘑菇']
+    MOGU1 = [(162, 10, 1120, 694), '111111', '蘑菇1']
+    JUBAO = [(162, 10, 1120, 694), "111111", r'举报']
+    UI_ERR_IMG = [0, 0, 1280, 720, "111111",r"界面卡死"]
     # 活动
     QD_1 = [(1218, 12, 1265, 55), '222222', '活动签到1']
     # 登录相关
@@ -589,6 +590,7 @@ class MulColorEnumG:
     BOSS_FUHUO = [399, 459, 941, 617, 'C6481E-000000']  # boss战死亡
     XT_FLAG = [196, 69, 390, 141, 'FF3303-001203']
     AUTO_ING = [397, 644, 449, 663, '91F9FC-000101']  # AUTO进行中
+    BAG_MAX = [1155, 44, 1181, 61, 'EB7030-145C1F']
 
 
 class WorldEnumG:
@@ -609,7 +611,7 @@ class WorldEnumG:
     SLEEP_REWARD = [0, 16, 87, 201, 713, '休息奖励', 'BBBEC3-44413C', 0.9]
     HD_CZZY = [0, 16, 87, 201, 713, '成长支援', 'BBBEC3-44413C', 0.9]
     TASK_ARROW = [0, 1152, 472, 1266, 533, '任务箭头', 'DADADA-252525', 0.9]
-    TASK_AUTO = [0, 381, 625, 468, 676, '自动任务', 'D6D6D5-29292A', 0.8]
+    TASK_AUTO = [0, 381, 625, 468, 676, '自动任务', 'C4C3C0-3B3C3F', 0.8]
     BAT_AUTO = [0, 388, 638, 458, 669, '自动战斗', 'C4C3C2-3B3C3D', 0.8]
     BAT_XC = [0, 1037, 593, 1115, 641, '卸除', 'D7D7D7-282828', 0.9]
     SKIP = [0, 1165, 11, 1250, 46, '略过', 'B5B5B5-4A4A4A', 0.9]

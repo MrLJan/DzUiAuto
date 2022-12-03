@@ -71,7 +71,7 @@ class BasePageG(ColorCvTools, DmImgTools):
                 raise NotInGameErr
             elif self.cmp_rgb(RgbEnumG.EXIT_FOU, True):
                 return True
-            elif self.word_find(WorldEnumG.SKIP,True):
+            elif self.word_find(WorldEnumG.SKIP, True):
                 pass
             elif self.find_color(MulColorEnumG.IGAME):
                 return True
@@ -129,7 +129,7 @@ class BasePageG(ColorCvTools, DmImgTools):
 
     def check_now_app(self):
         now_app = MnqTools().check_now_runapp(self.mnq_name)
-        if now_app in ['com.nexon.maplem.global','com.google.android.gms']:
+        if now_app in ['com.nexon.maplem.global', 'com.google.android.gms']:
             # self.sn.log_tab.emit(self.mnq_name, r"当前运行正常")
             return True
         else:
@@ -137,7 +137,6 @@ class BasePageG(ColorCvTools, DmImgTools):
             MnqTools().stop_mnq_app(self.mnq_name, now_app)
             MnqTools().start_mnq_app(self.mnq_name, 'com.nexon.maplem.global')
             return False
-
 
     def check_is_stop(self):
         self.sn.log_tab.emit(self.mnq_name, r"检查界面是否卡住")

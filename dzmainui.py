@@ -95,7 +95,7 @@ class DzUi:
         self.ui_main.save_setting_btn.clicked.connect(self.save_setting)
         self.ui_main.save_setting_btn_2.clicked.connect(self.save_setting)
         self.set_setting_label(self.ui_main.line_mnqpath, "路径", "模拟器路径")
-        self.set_combobox_text(self.ui_main.mode_choose_box, "路径", "绑定模式")
+        self.set_bingmode(self.ui_main.mode_choose_box, "路径", "绑定模式")
         self.set_lineedit_text(self.ui_main.start_mnq_index_edit, "全局配置", "启动模拟器序号")
         self.set_lineedit_text(self.ui_main.auto_time_edit, "全局配置", "离线时长")
         self.set_lineedit_text(self.ui_main.autobat_time_edit, "全局配置", "挂机卡时长")

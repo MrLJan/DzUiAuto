@@ -137,6 +137,8 @@ class TeamStateG(BasePageG):
                                         team_queue.task_over(kwargs['设备名称'])
                         if team_event.is_set():
                             for wt in range(6):
+                                if not team_event.is_set():
+                                    break
                                 if _WAIT_CREAT > 5:
                                     if team_queue.queue.empty():
                                         team_event.clear()
@@ -315,6 +317,7 @@ class TeamStateG(BasePageG):
             elif _USE_MOVE and self.cmp_rgb(RgbEnumG.MAP_XLQR, True):
                 pass
             elif self.cmp_rgb(RgbEnumG.MAP_ERR, True):
+                self.sn.log_tab.emit(self.mnq_name, r"无法瞬间移动,改从星图出发")
                 MOVE_FLAG = True  # 无法瞬间移动,该从星图出发
             elif self.cmp_rgb(RgbEnumG.BG_PINDAO):
                 if _USE_MOVE:
@@ -542,7 +545,7 @@ class TeamStateG(BasePageG):
         _POS_LIST = []  # 识别出的带密码的队伍
         _PUT_PWD = False  # 输入密码操作
         _C_FLAG = False
-        # _C_TEAM = False  # 更换密码队伍
+        _C_TEAM = False  # 更换密码队伍
         _S_TEAM = False  # 滑动队伍列表
         _F_FLAG = False  # 首次检查加入队伍
         _SWIPE_TIMES = 0
@@ -561,8 +564,7 @@ class TeamStateG(BasePageG):
             elif self.cmp_rgb(RgbEnumG.TEAM_QRMM):
                 if _C_FLAG:
                     self.back()
-                    _C_FLAG = False
-                    # _C_TEAM = True
+                    _C_TEAM=True
                 else:
                     if not _PUT_PWD:
                         for pwd in team_pwd:
@@ -577,6 +579,8 @@ class TeamStateG(BasePageG):
                             self.back()
                             _PUT_PWD = False
             elif self.cmp_rgb(RgbEnumG.BG_PINDAO):
+                if _C_TEAM:
+                    _C_FLAG=False
                 if _C_FLAG:
                     self.back()
                 # if self.ocr_find(ImgEnumG.JION_TEAM_OCR):
@@ -603,7 +607,11 @@ class TeamStateG(BasePageG):
                         if len(_POS_LIST) == 0:
                             _S_TEAM = True
                     else:
-                        self.cmp_rgb(RgbEnumG.TEAM_SQJR, True)
+                        if self.cmp_rgb(RgbEnumG.TEAM_SQJR, True):
+                            _POS_LIST.pop(0)
+                            if len(_POS_LIST) == 0:
+                                _S_TEAM = True
+                            _C_TEAM=False
             else:
                 self.check_close()
         return False

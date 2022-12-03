@@ -214,10 +214,10 @@ class ColorCvTools:
 
     def find_mr_task(self, find_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog):
         """查找每日任务入口"""
-        return self.word_find([1, 16, 160, 1265, 515, find_info, 'D4D3D3-2B2C2C', 0.9], clicked, touch_wait, t_log)
+        return self.word_find([1, 16, 160, 1265, 515, find_info, 'D4D3D3-2B2C2C', 0.8], clicked, touch_wait, t_log)
 
     def enum_find(self, find_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog):
-        return self.word_find([0, 804, 66, 1263, 622, find_info, 'C5C6C7-3A3938', 0.9], clicked, touch_wait, t_log)
+        return self.word_find([0, 804, 66, 1263, 622, find_info, 'C5C6C7-3A3938', 0.8], clicked, touch_wait, t_log)
 
     def check_hp_mp(self):
         """检查药品是否为空"""
@@ -482,14 +482,14 @@ class DmImgTools:
 
 if __name__ == '__main__':
     dev = DevicesConnect.dm_init()
-    DevicesConnect.bind_windows(dev, 794136)
+    DevicesConnect.bind_windows(dev, 33428560)
     o = ColorCvTools()
     o.dev = dev
     a = DmImgTools()
     a.dev = dev
     # r=a.pic_find(ImgEnumG.EXIT_TEAM,t_log=False)
     # r=a.dm_swipe((1093, 535), (1093, 314))
-    r=o.cmp_rgb([687, 524, 'ee7046'], True,t_log=False)
+    r=o.find_mr_task('星力战场',True,t_log=False)
     # r=o.find_color([495,237,794,344,'EB8D6B-0B2229'],True,t_log=False)
     # r=o.word_find(WorldEnumG.INGAME_FLAG,False,t_log=False)
     # r=o.mul_color(MulColorEnumG.LB_TIP,False,t_log=False)
