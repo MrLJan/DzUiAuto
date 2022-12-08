@@ -1074,6 +1074,7 @@ class DzUi:
                 return False
             task_name = self.ui_main.windows_pid.item(row_num, 2).text()
             dm_obj = self.dev_obj_list[mnq_name]
+            hwnd = int(self.ui_main.windows_pid.item(row_num, 13).text())
             sub_hwnd = int(self.ui_main.windows_pid.item(row_num, 12).text())
             if task_name == "":
                 if message:
@@ -1083,6 +1084,7 @@ class DzUi:
                 # devname = self.dev_obj_list[mnq_name][0]  # devname 设备名,mnq_name是标题名
                 # try:
                 ThreadTools("初始化", self.init_dm, args=(dm_obj, sub_hwnd)).start()
+                dm_obj.SetWindowSize(hwnd,1321,755)
                 self.dev_list[mnq_name] = dm_obj  # dev是连接成功后的设备对象
                 devinfo = (dm_obj, mnq_name)
                 # except:

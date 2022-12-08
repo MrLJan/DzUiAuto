@@ -6,15 +6,7 @@
       <change beforePath="$PROJECT_DIR$/Enum/ResEnum.py" beforeDir="false" afterPath="$PROJECT_DIR$/Enum/ResEnum.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/QtUI/dzmain.ui" beforeDir="false" afterPath="$PROJECT_DIR$/QtUI/dzmain.ui" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Res/LDPlayer.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/LDPlayer.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/dict/bat_num.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/dict/bat_num.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/dict/gold_num.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/dict/gold_num.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Res/img/dict/xt_map.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/dict/xt_map.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/配置文件.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/配置文件.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/AutoBatG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/AutoBatG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/BasePage.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/BasePage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/DailyTaskG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/DailyTaskG.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/LoginUiPage.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/LoginUiPage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UiPage/RewardG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/RewardG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utils/OpencvG.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/OpencvG.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dzmainui.py" beforeDir="false" afterPath="$PROJECT_DIR$/dzmainui.py" afterDir="false" />
     </list>
@@ -92,7 +84,7 @@
       <recent name="D:\DzAutoUi\Enum" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python.OpencvG">
     <configuration name="MnqTools" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="DzUiAuto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -207,8 +199,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main" />
         <item itemvalue="Python.OpencvG" />
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.dzmainui" />
         <item itemvalue="Python.ResEnum" />
         <item itemvalue="Python.MnqTools" />

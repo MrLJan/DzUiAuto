@@ -257,7 +257,7 @@ class ColorCvTools:
     def map_ex(self, map_name, type_id=1):
         if type_id == 1:
             """星图"""
-            return self.word_find([7, 40, 87, 202, 121, f"{map_name}ex", 'ffffff-555555', 0.9], clicked=False)
+            return self.word_find([7, 40, 87, 202, 121, f"{map_name}ex", 'ffffff-555555', 0.9], clicked=False,t_log=False)
         else:
             return self.word_find([11, 40, 87, 202, 121, f"{map_name}ex", 'B6B6B6-494949', 0.9], clicked=False)
 
@@ -484,13 +484,14 @@ class DmImgTools:
 
 if __name__ == '__main__':
     dev = DevicesConnect.dm_init()
-    DevicesConnect.bind_windows(dev, 12656904)
+    DevicesConnect.bind_windows(dev, 258156070)
     o = ColorCvTools()
     o.dev = dev
     a = DmImgTools()
     a.dev = dev
     # r=o.word_find(WorldEnumG.EXIT_TEAM,t_log=False)
-    r = o.check_num(3)
+    # r = dev.SetWindowSize(3604730,1321,755)
+    r=o.map_ex('110')
     # r=o.mul_color(MulColorEnumG.INGAME_FLAG,False,t_log=False)
     # r=a.dm_swipe((1093, 535), (1093, 314))
     # r=o.find_mr_task('星力战场',True,t_log=False)
