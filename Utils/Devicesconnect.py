@@ -36,16 +36,19 @@ class DevicesConnect:
                                            "dx.keypad.input.lock.api|dx.keypad.state.api|dx.keypad.api",
                                            "", 101)
         elif bind_mode == '模式二':
+            bing_res = dm_obj.BindWindowEx(sub_hwnd, "dx2",
+                                           "dx.mouse.position.lock.api|dx.mouse.position.lock.message|dx.mouse.clip.lock.api|dx.mouse.input."
+                                           "lock.api|dx.mouse.state.api|dx.mouse.api|dx.mouse.cursor",
+                                           "dx.keypad.input.lock.api|dx.keypad.state.api|dx.keypad.api", "", 101)
+        elif bind_mode == '模式三':
+            bing_res = dm_obj.BindWindowEx(sub_hwnd, "dx.graphic.opengl", "windows3",
+                                           "dx.keypad.input.lock.api|dx.keypad.state.api|dx.keypad.api",
+                                           "dx.public.down.cpu", 101)
+        elif bind_mode == '模式四':
             bing_res = dm_obj.BindWindowEx(sub_hwnd, "dx.graphic.opengl",
                                            "dx.mouse.position.lock.api|dx.mouse.position.lock.message|dx.mouse.clip.lock.api|dx.mouse.input."
                                            "lock.api|dx.mouse.state.api|dx.mouse.api|dx.mouse.cursor",
                                            "dx.keypad.input.lock.api|dx.keypad.state.api|dx.keypad.api", "", 101)
-
-
-        else:
-            bing_res = dm_obj.BindWindowEx(sub_hwnd, "dx.graphic.opengl", "windows3",
-                                           "dx.keypad.input.lock.api|dx.keypad.state.api|dx.keypad.api",
-                                           "dx.public.down.cpu", 101)
         # dm_obj.SetWindowSize(sub_hwnd, 1280, 720)
         dm_obj.SetMouseDelay('windows', 100)
         dm_obj.SetKeypadDelay('dx', 50)
@@ -61,7 +64,7 @@ class DevicesConnect:
                                                "dx.keypad.input.lock.api|dx.keypad.state.api|dx.keypad.api",
                                                "dx.public.active.api2", 101)
             elif bind_mode == '模式二':
-                bing_res = dm_obj.BindWindowEx(sub_hwnd, "dx.graphic.opengl",
+                bing_res = dm_obj.BindWindowEx(sub_hwnd, "dx2",
                                                "dx.mouse.position.lock.api|dx.mouse.position.lock.message|dx.mouse.clip.lock.api|dx.mouse.input."
                                                "lock.api|dx.mouse.state.api|dx.mouse.api|dx.mouse.cursor",
                                                "dx.keypad.input.lock.api|dx.keypad.state.api|dx.keypad.api", "", 101)
@@ -69,6 +72,11 @@ class DevicesConnect:
                 bing_res = dm_obj.BindWindowEx(sub_hwnd, "dx.graphic.opengl", "windows3",
                                                "dx.keypad.input.lock.api|dx.keypad.state.api|dx.keypad.api",
                                                "dx.public.down.cpu", 101)
+            elif bind_mode =='模式四':
+                bing_res = dm_obj.BindWindowEx(sub_hwnd, "dx.graphic.opengl",
+                                               "dx.mouse.position.lock.api|dx.mouse.position.lock.message|dx.mouse.clip.lock.api|dx.mouse.input."
+                                               "lock.api|dx.mouse.state.api|dx.mouse.api|dx.mouse.cursor",
+                                               "dx.keypad.input.lock.api|dx.keypad.state.api|dx.keypad.api", "", 101)
 
             # dm_obj.SetWindowSize(sub_hwnd, 1280, 720)
             dm_obj.SetMouseDelay('windows', 100)

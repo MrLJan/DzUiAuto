@@ -319,6 +319,8 @@ class AutoBatG(BasePageG):
                 if not self.find_color(MulColorEnumG.IGAME):
                     return -1
                 else:
+                    if not self.mul_color(MulColorEnumG.INGAME_FLAG) and self.find_color(MulColorEnumG.IGAME):
+                        self.back()
                     if i % 10 == 0:
                         _res_hp_mp = self.check_hp_mp()
                         if _res_hp_mp != '':

@@ -75,7 +75,7 @@ class DailyTaskAutoG(BasePageG):
     def back_mr_main(self):
         self.sn.log_tab.emit(self.mnq_name, r"返回")
         _s_time = time.time()
-        while time.time() - _s_time < GlobalEnumG.UiCheckTimeOut:
+        while time.time() - _s_time < GlobalEnumG.SelectCtrTimeOut:
             if self.cmp_rgb([13, 16, '344154'], True, touch_wait=3):
                 pass
             elif self.cmp_rgb(RgbEnumG.EXIT_FOU, True, touch_wait=GlobalEnumG.ExitBtnTime) or self.cmp_rgb(
@@ -130,7 +130,8 @@ class DailyTaskAutoG(BasePageG):
                 elif self.cmp_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
                     pass
                 elif self.word_find(WorldEnumG.SET_BTN):  # 菜单界面
-                    self.enum_find('快速内容', True)
+                    if not self.enum_find('快速内容', True):
+                        self.back()
                 elif self.cmp_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.find_mr_task('武林道场', True):
                         if _SWIPE_TIMES < 4:
@@ -198,7 +199,8 @@ class DailyTaskAutoG(BasePageG):
                     else:
                         self.cmp_rgb(RgbEnumG.ENUM_BTN, True)
                 if self.word_find(WorldEnumG.SET_BTN):  # 菜单界面
-                    self.enum_find('快速内容', True)
+                    if not self.enum_find('快速内容', True):
+                        self.back()
                 elif self.cmp_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.find_mr_task('金字塔', True):
                         if _SWIPE_TIMES < 4:
@@ -262,7 +264,8 @@ class DailyTaskAutoG(BasePageG):
                         if not WAIT_TEAM:
                             self.cmp_rgb(RgbEnumG.ENUM_BTN, True)
                     if self.word_find(WorldEnumG.SET_BTN):  # 菜单界面
-                        self.enum_find('快速内容', True)
+                        if not self.enum_find('快速内容', True):
+                            self.back()
                     elif self.cmp_rgb(RgbEnumG.KSDY):  # 快速单元界面
                         if not self.find_mr_task('菁英地城', True):
                             if _SWIPE_TIMES < 4:
@@ -322,7 +325,8 @@ class DailyTaskAutoG(BasePageG):
                     if self.find_color(MulColorEnumG.IGAME):
                         self.cmp_rgb(RgbEnumG.ENUM_BTN, True)
                     if self.word_find(WorldEnumG.SET_BTN):  # 菜单界面
-                        self.enum_find('快速内容', True)
+                        if not self.enum_find('快速内容', True):
+                            self.back()
                     elif self.cmp_rgb(RgbEnumG.KSDY):  # 快速单元界面
                         if not self.find_mr_task('每日地城', True):
                             if _SWIPE_TIMES < 4:
@@ -383,7 +387,8 @@ class DailyTaskAutoG(BasePageG):
                     # self.cmp_rgb(RgbEnumG.ENUM_BTN,True)
                     self.cmp_rgb(RgbEnumG.ENUM_BTN, True)
                 if self.word_find(WorldEnumG.SET_BTN):  # 菜单界面
-                    self.enum_find('快速内容', True)
+                    if not self.enum_find('快速内容', True):
+                        self.back()
                 elif self.cmp_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.find_mr_task('汤宝宝', True):
                         if _SWIPE_TIMES < 4:
@@ -432,7 +437,8 @@ class DailyTaskAutoG(BasePageG):
                 if self.cmp_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
                     pass
                 elif self.word_find(WorldEnumG.SET_BTN):  # 菜单界面
-                    self.enum_find('快速内容', True)
+                    if not self.enum_find('快速内容', True):
+                        self.back()
                 elif self.cmp_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.find_mr_task('进化系统', True):
                         if _SWIPE_TIMES < 4:
@@ -502,7 +508,8 @@ class DailyTaskAutoG(BasePageG):
                     else:
                         self.cmp_rgb(RgbEnumG.ENUM_BTN, True)
                 if self.word_find(WorldEnumG.SET_BTN):  # 菜单界面
-                    self.enum_find('快速内容', True)
+                    if not self.enum_find('快速内容', True):
+                        self.back()
                 elif self.cmp_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
                     pass
                 elif self.cmp_rgb(RgbEnumG.KSDY):  # 快速单元界面
@@ -576,7 +583,8 @@ class DailyTaskAutoG(BasePageG):
                 elif self.cmp_rgb([562, 634, 'ee7046'], True):  # 迷你地城最终结果
                     pass
                 elif self.word_find(WorldEnumG.SET_BTN):  # 菜单界面
-                    self.enum_find('快速内容', True)
+                    if not self.enum_find('快速内容', True):
+                        self.back()
                 elif self.cmp_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.find_mr_task('迷你地城', True):
                         if _SWIPE_TIMES < 4:
@@ -627,7 +635,8 @@ class DailyTaskAutoG(BasePageG):
                     #     self.ksnr_pos = tuple(pos)
                     # else:
                     #     self.touch(self.ksnr_pos, touch_wait=2)
-                    self.enum_find('快速内容', True)
+                    if not self.enum_find('快速内容', True):
+                        self.back()
                 elif self.cmp_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     # if not self.ocr_find([ImgEnumG.MR_AREA, '星光M塔'], True):
                     if not self.find_mr_task('星光塔', True):
@@ -695,7 +704,8 @@ class DailyTaskAutoG(BasePageG):
                 if self.cmp_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
                     pass
                 elif self.word_find(WorldEnumG.SET_BTN):  # 菜单界面
-                    self.enum_find('快速内容', True)
+                    if not self.enum_find('快速内容', True):
+                        self.back()
                 elif self.cmp_rgb(RgbEnumG.KSDY):  # 快速单元界面
                     if not self.find_mr_task('怪物公园', True):
                         if _SWIPE_TIMES < 4:
@@ -974,7 +984,8 @@ class DailyTaskAutoG(BasePageG):
                         if _WAIT_TEAM:
                             self.back()
                         else:
-                            self.enum_find('快速内容', True)
+                            if not self.enum_find('快速内容', True):
+                                self.back()
                     elif self.cmp_rgb(RgbEnumG.KSDY):  # 快速单元界面
                         if _WAIT_TEAM:
                             self.back()
@@ -1040,7 +1051,8 @@ class DailyTaskAutoG(BasePageG):
                 if self.cmp_rgb(RgbEnumG.EXIT_TEAM_QR, True):  # 离开队伍
                     pass
                 elif self.word_find(WorldEnumG.SET_BTN):  # 菜单界面
-                    self.enum_find('快速内容', True)
+                    if not self.enum_find('快速内容', True):
+                        self.back()
                 elif self.cmp_rgb(RgbEnumG.GH_JR, True):
                     _JION_TIMES += 1  # 确认加入公会按钮
                 elif self.cmp_rgb(RgbEnumG.KSDY):  # 快速单元界面

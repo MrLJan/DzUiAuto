@@ -70,7 +70,6 @@ class RewardG(BasePageG):
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.find_color(MulColorEnumG.IGAME):
                 if _WQ and _FJ:
-                    self.back()
                     return True
                 elif self.cmp_rgb([720, 395, '617'], True):
                     pass

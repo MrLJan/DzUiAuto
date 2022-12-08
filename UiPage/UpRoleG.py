@@ -181,7 +181,7 @@ class UpRoleG(BasePageG):
                     else:
                         self.back()
             else:
-                if time.time() - s_time > 30:
+                if time.time() - s_time > 10:
                     s_time = time.time()
                     self.check_close()
         raise ControlTimeOut(r'买药异常超时')
@@ -249,9 +249,9 @@ class UpRoleG(BasePageG):
             else:
                 if self.cmp_rgb([723, 532, 'ee7046'], True):
                     pass
-                elif time.time() - s_time > GlobalEnumG.UiCheckTimeOut / 2:
-                    if not self.check_close():
-                        return -1
+                else:
+                    self.check_close()
+
         raise ControlTimeOut(r'装备技能-异常超时')
 
     def usepet(self, **kwargs):

@@ -9,7 +9,7 @@ from Utils.OtherTools import OT
 class GlobalEnumG:
     if not os.path.exists(OT.abspath(f"/Res/配置文件.ini")):
         LoadConfig.init_config()
-    Ver = '2.29'
+    Ver = '2.32'
     TestLog = True if LoadConfig.getconf('全局配置', '日志') == '1' else False
     TouchWait = int(LoadConfig.getconf('全局配置', '点击延时'))
     GamePackgeName = r'com.nexon.maplem.global'  # r'com.nexon.maplem.japan'  # r'com.nexon.maplem.global'
@@ -133,7 +133,7 @@ class ImgEnumG:
     MOGU = [(162, 10, 1120, 694), '111111', '蘑菇']
     MOGU1 = [(162, 10, 1120, 694), '111111', '蘑菇1']
     JUBAO = [(162, 10, 1120, 694), "111111", r'举报']
-    UI_ERR_IMG = [0, 0, 1280, 720, "111111",r"界面卡死"]
+    UI_ERR_IMG = [(0, 0, 1280, 720), "111111",r"界面卡死"]
     # 活动
     QD_1 = [(1218, 12, 1265, 55), '222222', '活动签到1']
     # 登录相关
@@ -239,7 +239,7 @@ class ImgEnumG:
     TEAM_TAB = [(4, 172, 82, 363), '333333', '组队页签']
     TEAM_XZDW = [(86, 333, 215, 381), '222222', '寻找队伍']
     PWD_TEAM = [(897, 189, 964, 533), '111111', '密码队伍']
-    EXIT_TEAM = [(290, 187, 328, 446), '222222', '离开队伍']
+    EXIT_TEAM = [(283,185,336,458), '222222', '离开队伍']
     SKIP_NEW = [(2, 72, 491, 212), '111111', '新内容']
     JN_TEACH = [(790, 569, 981, 717), '111111', '教学']
     GX_XZ_ING = [(0, 0, 1280, 720), '222222', '数据更新']
@@ -424,6 +424,7 @@ class RgbEnumG:
 
     EXIT_TEAM = [669, 534, 'ee7046']  # 离队确认
     TEAM_ZDJR = [99, 277, 'ee7046']  # 自动加入
+    HD_TIP2=[1174,180,'ffffff']
     TEAM_ZDJR_QR = [1126, 162, '617a95']  # 自动加入-确认
     TEAM_CLDW = [99, 214, '4c87b0']  # 创立队伍按钮
     TEAM_CLDW_M = [53, 671, 'f2f2f2']  # 创立队伍界面
@@ -536,6 +537,9 @@ class MulColorEnumG:
                    "-5|-4|ECEDEE,-5|-18|E3E4E5-090909,-5|-24|3F454D-000001,-11|1|41454E-000100,-18|1|ECEDEE,"
                    "-23|1|41454E-000100,-3|13|ECEDED,-3|18|42464E,11|-2|D9DADC-131312,17|-2|41454E",
                    0.9, 0, '登录标记']
+    INGAME_FLAG2=[774,10,1266,685,"D3D1CE","-285|-282|ECEDEE",0.9,0,'登录标记2']
+
+
     SET_BTN = [1213, 641, 1254, 681, "FFFFFF", "-11|8|FFFFFF,-11|20|FFFFFF,1|26|FFFFFF,11|20|FFFFFF,11|8|FFFFFF", 0.9,
                0, '菜单设置']
 
@@ -591,6 +595,7 @@ class MulColorEnumG:
     XT_FLAG = [196, 69, 390, 141, 'FF3303-001203']
     AUTO_ING = [397, 644, 449, 663, '91F9FC-000101']  # AUTO进行中
     BAG_MAX = [1155, 44, 1181, 61, 'EB7030-145C1F']
+    TASK_ING=[388,629,456,682,'EFD59F-050505']
 
 
 class WorldEnumG:
@@ -605,13 +610,13 @@ class WorldEnumG:
     NET_ERR = [0, 540,315,752,359, '自动连线中', 'C2A904-3D3504', 0.8]
     BACN_KSDY = [0, 223, 36, 1135, 705, '移动至选单', 'D5E3EC-2A1C13', 0.9]
     QR_BTN = [0, 228, 73, 1014, 665, '确认', 'F8C5B4-073A4B', 0.9]
-    EXIT_TEAM = [0, 288, 174, 328, 499, '退出队伍', 'DADBDC-252423', 0.9]
+    EXIT_TEAM = [0, 288, 174, 328, 499, '退出队伍', 'DADBDC-252423', 0.8]
     AUTO_JION = [0, 88, 198, 210, 382, '自动加入中', 'CCCACC-333233', 0.9]
     LOGIN_REWARD = [0, 16, 87, 201, 713, '登入奖励', 'BBBEC3-44413C', 0.9]
     SLEEP_REWARD = [0, 16, 87, 201, 713, '休息奖励', 'BBBEC3-44413C', 0.9]
     HD_CZZY = [0, 16, 87, 201, 713, '成长支援', 'BBBEC3-44413C', 0.9]
     TASK_ARROW = [0, 1152, 472, 1266, 533, '任务箭头', 'DADADA-252525', 0.9]
-    TASK_AUTO = [0, 381, 625, 468, 676, '自动任务', 'C4C3C0-3B3C3F', 0.8]
+    TASK_AUTO = [0,411,644,441,666, '自动任务', 'DBDBDB-242424', 0.8]
     BAT_AUTO = [0, 388, 638, 458, 669, '自动战斗', 'C4C3C2-3B3C3D', 0.8]
     BAT_XC = [0, 1037, 593, 1115, 641, '卸除', 'D7D7D7-282828', 0.9]
     SKIP = [0, 1165, 11, 1250, 46, '略过', 'B5B5B5-4A4A4A', 0.9]

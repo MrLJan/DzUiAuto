@@ -28,6 +28,7 @@ class TaskAutoG(BasePageG):
         self.sn.log_tab.emit(self.mnq_name, r"任务进行中")
         _COLOR = self.rgb(447, 699)
         _COLOR_1 = 'FFFFFF'
+        __i = 0
         while True:
             self.sn.log_tab.emit(self.mnq_name, r"任务进行中..")
             if time.time() - s_time > GlobalEnumG.SelectCtrTimeOut:
@@ -41,7 +42,11 @@ class TaskAutoG(BasePageG):
                 if self.mul_color(MulColorEnumG.TASK_CLOSE):
                     if self.cmp_rgb([1033, 414, 'ee7046'], True):  # 完成/接受
                         self.sn.log_tab.emit(self.mnq_name, r"完成/接受")  # 完成/接受
-                    elif self.word_find(WorldEnumG.TASK_ARROW, True, touch_wait=0):
+                    elif self.word_find(WorldEnumG.TASK_ARROW, True):
+                        for i in range(3):
+                            self.word_find(WorldEnumG.TASK_ARROW, True)
+                            if self.cmp_rgb([1033, 414, 'ee7046'], True):
+                                break
                         self.sn.log_tab.emit(self.mnq_name, r"点击对话箭头")
                     elif self.cmp_rgb([367, 565, '4c87b0'], True):
                         pass
@@ -101,8 +106,13 @@ class TaskAutoG(BasePageG):
                 elif self.qr_tip():
                     pass
                 else:
-                    self.back()
+                    if __i > 2:
+                        self.back()
+                        __i = 0
+                    else:
+                        __i += 1
             else:
+                __i = 0
                 if use_stone:
                     if self.cmp_rgb([737, 203, '617a95'], True):
                         self.time_sleep(GlobalEnumG.TaskWaitTime)
@@ -129,21 +139,24 @@ class TaskAutoG(BasePageG):
                         self.sn.log_tab.emit(self.mnq_name, r"做完主线任务停止任务")
                         return 1
                     if not self.word_find(WorldEnumG.TASK_AUTO) and self.find_color(MulColorEnumG.IGAME):
-                        if self.find_color(MulColorEnumG.IGAME):
-                            self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
-                                            **kwargs)
-                            if self.pic_find(ImgEnumG.BAG_MAX_IMG):
-                                self.sn.log_tab.emit(self.mnq_name, r"背包满了,清理背包")
-                                raise BagFullerr
-                        if not self.mul_color(MulColorEnumG.TASK_POINT, True, touch_wait=0):
-                            self.pic_find(ImgEnumG.TASK_TAB)
+                        self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
+                                        **kwargs)
+                        if self.pic_find(ImgEnumG.BAG_MAX_IMG):
+                            self.sn.log_tab.emit(self.mnq_name, r"背包满了,清理背包")
+                            raise BagFullerr
+                        if not self.mul_color(MulColorEnumG.INGAME_FLAG) and self.find_color(MulColorEnumG.IGAME):
+                            self.back()
+                        if not self.cmp_rgb([476, 216, '617a95']):
                             if not self.mul_color(MulColorEnumG.TASK_POINT, True, touch_wait=0):
-                                self.task_block()
+                                self.pic_find(ImgEnumG.TASK_TAB)
+                                if not self.mul_color(MulColorEnumG.TASK_POINT, True, touch_wait=0):
+                                    self.task_block()
+                            self.time_sleep(3)
                     else:
                         if self.find_color(MulColorEnumG.IGAME):
                             self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
                                             **kwargs)
-                        self.time_sleep(2)
+                    self.time_sleep(2)
 
     def level_task(self, stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG, **kwargs):
         """到达等级后执行任务"""
@@ -191,7 +204,7 @@ class TaskAutoG(BasePageG):
             elif 100 >= kwargs['角色信息']['等级'] >= 90 and not _L3_FLAG:
                 r = random.randint(1, 3)
                 # exec_queue = kwargs['状态队列']['执行器']
-                select_queue.put_queue('CheckRole')
+                # select_queue.put_queue('CheckRole')
                 mrtask_queue.put_queue(str(r))  # 武林
                 select_queue.put_queue('AutoMR')
                 select_queue.put_queue('UseSkill')

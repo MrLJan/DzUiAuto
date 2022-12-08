@@ -229,7 +229,8 @@ class TeamStateG(BasePageG):
                             self.sn.log_tab.emit(self.mnq_name, r"退出已有队伍")
                 self.cmp_rgb(RgbEnumG.ENUM_BTN, True)
             elif self.word_find(WorldEnumG.SET_BTN):  # 菜单界面
-                self.enum_find('快速内容', True)
+                if not self.enum_find('快速内容', True):
+                    self.back()
             elif self.cmp_rgb(RgbEnumG.KSDY):  # 星力战场
                 if not self.find_mr_task('星力战场', True):
                     if _SWIPE_TIMES < 3:
@@ -386,7 +387,8 @@ class TeamStateG(BasePageG):
                     self.touch((147, 350), touch_wait=GlobalEnumG.TouchWaitTime)
                     C_PINDAO = True
                 else:
-                    self.cmp_rgb(RgbEnumG.TEAM_ZDJR_QR, True)
+                    if not self.cmp_rgb(RgbEnumG.HD_TIP2,True):
+                        self.cmp_rgb(RgbEnumG.TEAM_ZDJR_QR, True)
                     self.sn.log_tab.emit(self.mnq_name, f"等待自动加入....")
                     self.time_sleep(10)
                     WAIT_TIMES += 1
@@ -399,7 +401,8 @@ class TeamStateG(BasePageG):
                     if not self.cmp_rgb(RgbEnumG.TEAM_ZDJR, True):
                         if not self.word_find(WorldEnumG.AUTO_JION):
                             self.pic_find(ImgEnumG.TEAM_TAB)
-                    self.cmp_rgb(RgbEnumG.TEAM_ZDJR_QR, True)
+                    if not self.cmp_rgb(RgbEnumG.HD_TIP2,True):
+                        self.cmp_rgb(RgbEnumG.TEAM_ZDJR_QR, True)
             else:
                 self.check_err()
         self.sn.log_tab.emit(self.mnq_name, r"选择星图地图-超时失败")

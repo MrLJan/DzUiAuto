@@ -414,6 +414,8 @@ class DzUi:
             label_obj.setCurrentIndex(1)
         elif data_text == '模式三':
             label_obj.setCurrentIndex(2)
+        elif data_text == '模式四':
+            label_obj.setCurrentIndex(3)
         else:
             label_obj.setCurrentIndex(0)
 
@@ -1335,7 +1337,15 @@ def main():
         'line_height': '13px',
     }
     # apply_stylesheet(app, 'default', invert_secondary=False, extra=extra)
-    apply_stylesheet(app, theme='dark_red.xml', extra=extra)
+    color_mode = LoadConfig.getconf('全局配置', '中控颜色')
+    if color_mode == '红色':
+        apply_stylesheet(app, theme='dark_red.xml', extra=extra)
+    elif color_mode == '蓝色':
+        apply_stylesheet(app, theme='dark_cyan.xml', extra=extra)
+    elif color_mode == '绿色':
+        apply_stylesheet(app, theme='dark_teal.xml', extra=extra)
+    elif color_mode == '原色':
+        pass
     dz.ui_main.show()
     app.exec_()
 

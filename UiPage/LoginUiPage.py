@@ -77,6 +77,8 @@ class LoginUiPageG(BasePageG):
             self.stop_game()
             raise MoGuErr
         elif self.find_color(MulColorEnumG.IGAME):
+            if not self.mul_color(MulColorEnumG.INGAME_FLAG):
+                self.back()
             self.mul_color(MulColorEnumG.LB_TIP, True)
             self.sn.log_tab.emit(self.mnq_name, r"检查到在游戏中")
             # if kwargs['角色信息']['等级'] == 0:
@@ -112,10 +114,11 @@ class LoginUiPageG(BasePageG):
         else:
             if self.mul_color(MulColorEnumG.TASK_CLOSE) and kwargs['任务id'] == '1':
                 # self.sn.log_tab.emit(self.mnq_name, r"检查到任务界面")
+                _times=0
                 while not self.find_color(MulColorEnumG.IGAME):
                     if self.cmp_rgb([1033, 414, 'ee7046'], True):  # 完成/接受
                         self.sn.log_tab.emit(self.mnq_name, r"完成/接受")  # 完成/接受
-                    elif self.word_find(WorldEnumG.TASK_ARROW, True, touch_wait=0):
+                    elif self.word_find(WorldEnumG.TASK_ARROW, True):
                         self.sn.log_tab.emit(self.mnq_name, r"点击对话箭头")
                     elif self.cmp_rgb([367, 565, '4c87b0'], True):
                         pass
@@ -128,7 +131,9 @@ class LoginUiPageG(BasePageG):
                     elif self.cmp_rgb(RgbEnumG.EXIT_FOU, True):
                         pass
                     else:
-                        self.close_all(**kwargs)
+                        if _times>10:
+                            self.close_all(**kwargs)
+                        time.sleep(2)
                 select_queue.task_over('Check')
                 return -1
             self.close_all(**kwargs)
@@ -139,27 +144,26 @@ class LoginUiPageG(BasePageG):
         task_id = kwargs['任务id']
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             self.sn.log_tab.emit(self.mnq_name, r"检查界面")
-            if self.cmp_rgb(RgbEnumG.EXIT_FOU, True) or self.cmp_rgb(RgbEnumG.CLOSE_GAME, True):  # 退出游戏-否
-                pass
-            elif self.net_err():
-                self.sn.log_tab.emit(self.mnq_name, r"网络断开_等待重连")
-                raise NetErr
-            elif self.pic_find(ImgEnumG.MOGU, False) or self.pic_find(ImgEnumG.MOGU1, False) or self.pic_find(
+            self.cmp_rgb(RgbEnumG.EXIT_FOU, True)
+            self.cmp_rgb(RgbEnumG.CLOSE_GAME, True)  # 退出游戏-否
+            self.pic_find(ImgEnumG.UI_ERR_IMG)
+            # elif self.net_err():
+            #     self.sn.log_tab.emit(self.mnq_name, r"网络断开_等待重连")
+            #     raise NetErr
+            if self.pic_find(ImgEnumG.MOGU, False) or self.pic_find(ImgEnumG.MOGU1, False) or self.pic_find(
                     ImgEnumG.JUBAO,
                     False):
                 self.sn.log_tab.emit(self.mnq_name, r"出现举报/蘑菇")
                 self.stop_game()
                 raise MoGuErr
-            elif self.pic_find(ImgEnumG.UI_ERR_IMG):
-                pass
-            elif not self.check_now_app():
-                raise NotInGameErr
-            elif self.find_color(MulColorEnumG.IGAME):
+            elif self.find_color(MulColorEnumG.IGAME) and self.mul_color(MulColorEnumG.INGAME_FLAG):
                 self.sn.log_tab.emit(self.mnq_name, r"在游戏主界面")
                 if self.cmp_rgb(RgbEnumG.FUHUO_BTN):
                     if self.pic_find(ImgEnumG.CZ_FUHUO):
                         self.sn.log_tab.emit(self.mnq_name, r"检查到死亡")
                         raise FuHuoRoleErr
+                if not self.mul_color(MulColorEnumG.INGAME_FLAG):
+                    self.back()
                 if self.pic_find(ImgEnumG.MR_BAT_EXIT, touch_wait=3):
                     # self.ocr_find(ImgEnumG.MR_YDZXD, True)
                     self.back_ksdy()
@@ -169,6 +173,8 @@ class LoginUiPageG(BasePageG):
                 break
             elif self.pic_find(ImgEnumG.GAME_ICON, False):
                 self.sn.log_tab.emit(self.mnq_name, r"掉线")
+                raise NotInGameErr
+            elif not self.check_now_app():
                 raise NotInGameErr
             elif self.pic_find(ImgEnumG.LOGIN_FLAG) or self.mul_color(MulColorEnumG.GAME_START, True) or self.word_find(WorldEnumG.NEXON):
                 self.sn.log_tab.emit(self.mnq_name, r"在游戏登录主界面")
@@ -205,6 +211,8 @@ class LoginUiPageG(BasePageG):
                             self.word_find(WorldEnumG.TASK_ARROW,True)
                     self.cmp_rgb([1033, 414, 'ee7046'], True)
                     self.cmp_rgb([359, 636, 'ee7046'], True)
+                # self.back()
+            if not self.find_color(MulColorEnumG.IGAME) and not self.mul_color(MulColorEnumG.INGAME_FLAG):
                 self.back()
 
     def close_game(self):
@@ -231,9 +239,9 @@ class LoginUiPageG(BasePageG):
                             select_queue.put_queue('BuyY')
                 elif self.pic_find(ImgEnumG.BAG_MAX_IMG, False):
                     select_queue.put_queue('BagSell')
-                if task_id == '1':
-                    select_queue.put_queue('UseSkill')
-                    select_queue.put_queue('GetLevelReard')
+                # if task_id == '1':
+                #     select_queue.put_queue('UseSkill')
+                #     select_queue.put_queue('GetLevelReard')
                 select_queue.task_over('FuHuo')
                 return -1
             elif self.pic_find(ImgEnumG.CZ_FUHUO):

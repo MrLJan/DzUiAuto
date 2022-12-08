@@ -163,16 +163,16 @@ class ColorCvTools:
     # @catch_ex
     def check_ui(self, find_ui):
         """检查界面ui名称"""
-        return self.word_find([2, 9, 15, 477, 74, find_ui, 'CDD1D7-322E28', 0.9])
+        return self.word_find([2, 9, 15, 477, 74, find_ui, 'CDD1D7-322E28', 0.8])
 
     def find_xt_num(self, find_info, clicked=False):
         """查找星图"""
-        return self.word_find([7, 649, 158, 915, 587, find_info, '9A9A9A-4D4D4D', 0.9], clicked)
+        return self.word_find([7, 649, 158, 915, 587, find_info, '4F4F4F-4F4F4F', 0.8], clicked)
 
     def find_pd_num(self, find_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime, t_log=GlobalEnumG.TestLog):
         """查找频道"""
         self.dev.UseDict(8)
-        res = self.dev.FindStrFastEx(231, 157, 1051, 595, '0|1|2|3|4|5|6|7|8|9', '4E7355-44274A', 0.90)
+        res = self.dev.FindStrFastEx(231, 157, 1051, 595, '0|1|2|3|4|5|6|7|8|9', '4E7355-44274A', 0.9)
         pd_num = ''
         res = res.split('|')
         max_x = 280
@@ -482,14 +482,15 @@ class DmImgTools:
 
 if __name__ == '__main__':
     dev = DevicesConnect.dm_init()
-    DevicesConnect.bind_windows(dev, 33428560)
+    DevicesConnect.bind_windows(dev, 17767874)
     o = ColorCvTools()
     o.dev = dev
     a = DmImgTools()
     a.dev = dev
-    # r=a.pic_find(ImgEnumG.EXIT_TEAM,t_log=False)
+    # r=o.word_find(WorldEnumG.EXIT_TEAM,t_log=False)
+    r=o.mul_color(MulColorEnumG.INGAME_FLAG,False,t_log=False)
     # r=a.dm_swipe((1093, 535), (1093, 314))
-    r=o.find_mr_task('星力战场',True,t_log=False)
+    # r=o.find_mr_task('星力战场',True,t_log=False)
     # r=o.find_color([495,237,794,344,'EB8D6B-0B2229'],True,t_log=False)
     # r=o.word_find(WorldEnumG.INGAME_FLAG,False,t_log=False)
     # r=o.mul_color(MulColorEnumG.LB_TIP,False,t_log=False)

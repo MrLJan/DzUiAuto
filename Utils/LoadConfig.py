@@ -10,6 +10,7 @@ class LoadConfig:
         LoadConfig.writeconf("路径", "模拟器路径", 'D:/LDPlayer/LDPlayer9/ldconsole.exe')
         # "全局配置", "启动模拟器序号"
         LoadConfig.writeconf("路径", "绑定模式", '模式三')
+        LoadConfig.writeconf("全局配置", "中控颜色", '红色')
         LoadConfig.writeconf("野图配置", "短按窗口", '')
         LoadConfig.writeconf("野图配置", "组队密码", '5475')
         LoadConfig.writeconf("全局配置", "扫地模式", '1')

@@ -21,6 +21,7 @@ class MnqTools:
         cmd = os.popen(self.ld_path + " list2")
         text = cmd.read()
         cmd.close()
+
         info = text.split('\n')
         result = list()
         for line in info:
@@ -32,9 +33,9 @@ class MnqTools:
                 pass
             else:
                 if mnq_name[7] != '1280' or mnq_name[8] != '720':
-                    # self.reboot_mnq_index(mnq_name[0])
                     self.reset_resolution(mnq_name[0])
-                    # print(f'模拟器:{mnq_name[1]}大小异常,已重设')
+                    self.reboot_mnq_index(mnq_name[0])
+                    print(f'模拟器:{mnq_name[1]}大小异常,已重设')
                 # self.lockwindow(mnq_name[0])
                 # devname = '127.0.0.1:' + str(int(mnq_name[0]) * 2 + 5555)
                 # devname = 'emulator-'+str(int(mnq_name[0]) * 2 + 5554)  # 雷电模拟器默认5554开始
@@ -65,8 +66,8 @@ class MnqTools:
                 else:
                     if mnq_name[0] == mnq_index:
                         if mnq_name[7] != '1280' or mnq_name[8] != '720':
-                            # self.reboot_mnq_index(mnq_name[0])
                             self.reset_resolution(mnq_name[0])
+                            self.reboot_mnq_index(mnq_name[0])
                         self.lockwindow(mnq_index)
                         return mnq_name[5], mnq_name[2], mnq_name[3]
         return 0, 0, 0
