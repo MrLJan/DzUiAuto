@@ -131,12 +131,12 @@ class BasePageG(ColorCvTools, DmImgTools):
         now_app = MnqTools().check_now_runapp(self.mnq_name)
         if now_app in ['com.nexon.maplem.global', 'com.google.android.gms']:
             # self.sn.log_tab.emit(self.mnq_name, r"当前运行正常")
-            return True
+            pass
         else:
             self.sn.log_tab.emit(self.mnq_name, f"游戏没有运行")
             MnqTools().stop_mnq_app(self.mnq_name, now_app)
             MnqTools().start_mnq_app(self.mnq_name, 'com.nexon.maplem.global')
-            return False
+        return True
 
     def check_is_stop(self):
         self.sn.log_tab.emit(self.mnq_name, r"检查界面是否卡住")

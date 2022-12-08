@@ -20,20 +20,21 @@ class RewardG(BasePageG):
         _KT = False
         _MAIL = False
         select_queue = kwargs['状态队列']['选择器']
-        while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
+        while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
             if _HD and _MAIL and _KT:
                 select_queue.task_over('GetReward')
                 return True
             elif not _HD:
-                if self.get_hd_reward():
-                    _HD = True
+                self.get_hd_reward()
+                _HD = True
             elif not _KT:
-                if self.get_keti_reward():
-                    _KT = True
+                self.get_keti_reward()
+                _KT = True
             elif not _MAIL:
-                if self.get_mail_reward():
-                    _MAIL = True
+                self.get_mail_reward()
+                _MAIL = True
         self.sn.log_tab.emit(self.mnq_name, r'领取奖励-异常超时放弃')
+        select_queue.task_over('GetReward')
         return True
         # raise ControlTimeOut(r'领取奖励-异常超时')
 
@@ -59,6 +60,7 @@ class RewardG(BasePageG):
             else:
                 self.check_close()
         self.sn.log_tab.emit(self.mnq_name, r'获取成长奖励-异常超时放弃')
+        select_queue.task_over('GetLevelReard')
         return True
         # raise ControlTimeOut(r'获取成长奖励-异常超时')
 
@@ -148,7 +150,7 @@ class RewardG(BasePageG):
         s_time = time.time()
         self.sn.log_tab.emit(self.mnq_name, f"领取课题奖励")
         _C_OVER = False
-        while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
+        while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
             if self.find_color(MulColorEnumG.IGAME):
                 self.cmp_rgb(RgbEnumG.ENUM_BTN, True)
             elif self.word_find(WorldEnumG.SET_BTN):  # 菜单界面
@@ -251,7 +253,7 @@ class RewardG(BasePageG):
         while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
             if self.find_color(MulColorEnumG.IGAME):
                 if _FIND_TIMES > 3:
-                    return True
+                    return False
                 # if not self.find_info('czjl',True):
                 if not self.pic_find(ImgEnumG.CZJL_ICON, touch_wait=3):
                     self.touch((38, 149), touch_wait=1)
@@ -375,7 +377,7 @@ class RewardG(BasePageG):
         _FJSX_FLAG = False  # 分解筛选
         _OVER = False
         _FJ_OVER = False
-        while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
+        while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
             if self.find_color(MulColorEnumG.IGAME):
                 if _OVER and _FJ_OVER:
                     select_queue.task_over('BagSell')

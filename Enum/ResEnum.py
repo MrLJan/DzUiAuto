@@ -9,7 +9,7 @@ from Utils.OtherTools import OT
 class GlobalEnumG:
     if not os.path.exists(OT.abspath(f"/Res/配置文件.ini")):
         LoadConfig.init_config()
-    Ver = '2.32'
+    Ver = '2.33'
     TestLog = True if LoadConfig.getconf('全局配置', '日志') == '1' else False
     TouchWait = int(LoadConfig.getconf('全局配置', '点击延时'))
     GamePackgeName = r'com.nexon.maplem.global'  # r'com.nexon.maplem.japan'  # r'com.nexon.maplem.global'

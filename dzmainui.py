@@ -146,6 +146,7 @@ class DzUi:
         self.set_check_box_text(self.ui_main.use_stone_box, "全局配置", "随机使用石头")
         self.set_combobox_text(self.ui_main.hp_box, "全局配置", "HP等级")
         self.set_combobox_text(self.ui_main.mp_box, "全局配置", "MP等级")
+        self.set_colorbox_text(self.ui_main.color_choose_box,'全局配置','中控颜色')
         self.set_lineedit_text(self.ui_main.hp_num_edit, "全局配置", "hp数量")
         self.set_lineedit_text(self.ui_main.mp_num_edit, "全局配置", "mp数量")
         self.set_check_box_text(self.ui_main.ym_box, "全局配置", "炎魔")
@@ -438,6 +439,19 @@ class DzUi:
             label_obj.setCurrentIndex(0)
 
     @staticmethod
+    def set_colorbox_text(label_obj, data_section, data_name):
+        data_text = LoadConfig.getconf(data_section, data_name)
+        if data_text == '红色':
+            label_obj.setCurrentIndex(0)
+        elif data_text == '蓝色':
+            label_obj.setCurrentIndex(1)
+        elif data_text == '绿色':
+            label_obj.setCurrentIndex(2)
+        elif data_text == '原色':
+            label_obj.setCurrentIndex(3)
+        else:
+            label_obj.setCurrentIndex(0)
+    @staticmethod
     def set_lineedit_text(label_obj, data_section, data_name):
         data_text = LoadConfig.getconf(data_section, data_name)
         label_obj.setText(data_text)
@@ -515,6 +529,7 @@ class DzUi:
         ld_mnq_path = self.ui_main.line_mnqpath.text()
         hp_levle = self.ui_main.hp_box.currentText()
         mp_levle = self.ui_main.mp_box.currentText()
+        zk_color = self.ui_main.color_choose_box.currentText()
         hp_num = self.ui_main.hp_num_edit.text()
         mp_num = self.ui_main.mp_num_edit.text()
         zhiye_id = self.ui_main.zhiye_choose_box.currentText()
@@ -585,6 +600,7 @@ class DzUi:
         LoadConfig.writeconf("全局配置", "清理道具", dv_list)
         LoadConfig.writeconf("全局配置", "扫地模式", saodi_mode)
         LoadConfig.writeconf("全局配置", "跳跃模式", jump_mode)
+        LoadConfig.writeconf("全局配置", "中控颜色", zk_color)
         LoadConfig.writeconf("全局配置", "HP等级", hp_levle)
         LoadConfig.writeconf("全局配置", "MP等级", mp_levle)
         LoadConfig.writeconf("全局配置", "hp数量", hp_num)

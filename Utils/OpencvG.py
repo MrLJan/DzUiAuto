@@ -19,11 +19,11 @@ class ColorCvTools:
         if type_id == 0:
             # 金币
             self.dev.UseDict(3)
-            num_res = self.dev.FindStrFastExS(692, 373, 914, 412, '0|1|2|3|4|5|6|7|8|9', '68717B-272522', 0.7)
+            num_res = self.dev.FindStrFastExS(692, 373, 914, 412, '0|1|2|3|4|5|6|7|8|9', '424d59-555555', 0.9)
         elif type_id == 1:
             # 红币
             self.dev.UseDict(3)
-            num_res = self.dev.FindStrFastExS(399, 372, 620, 412, '0|1|2|3|4|5|6|7|8|9', '68717B-272522', 0.9)
+            num_res = self.dev.FindStrFastExS(399, 372, 620, 412, '0|1|2|3|4|5|6|7|8|9', '424d59-555555', 0.9)
         elif type_id == 2:
             # 星力
             self.dev.UseDict(5)
@@ -31,7 +31,7 @@ class ColorCvTools:
         elif type_id == 3:
             # 战力
             self.dev.UseDict(6)
-            num_res = self.dev.FindStrFastExS(39, 65, 158, 85, '0|1|2|3|4|5|6|7|8|9', 'B0B2B7-4F4D48', 0.9)
+            num_res = self.dev.FindStrFastExS(39, 65, 158, 85, '0|1|2|3|4|5|6|7|8|9', 'ffffff-555555', 0.9)
         elif type_id == 4:
             # 等级
             self.dev.UseDict(4)
@@ -50,9 +50,11 @@ class ColorCvTools:
         gold_res = num_res.split('|')
         for _n in gold_res:
             gold = _n.split(',')
-            gold_num = gold_num + gold[0]
+            if not gold[0] == ',':
+                gold_num = gold_num + gold[0]
         if gold_num == '':
             gold_num = '0'
+
         return gold_num
 
     def word_find(self, find_info, clicked=False, touch_wait=GlobalEnumG.TouchWaitTime,
@@ -250,12 +252,12 @@ class ColorCvTools:
 
     def map_yt(self, map_name):
         """在地图界面，选择地图区域，例 时间神殿、未来之门"""
-        return self.word_find([11, 14, 81, 150, 708, map_name, 'D1D2D4-2E2D2B', 0.8], True,t_log=False)
+        return self.word_find([11, 14, 81, 150, 708, map_name, 'D1D2D4-2E2D2B', 0.8], True, t_log=False)
 
     def map_ex(self, map_name, type_id=1):
         if type_id == 1:
             """星图"""
-            return self.word_find([7, 40, 87, 202, 121, f"{map_name}ex", 'B6B6B6-494949', 0.8], clicked=False)
+            return self.word_find([7, 40, 87, 202, 121, f"{map_name}ex", 'ffffff-555555', 0.9], clicked=False)
         else:
             return self.word_find([11, 40, 87, 202, 121, f"{map_name}ex", 'B6B6B6-494949', 0.9], clicked=False)
 
@@ -482,13 +484,14 @@ class DmImgTools:
 
 if __name__ == '__main__':
     dev = DevicesConnect.dm_init()
-    DevicesConnect.bind_windows(dev, 17767874)
+    DevicesConnect.bind_windows(dev, 12656904)
     o = ColorCvTools()
     o.dev = dev
     a = DmImgTools()
     a.dev = dev
     # r=o.word_find(WorldEnumG.EXIT_TEAM,t_log=False)
-    r=o.mul_color(MulColorEnumG.INGAME_FLAG,False,t_log=False)
+    r = o.check_num(3)
+    # r=o.mul_color(MulColorEnumG.INGAME_FLAG,False,t_log=False)
     # r=a.dm_swipe((1093, 535), (1093, 314))
     # r=o.find_mr_task('星力战场',True,t_log=False)
     # r=o.find_color([495,237,794,344,'EB8D6B-0B2229'],True,t_log=False)

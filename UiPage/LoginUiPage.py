@@ -175,7 +175,7 @@ class LoginUiPageG(BasePageG):
                 self.sn.log_tab.emit(self.mnq_name, r"掉线")
                 raise NotInGameErr
             elif not self.check_now_app():
-                raise NotInGameErr
+                pass
             elif self.pic_find(ImgEnumG.LOGIN_FLAG) or self.mul_color(MulColorEnumG.GAME_START, True) or self.word_find(WorldEnumG.NEXON):
                 self.sn.log_tab.emit(self.mnq_name, r"在游戏登录主界面")
                 break
@@ -183,28 +183,18 @@ class LoginUiPageG(BasePageG):
                 if self.pic_find(ImgEnumG.CZ_FUHUO):
                     self.sn.log_tab.emit(self.mnq_name, r"检查到死亡")
                     raise FuHuoRoleErr
-            elif self.mul_color(MulColorEnumG.LB_TIP, True):
-                pass
-            elif self.mul_color(MulColorEnumG.COIN_ENUM, True):
-                pass
-            elif self.cmp_rgb(RgbEnumG.WL_QX, True):
-                pass
-            elif self.mul_color(MulColorEnumG.TASK_CLOSE, True):
-                pass
             elif self.cmp_rgb(RgbEnumG.PET_END):
                 self.touch((908, 97), touch_wait=1)
-            elif self.cmp_rgb(RgbEnumG.GX_XZ_BACK, True):
-                pass
-            elif self.word_find(WorldEnumG.TASK_ARROW, True, touch_wait=0):
-                pass
-            elif self.cmp_rgb([1033, 414, 'ee7046'], True):
-                pass
-            elif self.word_find(WorldEnumG.SKIP, True):
-                pass
             elif self.word_find(WorldEnumG.DATA_UP):
                 self.sn.log_tab.emit(self.mnq_name, r"提示数据更新,重启游戏")
                 self.stop_game()
             else:
+                self.mul_color(MulColorEnumG.LB_TIP, True)
+                self.mul_color(MulColorEnumG.COIN_ENUM, True)
+                self.cmp_rgb(RgbEnumG.WL_QX, True)
+                self.cmp_rgb(RgbEnumG.GX_XZ_BACK, True)
+                self.cmp_rgb([1033, 414, 'ee7046'], True)
+                self.word_find(WorldEnumG.SKIP, True)
                 if task_id in ['1']:
                     if self.mul_color(MulColorEnumG.TASK_CLOSE):
                         for i in range(3):

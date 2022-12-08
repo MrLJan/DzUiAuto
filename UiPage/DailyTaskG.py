@@ -22,6 +22,7 @@ class DailyTaskAutoG(BasePageG):
         mrtask_queue = kwargs['每日任务']['每日任务队列']
         is_gonghui = kwargs['每日任务']['公会']
         level = int(kwargs['角色信息']['等级'])
+        task_id = kwargs['任务id']
         self.check_level_star()
         if len(task_list) == 0:
             select_queue.task_over('AutoMR')
@@ -63,13 +64,15 @@ class DailyTaskAutoG(BasePageG):
                         select_queue.put_queue('Check')
                         return 0
                 self.back_mr_main()
-        if level >= 100:
-            if is_gonghui:
-                self.gonghui_task()
         select_queue.task_over('AutoMR')  # 顺序队列,先进后出
-        select_queue.put_queue('GetReward')
-        select_queue.put_queue('BagClear')
-        select_queue.put_queue('BagSell')
+        if task_id != '1':
+            if level >= 100:
+                if is_gonghui:
+                    self.gonghui_task()
+            # select_queue.task_over('AutoMR')  # 顺序队列,先进后出
+            select_queue.put_queue('GetReward')
+            select_queue.put_queue('BagClear')
+            select_queue.put_queue('BagSell')
         return -1
 
     def back_mr_main(self):
@@ -99,7 +102,7 @@ class DailyTaskAutoG(BasePageG):
                 return True
             elif self.pic_find(ImgEnumG.GAME_ICON, False):
                 raise NotInGameErr
-            elif self.cmp_rgb([562, 634, 'ee7046'], True):  #迷你地城最终结果
+            elif self.cmp_rgb([562, 634, 'ee7046'], True):  # 迷你地城最终结果
                 pass
             else:
                 self.back()
@@ -763,7 +766,7 @@ class DailyTaskAutoG(BasePageG):
             return True
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.pic_find(ImgEnumG.MR_BAT_EXIT, False, touch_wait=3):
-                self.find_color(MulColorEnumG.BOSS_DROP,True)
+                self.find_color(MulColorEnumG.BOSS_DROP, True)
                 _WAIT_TEAM = False
                 self.touch(DmImgTools.turn_pos['left'], duration=1)
                 r = random.randint(0, 3)

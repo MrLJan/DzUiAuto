@@ -97,7 +97,7 @@ class AutoBatG(BasePageG):
                         self.move_turn('x', 0.25)
                         self.time_sleep(1)
                     self.move_turn('x', 0.32)
-                    if louti_x in [1096]:
+                    if louti_x in [1096,1059]:
                         self.double_jump('left', jump_mode=j_mode)
                     return True, x1
                 if i==5:
