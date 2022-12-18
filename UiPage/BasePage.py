@@ -84,6 +84,8 @@ class BasePageG(ColorCvTools, DmImgTools):
                 raise NotInGameErr
             elif self.mul_color(MulColorEnumG.COIN_ENUM, True):
                 pass
+            elif self.mul_color(MulColorEnumG.GAME_START, True):
+                pass
             elif self.net_err():
                 self.time_sleep(5)
                 pass
@@ -133,7 +135,6 @@ class BasePageG(ColorCvTools, DmImgTools):
             # self.sn.log_tab.emit(self.mnq_name, r"当前运行正常")
             pass
         else:
-            self.sn.log_tab.emit(self.mnq_name, f"游戏没有运行")
             MnqTools().stop_mnq_app(self.mnq_name, now_app)
             MnqTools().start_mnq_app(self.mnq_name, 'com.nexon.maplem.global')
         return True
@@ -227,8 +228,87 @@ class BasePageG(ColorCvTools, DmImgTools):
         return kwargs
 
     def check_level_star(self):
-        if self.find_color(MulColorEnumG.IGAME):
-            _level = self.check_num(4)
-            self.sn.table_value.emit(self.mnq_name, 3, f"{_level}")
-            LoadConfig.writeconf(self.mnq_name, '等级', str(_level), ini_name=self.mnq_name)
-            self.sn.log_tab.emit(self.mnq_name, f"等级:{_level}")
+        s_time = time.time()
+        while time.time() - s_time < GlobalEnumG.UiCheckTimeOut / 10:
+            if self.find_color(MulColorEnumG.IGAME):
+                _level = self.check_num(4)
+                self.sn.table_value.emit(self.mnq_name, 3, f"{_level}")
+                LoadConfig.writeconf(self.mnq_name, '等级', str(_level), ini_name=self.mnq_name)
+                self.sn.log_tab.emit(self.mnq_name, f"等级:{_level}")
+                return True
+            else:
+                self.check_close()
+
+    def change_role_index(self, **kwargs):
+        s_time = time.time()
+        _C_ROLE = False  # 切换角色
+        select_queue = kwargs['状态队列']['选择器']
+        exec_queue = kwargs['状态队列']['执行器']
+        self.sn.log_tab.emit(self.mnq_name, r"切换角色")
+        while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
+            if self.find_color(MulColorEnumG.IGAME):
+                self.cmp_rgb(RgbEnumG.ENUM_BTN, True)
+            elif self.word_find(WorldEnumG.SET_BTN):  # 菜单界面
+                if not self.word_find(WorldEnumG.C_ROLE, True):
+                    self.back()
+            elif self.mul_color(MulColorEnumG.C_ROLE):
+                self.cmp_rgb(RgbEnumG.BACK_ROLE, True, touch_wait=5)
+            elif self.pic_find(ImgEnumG.CREAT_ROLE, False):
+                if _C_ROLE:
+                    if self.mul_color(MulColorEnumG.GAME_START, True):
+                        select_queue.task_over('ChangeRole')
+                        return True
+                else:
+                    now_index = self.check_role_now_index()
+                    self.sn.log_tab.emit(self.mnq_name, f"当前{now_index}号角色")
+                    self.choose_role_index(now_index + 1)
+                    change_index = self.check_role_now_index()
+                    if now_index == change_index:
+                        self.sn.log_tab.emit(self.mnq_name, f"已经是最后1个角色,回到1号角色")
+                        self.choose_role_index(1)  # 角色位置归1
+                        self.mul_color(MulColorEnumG.GAME_START, True)
+                        select_queue.task_over('ChangeRole')
+                        select_queue.clear()
+                        exec_queue.clear()
+                        exec_queue.put_queue('Sleep')
+                        return -1
+                    else:
+                        self.sn.log_tab.emit(self.mnq_name, f"选择{change_index}号角色")
+                        _C_ROLE = True
+            else:
+                if time.time() - s_time > 60:
+                    self.check_close()
+                    s_time = time.time()
+                self.time_sleep(2)
+
+    def choose_role_index(self, role_index):
+        role_pos = {
+            1: (185, 293),
+            2: (385, 293),
+            3: (585, 293),
+            4: (85, 583),
+            5: (285, 583),
+            6: (485, 583),
+            7: (685, 583),
+            8: (685, 583),
+        }
+        return self.touch(role_pos[role_index], touch_wait=2)
+
+    def check_role_now_index(self):
+        """检查当前角色序号"""
+        role_index = {
+            '185': 1,
+            '385': 2,
+            '585': 3,
+            '85': 4,
+            '285': 5,
+            '485': 6,
+            '685': 7,
+        }
+        role_res = self.dev.FindColorE(46, 288, 852, 643, 'ffd81d-000000', 1, 0)
+        role_res = role_res.split('|')
+        if role_res[0] != '-1':
+            for _index in role_index.keys():
+                if role_res[0] == _index:
+                    return role_index[role_res[0]]
+        return 0

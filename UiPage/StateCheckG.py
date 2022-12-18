@@ -138,7 +138,10 @@ class StateCheckG(BasePageG):
 
     def auto_choose_task(self, level, star, red_gold, select_queue, **kwargs):
         exec_queue = kwargs['状态队列']['执行器']
+        select_queue = kwargs['状态队列']['选择器']
         red_coin = kwargs['强化设置']['托管红币']
+        use_redgold=kwargs['强化设置']['自动强化升级']
+        change_role=kwargs['自动切换角色']
         if red_coin == '0':
             red_coin = '1'
         # _CW_FLAG = False if kwargs['角色信息']['宠物'] == '0' else True
@@ -174,6 +177,8 @@ class StateCheckG(BasePageG):
             # self.change_mapdata('3', '研究所102', **kwargs)
             self.sn.log_tab.emit(self.mnq_name, r"选择星图混经验")
             exec_queue.put_queue('AutoBat')
+            if change_role:
+                select_queue.put_queue('AutoMR')
         else:
             self.sn.log_tab.emit(self.mnq_name, r"星力不足,继续做任务")
             exec_queue.put_queue('AutoTask')
@@ -181,8 +186,9 @@ class StateCheckG(BasePageG):
         #     self.sn.log_tab.emit(self.mnq_name, r"大于100级,且配置中未检查装备技能")
         #     select_queue.put_queue('UseSkill')
         #     select_queue.put_queue('GetLevelReard')
-        if int(red_gold) > int(red_coin) * 10000000:
-            self.sn.log_tab.emit(self.mnq_name, f"红币数量大于【{red_coin}千万】,进行强化+升级装备")
-            # select_queue.put_queue('CheckRole')
-            select_queue.put_queue('UpEquip')
-            select_queue.put_queue('StrongEquip')
+        if use_redgold:
+            if int(red_gold) > int(red_coin) * 10000000:
+                self.sn.log_tab.emit(self.mnq_name, f"红币数量大于【{red_coin}千万】,进行强化+升级装备")
+                # select_queue.put_queue('CheckRole')
+                select_queue.put_queue('UpEquip')
+                select_queue.put_queue('StrongEquip')

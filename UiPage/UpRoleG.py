@@ -19,6 +19,7 @@ class UpRoleG(BasePageG):
         _SX = False
         _GET_ZB = False  # 获取升级装备列表
         zb_list = []
+        _SWIPE_TIMES = 0
         while time.time() - s_time < GlobalEnumG.UiCheckTimeOut:
             if self.find_color(MulColorEnumG.IGAME):  # 游戏界面
                 self.cmp_rgb(RgbEnumG.ENUM_BTN, True)
@@ -50,7 +51,7 @@ class UpRoleG(BasePageG):
             elif self.cmp_rgb(RgbEnumG.TJP_SJ_XZ):
                 if _SX:
                     self.cmp_rgb(RgbEnumG.TJP_SJ_XZ, True)
-                elif self.word_find(WorldEnumG.SJ_SET):
+                elif self.word_find(WorldEnumG.SJ_SET) or _SWIPE_TIMES > 3:
                     self.sn.log_tab.emit(self.mnq_name, f"升级装备筛选")
                     self.cmp_rgb([375, 557, 'c3c6ca'], True)
                     self.cmp_rgb([739, 296, 'aeb8c3'], True)
@@ -60,6 +61,7 @@ class UpRoleG(BasePageG):
                     _SX = True
                 else:
                     self.dm_swipe((912, 507), (912, 303), swipe_wait=2)
+                    _SWIPE_TIMES += 1
             elif self.cmp_rgb(RgbEnumG.TJP_SJ_BTN, True, touch_wait=5):
                 if not self.pic_find(ImgEnumG.EQ_UP):
                     self.sn.log_tab.emit(self.mnq_name, r"无升级材料或金币不足,升级结束")
@@ -300,7 +302,7 @@ class UpRoleG(BasePageG):
                     if self.cmp_rgb([821, 205, 'c3c3c3']):
                         _JN_OVER = True
                         _C_JN = False
-                    if self.word_find(WorldEnumG.YS_DL,True):
+                    if self.word_find(WorldEnumG.YS_DL, True):
                         _C_JN = False
                         _JN_FLAG += 1
                 else:

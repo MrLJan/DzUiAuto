@@ -3,11 +3,29 @@
   <component name="ChangeListManager">
     <list default="true" id="218bbaa1-7ac1-41ff-a550-012b423f111d" name="Changes" comment="Changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DzTest/DzModeMachine.py" beforeDir="false" afterPath="$PROJECT_DIR$/DzTest/DzModeMachine.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Enum/ResEnum.py" beforeDir="false" afterPath="$PROJECT_DIR$/Enum/ResEnum.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/QtUI/dzmain.ui" beforeDir="false" afterPath="$PROJECT_DIR$/QtUI/dzmain.ui" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Res/LDPlayer.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/LDPlayer.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Res/img/dict/xt_map.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/dict/xt_map.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/dict/word.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/dict/word.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/女皇.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/女皇.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/游戏icon.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/游戏icon.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/游戏登陆标志.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/游戏登陆标志.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/炎魔.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/炎魔.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/img/皮卡啾.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/Res/img/皮卡啾.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Res/配置文件.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Res/配置文件.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/AutoBatG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/AutoBatG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/BasePage.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/BasePage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/DailyTaskG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/DailyTaskG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/RewardG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/RewardG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/StateCheckG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/StateCheckG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/TaskAutoG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/TaskAutoG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UiPage/UpRoleG.py" beforeDir="false" afterPath="$PROJECT_DIR$/UiPage/UpRoleG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/ExceptionTools.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/ExceptionTools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/LoadConfig.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/LoadConfig.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/MnqTools.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/MnqTools.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utils/OpencvG.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/OpencvG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/QueueManageTools.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/QueueManageTools.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dzmainui.py" beforeDir="false" afterPath="$PROJECT_DIR$/dzmainui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -84,7 +102,7 @@
       <recent name="D:\DzAutoUi\Enum" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.OpencvG">
+  <component name="RunManager" selected="Python.main">
     <configuration name="MnqTools" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="DzUiAuto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -194,15 +212,15 @@
       <item itemvalue="Python.MnqTools" />
       <item itemvalue="Python.OpencvG" />
       <item itemvalue="Python.ResEnum" />
-      <item itemvalue="Python.main" />
       <item itemvalue="Python.dzmainui" />
+      <item itemvalue="Python.main" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.OpencvG" />
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.dzmainui" />
+        <item itemvalue="Python.OpencvG" />
         <item itemvalue="Python.ResEnum" />
+        <item itemvalue="Python.dzmainui" />
         <item itemvalue="Python.MnqTools" />
       </list>
     </recent_temporary>
@@ -249,19 +267,21 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <default-breakpoints>
-        <breakpoint type="python-exception">
-          <properties notifyOnTerminate="true" exception="BaseException">
-            <option name="notifyOnTerminate" value="true" />
-          </properties>
-        </breakpoint>
-      </default-breakpoints>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/UiPage/DailyTaskG.py</url>
+          <line>315</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/UiPage/DailyTaskG.py</url>
+          <line>316</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+      <breakpoints-defaults>
+        <breakpoint type="python-line" />
+      </breakpoints-defaults>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="PythonConfigurationType">
-        <watch expression="turn_queue" language="Python" />
-        <watch expression="team_event" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>

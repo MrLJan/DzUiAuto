@@ -114,7 +114,7 @@ class RewardG(BasePageG):
         self.sn.log_tab.emit(self.mnq_name, f"领取邮件")
         _G = False  # 公共
         _O = False  # 个人
-        while time.time() - s_time < GlobalEnumG.SelectCtrTimeOut:
+        while time.time() - s_time < GlobalEnumG.WaitConrtlTimeOut:
             if self.find_color(MulColorEnumG.IGAME):
                 self.touch((995, 41), touch_wait=3)
                 # self.pic_find(ImgEnumG.MAIL_RQ)

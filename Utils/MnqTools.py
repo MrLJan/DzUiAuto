@@ -76,15 +76,11 @@ class MnqTools:
         cmd = os.popen(self.ld_path + " list2")
         mnq_list = cmd.read().split('\n')
         cmd.close()
-        mnq_dic = {}
         for _mnq in mnq_list:
             mnq_info = _mnq.split(',')
-            if mnq_info[0] == '':
-                pass
-            else:
-                mnq_dic[mnq_info[0]] = mnq_info[1]
-        if str(mnq_index) in mnq_dic.keys():
-            return mnq_dic[mnq_index]
+            if mnq_info[0] != '':
+                if str(mnq_index) == mnq_info[0]:
+                    return mnq_info[1]
         return '99999'
 
     def start_mnq_app(self, index, packagename):

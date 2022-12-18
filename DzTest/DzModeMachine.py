@@ -13,7 +13,7 @@ from UiPage.TaskAutoG import TaskAutoG
 from UiPage.TeamStateG import TeamStateG
 from UiPage.UpRoleG import UpRoleG
 from Utils.ExceptionTools import MrTaskErr, ControlTimeOut, BuyYErr, NotInGameErr, RestartTask, FuHuoRoleErr, \
-    BagFullerr, StopTaskErr, NetErr, MoGuErr
+    BagFullerr, StopTaskErr, NetErr, MoGuErr, AutoCardEnd
 from Utils.LoadConfig import LoadConfig
 from Utils.OtherTools import catch_ex
 
@@ -63,8 +63,8 @@ class StateSelect(object):
     def getlevelreard(self, **kwargs):
         return RewardG(self.devinfo, self.sn).level_reward(**kwargs)
 
-    def calculationgold(self, **kwargs):
-        return RewardG(self.devinfo, self.sn).calculationgold(**kwargs)
+    def changerole(self, **kwargs):
+        return RewardG(self.devinfo, self.sn).change_role_index(**kwargs)
 
     def autoboss(self, **kwargs):
         return DailyTaskAutoG(self.devinfo, self.sn).boss_task(**kwargs)
@@ -154,7 +154,8 @@ class switch_case:
         self._c_time = time.time()  # 计算产出时间时的当前时间
         self.login_time = LoadConfig.getconf(self.mnq_name, '最近登录时间', ini_name=self.mnq_name)
         self._r_time = time.time() if self.login_time == '0' else float(self.login_time)
-        self.taskid, self.mapname = self.get_taskid(kwargs['任务名'])
+        self.task_name = kwargs['任务名']
+        self.taskid, self.mapname = self.get_taskid(self.task_name)
         self.sn = sn
         self.team_id, self.pd_num = self.get_team_id(kwargs['位置信息'])
         self.use_mp = self.get_use_mp(kwargs['位置信息'])
@@ -164,7 +165,7 @@ class switch_case:
             'AutoBat': [self.exec.autobat, self.exec.to_Nothing, self.exec.to_CheckTeamState],
             'Nothing': [self.exec.to_Nothing, self.exec.to_Nothing, self.exec.to_Nothing],
             'CheckTeamState': [self.exec.checkstate, self.exec.to_Nothing, self.exec.to_AutoBat],
-            'Wait': [self.exec.to_Nothing]
+            'Sleep': [self.exec.to_Sleep, self.exec.to_Sleep, self.exec.to_Sleep]
         }
         self.select_func = {
             'InGame': [self.select.choose_task, self.select.to_Login, self.select.to_FuHuo,
@@ -190,7 +191,7 @@ class switch_case:
             'AutoMR': [self.select.automr, self.select.to_AutoMR, self.select.to_Check],
             'CheckRole': [self.select.checkroleinfo, self.select.to_CheckRole, self.select.to_Check],
             'GetLevelReard': [self.select.getlevelreard, self.select.to_GetLevelReard, self.select.to_Check],
-            'CheckGold': [self.select.calculationgold, self.select.to_CheckGold, self.select.to_Check]
+            'ChangeRole': [self.select.changerole, self.select.to_ChangeRole, self.select.to_Check],
         }
 
     def get_taskid(self, task_name):
@@ -254,6 +255,8 @@ class switch_case:
             '托管模式': True if self.taskid == '99' else False,
             '地图名': self.mapname,
             '任务结束关闭游戏': True if LoadConfig.getconf('全局配置', '任务结束关闭游戏') == '1' else False,
+            '自动切换角色': True if LoadConfig.getconf('全局配置', '自动切换角色') == '1' else False,
+            '挂机卡挂机': True if LoadConfig.getconf('全局配置', '挂机卡挂机') == '1' else False,
             '角色信息': {
                 '等级': int(LoadConfig.getconf(self.mnq_name, '等级', ini_name=self.mnq_name)),
                 '星力': int(LoadConfig.getconf(self.mnq_name, '星力', ini_name=self.mnq_name)),
@@ -319,6 +322,7 @@ class switch_case:
                 '混沌炎魔': LoadConfig.getconf('全局配置', '混沌炎魔'),
             },
             '自动任务': {
+                '成长奖励检查': True if LoadConfig.getconf('全局配置', '成长奖励检查') == '1' else False,
                 '任务停止等级': LoadConfig.getconf('全局配置', '任务停止等级'),
                 '随机使用石头': True if LoadConfig.getconf('全局配置', '随机使用石头') == '1' else False,
             },
@@ -327,7 +331,8 @@ class switch_case:
                 '每日时间': self.meiri_time,
                 '任务列表': self.get_mr_task(),
                 '每日任务队列': self.queue_dic['每日任务队列'],
-                '公会': True if LoadConfig.getconf('全局配置', '公会内容') == '1' else False
+                '公会': True if LoadConfig.getconf('全局配置', '公会内容') == '1' else False,
+                '背包清理': True if LoadConfig.getconf('全局配置', '背包清理') == '1' else False,
             },
             '定时设置': {
                 '启动时间': time.time(),  # 计算任务时间时的当前时间
@@ -336,6 +341,7 @@ class switch_case:
             },
             '强化设置': {
                 '托管红币': LoadConfig.getconf('全局配置', '托管红币'),
+                '自动强化升级': True if LoadConfig.getconf('全局配置', '自动强化升级') == '1' else False,
                 '目标等级': LoadConfig.getconf('全局配置', '强化等级'),
                 '幸运卷轴': True if LoadConfig.getconf('全局配置', '幸运卷轴') == '1' else False,
                 '盾牌卷轴': True if LoadConfig.getconf('全局配置', '盾牌卷轴') == '1' else False,
@@ -444,20 +450,28 @@ class switch_case:
             self.select.to_Check()
         except FuHuoRoleErr:
             self.select.to_FuHuo()
+        except AutoCardEnd:
+            self.select_queue.clear()
+            self.exec_queue.clear()
+            self.exec.to_Nothing()
 
     def exec_machine_do(self):
         exec_state = self.exec.state
         self.sn.table_value.emit(self.mnq_name, 8, f"{GlobalEnumG.StatesInfo[exec_state]['name']}")
         self.sn.log_tab.emit(self.mnq_name, f"------{GlobalEnumG.StatesInfo[exec_state]['name']}------")
-        if exec_state == 'Nothing':
-            if self.data_dic['任务结束关闭游戏']:
-                self.select.closegame()
-                self.sn.table_value.emit(self.mnq_name, 8, "无任务")
-                self.sn.log_tab.emit(self.mnq_name, "任务完成,关闭游戏,待机")
+        if exec_state == 'Nothing' or 'Sleep':
+            if self.data_dic['自动切换角色'] and exec_state != 'Sleep':
+                self.get_taskid(self.task_name)
+                self.select_queue.put_queue("ChangeRole")
             else:
-                self.sn.table_value.emit(self.mnq_name, 8, "无任务")
-                self.sn.log_tab.emit(self.mnq_name, "任务完成,未设置后续任务,待机")
-            time.sleep(99999)
+                if self.data_dic['任务结束关闭游戏']:
+                    self.select.closegame()
+                    self.sn.table_value.emit(self.mnq_name, 8, "无任务")
+                    self.sn.log_tab.emit(self.mnq_name, "任务完成,关闭游戏,待机")
+                else:
+                    self.sn.table_value.emit(self.mnq_name, 8, "无任务")
+                    self.sn.log_tab.emit(self.mnq_name, "任务完成,未设置后续任务,待机")
+                time.sleep(99999)
         else:
             self.dictmap_do(exec_state)
 

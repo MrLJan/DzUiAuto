@@ -22,6 +22,7 @@ class DailyTaskAutoG(BasePageG):
         mrtask_queue = kwargs['每日任务']['每日任务队列']
         is_gonghui = kwargs['每日任务']['公会']
         level = int(kwargs['角色信息']['等级'])
+        bag_clear=kwargs['每日任务']['背包清理']
         task_id = kwargs['任务id']
         self.check_level_star()
         if len(task_list) == 0:
@@ -70,9 +71,10 @@ class DailyTaskAutoG(BasePageG):
                 if is_gonghui:
                     self.gonghui_task()
             # select_queue.task_over('AutoMR')  # 顺序队列,先进后出
-            select_queue.put_queue('GetReward')
-            select_queue.put_queue('BagClear')
-            select_queue.put_queue('BagSell')
+            # select_queue.put_queue('GetReward')
+            if bag_clear:
+                select_queue.put_queue('BagClear')
+                select_queue.put_queue('BagSell')
         return -1
 
     def back_mr_main(self):

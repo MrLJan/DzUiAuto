@@ -484,14 +484,15 @@ class DmImgTools:
 
 if __name__ == '__main__':
     dev = DevicesConnect.dm_init()
-    DevicesConnect.bind_windows(dev, 258156070)
+    DevicesConnect.bind_windows(dev, 9905308)
     o = ColorCvTools()
     o.dev = dev
     a = DmImgTools()
     a.dev = dev
     # r=o.word_find(WorldEnumG.EXIT_TEAM,t_log=False)
     # r = dev.SetWindowSize(3604730,1321,755)
-    r=o.map_ex('110')
+    r=o.word_find(WorldEnumG.SJ_SET,t_log=False)
+    #46,288,852,643
     # r=o.mul_color(MulColorEnumG.INGAME_FLAG,False,t_log=False)
     # r=a.dm_swipe((1093, 535), (1093, 314))
     # r=o.find_mr_task('星力战场',True,t_log=False)

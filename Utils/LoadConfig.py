@@ -21,6 +21,9 @@ class LoadConfig:
         LoadConfig.writeconf("全局配置", "无蓝窗口", '12,22,2,9')
         LoadConfig.writeconf("全局配置", "人少退组", '0')
         LoadConfig.writeconf("全局配置", "自动切换角色", '0')
+        LoadConfig.writeconf("全局配置","挂机卡挂机",'0')
+        LoadConfig.writeconf("全局配置", "成长奖励检查", '0')
+        LoadConfig.writeconf("全局配置", "背包清理", '0')
         LoadConfig.writeconf("全局配置", "任务停止等级", '99')
         LoadConfig.writeconf("全局配置", "离线时长", '50')
         LoadConfig.writeconf("全局配置", "随机休息", '1')
@@ -29,6 +32,7 @@ class LoadConfig:
         LoadConfig.writeconf("全局配置", "挂机卡时长", '20')
         LoadConfig.writeconf("全局配置", "随机使用石头", '0')
         LoadConfig.writeconf("全局配置", "强化等级", '14')
+        LoadConfig.writeconf("全局配置", "自动强化升级", '0')
         LoadConfig.writeconf("全局配置", "任务结束关闭游戏", '0')
         LoadConfig.writeconf("全局配置", "混王图", '1')
         LoadConfig.writeconf("全局配置", "炎魔", '1')
@@ -70,7 +74,7 @@ class LoadConfig:
         LoadConfig.writeconf("野图配置", "4队频道", '35')
         LoadConfig.writeconf("野图配置", "5队频道", '39')
         LoadConfig.writeconf("野图配置", "6队频道", '42')
-        LoadConfig.writeconf("全局配置", "托管红币", '1')
+        LoadConfig.writeconf("全局配置", "托管红币", '5')
         LoadConfig.writeconf("全局配置", "跳跃模式", '0')
 
     @staticmethod

@@ -121,6 +121,8 @@ class DzUi:
         self.set_check_box_text(self.ui_main.is_exitgame_box, "全局配置", "离线使用挂机卡")
         self.set_check_box_text(self.ui_main.is_exit_team_box, "全局配置", "人少退组")
         self.set_check_box_text(self.ui_main.is_change_role_box, "全局配置", "自动切换角色")
+        self.set_check_box_text(self.ui_main.redgold_up_box,"全局配置","自动强化升级")
+        self.set_check_box_text(self.ui_main.use_autocard_box,"全局配置","挂机卡挂机")
         self.set_check_box_text(self.ui_main.close_game_box, "全局配置", "任务结束关闭游戏")
         self.set_check_box_text(self.ui_main.gonghui_box, "全局配置", "公会内容")
         self.set_check_box_text(self.ui_main.boss_check_box, "全局配置", "混王图")
@@ -144,9 +146,11 @@ class DzUi:
         self.set_check_box_text(self.ui_main.saodi_box, "全局配置", "扫地模式")
         self.set_check_box_text(self.ui_main.jump_mode_box, "全局配置", "跳跃模式")
         self.set_check_box_text(self.ui_main.use_stone_box, "全局配置", "随机使用石头")
+        self.set_check_box_text(self.ui_main.mr_bag_clear_box,"全局配置","背包清理")
+        self.set_check_box_text(self.ui_main.lv_reward_box,"全局配置","成长奖励检查")
         self.set_combobox_text(self.ui_main.hp_box, "全局配置", "HP等级")
         self.set_combobox_text(self.ui_main.mp_box, "全局配置", "MP等级")
-        self.set_colorbox_text(self.ui_main.color_choose_box,'全局配置','中控颜色')
+        self.set_colorbox_text(self.ui_main.color_choose_box, '全局配置', '中控颜色')
         self.set_lineedit_text(self.ui_main.hp_num_edit, "全局配置", "hp数量")
         self.set_lineedit_text(self.ui_main.mp_num_edit, "全局配置", "mp数量")
         self.set_check_box_text(self.ui_main.ym_box, "全局配置", "炎魔")
@@ -234,6 +238,7 @@ class DzUi:
 
         self.team_event_dic = self.get_team_event()
         self.team_queue_dic = self.get_team_queue()
+        # self.mnq_queue = self.get_mnq_num_queue()
 
     def sort_window(self):
         row = self.ui_main.windows_pid.rowCount()
@@ -451,6 +456,7 @@ class DzUi:
             label_obj.setCurrentIndex(3)
         else:
             label_obj.setCurrentIndex(0)
+
     @staticmethod
     def set_lineedit_text(label_obj, data_section, data_name):
         data_text = LoadConfig.getconf(data_section, data_name)
@@ -572,7 +578,8 @@ class DzUi:
         mini_dc_task = '1' if self.ui_main.mini_dc_box.isChecked() else '0'
         gw_park_task = '1' if self.ui_main.gw_park_box.isChecked() else '0'
         use_stone = '1' if self.ui_main.use_stone_box.isChecked() else '0'
-
+        mr_bag_clear='1' if self.ui_main.mr_bag_clear_box.isChecked() else '0'
+        lv_reward_check = '1' if self.ui_main.lv_reward_box.isChecked() else '0'
         qh_youhui = '1' if self.ui_main.qh_youhui_box.isChecked() else '0'
         xingyun_jz = '1' if self.ui_main.xinyun_box.isChecked() else '0'
         dunpai_jz = '1' if self.ui_main.dunpai_box.isChecked() else '0'
@@ -592,6 +599,8 @@ class DzUi:
         close_game = '1' if self.ui_main.close_game_box.isChecked() else '0'
         is_exitgame = '1' if self.ui_main.is_exitgame_box.isChecked() else '0'
         is_change_role = '1' if self.ui_main.is_change_role_box.isChecked() else '0'
+        auto_up= '1' if self.ui_main.redgold_up_box.isChecked() else '0'
+        use_autocard='1' if self.ui_main.use_autocard_box.isChecked() else '0'
         saodi_mode = '1' if self.ui_main.saodi_box.isChecked() else '0'
         jump_mode = '1' if self.ui_main.jump_mode_box.isChecked() else '0'
 
@@ -611,7 +620,11 @@ class DzUi:
         LoadConfig.writeconf("全局配置", "无蓝窗口", d_use_mp)
         LoadConfig.writeconf("全局配置", "人少退组", is_exit_team)
         LoadConfig.writeconf("全局配置", "随机使用石头", use_stone)
+        LoadConfig.writeconf("全局配置",'背包清理',mr_bag_clear)
+        LoadConfig.writeconf("全局配置", "成长奖励检查", lv_reward_check)
         LoadConfig.writeconf("全局配置", "自动切换角色", is_change_role)
+        LoadConfig.writeconf("全局配置","自动强化升级",auto_up)
+        LoadConfig.writeconf("全局配置",'挂机卡挂机',use_autocard)
         LoadConfig.writeconf("全局配置", "任务停止等级", task_level_end)
         LoadConfig.writeconf("全局配置", "离线时长", exit_game_time)
         LoadConfig.writeconf("全局配置", "随机休息", auto_wait)
@@ -662,6 +675,23 @@ class DzUi:
         LoadConfig.writeconf("野图配置", "6队频道", d6_pindao)
         LoadConfig.writeconf("全局配置", "托管红币", red_coin)
         self.get_messagebox("设置", "配置已更新")
+
+    def get_mnq_num_queue(self):
+        mnq_num_queue = QueueManage()
+        # mnq_num=int(self.ui_main.mnq_num_edit.text())
+        s_num = int(self.ui_main.s_mnq_index_edit.text())
+        e_num = int(self.ui_main.e_mnq_index_edit.text())
+        skip_num = self.ui_main.mnq_skip_edit.text().split(',')
+        for _num in range(s_num, e_num + 1):
+            if str(_num) in skip_num:
+                pass
+            else:
+                mnq_name = MnqTools().use_index_find_name(_num)
+                if mnq_name != '99999':
+                    mnq_num_queue.put_queue(mnq_name)
+        if mnq_num_queue.queue.empty():
+            self.get_messagebox('提示', '模拟器编号有误')
+        return mnq_num_queue
 
     @staticmethod
     def get_team_queue():
@@ -802,17 +832,20 @@ class DzUi:
         # self.ui_main.setCentralWidget(tree_obj)
 
     def _set_task_list(self):
-        rows = self.ui_main.windows_pid.rowCount()
-        task_name = self.ui_main.task_name_label.text()
-
-        if rows == 0 or task_name == "":
-            pass
-        else:
-            for i in range(rows):
-                if self.ui_main.windows_pid.cellWidget(i, 0).isChecked():
-                    mnq_name = self.ui_main.windows_pid.item(i, 1).text()
-                    if len(self.mnq_thread_tid[mnq_name]) == 0:
-                        self.set_table_value(mnq_name, 2, task_name)  # 设置任务
+        try:
+            rows = self.ui_main.windows_pid.rowCount()
+            task_name = self.ui_main.task_name_label.text()
+            if rows == 0 or task_name == '':
+                pass
+            else:
+                for i in range(rows):
+                    if self.ui_main.windows_pid.cellWidget(i, 0).isChecked():
+                        mnq_name = self.ui_main.windows_pid.item(i, 1).text()
+                        if len(self.mnq_thread_tid[mnq_name]) == 0:
+                            self.set_table_value(mnq_name, 2, task_name)  # 设置任务
+        except Exception as e:
+            print(e)
+            self.get_messagebox('错误', e)
 
     def task_tree_clicked(self):
         res = self.ui_main.task_tree_widget.currentItem()
@@ -1084,7 +1117,11 @@ class DzUi:
                 # devname = self.dev_obj_list[mnq_name][0]  # devname 设备名,mnq_name是标题名
                 # try:
                 ThreadTools("初始化", self.init_dm, args=(dm_obj, sub_hwnd)).start()
-                dm_obj.SetWindowSize(hwnd,1321,755)
+                res = dm_obj.GetClientSize(sub_hwnd)
+                if res[0] == 1:
+                    if res[1] != 1280 or res[-1] != 720:
+                        # dm_obj.SetWindowState(hwnd,1)
+                        dm_obj.SetWindowSize(hwnd, 1322, 756)  # 强制把窗口大小固定
                 self.dev_list[mnq_name] = dm_obj  # dev是连接成功后的设备对象
                 devinfo = (dm_obj, mnq_name)
                 # except:

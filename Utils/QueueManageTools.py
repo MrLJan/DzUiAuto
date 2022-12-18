@@ -5,7 +5,7 @@ from queue import Queue, LifoQueue
 class QueueManage:
     """状态队列，后续用来检查游戏状态"""
 
-    def __init__(self, num=50,lifo=False):
+    def __init__(self, num=100,lifo=False):
         self.queue = Queue(num) if not lifo else LifoQueue(num)
 
     def put_queue(self, key):

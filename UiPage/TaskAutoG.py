@@ -23,8 +23,10 @@ class TaskAutoG(BasePageG):
         _L3_FLAG = False if kwargs['角色信息']['90级'] == '0' else True
         s_time = time.time()
         # t_time = time.time()
-        self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
-                        **kwargs)
+        self.check_level_star()
+        if self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
+                           **kwargs) == 1:
+            return 1
         self.sn.log_tab.emit(self.mnq_name, r"任务进行中")
         _COLOR = self.rgb(447, 699)
         _COLOR_1 = 'FFFFFF'
@@ -139,8 +141,9 @@ class TaskAutoG(BasePageG):
                         self.sn.log_tab.emit(self.mnq_name, r"做完主线任务停止任务")
                         return 1
                     if not self.word_find(WorldEnumG.TASK_AUTO) and self.find_color(MulColorEnumG.IGAME):
-                        self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
-                                        **kwargs)
+                        if self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
+                                           **kwargs) == 1:
+                            return 1
                         if self.pic_find(ImgEnumG.BAG_MAX_IMG):
                             self.sn.log_tab.emit(self.mnq_name, r"背包满了,清理背包")
                             raise BagFullerr
@@ -154,8 +157,9 @@ class TaskAutoG(BasePageG):
                             self.time_sleep(3)
                     else:
                         if self.find_color(MulColorEnumG.IGAME):
-                            self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
-                                            **kwargs)
+                            if self.level_task(stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG,
+                                               **kwargs) == 1:
+                                return 1
                     self.time_sleep(2)
 
     def level_task(self, stop_task, select_queue, mrtask_queue, _CW_FLAG, _L2_FLAG, _L3_FLAG, **kwargs):
@@ -167,13 +171,18 @@ class TaskAutoG(BasePageG):
         try:
             _res = int(self.check_num(4))
             _bat_res = self.check_num(3)
+            self.sn.table_value.emit(self.mnq_name, 3, f"{_res}")
+            self.sn.table_value.emit(self.mnq_name, 5, f"{_bat_res}")
+            LoadConfig.writeconf(self.mnq_name, '等级', str(_res), ini_name=self.mnq_name)
+            LoadConfig.writeconf(self.mnq_name, '战力', str(_bat_res), ini_name=self.mnq_name)
+            self.sn.log_tab.emit(self.mnq_name, f"等级:{_res}_战力:{_bat_res}")
             if _res >= int(stop_task):
                 self.sn.log_tab.emit(self.mnq_name, r"超过任务停止等级")
                 return 1
         except Exception as e:
             print(e)
             return 0
-        if _res != 0:
+        if _res != 0 and kwargs['自动任务']['成长奖励检查']:
             kwargs['角色信息']['等级'] = _res
             kwargs['角色信息']['战力'] = _bat_res
             LoadConfig.writeconf(self.mnq_name, '等级', str(_res), ini_name=self.mnq_name)
@@ -218,6 +227,7 @@ class TaskAutoG(BasePageG):
                 if self.word_find(WorldEnumG.TASK_AUTO):
                     self.touch((448, 654), touch_wait=2)
                 raise NotInGameErr
+        return 0
 
     def sete_mapdata(self, xt_yt, map_name, **kwargs):
         kwargs['任务id'] = xt_yt

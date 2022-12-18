@@ -39,7 +39,9 @@ class NotInGameErr(BaseError):
 class FuHuoRoleErr(BaseError):
     """复活"""
     pass
-
+class AutoCardEnd(BaseError):
+    """挂机卡到期"""
+    pass
 
 class BuyYErr(BaseError):
     """没药"""

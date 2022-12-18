@@ -9,7 +9,7 @@ from Utils.OtherTools import OT
 class GlobalEnumG:
     if not os.path.exists(OT.abspath(f"/Res/配置文件.ini")):
         LoadConfig.init_config()
-    Ver = '2.34'
+    Ver = '2.37'
     TestLog = True if LoadConfig.getconf('全局配置', '日志') == '1' else False
     TouchWait = int(LoadConfig.getconf('全局配置', '点击延时'))
     GamePackgeName = r'com.nexon.maplem.global'  # r'com.nexon.maplem.japan'  # r'com.nexon.maplem.global'
@@ -20,6 +20,7 @@ class GlobalEnumG:
     LoginGameTimeOut = 600  # 登录超时时长
     UiCheckTimeOut = 900  # 界面操作超时时长
     SelectCtrTimeOut = 300  # 操作超时时长
+    WaitConrtlTimeOut = 60  # 等待超时
     TouchEx = random.randint(0, 2)  # 点击偏移
     TouchEy = random.randint(0, 2)
     if TouchWait != 0:
@@ -72,7 +73,7 @@ class GlobalEnumG:
     StatesInfo = {
         'InGame': {'name': "游戏中", 'id': 1},
         'Nothing': {'name': "无任务", 'id': 2},
-        'Wait': {'name': "等待任务", 'id': 2},
+        'Sleep': {'name': "等待任务", 'id': 2},
         'Login': {'name': "登录游戏", 'id': 2},
         'AutoChoose': {'name': "一键托管", 'id': 99},
         'Check': {'name': "检查界面", 'id': -1},
@@ -96,10 +97,10 @@ class GlobalEnumG:
         'AutoHDboss': {'name': '混沌boss', 'id': 2},
         'CheckRole': {'name': "检查角色", 'id': 5},
         'GetLevelReard': {'name': "领取成长奖励", 'id': 5},
-        'CheckGold': {'name': "计算产出", 'id': 6},
+        'ChangeRole': {'name': "切换角色", 'id': 6},
         'CheckTeamState': {'name': "检查队伍状态", 'id': 6},
     }
-    ExecuteStates = ['AutoTask', 'AutoBat', 'Nothing', 'Wait', 'CheckTeamState']
+    ExecuteStates = ['AutoTask', 'AutoBat', 'Nothing', 'Sleep', 'CheckTeamState']
     SelectStates = ['InGame',
                     'Check',
                     'Login',
@@ -120,7 +121,7 @@ class GlobalEnumG:
                     'AutoMR',
                     'CheckRole',
                     'GetLevelReard',
-                    'CheckGold',
+                    'ChangeRole',
                     'AutoChoose']
 
 
@@ -134,6 +135,7 @@ class ImgEnumG:
     MOGU1 = [(162, 10, 1120, 694), '111111', '蘑菇1']
     JUBAO = [(162, 10, 1120, 694), "111111", r'举报']
     UI_ERR_IMG = [(0, 0, 1280, 720), "111111", r"界面卡死"]
+    CREAT_ROLE = [(915, 473, 1084, 546), '222222', "创建角色"]
     # 活动
     QD_1 = [(1218, 12, 1265, 55), '222222', '活动签到1']
     # 登录相关
@@ -226,9 +228,9 @@ class ImgEnumG:
         3: [127, 306, '2b3646', 'ee7546']
     }
     # BOSS
-    YM = [(65, 103, 262, 194), '222222', '炎魔']
-    PKJ = [(704, 104, 891, 193), '222222', '皮卡啾']
-    NH = [(982, 97, 1222, 194), '555555', '女皇']
+    YM = [(9, 88, 1273, 215), '222222', '炎魔']
+    PKJ = [(9, 88, 1273, 215), '222222', '皮卡啾']
+    NH = [(9, 88, 1273, 215), '555555', '女皇']
     # 每日
     MR_BAT_EXIT = [(1202, 251, 1269, 317), '222222', '战斗退出']
     JRGH_IMG = [(0, 0, 1280, 720), '222222', '加入公会']
@@ -328,6 +330,7 @@ class BatEnumG:
 
 class RgbEnumG:
     ENUM_BTN = [1222, 52, 'ffffff']  # 菜单按钮
+    BACK_ROLE = [251, 632, '4c87b0']  # 返回角色选择界面
     EXIT_FOU = [391, 532, '4c87b0']  # 退出游戏-否
     CLOSE_GAME = [433, 543, '4c87b0']  # 关闭游戏-否
     FUHUO_BTN = [293, 522, '4c87b0']  # 复活按钮
@@ -537,6 +540,7 @@ class MulColorEnumG:
                    "-5|-4|ECEDEE,-5|-18|E3E4E5-090909,-5|-24|3F454D-000001,-11|1|41454E-000100,-18|1|ECEDEE,"
                    "-23|1|41454E-000100,-3|13|ECEDED,-3|18|42464E,11|-2|D9DADC-131312,17|-2|41454E",
                    0.9, 0, '登录标记']
+    
     INGAME_FLAG2 = [774, 10, 1266, 685, "D3D1CE", "-285|-282|ECEDEE", 0.9, 0, '登录标记2']
 
     SET_BTN = [1213, 641, 1254, 681, "FFFFFF", "-11|8|FFFFFF,-11|20|FFFFFF,1|26|FFFFFF,11|20|FFFFFF,11|8|FFFFFF", 0.9,
@@ -571,6 +575,7 @@ class MulColorEnumG:
     GAME_START = [930, 579, 1219, 654, "92B915", "-74|-16|A3C319,-143|-1|93B915,-74|19|8DB414", 0.9, 0, '游戏开始']
     ZB_TS = [738, 161, 1266, 644, "73F349",
              "-7|0|73F349,-4|0|75FF4B,-4|-4|75FF4A,-4|-5|70F547,-3|-3|75FF4A,-5|-3|74FC49", 0.9, 0, '装备提升']
+    C_ROLE = [197, 2, 1095, 714, "415066", "409|88|F2F2F2,26|584|4C87B0,49|648|F2F2F2", 0.9, 0, '更换角色界面']
 
     # 道具清理
     BS_BLUE = [738, 161, 1266, 644, "5EEEFF", "-2|12|ADF6FF,16|2|866DF4,-16|1|05FFD9", 0.8, 0, '蓝宝石']
@@ -602,6 +607,7 @@ class WorldEnumG:
     ZB_SJ = [0, 48, 314, 254, 355, '升级', 'C5C6C7-3A3938', 0.9]
     ZB_QH = [0, 48, 314, 254, 355, '星力强化', 'C5C6C7-3A3938', 0.9]
     SET_BTN = [0, 1207, 634, 1262, 689, '设置按钮', 'D7D7D7-282828', 0.9]
+    C_ROLE = [0, 1012, 630, 1097, 704, '切换角色', 'D7D7D7-282828', 0.9]
     YM_READY = [0, 108, 144, 232, 182, 'READY', 'EAEBEA-151415', 0.9]
     PKJ_READY = [0, 745, 146, 864, 182, 'READY', 'EAEBEA-151415', 0.9]
     NH_READY = [0, 1072, 151, 1176, 179, 'READY', 'EAEBEA-151415', 0.9]
@@ -619,7 +625,7 @@ class WorldEnumG:
     BAT_AUTO = [0, 388, 638, 458, 669, '自动战斗', 'C4C3C2-3B3C3D', 0.8]
     BAT_XC = [0, 1037, 593, 1115, 641, '卸除', 'D7D7D7-282828', 0.9]
     SKIP = [0, 1165, 11, 1250, 46, '略过', 'B5B5B5-4A4A4A', 0.9]
-    SJ_SET = [0, 837, 411, 1009, 488, '升级设定', '6D757E-2C2926', 0.9]
+    SJ_SET = [0, 344,476,565,542, '升级设定', '777E86-35322E', 0.8]
     YS_DL = [0, 789, 159, 918, 688, '登录', 'D7DED7-282128', 0.9]
     YS_LJQW = [0, 789, 159, 918, 688, '立即前往', 'D7DED7-282128', 0.9]
     TEAM_NULL = [0, 972, 433, 1196, 501, '无队伍', '717982-2F2C29', 0.9]

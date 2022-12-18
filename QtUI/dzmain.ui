@@ -65,7 +65,7 @@
           <height>401</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0">
+        <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0">
          <item>
           <widget class="QTableWidget" name="windows_pid">
            <property name="enabled">
@@ -366,6 +366,98 @@
            </item>
           </layout>
          </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_29" stretch="5,0,1,1,1,1,1,1,1,2">
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_68">
+             <property name="text">
+              <string>测试功能暂未开放</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_64">
+             <property name="text">
+              <string>模拟器数量</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="mnq_num_edit">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>1</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_65">
+             <property name="text">
+              <string>起始模拟器编号</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="s_mnq_index_edit">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>0</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_66">
+             <property name="text">
+              <string>结束模拟器编号</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="e_mnq_index_edit">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>1</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_67">
+             <property name="text">
+              <string>跳过模拟器</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="mnq_skip_edit">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>0</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
         </layout>
        </widget>
       </widget>
@@ -462,7 +554,7 @@
           <height>41</height>
          </rect>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,1,1,1,3">
+        <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,1,1,1,3,0">
          <item>
           <widget class="QCheckBox" name="jinzita_box">
            <property name="text">
@@ -495,6 +587,13 @@
           <widget class="QCheckBox" name="jinghua_box">
            <property name="text">
             <string>进化系统（100级）</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="mr_bag_clear_box">
+           <property name="text">
+            <string>背包清理</string>
            </property>
           </widget>
          </item>
@@ -734,13 +833,6 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_11">
          <item>
-          <widget class="QLabel" name="label_59">
-           <property name="text">
-            <string>(星图需要角色同一星图）</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_22">
            <item>
             <widget class="QLabel" name="label_43">
@@ -773,6 +865,26 @@
             </spacer>
            </item>
           </layout>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="is_change_role_box">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>自动切换角色（用于自动任务、自动每日最大支持单号7个角色）</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="lv_reward_box">
+           <property name="text">
+            <string>成长奖励检查</string>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QCheckBox" name="use_stone_box">
@@ -1668,7 +1780,7 @@
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_20" stretch="2,1,1,1,6">
+          <layout class="QHBoxLayout" name="horizontalLayout_20" stretch="2,1,1,1,6,0">
            <item>
             <widget class="QCheckBox" name="is_exitgame_box">
              <property name="text">
@@ -1705,6 +1817,19 @@
               </size>
              </property>
             </spacer>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="use_autocard_box">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>挂机卡挂机</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -1814,29 +1939,6 @@
          </item>
         </layout>
        </widget>
-       <widget class="QLabel" name="label_61">
-        <property name="geometry">
-         <rect>
-          <x>610</x>
-          <y>150</y>
-          <width>81</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>红币数量超过</string>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="red_coin_edit">
-        <property name="geometry">
-         <rect>
-          <x>690</x>
-          <y>150</y>
-          <width>31</width>
-          <height>16</height>
-         </rect>
-        </property>
-       </widget>
        <widget class="Line" name="line_5">
         <property name="geometry">
          <rect>
@@ -1877,19 +1979,6 @@
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_62">
-        <property name="geometry">
-         <rect>
-          <x>730</x>
-          <y>150</y>
-          <width>171</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>千万,进行装备强化+升级</string>
         </property>
        </widget>
        <widget class="QListWidget" name="dq_list_w">
@@ -1993,6 +2082,42 @@
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
+       <widget class="QWidget" name="horizontalLayoutWidget_8">
+        <property name="geometry">
+         <rect>
+          <x>590</x>
+          <y>150</y>
+          <width>301</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_32">
+         <item>
+          <widget class="QCheckBox" name="redgold_up_box">
+           <property name="text">
+            <string>自动强化/升级</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_61">
+           <property name="text">
+            <string>当红币数量超过</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="red_coin_edit"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_62">
+           <property name="text">
+            <string>千万进行</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
       <widget class="QWidget" name="tab_5">
        <attribute name="title">
@@ -2018,6 +2143,23 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'SimSun'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;岛主v2.37&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;1.增加自动换角色功能,在【基本设置-其他设置】中&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;注释：&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;	自动任务：勾选【自动切换角色】会挨个执行主线任务直到无主线或者达到指定等级,停止切换角色继续&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;	自动每日：勾选【自动切换角色】会挨个执行设置的每日任务,完成后切换角色&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;	一键托管：勾选【自动切换角色】+【挂机卡挂机】会先执行每日副本，刷完后自动根据当前星数选择星图挂机（纯挂机卡挂机），挂机卡耗尽会切换角色&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;	若托管角色星数低于40会执行主线任务&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;2.增加挂机卡挂机：勾选后不会使用按键,纯使用挂机卡挂机直到挂机卡耗尽&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;岛主v2.36&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;1.增加每日任务清理背包开关&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;2.增加主线任务检查成长奖励开关&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;3.增加部分系统点击设置任务闪退检查&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;岛主v2.35&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;1.随游戏更新更新&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;岛主v2.34&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;1.启动任务时会矫正窗口大小,识别出现异常时停止任务重新启动&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
@@ -2313,19 +2455,6 @@ p, li { white-space: pre-wrap; }
     <set>Qt::LinksAccessibleByMouse</set>
    </property>
   </widget>
-  <widget class="QCheckBox" name="is_change_role_box">
-   <property name="geometry">
-    <rect>
-     <x>660</x>
-     <y>580</y>
-     <width>449</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>自动切换角色（用于自动任务、自动每日最大支持6角色）</string>
-   </property>
-  </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
@@ -2375,7 +2504,6 @@ p, li { white-space: pre-wrap; }
     <string>双击单行,置顶对应窗口,单击即勾选！</string>
    </property>
   </widget>
-  <zorder>is_change_role_box</zorder>
   <zorder>console_text</zorder>
   <zorder>layoutWidget</zorder>
   <zorder>verticalLayoutWidget</zorder>
